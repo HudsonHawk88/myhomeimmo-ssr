@@ -1,0 +1,146 @@
+.menu-navigation-icons {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-size: 0;
+    display: none;
+    flex-direction: column;
+}
+
+.navbar-toggler {
+    display: block;
+    background-color: #ffc107;
+    height: 55px;
+    border-radius: 0;
+}
+
+.navbar-toggler i {
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.menu-navigation-icons.show {
+    display: flex;
+}
+
+.menu-navigation-icons a {
+    display: inline-flex;
+    color: #ffffff;
+    background-color: #232526;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 1px 2px 1px 0 rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    /* width: 136px; */
+    width: 100%;
+    height: auto;
+    padding: 10px;
+}
+
+.menu-navigation-icons a:hover {
+    opacity: 0.92;
+}
+
+.menu-navigation-icons a i {
+    display: hidden;
+    line-height: unset;
+    font-size: 20px;
+}
+
+.menu-navigation-icons a span {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 2.8;
+    padding-left: 10px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Menu colors */
+
+.menu-navigation-icons a.menu-brown {
+    background-color: #8b6238;
+}
+.menu-navigation-icons a.menu-brown i {
+    color: #644d36;
+}
+
+.menu-navigation-icons a.menu-magenta {
+    background-color: #dc68bf;
+}
+.menu-navigation-icons a.menu-magenta i {
+    color: #9d518a;
+}
+
+.menu-navigation-icons a.menu-blue {
+    background-color: #57b2d8;
+}
+.menu-navigation-icons a.menu-blue i {
+    color: #3e8fb1;
+}
+
+.menu-navigation-icons a.menu-green {
+    background-color: #8ccc7a;
+}
+.menu-navigation-icons a.menu-green i {
+    color: #6fad5e;
+}
+
+.menu-navigation-icons a.menu-yellow {
+    background-color: #dadf50;
+}
+.menu-navigation-icons a.menu-yellow i {
+    color: #babe4a;
+}
+
+.menu-navigation-icons a.menu-red {
+    background-color: #f26262;
+}
+.menu-navigation-icons a.menu-red i {
+    color: #d34646;
+}
+
+/* Make this page responsive */
+
+.slicknav_menu {
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+    .menu-navigation-icons {
+        flex-direction: row;
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+
+    .menu-navigation-icons a i {
+        line-height: 2;
+        font-size: 40px;
+    }
+
+    .menu-navigation-icons a span {
+        line-height: 1;
+        padding-left: 0px;
+    }
+
+    .menu-navigation-icons a {
+        height: 109px;
+        padding: 0;
+        font-size: 40px;
+        display: inline-block !important;
+    }
+
+    .slicknav_nav a i {
+        display: none;
+    }
+
+    .slicknav_menu {
+        display: block;
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "mailconf": {
+        "pool": true,
+        "host": "smtp.inftechsol.hu",
+        "port": 465,
+        "secure": true,
+        "auth": {
+            "user": "info@inftechsol.hu",
+            "pass": "CoronamVitae88"
+        },
+        "tls": {
+            "rejectUnauthorized": false
+        }
+    }
+}

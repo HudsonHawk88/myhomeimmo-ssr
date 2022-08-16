@@ -1,0 +1,53 @@
+$colors: (
+    base: (
+        black: #222,
+        white: #efefef
+    ),
+    themes: (
+        public: (
+            bgcolor: rgba(255, 255, 255, 1),
+            bgimage: url('../images/blackback.png'),
+            // navbarbgimage: url('/images/borito.jpg'),
+            navbarbgimage: url('/images/borito2.jpg'),
+            navbarbgcolor: rgba(255, 255, 255, 0.4),
+            navbgcolor: rgba(0, 0, 0, 0.7),
+            navbarlogo: url('../images/logo.jpg'),
+            navbarlinkcolor: #ffffff,
+            navlinkhoveractive: #14ac89,
+            navlinktextshadow: #14ac89,
+            boxshadowcolor: rgba(174, 255, 237, 0.514),
+            sidebarbg: #14ac89,
+            reszl_keresobg: #14ac89,
+            // collapsebg: rgba(255,213,13, 0.6),
+            collapsebg: rgba(174, 255, 237, 0.514),
+            collapsefontcolor: rgba(0, 0, 0, 1),
+            ingatlanlistacardborder: darkgray,
+            ingatlanlistacardhover: black,
+            tartalombgcolor: rgba(215, 197, 153, 0.5),
+            footerbgimage: url('/images/borito.jpg'),
+            footerbgcolor: rgba(255, 255, 255, 0.4),
+            footerdivbgcolor: rgba(0, 0, 0, 0.7),
+            footerfontcolor: rgba(255, 255, 255, 1),
+            new: #dd0000,
+            newfont: white,
+            viewbutton: #14ac89
+        ),
+        admin: (
+            bgimage: url('../images/blackback.png'),
+            navbarlogo: url('../images/logo.jpg'),
+            navbarbgcolor: #ffc107,
+            navbarlinkcolor: black,
+            navbarlinkbgactivehover: whitesmoke,
+            navlinkhoveractivebg: whitesmoke,
+            avatarbordercolor: black,
+            sidebarbg: #222222,
+            sidebartogglerbordercolor: black,
+            sidebarnavlinkcolor: blanchedalmond,
+            sidebaractivehoverbg: whitesmoke,
+            sidebarnavlinkactivehoverfontcolor: #222222,
+            tartalombgcolor: #d7c599,
+            footerbgcolor: #ffc107,
+            footerfontcolor: black
+        )
+    )
+);

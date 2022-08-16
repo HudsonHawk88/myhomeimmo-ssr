@@ -1,0 +1,17 @@
+@use 'sass:string';
+@use 'sass:list';
+
+@function get-keys($string, $separator: '-') {
+    $keys: ();
+    $index: string.index($string, $separator);
+
+    @while $index {
+        $key: string.slice($string, 1, $index - 1);
+        $keys: list.append($keys, $key);
+        $string: string.slice($string, $index + 1);
+        $index: string.index($string, $separator);
+    }
+
+    $keys: list.append($keys, $string);
+    @return $keys;
+}

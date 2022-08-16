@@ -1,0 +1,73 @@
+@use '../variables/colors';
+@use '../functions/var' as *;
+
+.admin-sidebar {
+    flex-direction: column;
+    width: 0px;
+    height: 100%;
+    padding: 0px !important;
+    background-color: var(themes-admin-sidebarbg);
+
+    .container-fluid {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        padding: 0px;
+    }
+
+    &__toggler {
+        display: block !important;
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        cursor: pointer;
+        padding: 10px;
+        border: 1px var(themes-admin-sidebartogglerbordercolor) solid;
+        border-radius: 5px;
+
+        @media screen and (min-width: 992px) {
+            left: 320px;
+        }
+    }
+
+    .admin_collapse {
+        width: 100%;
+        height: 100%;
+        display: none;
+
+        &.show {
+            display: block;
+        }
+    }
+
+    .navbar-nav {
+        height: inherit;
+    }
+
+    &.show {
+        width: 300px;
+    }
+
+    &__navitem {
+        line-height: 3;
+    }
+
+    &__navlink {
+        color: var(themes-admin-sidebarnavlinkcolor);
+        width: 100%;
+        height: 100%;
+        padding: 5px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(themes-admin-sidebaractivehoverbg);
+            color: var(themes-admin-sidebarnavlinkactivehoverfontcolor) !important;
+        }
+
+        &.active {
+            background-color: var(themes-admin-sidebaractivehoverbg);
+            color: var(themes-admin-sidebarnavlinkactivehoverfontcolor) !important;
+        }
+    }
+}
