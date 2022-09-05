@@ -9,7 +9,8 @@ import {
     getDataFromDatabase,
     getJSONfromLongtext,
     getBooleanFromNumber,
-    getNumberFromBoolean
+    getNumberFromBoolean,
+    isIngatlanokTableExists
 } from '../../../common/QueryHelpers.js';
 import express from 'express';
 import { existsSync, mkdirSync, writeFileSync, rmdirSync, rmSync } from 'fs';
@@ -23,22 +24,12 @@ dotenv.config({
 const router = express.Router();
 const ingatlanok = poolConnect;
 
-const isIngatlanokTableExists = async () => {
-    const isExistSql = `SHOW TABLES LIKE "ingatlanok";`;
-    const isExist = await UseQuery(ingatlanok, isExistSql);
-    if (isExist.length !== 0) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
 const getId = async (reqID) => {
     let id = undefined;
     if (reqID !== undefined) {
         id = parseInt(reqID, 10);
     } else {
-        const isExist = await isIngatlanokTableExists();
+        const isExist = await isIngatlanokTableExists(ingatlanok);
         if (isExist) {
             const getLastIdSql = `SELECT MAX(id) as id FROM ingatlanok;`;
             let result = await UseQuery(ingatlanok, getLastIdSql);
