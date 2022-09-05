@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
         const id = req.query.id;
         const sql = id
             ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'`
-            : `SELECT id, refid, cim, leiras, helyseg, irsz, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
+            : `SELECT id, refid, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
 
         let result = await UseQuery(ingatlanok, sql);
         console.log(result);
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
         ing.isUjEpitesu = ing.isUjEpitesu === 0 ? true : false; */
         });
         /* return result; */
-        res.send(ress);
+        res.status(200).send(ress);
     } else {
         res.status(200).send([]);
     }
