@@ -1,54 +1,54 @@
-@use '../variables/colors';
-@use '../functions/var' as *;
+@use "../variables/colors";
+@use "../functions/var" as *;
 
 .admin-navbar {
-    min-height: 80px;
-    padding: 0px;
+  min-height: 80px;
+  padding: 0px;
 
-    &__collapse {
-        display: flex !important;
-        justify-content: flex-end;
+  &__collapse {
+    display: flex !important;
+    justify-content: flex-end;
+  }
+
+  #logo {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    display: none;
+    content: var(themes-admin-navbarlogo);
+    height: 80px;
+    width: 300px;
+
+    @media screen and (min-width: 992px) {
+      display: flex;
     }
+  }
 
-    #logo {
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        display: none;
-        content: var(themes-admin-navbarlogo);
-        height: 80px;
-        width: 300px;
+  .navbar-nav {
+    position: absolute;
+    right: 15px;
+  }
 
-        @media screen and (min-width: 992px) {
-            display: flex;
-        }
+  .dropdown-toggle {
+    & img {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      border: 1px var(themes-admin-avatarbordercolor) solid;
     }
+  }
 
-    .navbar-nav {
-        position: absolute;
-        right: 15px;
-    }
+  .dropdown-toggle:active,
+  .dropdown-toggle:focus,
+  .dropdown-toggle:hover {
+    box-shadow: none !important;
+    border: none !important;
+    background-color: var(themes-admin-navbarbgcolor);
+  }
 
-    .dropdown-toggle {
-        & img {
-            height: 50px;
-            width: 50px;
-            border-radius: 50%;
-            border: 1px var(themes-admin-avatarbordercolor) solid;
-        }
-    }
-
-    .dropdown-toggle:active,
-    .dropdown-toggle:focus,
-    .dropdown-toggle:hover {
-        box-shadow: none !important;
-        border: none !important;
-        background-color: var(themes-admin-navbarbgcolor);
-    }
-
-    .dropdown-menu {
-        background-color: var(themes-admin-navbarbgcolor);
-        border: none !important;
-        transform: translate(15px, 71px) !important;
-    }
+  .dropdown-menu {
+    background-color: var(themes-admin-navbarbgcolor);
+    border: none !important;
+    transform: translate(15px, 71px) !important;
+  }
 }

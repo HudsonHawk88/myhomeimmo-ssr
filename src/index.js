@@ -3,11 +3,10 @@ import { hydrateRoot, createRoot } from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
-import App from './App';
+import App from "./App";
 
 const history = createBrowserHistory();
-const container = document.getElementById('root');
-
+const container = document.getElementById("root");
 const isBrowser = __isBrowser__;
 
 if (isBrowser) {

@@ -1,68 +1,68 @@
 .public_kapcsolat {
-    height: 100%;
-    padding: 20px 5%;
-    background-color: rgb(255, 238, 139);
-    margin: 0px;
+  height: 100%;
+  padding: 20px 5%;
+  background-color: rgb(255, 238, 139);
+  margin: 0px;
+  display: flex;
+  flex-wrap: wrap;
+
+  @media screen and (min-width: 950px) {
+    margin: 0px 15%;
+  }
+
+  .kapcsolat_nev {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
+    min-height: 60px;
+    font-size: 1.2em;
+    background-color: #14ac89;
+    color: white;
+  }
+
+  .kapcsolat_alapadatok {
     display: flex;
     flex-wrap: wrap;
+    gap: 10px;
+  }
 
-    @media screen and (min-width: 950px) {
-        margin: 0px 15%;
+  .kapcsolat_kep {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 10px 0px;
+    gap: 10px;
+
+    @media screen and (min-width: 1500px) {
+      width: calc(50% - 5px);
+      flex-wrap: nowrap;
+      display: block;
     }
 
-    .kapcsolat_nev {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-width: 100%;
-        min-height: 60px;
-        font-size: 1.2em;
-        background-color: #14ac89;
-        color: white;
+    img {
+      width: 100%;
     }
 
-    .kapcsolat_alapadatok {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
+    .kapcsolat_elerhetosegek {
+      margin-top: 10px;
+      font-size: 1.2em;
     }
 
-    .kapcsolat_kep {
-        display: flex;
-        flex-wrap: wrap;
-        width: 100%;
-        padding: 10px 0px;
-        gap: 10px;
-
-        @media screen and (min-width: 1500px) {
-            width: calc(50% - 5px);
-            flex-wrap: nowrap;
-            display: block;
-        }
-
-        img {
-            width: 100%;
-        }
-
-        .kapcsolat_elerhetosegek {
-            margin-top: 10px;
-            font-size: 1.2em;
-        }
-
-        .kapcsolat_terkep {
-            display: flex;
-            min-width: 100%;
-            max-width: 100%;
-        }
+    .kapcsolat_terkep {
+      display: flex;
+      min-width: 100%;
+      max-width: 100%;
     }
+  }
 
-    .kapcsolat_form {
-        width: 100%;
-        padding: 10px 0px;
-        text-align: center;
+  .kapcsolat_form {
+    width: 100%;
+    padding: 10px 0px;
+    text-align: center;
 
-        @media screen and (min-width: 1500px) {
-            width: calc(50% - 5px);
-        }
+    @media screen and (min-width: 1500px) {
+      width: calc(50% - 5px);
     }
+  }
 }

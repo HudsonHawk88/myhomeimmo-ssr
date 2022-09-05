@@ -1,246 +1,246 @@
-import { Microservices } from '../../../../shared/MicroServices';
+import { Microservices } from "../../../../shared/MicroServices";
 const location = __isBrowser__ ? window.location : {};
-const ingatlanokUrl = location.origin + '/api/ingatlan';
-const ingatlanokAdminUrl = location.origin + '/api/admin/ingatlanok';
-const orszagokUrl = location.origin + '/api/orszagok';
-const telepulesekUrl = location.origin + '/api/telepulesek';
-const generateXmlUrl = location.origin + '/api/ingatlan/ingatlanokapi';
-const optionsUrl = location.origin + '/api/options';
+const ingatlanokUrl = location.origin + "/api/ingatlan";
+const ingatlanokAdminUrl = location.origin + "/api/admin/ingatlanok";
+const orszagokUrl = location.origin + "/api/orszagok";
+const telepulesekUrl = location.origin + "/api/telepulesek";
+const generateXmlUrl = location.origin + "/api/ingatlan/ingatlanokapi";
+const optionsUrl = location.origin + "/api/options";
 
 export default class Services {
-    // INGATLANOK START
+  // INGATLANOK START
 
-    static listIngatlanok = () => {
-        let result = Microservices.fetchApi(ingatlanokAdminUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+  static listIngatlanok = () => {
+    let result = Microservices.fetchApi(ingatlanokAdminUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static getIngatlan = (id) => {
-        let result = Microservices.fetchApi(ingatlanokAdminUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                'Content-Type': 'application/json',
-                id: id
-            }
-        });
+  static getIngatlan = (id) => {
+    let result = Microservices.fetchApi(ingatlanokAdminUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        "Content-Type": "application/json",
+        id: id,
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static addEIngatlan = (data) => {
-        // console.log(data);
-        let result = Microservices.fetchApi(ingatlanokAdminUrl, {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                // "Content-Type": "multipart/form-data",
-                // "Content-type": "application/x-www-form-urlencoded",
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            },
-            body: data
-        });
-        return result;
-    };
+  static addEIngatlan = (data) => {
+    // console.log(data);
+    let result = Microservices.fetchApi(ingatlanokAdminUrl, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        // "Content-Type": "multipart/form-data",
+        // "Content-type": "application/x-www-form-urlencoded",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+      },
+      body: data,
+    });
+    return result;
+  };
 
-    static editIngatlan = (data, id) => {
-        let result = Microservices.fetchApi(ingatlanokAdminUrl, {
-            method: 'PUT',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                // "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                id: id
-            },
-            body: data
-        });
-        return result;
-    };
+  static editIngatlan = (data, id) => {
+    let result = Microservices.fetchApi(ingatlanokAdminUrl, {
+      method: "PUT",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        // "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        id: id,
+      },
+      body: data,
+    });
+    return result;
+  };
 
-    static deleteIngatlan = (id) => {
-        let result = Microservices.fetchApi(ingatlanokAdminUrl, {
-            method: 'DELETE',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                id: id
-            }
-        });
-        return result;
-    };
+  static deleteIngatlan = (id) => {
+    let result = Microservices.fetchApi(ingatlanokAdminUrl, {
+      method: "DELETE",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        id: id,
+      },
+    });
+    return result;
+  };
 
-    // INGATLANOK END
+  // INGATLANOK END
 
-    // ORSZAGOK START
+  // ORSZAGOK START
 
-    static listOrszagok = () => {
-        let result = Microservices.fetchApi(orszagokUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+  static listOrszagok = () => {
+    let result = Microservices.fetchApi(orszagokUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static listOrszagokLike = (like) => {
-        let result = Microservices.fetchApi(orszagokUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                like: like
-            }
-        });
+  static listOrszagokLike = (like) => {
+    let result = Microservices.fetchApi(orszagokUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        like: like,
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    // ORSZAGOK END
+  // ORSZAGOK END
 
-    // TELEPÜLÉSEK START
+  // TELEPÜLÉSEK START
 
-    static listTelepulesek = () => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+  static listTelepulesek = () => {
+    let result = Microservices.fetchApi(telepulesekUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static getTelepulesById = (id) => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                id: id
-            }
-        });
+  static getTelepulesById = (id) => {
+    let result = Microservices.fetchApi(telepulesekUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        id: id,
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static getTelepulesByIrsz = (irsz) => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                irsz: irsz
-            }
-        });
+  static getTelepulesByIrsz = (irsz) => {
+    let result = Microservices.fetchApi(telepulesekUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        irsz: irsz,
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static listTelepulesekLike = (like) => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                like: like
-            }
-        });
+  static listTelepulesekLike = (like) => {
+    let result = Microservices.fetchApi(telepulesekUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        like: like,
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static generateXml = () => {
-        let result = Microservices.fetchApi(generateXmlUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+  static generateXml = () => {
+    let result = Microservices.fetchApi(generateXmlUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static deleteImage = (filename, ingatlanId) => {
-        let result = Microservices.fetchApi(ingatlanokAdminUrl + '/deleteimage', {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                id: ingatlanId
-            },
-            body: JSON.stringify({ filename: filename })
-        });
+  static deleteImage = (filename, ingatlanId) => {
+    let result = Microservices.fetchApi(ingatlanokAdminUrl + "/deleteimage", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        id: ingatlanId,
+      },
+      body: JSON.stringify({ filename: filename }),
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    // TELEPÜLÉSEK END
+  // TELEPÜLÉSEK END
 
-    // OPTIONS START
+  // OPTIONS START
 
-    static getAltipusOptions = () => {
-        let result = Microservices.fetchApi(optionsUrl + '/altipusoptions', {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+  static getAltipusOptions = () => {
+    let result = Microservices.fetchApi(optionsUrl + "/altipusoptions", {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static getIngatlanOptions = () => {
-        let result = Microservices.fetchApi(optionsUrl + '/ingatlanoptions', {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+  static getIngatlanOptions = () => {
+    let result = Microservices.fetchApi(optionsUrl + "/ingatlanoptions", {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    // OPTIONS END
+  // OPTIONS END
 }
