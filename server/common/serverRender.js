@@ -36,7 +36,7 @@ const getMetaTags = async (req, activeRoute) => {
 
 const getRequestPath = (path, url) => {
     console.log(url);
-    let res = '';
+    let res = path;
     if (url) {
         console.log(url.includes('ingatlan?id='));
         if (url.includes('ingatlan?id=')) {
