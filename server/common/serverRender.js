@@ -88,10 +88,6 @@ export default () => (req, res, next) => {
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
 
-    if (req.url.startsWith('/admin') && !req.cookies.JWT_TOKEN) {
-        return res.redirect('/login');
-    }
-
     fs.readFile(filePath, 'utf8', (err, htmlData) => {
         if (err) {
             console.error('err', err);
