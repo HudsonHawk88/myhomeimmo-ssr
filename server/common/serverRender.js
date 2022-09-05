@@ -34,6 +34,7 @@ const getMetaTags = async (req, activeRoute) => {
 };
 
 const getRequestPath = (path) => {
+    console.log(path);
     switch (path) {
         case '/':
             '/api/ingatlan';
@@ -54,7 +55,7 @@ export default () => (req, res, next) => {
     const allRoutes = PublicRoutes.concat(AdminRoutes);
     let aR = [];
     allRoutes.forEach((route) => {
-        /* console.log(matchPath('/ingatlan:id', '/ingatlan?id=3')) */
+        console.log(matchPath(req.path, route.path), req.path, route.path);
         if (route.children) {
             aR = route.children.filter((subroute) => matchPath(subroute.path, req.path));
         } else {
