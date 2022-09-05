@@ -105,7 +105,7 @@ export default () => (req, res, next) => {
 
                 // get HTML headers
                 const helmet = Helmet.renderStatic();
-                console.log(data, typeof data);
+                console.log(data, typeof data[0], data[0]);
                 const resx = res.send(
                     htmlData
                         .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
@@ -113,9 +113,9 @@ export default () => (req, res, next) => {
           .replace("</body>", extraChunks.join("") + "</body>") */
                         // write the HTML header tags
                         .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() /* + helmet.meta.toString() */)
-                        .replace('__OG_TITLE__', data.cim)
-                        .replace('__OG_DESCRIPTION__', data.leiras)
-                        .replace('__OG_IMAGE__', data.kepek && Array.isArray(data.kepek) && data.kepek.length > 0 && data.kepek[0].src)
+                        .replace('__OG_TITLE__', data[0].cim)
+                        .replace('__OG_DESCRIPTION__', data[0].leiras)
+                        .replace('__OG_IMAGE__', data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src)
                         .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
                         .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
                 );
