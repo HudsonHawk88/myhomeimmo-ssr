@@ -55,7 +55,7 @@ export default () => (req, res, next) => {
     const allRoutes = PublicRoutes.concat(AdminRoutes);
     let aR = [];
     allRoutes.forEach((route) => {
-        console.log(matchPath(req.path, route.path), req.path, route.path);
+        console.log(matchPath(req.path, route.path), req.path, route.path, req.url);
         if (route.children) {
             aR = route.children.filter((subroute) => matchPath(subroute.path, req.path));
         } else {
