@@ -105,22 +105,6 @@ export default () => (req, res, next) => {
 
                 // get HTML headers
                 const helmet = Helmet.renderStatic();
-                const html = `<!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                        <title>MyHome - Ingatlanközvetítő iroda</title>
-                        ${helmet.title.toString()}
-                        ${helmet.meta.toString()}
-                        <script>' + ${initialData} + '</script>
-                    </head>
-                    <body>
-                        <div id="root">
-                        ${markup}
-                        </div>
-                    </body>
-                    </html>
-                `;
-                res.send(html);
                 const resx = res.send(
                     htmlData
                         .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
