@@ -620,10 +620,10 @@ const Ingatlan = (props) => {
     ) : (
         <React.Fragment>
             <Helmet defer={false}>
-                {/* <meta name="description" content={ingatlanObj.leiras} />
+                <meta name="description" content={ingatlanObj.leiras} />
                 <meta name="og:title" content={ingatlanObj.cim} />
                 <meta name="og:description" content={ingatlanObj.leiras} />
-                <meta name="og:image" content={ingatlanObj.kepek && ingatlanObj.kepek.length !== 0 && ingatlanObj.kepek[0].src} /> */}
+                <meta name="og:image" content={ingatlanObj.kepek && ingatlanObj.kepek.length !== 0 && ingatlanObj.kepek[0].src} />
                 <title>{ingatlanObj.cim}</title>
             </Helmet>
             {renderIngatlan()}

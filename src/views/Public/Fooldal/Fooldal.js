@@ -8,7 +8,7 @@ const Fooldal = (props) => {
         <div className="public-inner-content">
             <Helmet defer={false}>
                 <title>Myhome Ingatlanközvetítő Iroda</title>
-                <meta property="og:image" content={'httpss://inftechsol.hu/images/megoszt2.png'} />
+                <meta property="og:image" content={'https://inftechsol.hu/images/megoszt2.png'} />
             </Helmet>
             <FooldalContent {...props} />
         </div>
