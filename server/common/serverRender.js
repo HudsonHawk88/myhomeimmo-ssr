@@ -125,9 +125,9 @@ export default () => (req, res, next) => {
           .replace("</body>", extraChunks.join("") + "</body>") */
                         // write the HTML header tags
                         .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() /* + helmet.meta.toString() */)
-                        .replace('__OG_TITLE__', data[0].cim)
-                        .replace('__OG_DESCRIPTION__', data[0].leiras)
-                        .replace('__OG_IMAGE__', data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src)
+                        .replace('__OG_TITLE__', data && data[0].cim)
+                        .replace('__OG_DESCRIPTION__', data && data[0].leiras)
+                        .replace('__OG_IMAGE__', data && data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src)
                         .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
                         .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
                 );
