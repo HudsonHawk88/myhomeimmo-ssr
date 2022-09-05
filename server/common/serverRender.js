@@ -82,7 +82,9 @@ export default () => (req, res, next) => {
     /* const activeRoute = allRoutes.find((route) => matchPath(req.path, route.path)) || {} */
     /*   console.log('activeRoute', activeRoute); */
     const newPath = getRequestPath(req.path, req.url);
+    console.log(newPath);
     const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Microservices.fetchApi(newPath, { method: 'GET' });
+    console.log(promise);
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
 
