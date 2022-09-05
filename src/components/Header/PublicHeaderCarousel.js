@@ -22,14 +22,14 @@ const PublicHeaderCarousel = (props) => {
         }
 
         if (ingatlan.kaucio) {
-            kaucio = ingatlan.kaucio;
+            kaucio = ingatlan.kaucio + '';
             kaucio = kaucio.split('').reverse().join('');
             kaucio = chunk(kaucio, 3).join('.');
             kaucio = kaucio.split('').reverse().join('');
         }
 
         if (ingatlan.ar) {
-            ar = ingatlan.ar;
+            ar = ingatlan.ar + '';
             ar = ar.split('').reverse().join('');
             ar = chunk(ar, 3).join('.');
             ar = ar.split('').reverse().join('');
@@ -37,10 +37,10 @@ const PublicHeaderCarousel = (props) => {
 
         switch (ingatlan.statusz) {
             case 'Kiadó': {
-                return `Ár: ${ar} Ft/hó ${ingatlan.kaucio ? 'Kaució: ' + kaucio + ' Ft' : ''}`;
+                return `Ár: ${ar} ${ingatlan.penznem}/hó ${ingatlan.kaucio ? 'Kaució: ' + kaucio + ' ' + ingatlan.penznem : ''}`;
             }
             default: {
-                return `Ár: ${ar} Ft`;
+                return `Ár: ${ar} ${ingatlan.penznem}`;
             }
         }
     };

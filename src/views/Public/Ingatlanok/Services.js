@@ -6,6 +6,7 @@ const keresIngatlanokUrl = location.origin + '/api/ingatlan/keres';
 const telepulesekUrl = location.origin + '/api/telepulesek';
 const emailUrl = location.origin + '/api/contactmail/ingatlanerd';
 const rechaptchaUrl = 'https://www.google.com/recaptcha/siteverify?';
+const optionsUrl = location.origin + '/api/options';
 
 export default class Services {
     // INGATLANOK START
@@ -230,4 +231,36 @@ export default class Services {
     };
 
     // EMAIL END
+
+    // OPTIONS START
+
+    static getAltipusOptions = () => {
+        let result = Microservices.fetchApi(optionsUrl + '/altipusoptions', {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+            }
+        });
+
+        return result;
+    };
+
+    static getIngatlanOptions = () => {
+        let result = Microservices.fetchApi(optionsUrl + '/ingatlanoptions', {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+            }
+        });
+
+        return result;
+    };
+
+    // OPTIONS END
 }

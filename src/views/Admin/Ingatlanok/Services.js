@@ -11,7 +11,7 @@ export default class Services {
     // INGATLANOK START
 
     static listIngatlanok = () => {
-        let result = Microservices.fetchApi(ingatlanokUrl, {
+        let result = Microservices.fetchApi(ingatlanokAdminUrl, {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache',

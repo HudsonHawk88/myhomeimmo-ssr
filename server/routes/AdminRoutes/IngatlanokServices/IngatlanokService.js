@@ -1,4 +1,16 @@
-import { jwtparams, poolConnect, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, UseQuery, getDataFromDatabase } from '../../../common/QueryHelpers.js';
+import {
+    jwtparams,
+    poolConnect,
+    validateToken,
+    createIngatlanokSql,
+    createIngatlanokTriggerSql,
+    hasRole,
+    UseQuery,
+    getDataFromDatabase,
+    getJSONfromLongtext,
+    getBooleanFromNumber,
+    getNumberFromBoolean
+} from '../../../common/QueryHelpers.js';
 import express from 'express';
 import { existsSync, mkdirSync, writeFileSync, rmdirSync, rmSync } from 'fs';
 import multer from 'multer';
@@ -11,18 +23,31 @@ dotenv.config({
 const router = express.Router();
 const ingatlanok = poolConnect;
 
+const isIngatlanokTableExists = async () => {
+    const isExistSql = `SHOW TABLES LIKE "ingatlanok";`;
+    const isExist = await UseQuery(ingatlanok, isExistSql);
+    if (isExist.length !== 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 const getId = async (reqID) => {
     let id = undefined;
     if (reqID !== undefined) {
         id = parseInt(reqID, 10);
     } else {
-        const getLastIdSql = `SELECT MAX(id) as id FROM ingatlanok;`;
-        let result = await UseQuery(ingatlanok, getLastIdSql);
-        let newID = result[0].id;
-        if (newID && newID !== 'null') {
-            id = newID + 1;
-        } else {
-            id = 1;
+        const isExist = await isIngatlanokTableExists();
+        if (isExist) {
+            const getLastIdSql = `SELECT MAX(id) as id FROM ingatlanok;`;
+            let result = await UseQuery(ingatlanok, getLastIdSql);
+            let newID = result[0].id;
+            if (newID && newID !== 'null') {
+                id = newID + 1;
+            } else {
+                id = 1;
+            }
         }
     }
 
@@ -75,23 +100,13 @@ router.get('/', async (req, res) => {
             if (id) {
                 const sql = `SELECT * FROM ingatlanok WHERE id='${id}';`;
                 let sss = await getDataFromDatabase(req.method, sql, id);
-                ingatlanok.query(sql, async (err, result) => {
+                ingatlanok.query(sql, (err, result) => {
                     if (!err) {
-                        let ressss = result;
-                        await ressss.map((ing) => {
-                            if (ing.kepek) {
-                                ing.kepek = JSON.parse(ing.kepek);
-                            }
-                            if (ing.rogzitoAvatar) {
-                                ing.rogzitoAvatar = JSON.parse(ing.rogzitoAvatar);
-                            }
-                            ing.helyseg = JSON.parse(ing.helyseg);
-                            ing.isHirdetheto = ing.isHirdetheto === 0 ? true : false;
-                            ing.isKiemelt = ing.isKiemelt === 0 ? true : false;
-                            ing.isErkely = ing.isErkely === 0 ? true : false;
-                            ing.isLift = ing.isLift === 0 ? true : false;
-                            ing.isAktiv = ing.isAktiv === 0 ? true : false;
-                            ing.isUjEpitesu = ing.isUjEpitesu === 0 ? true : false;
+                        let ressss = [];
+
+                        result.map((ing) => {
+                            const rrrr = getJSONfromLongtext(ing);
+                            ressss.push(rrrr);
                         });
                         res.status(200).send(ressss);
                     } else {
@@ -99,7 +114,21 @@ router.get('/', async (req, res) => {
                     }
                 });
             } else {
-                res.status(400).send({ err: 'Id megadása kötelező!' });
+                const sql = `SELECT id, refid, cim, leiras, helyseg, irsz, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo, hirdeto
+                FROM ingatlanok`;
+                ingatlanok.query(sql, async (err, result) => {
+                    if (!err) {
+                        let ressss = result;
+
+                        await ressss.map((ing) => {
+                            const rrrr = getJSONfromLongtext(ing);
+                            return rrrr;
+                        });
+                        res.status(200).send(ressss);
+                    } else {
+                        res.status(500).send({ err: err });
+                    }
+                });
             }
         }
     } else {
@@ -143,83 +172,81 @@ router.post('/', upload.array('kepek'), async (req, res) => {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
                 let felvitelObj = req.body;
                 if (felvitelObj) {
-                    felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
-                    const createSql = createIngatlanokSql;
-                    const createTriggerSql = createIngatlanokTriggerSql;
+                    ingatlanok.query(createIngatlanokSql);
+                    const isExist = await isIngatlanokTableExists();
+                    if (!isExist) {
+                        ingatlanok.query(createIngatlanokTriggerSql);
+                    }
 
-                    ingatlanok.query(createSql, async (errr) => {
-                        if (errr) {
-                            res.status(500).send({ err: errr });
-                        } else {
-                            felvitelObj.isKiemelt = felvitelObj.isKiemelt === 'true' ? 0 : 1;
-                            felvitelObj.isHirdetheto = felvitelObj.isHirdetheto === 'true' ? 0 : 1;
-                            felvitelObj.isErkely = felvitelObj.isErkely === 'true' ? 0 : 1;
-                            felvitelObj.isLift = felvitelObj.isLift === 'true' ? 0 : 1;
-                            felvitelObj.isAktiv = felvitelObj.isAktiv === 'true' ? 0 : 1;
-                            felvitelObj.isUjEpitesu = felvitelObj.isUjEpitesu === 'true' ? 0 : 1;
-                            felvitelObj.helyseg = JSON.parse(felvitelObj.helyseg);
-                            const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
-                            const userAvatar = await UseQuery(ingatlanok, getUserAvatarSql);
-                            const avatar = userAvatar ? userAvatar[0].avatar : [];
-                            let id = await getId(req.headers.id);
-                            const sql = `INSERT INTO ingatlanok(id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitoNev, rogzitoEmail, rogzitoTelefon, rogzitoAvatar) VALUES ('${id}', '${
-                                felvitelObj.cim
-                            }', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
-                                felvitelObj.kaucio
-                            }', '${felvitelObj.penznem}', '${felvitelObj.statusz}', '${felvitelObj.tipus}', '${felvitelObj.allapot}', '${felvitelObj.emelet}', '${felvitelObj.alapterulet}', '${
-                                felvitelObj.telek
-                            }', '${felvitelObj.telektipus}', '${felvitelObj.beepithetoseg}', '${felvitelObj.viz}', '${felvitelObj.gaz}', '${felvitelObj.villany}', '${felvitelObj.szennyviz}', '${
-                                felvitelObj.szobaszam
-                            }', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.isHirdetheto}', '${felvitelObj.isKiemelt}', '${
-                                felvitelObj.isErkely
-                            }', '${felvitelObj.isLift}', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.feladoNev}', '${felvitelObj.feladoEmail}', '${
-                                felvitelObj.feladoTelefon
-                            }', '${avatar}');`;
+                    felvitelObj.isKiemelt = getNumberFromBoolean(felvitelObj.isKiemelt);
+                    felvitelObj.isErkely = getNumberFromBoolean(felvitelObj.isErkely);
+                    felvitelObj.isLift = getNumberFromBoolean(felvitelObj.isLift);
+                    felvitelObj.isAktiv = getNumberFromBoolean(felvitelObj.isAktiv);
+                    felvitelObj.isUjEpitesu = getNumberFromBoolean(felvitelObj.isUjEpitesu);
 
-                            ingatlanok.query(sql, async (error) => {
-                                if (!error) {
-                                    let kepek = [];
-                                    if (req.files) {
-                                        req.files.map((kep, index) => {
-                                            kepek.push({
-                                                filename: kep.filename,
-                                                isCover: index.toString() === '0' ? true : false,
-                                                src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
-                                                title: kep.filename
-                                            });
-                                        });
-                                    }
+                    felvitelObj.helyseg = JSON.parse(felvitelObj.helyseg);
+                    console.log(felvitelObj);
+                    /* felvitelObj.hirdeto = JSON.parse(felvitelObj.hirdeto); */
+                    console.log(typeof felvitelObj.hirdeto, felvitelObj.helyseg.telepules.telepulesnev);
+                    felvitelObj.telepules = felvitelObj.helyseg.telepules.telepulesnev;
+                    const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
+                    const userAvatar = await UseQuery(ingatlanok, getUserAvatarSql);
+                    const avatar = userAvatar ? userAvatar[0].avatar : [];
+                    let id = await getId(req.headers.id);
+                    const sql = `INSERT INTO ingatlanok(id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, hirdeto) VALUES ('${id}', '${
+                        felvitelObj.cim
+                    }', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
+                        felvitelObj.kaucio
+                    }', '${felvitelObj.penznem}', '${felvitelObj.statusz}', '${felvitelObj.tipus}', '${felvitelObj.altipus}', '${felvitelObj.rendeltetes}', '${felvitelObj.allapot}', '${
+                        felvitelObj.emelet
+                    }', '${felvitelObj.alapterulet}', '${felvitelObj.telek}', '${felvitelObj.telektipus}', '${felvitelObj.beepithetoseg}', '${felvitelObj.viz}', '${felvitelObj.gaz}', '${
+                        felvitelObj.villany
+                    }', '${felvitelObj.szennyviz}', '${felvitelObj.szobaszam}', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.isHirdetheto}', '${
+                        felvitelObj.isKiemelt
+                    }', '${felvitelObj.isErkely}', '${felvitelObj.isLift}', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.hirdeto}');`;
 
-                                    felvitelObj.kepek = kepek;
-
-                                    // const dir = `/home/eobgycvo/public_html/images/ingatlanok/${id}/`;
-                                    // let exist = existsSync(dir);
-                                    // if (!exist) {
-                                    //   mkdirSync(dir);
-                                    //   felvitelObj.kepek.forEach((item) => {
-                                    //     const img = item.preview;
-                                    //     // const data = img.replace(/^data:image\/\w+;base64,/, "");
-                                    //     const buf = Buffer.from(item.file);
-                                    //     console.log(buf);
-                                    //     writeFileSync(path.join(dir,item.filename), buf);
-                                    //     delete item.preview
-                                    //   })
-                                    // }
-
-                                    const updateImagesSql = `UPDATE ingatlanok SET kepek='${JSON.stringify(felvitelObj.kepek)}' WHERE id='${id}';`;
-
-                                    const images = await UseQuery(ingatlanok, updateImagesSql);
-                                    if (images) {
-                                        res.status(200).send({ msg: 'Ingatlan sikeresen hozzáadva!' });
-                                    } else {
-                                        res.status(500).send({ err: 'ingatlan képek feltöltése sikertelen!' });
-                                    }
-                                } else {
-                                    res.status(500).send({
-                                        err: error,
-                                        msg: 'Hiba történt az adatbázis létrehozásakor! Értesítse a weboldal rendszergazdáját!'
+                    ingatlanok.query(sql, async (error) => {
+                        if (!error) {
+                            let kepek = [];
+                            if (req.files) {
+                                req.files.map((kep, index) => {
+                                    kepek.push({
+                                        filename: kep.filename,
+                                        isCover: index.toString() === '1' ? true : false,
+                                        src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
+                                        title: kep.filename
                                     });
-                                }
+                                });
+                            }
+
+                            felvitelObj.kepek = kepek;
+
+                            // const dir = `/home/eobgycvo/public_html/images/ingatlanok/${id}/`;
+                            // let exist = existsSync(dir);
+                            // if (!exist) {
+                            //   mkdirSync(dir);
+                            //   felvitelObj.kepek.forEach((item) => {
+                            //     const img = item.preview;
+                            //     // const data = img.replace(/^data:image\/\w+;base64,/, "");
+                            //     const buf = Buffer.from(item.file);
+                            //     console.log(buf);
+                            //     writeFileSync(path.join(dir,item.filename), buf);
+                            //     delete item.preview
+                            //   })
+                            // }
+
+                            const updateImagesSql = `UPDATE ingatlanok SET kepek='${JSON.stringify(felvitelObj.kepek)}' WHERE id='${id}';`;
+
+                            const images = await UseQuery(ingatlanok, updateImagesSql);
+                            if (images) {
+                                res.status(200).send({ msg: 'Ingatlan sikeresen hozzáadva!' });
+                            } else {
+                                res.status(500).send({ err: 'ingatlan képek feltöltése sikertelen!' });
+                            }
+                        } else {
+                            res.status(500).send({
+                                err: error,
+                                msg: 'Hiba történt az adatbázis létrehozásakor! Értesítse a weboldal rendszergazdáját!'
                             });
                         }
                     });
@@ -248,15 +275,17 @@ router.put('/', upload.array('uj_kepek'), async (req, res) => {
                 if (modositoObj) {
                     if (id) {
                         modositoObj = JSON.parse(JSON.stringify(modositoObj));
-                        modositoObj.isKiemelt = modositoObj.isKiemelt === 'true' ? 0 : 1;
-                        modositoObj.isHirdetheto = modositoObj.isHirdetheto === 'true' ? 0 : 1;
-                        modositoObj.isErkely = modositoObj.isErkely === 'true' ? 0 : 1;
-                        modositoObj.isLift = modositoObj.isLift === 'true' ? 0 : 1;
-                        modositoObj.isAktiv = modositoObj.isAktiv === 'true' ? 0 : 1;
-                        modositoObj.isUjEpitesu = modositoObj.isUjEpitesu === 'true' ? 0 : 1;
-                        modositoObj.helyseg = JSON.parse(modositoObj.helyseg);
-                        modositoObj.feladoAvatar = modositoObj.feladoAvatar ? modositoObj.feladoAvatar : '[]';
 
+                        modositoObj.isKiemelt = getNumberFromBoolean(modositoObj.isKiemelt);
+                        modositoObj.isErkely = getNumberFromBoolean(modositoObj.isErkely);
+                        modositoObj.isLift = getNumberFromBoolean(modositoObj.isLift);
+                        modositoObj.isAktiv = getNumberFromBoolean(modositoObj.isAktiv);
+                        modositoObj.isUjEpitesu = getNumberFromBoolean(modositoObj.isUjEpitesu);
+                        modositoObj.hirdeto = JSON.parse(modositoObj.hirdeto);
+
+                        modositoObj.feladoAvatar = modositoObj.feladoAvatar ? modositoObj.feladoAvatar : '[]';
+                        modositoObj.helyseg = JSON.parse(modositoObj.helyseg);
+                        modositoObj.telepules = modositoObj.helyseg.telepules.telepulesnev;
                         let kepek = [];
                         if (modositoObj.kepek) {
                             modositoObj.kepek = JSON.parse(JSON.stringify(modositoObj.kepek));
@@ -283,21 +312,23 @@ router.put('/', upload.array('uj_kepek'), async (req, res) => {
                             kep.isCover = index.toString() === '0' ? true : false;
                         });
 
+                        console.log(modositoObj.isAktiv, typeof modositoObj.isAktiv);
+
                         const sql = `UPDATE ingatlanok SET cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(modositoObj.helyseg)}', kepek='${JSON.stringify(
                             kepek
                         )}', irsz='${modositoObj.irsz}', telepules='${modositoObj.telepules}', ar='${modositoObj.ar}', kaucio='${modositoObj.kaucio}', penznem='${modositoObj.penznem}', statusz='${
                             modositoObj.statusz
-                        }', tipus='${modositoObj.tipus}', allapot='${modositoObj.allapot}', emelet='${modositoObj.emelet}', alapterulet='${modositoObj.alapterulet}', telek='${
-                            modositoObj.telek
-                        }', telektipus='${modositoObj.telektipus}', beepithetoseg='${modositoObj.beepithetoseg}', viz='${modositoObj.viz}', gaz='${modositoObj.gaz}', villany='${
-                            modositoObj.villany
-                        }', szennyviz='${modositoObj.szennyviz}', szobaszam='${modositoObj.szobaszam}', felszobaszam='${modositoObj.felszobaszam}', epitesmod='${modositoObj.epitesmod}', futes='${
-                            modositoObj.futes
-                        }', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${modositoObj.isKiemelt}', isErkely='${modositoObj.isErkely}', isLift='${modositoObj.isLift}', isAktiv='${
-                            modositoObj.isAktiv
-                        }', isUjEpitesu='${modositoObj.isUjEpitesu}', rogzitoNev='${modositoObj.feladoNev}', rogzitoEmail='${modositoObj.feladoEmail}', rogzitoTelefon='${
-                            modositoObj.feladoTelefon
-                        }', rogzitoAvatar='${modositoObj.feladoAvatar}' WHERE id='${id}';`;
+                        }', tipus='${modositoObj.tipus}', altipus='${modositoObj.altipus}', rendeltetes='${modositoObj.rendeltetes}', allapot='${modositoObj.allapot}', emelet='${
+                            modositoObj.emelet
+                        }', alapterulet='${modositoObj.alapterulet}', telek='${modositoObj.telek}', telektipus='${modositoObj.telektipus}', beepithetoseg='${modositoObj.beepithetoseg}', viz='${
+                            modositoObj.viz
+                        }', gaz='${modositoObj.gaz}', villany='${modositoObj.villany}', szennyviz='${modositoObj.szennyviz}', szobaszam='${modositoObj.szobaszam}', felszobaszam='${
+                            modositoObj.felszobaszam
+                        }', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${modositoObj.isKiemelt}', isErkely='${
+                            modositoObj.isErkely
+                        }', isLift='${modositoObj.isLift}', isAktiv='${modositoObj.isAktiv}', isUjEpitesu='${modositoObj.isUjEpitesu}', hirdeto='${JSON.stringify(
+                            modositoObj.hirdeto
+                        )}' WHERE id='${id}';`;
                         ingatlanok.query(sql, (err) => {
                             if (!err) {
                                 res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });

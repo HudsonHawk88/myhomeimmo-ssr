@@ -8,8 +8,9 @@ import App from './App';
 const history = createBrowserHistory();
 const container = document.getElementById('root');
 
-const root = hydrateRoot(container,
-     <Router>
+const root = hydrateRoot(
+    container,
+    <Router>
         <App serverData={window.__INITIAL_DATA__} history={history} />
     </Router>
 );

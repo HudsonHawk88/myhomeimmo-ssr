@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
 import Services from './Services';
 import IngatlanForm from './IngatlanForm';
 
 const Ingatlanok = (props) => {
     const [modalOpen, setModalOpen] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
     const [currentId, setCurrentId] = useState(null);
     const [ingatlanokJson, setIngatlanokJson] = useState([]);
+    const [ingatlanOptions, setIngatlanOptions] = useState([]);
+    const [altipusOptions, setAltipusOptions] = useState([]);
+    const [tipusFilterOptions, setTipusFilterOptions] = useState([]);
     const [formType, setFormType] = useState('FEL'); // ['FEL', 'MOD', 'DEL']
     const { addNotification } = props;
 
@@ -17,6 +21,37 @@ const Ingatlanok = (props) => {
                 addNotification('success', res.msg);
             } else {
                 addNotification('error', res.err);
+            }
+        });
+    };
+
+    const getIngatlanOptions = () => {
+        Services.getIngatlanOptions().then((res) => {
+            if (!res.err) {
+                setIngatlanOptions(res);
+                const ooo = res;
+                ooo.forEach((option) => {
+                    if (option.nev === 'tipus') {
+                        const tipusOptions = [];
+                        option.options.forEach((opt) => {
+                            let newObj = {};
+                            newObj.text = opt.nev;
+                            newObj.id = opt.id;
+                            newObj.value = opt.value;
+                            newObj.nev = opt.nev;
+                            tipusOptions.push(newObj);
+                        });
+                        setTipusFilterOptions(tipusOptions);
+                    }
+                });
+            }
+        });
+    };
+
+    const getAltipusOptions = () => {
+        Services.getAltipusOptions().then((res) => {
+            if (!res.err) {
+                setAltipusOptions(res);
             }
         });
     };
@@ -43,6 +78,8 @@ const Ingatlanok = (props) => {
 
     const init = () => {
         listIngatlanok();
+        getIngatlanOptions();
+        getAltipusOptions();
     };
 
     useEffect(() => {
@@ -72,15 +109,8 @@ const Ingatlanok = (props) => {
 
     const handleDeleteClick = (id) => {
         setFormType('DEL');
-        Services.deleteIngatlan(id).then((res) => {
-            if (!res.err) {
-                toggleDeleteModal();
-                listIngatlanok();
-                addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
-            }
-        });
+        toggleDeleteModal();
+        setCurrentId(id);
     };
 
     const tableIconFormatter = (cell, row) => {
@@ -99,11 +129,43 @@ const Ingatlanok = (props) => {
         );
     };
 
+    const telepulesFormatter = (cell, row) => {
+        return row.helyseg.telepules.telepulesnev;
+    };
+
+    const tipusFormatter = (cell, row) => {
+        let tipus = null;
+        ingatlanOptions.forEach((option) => {
+            if (option.nev === 'tipus') {
+                option.options.forEach((opt) => {
+                    if (opt.value === row.tipus) {
+                        tipus = opt.nev;
+                    }
+                });
+            }
+        });
+        return tipus;
+    };
+
+    const altipusFormatter = (cell, row) => {
+        let altipus = '';
+        altipusOptions.forEach((option) => {
+            if (option.tipus_id === row.tipus) {
+                option.options.forEach((opt) => {
+                    if (opt.value === row.altipus || parseInt(opt.value, 10) === row.altipus) {
+                        altipus = opt.nev;
+                    }
+                });
+            }
+        });
+        return altipus;
+    };
+
     const renderTable = () => {
         const columns = [
             {
-                dataField: 'cim',
-                text: 'Ingatlanhirdetés címe',
+                dataField: 'refid',
+                text: 'Ref ID',
                 filter: true,
                 filterType: 'textFilter',
                 filterDefaultValue: 'Keresés...'
@@ -119,15 +181,21 @@ const Ingatlanok = (props) => {
                 dataField: 'statusz',
                 text: 'Státusz',
                 filter: true,
-                filterType: 'textFilter',
+                filterType: 'optionFilter',
+                filterOptions: [
+                    { id: 0, value: 'Eladó', text: 'Eladó' },
+                    { id: 1, value: 'Kiadó', text: 'Kiadó' }
+                ],
                 filterDefaultValue: 'Keresés...'
             },
             {
                 dataField: 'tipus',
                 text: 'Típus',
                 filter: true,
-                filterType: 'textFilter',
-                filterDefaultValue: 'Keresés...'
+                filterType: 'optionFilter',
+                filterOptions: tipusFilterOptions,
+                filterDefaultValue: 'Keresés...',
+                formatter: tipusFormatter
             },
             {
                 dataField: 'allapot',
@@ -192,6 +260,40 @@ const Ingatlanok = (props) => {
         );
     };
 
+    const toggleDeleteModal = () => {
+        setDeleteModal(!deleteModal);
+    };
+
+    const deleteIngatlan = () => {
+        Services.deleteIngatlan(currentId).then((res) => {
+            if (!res.err) {
+                toggleDeleteModal();
+                setCurrentId(null);
+                listIngatlanok();
+                addNotification('success', res.msg);
+            } else {
+                addNotification('error', res.err);
+            }
+        });
+    };
+
+    const renderDeleteModal = () => {
+        return (
+            <Modal isOpen={deleteModal} toggle={toggleDeleteModal} backdrop="static" size="md">
+                <ModalHeader>Törlés figyelmeztetés</ModalHeader>
+                <ModalBody>Valóban törölni kívánja az adott tételt?</ModalBody>
+                <ModalFooter>
+                    <Button color="danger" onClick={() => deleteIngatlan()}>
+                        Igen
+                    </Button>
+                    <Button color="dark" onClick={() => toggleDeleteModal()}>
+                        Mégsem
+                    </Button>
+                </ModalFooter>
+            </Modal>
+        );
+    };
+
     return (
         // <div className='tartalom-admin'>
         <div className="row">
@@ -206,6 +308,7 @@ const Ingatlanok = (props) => {
                 <br />
                 <br />
                 {renderModal()}
+                {renderDeleteModal()}
                 {ingatlanokJson && ingatlanokJson.length !== 0 && renderTable()}
                 {/* {renderFigyelmeztetesModal()} */}
             </div>

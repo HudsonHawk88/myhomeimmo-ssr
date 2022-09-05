@@ -73,5 +73,23 @@ module.exports = {
             }
         ]
     },
-    externals: [webpackNodeExternals(), 'react-helmet']
+    externals: [webpackNodeExternals(), 'react-helmet'],
+    resolve: {
+        fallback: {
+            child_process: false,
+            crypto: false,
+            http: false,
+            https: false,
+            path: false,
+            stream: false,
+            fs: false,
+            os: false,
+            uglify_js: false,
+            esbuild: false,
+            tty: false,
+            constants: false,
+            vm: false,
+            zlib: false
+        }
+    }
 };

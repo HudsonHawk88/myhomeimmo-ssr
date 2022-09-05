@@ -42,10 +42,6 @@ const Ingatlan = (props) => {
         leiras: '',
         refid: '',
         rogzitIdo: '',
-        rogzitoAvatar: [],
-        rogzitoEmail: '',
-        rogzitoNev: '',
-        rogzitoTelefon: '',
         statusz: '',
         szennyviz: '',
         szobaszam: '',
@@ -53,8 +49,11 @@ const Ingatlan = (props) => {
         telektipus: '',
         telepules: '',
         tipus: '',
+        altipus: '',
+        rendeltetes: '',
         villany: '',
-        viz: ''
+        viz: '',
+        hirdeto: {}
     };
 
     const defaultEmailObj = {
@@ -70,15 +69,36 @@ const Ingatlan = (props) => {
     const [loading, setLoading] = useState(false);
     const [emailObj, setEmailObj] = useState(defaultEmailObj);
     const [elfogadAdatkezeles, setElfogadAdatkezeles] = useState(false);
+    const [ingatlanOptions, setIngatlanOptions] = useState([]);
+    const [altipusOptions, setAltipusOptions] = useState([]);
+
     const getIngatlan = (id) => {
         setLoading(true);
         Services.getIngatlan(id).then((res) => {
             if (!res.err) {
+                res[0].tipus = res[0].tipus + '';
                 setIngatlanObj(res[0]);
                 setLoading(false);
             }
         });
     };
+
+    const getOptions = () => {
+        Services.getIngatlanOptions().then((res) => {
+            if (!res.err) {
+                setIngatlanOptions(res);
+            }
+        });
+        Services.getAltipusOptions().then((res) => {
+            if (!res.err) {
+                setAltipusOptions(res);
+            }
+        });
+    };
+
+    useEffect(() => {
+        getOptions();
+    }, []);
 
     useEffect(() => {
         const params = new URLSearchParams(typeof window !== 'undefined' && window.location.search);
@@ -87,6 +107,35 @@ const Ingatlan = (props) => {
             getIngatlan(id);
         }
     }, [location]);
+
+    const tipusFormatter = (type) => {
+        let tipus = '';
+        ingatlanOptions.forEach((option) => {
+            if (option.nev === 'tipus') {
+                option.options.forEach((opt) => {
+                    if (opt.value + '' === type) {
+                        tipus = opt.nev;
+                    }
+                });
+            }
+        });
+        return tipus;
+    };
+
+    const altipusFormatter = (tipus, subtype) => {
+        let altipus = '';
+        altipusOptions.forEach((option) => {
+            const tipus_id = option.tipus_id + '';
+            if (tipus_id + '' === tipus) {
+                option.options.forEach((opt) => {
+                    if (opt.value === subtype || parseInt(opt.value, 10) === subtype) {
+                        altipus = opt.nev;
+                    }
+                });
+            }
+        });
+        return altipus;
+    };
 
     const getKepek = () => {
         let items = [];
@@ -132,20 +181,20 @@ const Ingatlan = (props) => {
         }
 
         if (ingatlan.kaucio) {
-            kaucio = ingatlan.kaucio;
+            kaucio = ingatlan.kaucio + '';
             kaucio = kaucio.split('').reverse().join('');
             kaucio = chunk(kaucio, 3).join('.');
             kaucio = kaucio.split('').reverse().join('');
         }
         if (ingatlan.ar) {
-            ar = ingatlan.ar;
+            ar = ingatlan.ar + '';
             ar = ar.split('').reverse().join('');
             ar = chunk(ar, 3).join('.');
             ar = ar.split('').reverse().join('');
         }
 
         if (ingatlan.illetek) {
-            illetek = ingatlan.illetek;
+            illetek = ingatlan.illetek + '';
             illetek = illetek.split('').reverse().join('');
             illetek = chunk(illetek, 3).join('.');
             illetek = illetek.split('').reverse().join('');
@@ -165,16 +214,16 @@ const Ingatlan = (props) => {
 
     const meretFormatter = (ingatlan) => {
         switch (ingatlan.tipus) {
-            case 'Telek': {
+            case '3': {
                 return `Méret: ${ingatlanObj.telek} m`;
             }
-            case 'Ipari ingatlan': {
+            case '6': {
                 return `Méret: ${ingatlanObj.telek} m`;
             }
-            case 'Mezőgazdasági terület': {
+            case '13': {
                 return `Méret: ${ingatlanObj.telek} m`;
             }
-            case 'Fejlesztési terület': {
+            case '10': {
                 return `Méret: ${ingatlanObj.telek} m`;
             }
             default: {
@@ -185,31 +234,31 @@ const Ingatlan = (props) => {
 
     const szobaFormatter = (ingatlan) => {
         switch (ingatlan.tipus) {
-            case 'Telek': {
+            case 3: {
                 return '';
             }
-            case 'Ipari ingatlan': {
+            case 6: {
                 return '';
             }
-            case 'Mezőgazdasági terület': {
+            case 13: {
                 return '';
             }
-            case 'Fejlesztési terület': {
+            case 10: {
                 return '';
             }
-            case 'Üzlethelyiség': {
+            case 5: {
                 return '';
             }
-            case 'Garázs': {
+            case 7: {
                 return '';
             }
-            case 'Raktár': {
+            case 8: {
                 return '';
             }
             default: {
                 if (ingatlan.felszobaszam) {
                     return `Szoba: ${ingatlan.szobaszam} Félszoba: ${ingatlan.felszobaszam}`;
-                } else {
+                } else if (ingatlan.szobaszam) {
                     return `Szoba: ${ingatlan.szobaszam}`;
                 }
             }
@@ -218,37 +267,42 @@ const Ingatlan = (props) => {
 
     const szintFormatter = (ingatlan) => {
         switch (ingatlan.tipus) {
-            case 'Telek': {
+            case 3: {
                 return '';
             }
-            case 'Ipari ingatlan': {
+            case 6: {
                 return '';
             }
-            case 'Mezőgazdasági terület': {
+            case 13: {
                 return '';
             }
-            case 'Fejlesztési terület': {
+            case 10: {
                 return '';
             }
-            case 'Üzlethelyiség': {
+            case 5: {
                 return '';
             }
-            case 'Garázs': {
+            case 7: {
                 return '';
             }
-            case 'Raktár': {
+            case 8: {
+                return '';
+            }
+            case 2: {
                 return '';
             }
             default: {
-                if (ingatlan.emelet === 'Földszint') {
-                    return `Emelet: ${ingatlan.emelet}`;
-                } else if (ingatlan.emelet === '') {
-                    return '';
-                } else {
-                    return `Emelet: ${ingatlan.emelet}. emelet`;
-                }
+                return ingatlan.emelet && (parseInt(ingatlan.emelet, 10) ? ingatlan.emelet + '. emelet' : ingatlan.emelet);
             }
         }
+    };
+
+    const getNemUresFields = (ertek) => {
+        let hidden = false;
+        if (ertek === '' || ertek === 0) {
+            hidden = true;
+        }
+        return hidden;
     };
 
     const sendMail = async (e) => {
@@ -290,8 +344,29 @@ const Ingatlan = (props) => {
         return arFormatter({ illetek: illetek, statusz: 'Illeték' });
     };
 
+    const isTelekAdatokHidden = () => {
+        let isHidden = true;
+        if (ingatlanObj) {
+            if (ingatlanObj.tipus === 2 || ingatlanObj.tipus === 3 || ingatlanObj.tipus === 6 || ingatlanObj.tipus === 13 || ingatlanObj.tipus === 10) {
+                isHidden = false;
+            }
+        }
+
+        return isHidden;
+    };
+
+    const isIngatlanAdatokHidden = () => {
+        console.log(ingatlanObj.tipus, typeof ingatlanObj.tipus);
+        let isHidden = false;
+        if (ingatlanObj.tipus === '3' || ingatlanObj.tipus === '6' || ingatlanObj.tipus === '13' || ingatlanObj.tipus === '10') {
+            isHidden = true;
+        }
+
+        return isHidden;
+    };
+
     const renderIngatlan = () => {
-        let kep = ingatlanObj.rogzitoAvatar && getAvatar(ingatlanObj.rogzitoAvatar);
+        let kep = ingatlanObj.hirdeto && getAvatar(ingatlanObj.hirdeto.feladoAvatar);
         return (
             <div className="ingatlan_card">
                 {/* <meta property="og:title" content={ingatlanObj.cim} /> */}
@@ -303,8 +378,8 @@ const Ingatlan = (props) => {
                     </div>
                     <div className="alapadatok">
                         <strong>{arFormatter(ingatlanObj)}</strong>&nbsp;&nbsp;
-                        {`Település: ${ingatlanObj.telepules}`}&nbsp;&nbsp;
-                        {meretFormatter(ingatlanObj)}
+                        {`Település: ${ingatlanObj.helyseg.telepules && ingatlanObj.helyseg.telepules.telepulesnev}`}&nbsp;&nbsp;
+                        {(ingatlanObj.telek || ingatlanObj.alapterulet) && meretFormatter(ingatlanObj)}
                         <sup>2</sup>&nbsp;&nbsp;
                         {szobaFormatter(ingatlanObj)}&nbsp;&nbsp;
                         {szintFormatter(ingatlanObj)}&nbsp;&nbsp;
@@ -318,13 +393,13 @@ const Ingatlan = (props) => {
                             </CardHeader>
                             <CardBody>
                                 <div className="row">
-                                    <div className="col-md-6">
+                                    <div className="col-md-6" hidden={getNemUresFields(ingatlanObj.statusz)}>
                                         <React.Fragment>
                                             <strong>{`Ingatlan státusza: `}</strong>
                                             {ingatlanObj.statusz}
                                         </React.Fragment>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-6" hidden={getNemUresFields(ingatlanObj.epitesmod)}>
                                         <React.Fragment>
                                             <strong>{`Építés módja: `}</strong>
                                             {ingatlanObj.epitesmod}
@@ -332,42 +407,50 @@ const Ingatlan = (props) => {
                                     </div>
                                     <div className="col-md-12" />
                                     <br />
-                                    <div className="col-md-6">
+                                    <div className="col-md-6" hidden={getNemUresFields(ingatlanObj.tipus)}>
                                         <React.Fragment>
                                             <strong>{`Ingatlan típusa: `}</strong>
-                                            {ingatlanObj.tipus}
+                                            {tipusFormatter(ingatlanObj.tipus)}
                                         </React.Fragment>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-6" hidden={getNemUresFields(ingatlanObj.altipus)}>
+                                        <React.Fragment>
+                                            <strong>{`Ingatlan altípusa: `}</strong>
+                                            {altipusFormatter(ingatlanObj.tipus, ingatlanObj.altipus)}
+                                        </React.Fragment>
+                                    </div>
+                                    <div className="col-md-12" />
+                                    <br />
+                                    <div className="col-md-6" hidden={getNemUresFields(ingatlanObj.telepules)}>
                                         <React.Fragment>
                                             <strong>{`Település: `}</strong>
                                             {ingatlanObj.telepules}
                                         </React.Fragment>
                                     </div>
-                                    <div className="col-md-12" />
-                                    <br />
-                                    <div className="col-md-6">
+                                    <div className="col-md-6" hidden={ingatlanObj.tipus !== 1}>
                                         <React.Fragment>
                                             <strong>{`Erkély: `}</strong>
                                             {ingatlanObj.isErkely ? 'Van' : 'Nincs'}
                                         </React.Fragment>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-12" />
+                                    <br />
+                                    <div className="col-md-6" hidden={getNemUresFields(ingatlanObj.futes)}>
                                         <React.Fragment>
                                             <strong>{`Fűtés típusa: `}</strong>
                                             {ingatlanObj.futes}
                                         </React.Fragment>
                                     </div>
-                                    <div className="col-md-12" />
-                                    <br />
-                                    <div className="col-md-6">
+                                    <div className="col-md-6" hidden={getNemUresFields(ingatlanObj.alapterulet)}>
                                         <React.Fragment>
                                             <strong>{`Alapterület: `}</strong>
                                             {`${ingatlanObj.alapterulet} m`}
                                             <sup>2</sup>
                                         </React.Fragment>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-12" />
+                                    <br />
+                                    <div className="col-md-6" hidden={isTelekAdatokHidden()}>
                                         <React.Fragment>
                                             <strong>{`Telek mérete: `}</strong>
                                             {`${ingatlanObj.telek ? ingatlanObj.telek : '0'} m`}
@@ -377,7 +460,7 @@ const Ingatlan = (props) => {
                                 </div>
                             </CardBody>
                         </Card>
-                        <Card className="tulajdonsag">
+                        <Card className="tulajdonsag" hidden={isIngatlanAdatokHidden()}>
                             <CardHeader>
                                 <h4>
                                     <strong>Ingatlan tulajdonságai</strong>
@@ -385,7 +468,7 @@ const Ingatlan = (props) => {
                             </CardHeader>
                             <CardBody>
                                 <div className="row">
-                                    <div className="col-md-6">
+                                    <div className="col-md-6" hidden={getNemUresFields(ingatlanObj.allapot)}>
                                         <React.Fragment>
                                             <strong>{`Állapota: `}</strong>
                                             {ingatlanObj.allapot}
@@ -431,20 +514,20 @@ const Ingatlan = (props) => {
                 </div>
                 <div className="ertekesito_adatok">
                     <div className="elado_avatar">
-                        <img src={kep && kep.src} alt={ingatlanObj.rogzitoNev} />
+                        <img src={kep && kep.src} alt={ingatlanObj.hirdeto && ingatlanObj.hirdeto.feladoNev} />
                     </div>
                     <div className="elado_adatok">
                         <div>
                             <span>Név:</span>
-                            {ingatlanObj.rogzitoNev}
+                            {ingatlanObj.hirdeto && ingatlanObj.hirdeto.feladoNev}
                         </div>
                         <div>
                             <span>E-mail:</span>
-                            {` ${ingatlanObj.rogzitoEmail}`}
+                            {` ${ingatlanObj.hirdeto && ingatlanObj.hirdeto.feladoEmail}`}
                         </div>
                         <div>
                             <span>Telefon:</span>
-                            {ingatlanObj.rogzitoTelefon}
+                            {ingatlanObj.hirdeto && ingatlanObj.hirdeto.feladoTelefon}
                         </div>
                     </div>
                     <div className="fb-share-button" data-href={`http://teszt.myhomeimmo.inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`} data-layout="button" data-size="large">

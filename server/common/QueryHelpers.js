@@ -48,6 +48,54 @@ const poolConnect = (() => {
     return pool;
 })();
 
+function verifyJson(input) {
+    try {
+        JSON.parse(input);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+const getJSONfromLongtext = (object) => {
+    const keys = Object.keys(object);
+    let newObj = {};
+    keys.forEach((key) => {
+        if (key === 'isHirdetheto' || key === 'isKiemelt' || key === 'isErkely' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu') {
+            console.log(newObj[key]);
+            if (object[key] === 0 || object[key] === '0') {
+                newObj[key] = false;
+            } else {
+                newObj[key] = true;
+            }
+        } else {
+            verifyJson(object[key]) ? (newObj[key] = JSON.parse(object[key])) : (newObj[key] = object[key]);
+        }
+    });
+    return newObj;
+
+    /*    console.log('RESSSSSSSSSSSSS: ', res); */
+    /*     let res = Object.entries(object).map(([key, value]) => {
+        let result = null;
+        console.log('KEYYYYYYYYY: ', key);
+        console.log('VALUEEEEEEEEEE: ', value);
+        if (key === 'isHirdetheto' || key === 'isKiemelt' || key === 'isErkely' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu') {
+            if (value === 0 || value === '0') {
+                return (object[key] = object[key] = true);
+            } else {
+                return (object[key] = object[key] = false);
+            }
+        } else {
+            return (object[key] = verifyJson(object[value]) ? JSON.parse(value) : value);
+        }
+    });
+
+
+    console.log(res);
+
+    return res; */
+};
+
 const getDataFromDatabase = async (method, sql, datas) => {
     return new Promise((resolve, reject) => {
         if (method === 'POST' && method === 'PUT') {
@@ -210,6 +258,22 @@ const UseQuery = async (pool, sql) => {
   return await result; */
 };
 
+const getBooleanFromNumber = (value) => {
+    if (value === 1 || value === '1') {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+const getNumberFromBoolean = (value) => {
+    if (value === 'true' || value === true) {
+        return 1;
+    } else {
+        return 0;
+    }
+};
+
 const validateToken = async (token, secret) => {
     try {
         const result = jwt.verify(token, secret);
@@ -253,7 +317,7 @@ const getTelepulesekByKm = async (pool, telepules, irszam, km) => {
 
 const createIngatlanokSql = `
     CREATE TABLE IF NOT EXISTS eobgycvo_myhome.ingatlanok (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL PRIMARY KEY,
         refid text DEFAULT NULL,
         cim text DEFAULT NULL,
         leiras text DEFAULT NULL,
@@ -265,7 +329,9 @@ const createIngatlanokSql = `
         kaucio text DEFAULT NULL,
         penznem text DEFAULT NULL,
         statusz text DEFAULT NULL,
-        tipus text DEFAULT NULL,
+        tipus INT DEFAULT NULL,
+        altipus INT DEFAULT NULL,
+        rendeltetes text DEFAULT NULL,
         allapot text DEFAULT NULL,
         emelet text DEFAULT NULL,
         alapterulet text DEFAULT NULL,
@@ -287,45 +353,40 @@ const createIngatlanokSql = `
         isAktiv BOOLEAN,
         isUjEpitesu BOOLEAN,
         rogzitIdo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        rogzitoNev text NOT NULL,
-        rogzitoEmail text NOT NULL,
-        rogzitoTelefon text NOT NULL,
-        rogzitoAvatar json DEFAULT NULL
+        hirdeto json DEFAULT NULL
     ) ENGINE=InnoDB;
 `;
 
 const createIngatlanokTriggerSql = `
-CREATE TRIGGER IF NOT EXISTS trigger_refid 
-BEFORE INSERT 
-ON ingatlanok 
-FOR EACH ROW 
-IF (NEW.refid IS NULL) THEN 
-SELECT MAX(refid) INTO @max_refid 
-FROM ingatlanok 
-WHERE tipus = NEW.tipus; 
-IF (@max_refid IS NULL) THEN 
-SET @refid =
-CASE NEW.tipus 
-WHEN 'Lakás' THEN 'hm-lk-' 
-WHEN 'Ház' THEN 'hm-hz-' 
-WHEN 'Telek' THEN 'hm-tk-' 
-WHEN 'Ipari ingatlan' THEN 'hm-ip-' 
-WHEN 'Fejlesztési terület' THEN 'hm-ft-' 
-WHEN 'Üzlethelyiség' THEN 'hm-uz-' 
-WHEN 'Iroda' THEN 'hm-ir-' 
-WHEN 'Garázs' THEN 'hm-gz-' 
-WHEN 'Mezőgazdasági terület' THEN 'hm-mg-' 
-WHEN 'Vendéglátóhely' THEN 'hm-vh-' 
-WHEN 'Irodaház' THEN 'hm-ih-' 
-WHEN 'Szálláshely' THEN 'hm-sh-' 
-WHEN 'Ikerház' THEN 'hm-ik-' 
-WHEN 'Sorház' THEN 'hm-so-' 
-WHEN 'Raktár' THEN 'hm-ra-'
+CREATE TRIGGER IF NOT EXISTS trigger_refid
+BEFORE INSERT
+ON ingatlanok
+FOR EACH ROW
+IF (NEW.refid IS NULL) THEN
+SELECT MAX(refid) INTO @max_refid
+FROM ingatlanok
+WHERE tipus = NEW.tipus;
+IF (@max_refid IS NULL) THEN SET @refid = CASE NEW.tipus
+WHEN '1' THEN 'hm-lk-'
+WHEN '2' THEN 'hm-hz-'
+WHEN '3' THEN 'hm-tk-'
+WHEN '4' THEN 'hm-ir-'
+WHEN '5' THEN 'hm-uz-'
+WHEN '6' THEN 'hm-ip-'
+WHEN '7' THEN 'hm-gz-'
+WHEN '8' THEN 'hm-ta-'
+WHEN '9' THEN 'hm-vh-'
+WHEN '10' THEN 'hm-ft-'
+WHEN '11' THEN 'hm-ih-'
+WHEN '12' THEN 'hm-sh-'
+WHEN '13' THEN 'hm-mg-'
 ELSE 'UNKNOWN'
+END;
 SET NEW.refid = CONCAT(@refid, '000001'); 
 ELSE SET NEW.refid = CONCAT(SUBSTR(@max_refid, 1, 6), LPAD(SUBSTR(@max_refid, 7) + 1, 6, '0')); 
 END IF; 
-END IF;`;
+END IF;
+`;
 
 const uploadFile = (files, upload) => {
     // upload(req, res, function (err) {
@@ -355,7 +416,10 @@ export {
     uploadFile,
     getTypeForXml,
     getAllapotForXml,
-    getKepekForXml
+    getKepekForXml,
+    getJSONfromLongtext,
+    getBooleanFromNumber,
+    getNumberFromBoolean
 };
 
 /* exports.poolConnect = poolConnect;

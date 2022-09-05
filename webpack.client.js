@@ -7,40 +7,39 @@ require('dotenv').config();
 const { EnvironmentPlugin } = require('webpack');
 /* const LoadablePlugin = require('@loadable/webpack-plugin') */
 
-
 module.exports = {
     mode: isProduction ? 'production' : 'development',
     entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'build/public'),
         filename: 'client_bundle.js',
-       /*  publicPath: '/build/public' */
-       publicPath: '/'
+        /*  publicPath: '/build/public' */
+        publicPath: '/'
     },
     plugins: [
         new webpack.ProvidePlugin({
-            process: 'process/browser',
+            process: 'process/browser'
         }),
         new webpack.DefinePlugin({
-            __isBrowser__: "true"
+            __isBrowser__: 'true'
         }),
         new EnvironmentPlugin({
             reachaptchaApiKey: process.env.REACT_APP_recaptchakey,
             reachaptchaSecretKey: process.env.REACT_APP_recaptchasecret
-        }),
-/*         new LoadablePlugin() */
+        })
+        /*         new LoadablePlugin() */
     ],
-    devtool: "source-map",
+    devtool: 'source-map',
     devServer: {
-       /*  static: {
+        /*  static: {
             directory: path.join(__dirname, 'public'),
         }, */
         hot: true,
         /* host: '192.168.2.182', */
         host: '192.168.11.167',
         port: 3000,
-        historyApiFallback: true,
-/*         proxy: {
+        historyApiFallback: true
+        /*         proxy: {
             '/': {
               // target: 'https://myhomeimmo.hu/api',
             // target: 'http://teszt.myhomeimmo.inftechsol.hu:8460/api',
@@ -81,38 +80,57 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                enforce: "pre",
+                enforce: 'pre',
                 exclude: /(node_modules|bower_components)/,
                 use: [
                     {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['@babel/preset-react','@babel/preset-env']
+                            presets: ['@babel/preset-react', '@babel/preset-env']
                         }
                     },
-                    "source-map-loader"
-                ],
+                    'source-map-loader'
+                ]
             },
             {
                 test: /\.(scss|css)$/,
                 use: [
-                  "style-loader",
-                  "css-loader",
-                  {
-                    loader: "sass-loader",
-                    options: {
-                      // Prefer `dart-sass`
-                      implementation: require("sass"),
-                      sassOptions: {
-                        outputStyle: 'compressed'
-                      }
-                    },
-                  }]
+                    'style-loader',
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            // Prefer `dart-sass`
+                            implementation: require('sass'),
+                            sassOptions: {
+                                outputStyle: 'compressed'
+                            }
+                        }
+                    }
+                ]
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: 'asset/resource',
+                type: 'asset/resource'
             }
-        ],
+        ]
+    },
+    resolve: {
+        fallback: {
+            child_process: false,
+            crypto: false,
+            http: false,
+            https: false,
+            path: false,
+            stream: false,
+            fs: false,
+            os: false,
+            uglify_js: false,
+            esbuild: false,
+            tty: false,
+            constants: false,
+            vm: false,
+            zlib: false
+        }
     }
 };

@@ -1,6 +1,6 @@
 // const { Pool } = require("pg");
 import express from 'express';
-import { poolConnect, getTelepulesekByKm, getTypeForXml, getAllapotForXml, getKepekForXml, UseQuery, getDataFromDatabase } from '../../../common/QueryHelpers.js';
+import { poolConnect, getTelepulesekByKm, getTypeForXml, getAllapotForXml, getKepekForXml, UseQuery, getJSONfromLongtext } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { serverRender } from '../../../common/serverRender.js';
 import path from 'path';
@@ -12,19 +12,21 @@ const ingatlanok = poolConnect;
 router.get('/', async (req, res) => {
     const id = req.query.id;
     const sql = id
-        ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='0'`
-        : `SELECT id, refid, cim, leiras, helyseg, irsz, telepules, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitoNev, rogzitoEmail, rogzitoTelefon, rogzitIdo FROM ingatlanok WHERE isAktiv='0';`;
+        ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'`
+        : `SELECT id, refid, cim, leiras, helyseg, irsz, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
 
     let result = await UseQuery(ingatlanok, sql);
-    result.forEach((ing) => {
-        if (ing.kepek) {
-            ing.kepek = JSON.parse(ing.kepek);
+    console.log(result);
+    let ress = result.map((ing) => {
+        return getJSONfromLongtext(ing);
+        /*    if (ing.kepek) {
+            ing.kepek = JSON.parse(JSON.stringify(ing.kepek));
         }
         if (ing.rogzitoAvatar) {
-            JSON.parse(ing.rogzitoAvatar);
+            JSON.parse(JSON.stringify(ing.rogzitoAvatar));
         }
         if (ing.helyseg) {
-            ing.helyseg = JSON.parse(ing.helyseg);
+            ing.helyseg = JSON.parse(JSON.stringify(ing.helyseg));
         }
 
         ing.isHirdetheto = ing.isHirdetheto === 0 ? true : false;
@@ -32,17 +34,17 @@ router.get('/', async (req, res) => {
         ing.isErkely = ing.isErkely === 0 ? true : false;
         ing.isLift = ing.isLift === 0 ? true : false;
         ing.isAktiv = ing.isAktiv === 0 ? true : false;
-        ing.isUjEpitesu = ing.isUjEpitesu === 0 ? true : false;
+        ing.isUjEpitesu = ing.isUjEpitesu === 0 ? true : false; */
     });
     /* return result; */
-    res.send(result);
+    res.send(ress);
 });
 
 /* router.get('/ingatlanok/aktiv', (req, res) => {
   // const id = req.headers.id;
   const id = req.headers.id;
 
-  const sql = id ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='0'` : `SELECT id, refid, cim, leiras, helyseg, irsz, telepules, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitoNev, rogzitoEmail, rogzitoTelefon FROM ingatlanok WHERE isAktiv='0';`;
+  const sql = id ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'` : `SELECT id, refid, cim, leiras, helyseg, irsz, telepules, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitoNev, rogzitoEmail, rogzitoTelefon FROM ingatlanok WHERE isAktiv='1';`;
   ingatlanok.query(sql, (err, result, rows) => {
     if (!err) {
       let ressss = result;
@@ -74,7 +76,7 @@ router.get('/', async (req, res) => {
 /* router.get('/', (req, res) => {
   // const id = req.headers.id;
   const id = req.query.id;
-  const sql = `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='0';`;
+  const sql = `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1';`;
   ingatlanok.query(sql, (err, result, rows) => {
     if (!err) {
       let ressss = result;
@@ -208,14 +210,14 @@ router.post('/keres', async (req, res) => {
         newWhere = newWhere.slice(0, resultNew - 1);
     }
 
-    let sql = `SELECT * FROM ingatlanok WHERE isAktiv='0' ${where !== '' ? `AND ` + where : ''} ${newWhere !== '' ? `AND ` + newWhere : ''};`;
+    let sql = `SELECT * FROM ingatlanok WHERE isAktiv='1' ${where !== '' ? `AND ` + where : ''} ${newWhere !== '' ? `AND ` + newWhere : ''};`;
     ingatlanok.query(sql, (err, result) => {
         if (!err) {
             let ressss = result;
             ressss.forEach((ing) => {
-                ing.kepek = JSON.parse(ing.kepek);
+                /*   ing.kepek = JSON.parse(ing.kepek); */
                 ing.kepek = ing.kepek.filter((kep) => kep.isCover);
-                ing.helyseg = JSON.parse(ing.helyseg);
+                /*        ing.helyseg = JSON.parse(ing.helyseg); */
                 ing.isHirdetheto = ing.isHirdetheto === 0 ? true : false;
                 ing.isKiemelt = ing.isKiemelt === 0 ? true : false;
                 ing.isErkely = ing.isErkely === 0 ? true : false;
@@ -231,7 +233,7 @@ router.post('/keres', async (req, res) => {
 });
 
 router.get('/ingatlanokapi', (req, res, next) => {
-    let sql = `SELECT * FROM ingatlanok WHERE isAktiv='0' AND isHirdetheto='0';`;
+    let sql = `SELECT * FROM ingatlanok WHERE isAktiv='1' AND isHirdetheto='1';`;
     let data = `<?xml version="1.0" encoding="UTF-8"?>`;
     data += `<items>`;
     ingatlanok.query(sql, async (error, result) => {
@@ -241,7 +243,7 @@ router.get('/ingatlanokapi', (req, res, next) => {
                 ingatlanJson.map(async (ingatlan) => {
                     const getLatLongSql = `SELECT geoLat, geoLong FROM telep_1 WHERE irszam='${ingatlan.irsz}';`;
                     const latLong = await UseQuery(ingatlanok, getLatLongSql);
-                    const kepek = JSON.parse(ingatlan.kepek);
+                    const kepek = ingatlan.kepek;
                     data += `<item refnum="${ingatlan.refid}"> 
         <agent-name>${ingatlan.rogzitoNev}</agent-name>
         <agent-email>${ingatlan.rogzitoEmail}</agent-email>
