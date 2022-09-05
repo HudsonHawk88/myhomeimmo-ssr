@@ -18,7 +18,6 @@ router.get('/', async (req, res) => {
             : `SELECT id, refid, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
 
         let result = await UseQuery(ingatlanok, sql);
-        console.log(result);
         let ress = result.map((ing) => {
             return getJSONfromLongtext(ing);
             /*    if (ing.kepek) {

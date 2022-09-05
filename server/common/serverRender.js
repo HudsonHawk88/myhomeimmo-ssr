@@ -33,8 +33,7 @@ const getMetaTags = async (req, activeRoute) => {
     return meta;
 };
 
-const getRequestPath = (path, reqUrl) => {
-    let url = reqUrl ? reqUrl : undefined;
+const getRequestPath = (path, url) => {
     console.log(url);
     if (url) {
         console.log(url.includes('ingatlan?id='));
