@@ -2,7 +2,7 @@ import React, { useState, useEffect, createRef } from 'react';
 import { Card, CardBody, CardHeader, Form, Label, Input, Button } from 'reactstrap';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 import { handleInputChange, recaptchaOnChange } from '../../../commons/InputHandlers';
 
@@ -619,7 +619,7 @@ const Ingatlan = (props) => {
         <Loading isLoading={loading} />
     ) : (
         <React.Fragment>
-            <Helmet>
+            <Helmet defer={false}>
                 <meta name="description" content={ingatlanObj.leiras} />
                 <meta name="og:title" content={ingatlanObj.cim} />
                 <meta name="og:description" content={ingatlanObj.leiras} />

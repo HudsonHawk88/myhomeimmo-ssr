@@ -80,60 +80,61 @@ export default () => (req, res, next) => {
         return res.redirect('/login');
     }
 
-    return promise
-        .then(async (data) => {
-            const context = { data };
-            const markup = ReactDOMServer.renderToString(
-                <StaticRouter location={req.path} context={context}>
-                    <HelmetProvider>
-                        <App serverData={data} history={{}} />
-                    </HelmetProvider>
-                </StaticRouter>
-            );
-            /*       let metaTags = await getMetaTags(req, activeRoute); */
-            const initialData = `window.__INITIAL_DATA__ = ${JSON.stringify(data)}`;
+    fs.readFile(filePath, 'utf8', (err, htmlData) => {
+        if (err) {
+            console.error('err', err);
+            return res.status(404).end();
+        }
 
-            // get HTML headers
-            const helmet = Helmet.renderStatic();
-            const html = `<!DOCTYPE html>
-                    <html lang="hu">
+        if (req.url.startsWith('/admin') && !req.cookies.JWT_TOKEN) {
+            return res.redirect('/login');
+        }
+
+        return promise
+            .then(async (data) => {
+                const context = { data };
+                const markup = ReactDOMServer.renderToString(
+                    <StaticRouter location={req.path} context={context}>
+                        <HelmetProvider>
+                            <App serverData={data} history={{}} />
+                        </HelmetProvider>
+                    </StaticRouter>
+                );
+                /*       let metaTags = await getMetaTags(req, activeRoute); */
+                const initialData = `window.__INITIAL_DATA__ = ${JSON.stringify(data)}`;
+
+                // get HTML headers
+                const helmet = Helmet.renderStatic();
+                const html = `<!DOCTYPE html>
+                    <html lang="en">
                     <head>
                         <title>MyHome - Ingatlanközvetítő iroda</title>
                         ${helmet.title.toString()}
                         ${helmet.meta.toString()}
                         <script>' + ${initialData} + '</script>
-                        <meta charset="utf-8" />
-                        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-                        <link rel="icon" href="/images/logo.jpg" />
-                        <link rel="stylesheet" href="/styles/bootstrap-utilities.min.css" />
-                        <link rel="stylesheet" href="/styles/bootstrap.min.css" />
-                        <script src="/scripts/bootstrap.min.js"></script>
-                        <script src="/scripts/kit.fontawesome.min.js"></script>
-                        <link rel="stylesheet" href="/styles/slicknav.min.css" />
-                        <link rel="stylesheet" href="/styles/navigation-icons.css" />
-                        <link rel="stylesheet" href="/styles/notifications.css" />
-                        <link rel="stylesheet" href="/styles/react-responsive-carousel.css" />
-                        <link rel="stylesheet" href="/styles/wysiwyg.css" />
-                        <link rel="stylesheet" href="/styles/react-image-gallery.css" />
-                        <link rel="stylesheet" href="/styles/style.css" />
-                        <meta name="viewport" content="width=device-width, initial-scale=1" />
-                        <meta name="theme-color" content="#000000" />
-                        <link rel="apple-touch-icon" href="/images/logo192.png" />
-                      
                     </head>
                     <body>
-                        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/hu_HU/sdk.js#xfbml=1&version=v13.0&appId=996475810974610&autoLogAppEvents=1" nonce="BYaRYZHj"></script>
-                        <noscript>You need to enable JavaScript to run this app.</noscript>
                         <div id="root">
                         ${markup}
                         </div>
-                         <script defer src="/client_bundle.js"></script>
                     </body>
                     </html>
                 `;
-            res.send(html);
-        })
-        .catch((error) => console.log('errrrrr: ', error));
+                res.send(html);
+                const resx = res.send(
+                    htmlData
+                        .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
+                        /*     // append the extra js assets
+          .replace("</body>", extraChunks.join("") + "</body>") */
+                        // write the HTML header tags
+                        .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() + helmet.meta.toString())
+                        .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
+                        .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
+                );
+                return resx;
+            })
+            .catch((error) => console.log('errrrrr: ', error));
+    });
 
     /*   return res.render('index', { metaTags: metaTags, reactApp: markup, initialData: initialData }); */
 
