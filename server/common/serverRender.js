@@ -40,7 +40,7 @@ const getRequestPath = (path, url) => {
     if (url) {
         console.log(url.includes('ingatlan?id='));
         if (url.includes('ingatlan?id=')) {
-            res = url;
+            res = '/api' + url;
         }
     } else {
         switch (path) {
