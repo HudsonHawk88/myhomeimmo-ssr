@@ -7,6 +7,7 @@ import { matchPath } from 'react-router-dom';
 /* import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'; */
 import { Helmet } from 'react-helmet';
 import { HelmetProvider } from 'react-helmet-async';
+import { Microservices } from '../../shared/MicroServices';
 
 import PublicRoutes from '../../shared/PublicRoutes';
 import AdminRoutes from '../../shared/AdminRoutes';
@@ -79,7 +80,7 @@ export default () => (req, res, next) => {
     /* const activeRoute = allRoutes.find((route) => matchPath(req.path, route.path)) || {} */
     /*   console.log('activeRoute', activeRoute); */
     const newPath = getRequestPath(req.path, req.url);
-    const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : fetch(newPath, { method: 'GET' });
+    const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Microservices.fetchApi(newPath, { method: 'GET' });
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
 
