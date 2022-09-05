@@ -111,7 +111,10 @@ export default () => (req, res, next) => {
                         /*     // append the extra js assets
           .replace("</body>", extraChunks.join("") + "</body>") */
                         // write the HTML header tags
-                        .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() + helmet.meta.toString())
+                        .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() /* + helmet.meta.toString() */)
+                        .replace('__OG_TITLE__', data.cim)
+                        .replace('__OG_DESCRIPTION__', data.leiras)
+                        .replace('__OG_IMAGE__', data.kepek && Array.isArray(data.kepek) && data.kepek.length > 0 && data.kepek[0].src)
                         .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
                         .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
                 );
