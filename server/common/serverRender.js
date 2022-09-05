@@ -35,7 +35,9 @@ const getMetaTags = async (req, activeRoute) => {
 
 const getRequestPath = (path, reqUrl) => {
     let url = reqUrl ? reqUrl : undefined;
+    console.log(url);
     if (url) {
+        console.log(url.includes('ingatlan?id='));
         if (url.includes('ingatlan?id=')) {
             return url;
         }
@@ -61,7 +63,6 @@ export default () => (req, res, next) => {
     const allRoutes = PublicRoutes.concat(AdminRoutes);
     let aR = [];
     allRoutes.forEach((route) => {
-        console.log(matchPath(req.path, route.path), req.path, route.path, req.url);
         if (route.children) {
             aR = route.children.filter((subroute) => matchPath(subroute.path, req.path));
         } else {
@@ -112,7 +113,7 @@ export default () => (req, res, next) => {
 
                 // get HTML headers
                 const helmet = Helmet.renderStatic();
-                console.log(data, typeof data[0], data[0]);
+                console.log(data);
                 const resx = res.send(
                     htmlData
                         .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)

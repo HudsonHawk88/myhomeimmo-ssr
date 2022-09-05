@@ -62,7 +62,6 @@ const getJSONfromLongtext = (object) => {
     let newObj = {};
     keys.forEach((key) => {
         if (key === 'isHirdetheto' || key === 'isKiemelt' || key === 'isErkely' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu') {
-            console.log(newObj[key]);
             if (object[key] === 0 || object[key] === '0') {
                 newObj[key] = false;
             } else {

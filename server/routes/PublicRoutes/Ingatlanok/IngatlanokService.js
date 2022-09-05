@@ -11,7 +11,6 @@ const ingatlanok = poolConnect;
 
 router.get('/', async (req, res) => {
     const isExist = await isIngatlanokTableExists(ingatlanok);
-    console.log(isExist);
     if (isExist) {
         const id = req.query.id;
         const sql = id

@@ -178,9 +178,7 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                     felvitelObj.isUjEpitesu = getNumberFromBoolean(felvitelObj.isUjEpitesu);
 
                     felvitelObj.helyseg = JSON.parse(felvitelObj.helyseg);
-                    console.log(felvitelObj);
                     /* felvitelObj.hirdeto = JSON.parse(felvitelObj.hirdeto); */
-                    console.log(typeof felvitelObj.hirdeto, felvitelObj.helyseg.telepules.telepulesnev);
                     felvitelObj.telepules = felvitelObj.helyseg.telepules.telepulesnev;
                     const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
                     const userAvatar = await UseQuery(ingatlanok, getUserAvatarSql);
@@ -304,8 +302,6 @@ router.put('/', upload.array('uj_kepek'), async (req, res) => {
                         kepek.forEach((kep, index) => {
                             kep.isCover = index.toString() === '0' ? true : false;
                         });
-
-                        console.log(modositoObj.isAktiv, typeof modositoObj.isAktiv);
 
                         const sql = `UPDATE ingatlanok SET cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(modositoObj.helyseg)}', kepek='${JSON.stringify(
                             kepek
