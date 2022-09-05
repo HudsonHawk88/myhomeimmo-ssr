@@ -5,7 +5,8 @@ import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
 import { matchPath } from 'react-router-dom';
 /* import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'; */
-import Helmet, { HelmetProvider } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
+import { HelmetProvider } from 'react-helmet-async';
 
 import PublicRoutes from '../../shared/PublicRoutes';
 import AdminRoutes from '../../shared/AdminRoutes';
@@ -13,7 +14,6 @@ import App from '../../src/App';
 
 /* const statsFile = path.resolve(__dirname, '../build/loadable-stats.json');
 const extractor = new ChunkExtractor({ statsFile }) */
-
 const getMetaTags = async (req, activeRoute) => {
     let meta = `<meta name="description" content={{__META_DESCRIPTION__}}/>
   <meta name="og:title" content={{__META_OG_TITLE__}}/>
@@ -100,7 +100,6 @@ export default () => (req, res, next) => {
 
                 // get HTML headers
                 const helmet = Helmet.renderStatic();
-
                 const resx = res.send(
                     htmlData
                         .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
