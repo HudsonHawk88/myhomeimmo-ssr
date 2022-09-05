@@ -1,0 +1,2 @@
+REACT_APP_recaptchakey=rechaptcha_site_key
+REACT_APP_recaptchasecret=rechaptcha_secret_key
