@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 
 const Fooldal = (props) => {
-    const { user } = props;
+  const { user } = props;
 
-    return (
-        <div className="row">
-            <div className="col-md-12">{`Üdvözlöm ${user.username}!`}</div>
-        </div>
-    );
+  return (
+    <div className="row">
+      <div className="col-md-12">{`Üdvözlöm ${user.username}!`}</div>
+    </div>
+  );
 };
 
 export default Fooldal;

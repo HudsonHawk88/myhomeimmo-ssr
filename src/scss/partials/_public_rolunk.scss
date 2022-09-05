@@ -1,83 +1,83 @@
 .public_rolunk {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  // max-width: inherit;
+  padding: 20px 2%;
+  align-self: baseline;
+  background-color: rgb(255, 238, 139);
+  // background-color: rgb(235, 255, 250);
+  margin: 0px;
+
+  & a {
+    color: rgb(35, 155, 61);
+  }
+
+  @media screen and (min-width: 950px) {
+    padding: 20px 5vw;
+    margin: 0px auto;
+    width: 80%;
+  }
+
+  &__item {
     display: flex;
     flex-wrap: wrap;
+    background-color: white;
+    margin: 10px;
+    padding: 10px;
+    cursor: pointer;
     width: 100%;
-    // max-width: inherit;
-    padding: 20px 2%;
-    align-self: baseline;
-    background-color: rgb(255, 238, 139);
-    // background-color: rgb(235, 255, 250);
-    margin: 0px;
-
-    & a {
-        color: rgb(35, 155, 61);
-    }
+    height: minmax(fit-content, 150px);
 
     @media screen and (min-width: 950px) {
-        padding: 20px 5vw;
-        margin: 0px auto;
-        width: 80%;
+      width: calc(50% - 25px);
     }
 
-    &__item {
-        display: flex;
-        flex-wrap: wrap;
-        background-color: white;
-        margin: 10px;
-        padding: 10px;
-        cursor: pointer;
-        width: 100%;
-        height: minmax(fit-content, 150px);
-
-        @media screen and (min-width: 950px) {
-            width: calc(50% - 25px);
-        }
-
-        @media screen and (max-width: 500px) {
-            padding: 10px;
-            // width: calc(50% - 45px);
-        }
-
-        &:hover {
-            box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
-        }
-
-        &.active {
-            box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
-        }
+    @media screen and (max-width: 500px) {
+      padding: 10px;
+      // width: calc(50% - 45px);
     }
 
-    &__alapadatok {
-        text-align: left;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        max-height: 100%;
+    &:hover {
+      box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
     }
 
-    &__kep {
-        text-align: right;
-        padding: 10px;
-        align-items: center;
-        display: flex;
-
-        img {
-            border-radius: 50%;
-            height: 100px;
-            width: 100px;
-
-            // @media screen and (min-width: 500px) {
-            //     width: calc(50% - 25px);
-            // }
-        }
+    &.active {
+      box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
     }
+  }
 
-    &__leiras {
-        padding: 20px 2%;
-        min-height: 100%;
+  &__alapadatok {
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    max-height: 100%;
+  }
 
-        @media screen and (min-width: 950px) {
-            padding: 20px 5%;
-        }
+  &__kep {
+    text-align: right;
+    padding: 10px;
+    align-items: center;
+    display: flex;
+
+    img {
+      border-radius: 50%;
+      height: 100px;
+      width: 100px;
+
+      // @media screen and (min-width: 500px) {
+      //     width: calc(50% - 25px);
+      // }
     }
+  }
+
+  &__leiras {
+    padding: 20px 2%;
+    min-height: 100%;
+
+    @media screen and (min-width: 950px) {
+      padding: 20px 5%;
+    }
+  }
 }

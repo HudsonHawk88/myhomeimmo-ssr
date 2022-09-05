@@ -1,79 +1,79 @@
-@use '../variables/colors';
-@use '../functions/var' as *;
+@use "../variables/colors";
+@use "../functions/var" as *;
 
 html body {
-    font-family: Arial, Helvetica, sans-serif;
-    overflow-x: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
 #root {
-    /* min-height: 100vh;
+  /* min-height: 100vh;
     min-width: 100vw;
     max-height: 100vh;
     max-width: 100vw; */
-    padding: 0px;
-    margin: 0px;
-    background-image: var(themes-public-bgcolor);
-    background-size: cover;
+  padding: 0px;
+  margin: 0px;
+  background-image: var(themes-public-bgcolor);
+  background-size: cover;
 }
 
 .public_full {
-    min-width: 100%;
-    min-height: 100%;
-    // width: 100%;
-    // display: grid;
-    // grid-template-rows: auto auto auto 1fr auto ;
-    // padding: 0px;
+  min-width: 100%;
+  min-height: 100%;
+  // width: 100%;
+  // display: grid;
+  // grid-template-rows: auto auto auto 1fr auto ;
+  // padding: 0px;
 
-    // @media screen and (min-width: 992px) {
-    //     padding: 0px 5vw;
-    // }
+  // @media screen and (min-width: 992px) {
+  //     padding: 0px 5vw;
+  // }
 }
 
 .modal-body {
-    display: grid;
-    row-gap: 10px;
+  display: grid;
+  row-gap: 10px;
 }
 
 .grecaptcha-badge {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .recaptcha_text {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 .plus_nav {
-    display: grid;
-    grid-template-columns: auto;
-    background-color: rgba(0, 0, 0, 1);
-    border-radius: 10px;
-    min-height: 30px;
+  display: grid;
+  grid-template-columns: auto;
+  background-color: rgba(0, 0, 0, 1);
+  border-radius: 10px;
+  min-height: 30px;
 
-    .nav-link {
-        color: white;
-        cursor: pointer;
-        font-size: 0.8em;
-        padding: 5px;
+  .nav-link {
+    color: white;
+    cursor: pointer;
+    font-size: 0.8em;
+    padding: 5px;
 
-        @media screen and (min-width: 768px) {
-            font-size: 1em;
-        }
-
-        &:hover {
-            color: #14ac89;
-        }
+    @media screen and (min-width: 768px) {
+      font-size: 1em;
     }
+
+    &:hover {
+      color: #14ac89;
+    }
+  }
 }
 
 .plus_content {
-    display: grid;
-    grid-template-columns: auto auto;
-    align-items: center;
-    font-size: 1.2em;
-    color: white;
-    font-weight: bolder;
-    padding: 10px;
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  font-size: 1.2em;
+  color: white;
+  font-weight: bolder;
+  padding: 10px;
 }
 
 // .job {
@@ -86,601 +86,606 @@ html body {
 // }
 
 .fb-share-button {
-    height: 30px;
+  height: 30px;
 }
 
 .tel {
-    font-size: 15px;
-    white-space: wrap;
-    @media screen and (min-width: 768px) {
-        font-size: 1.2em;
-    }
+  font-size: 15px;
+  white-space: wrap;
+  @media screen and (min-width: 768px) {
+    font-size: 1.2em;
+  }
 }
 
 .kozossegi {
-    display: flex;
-    align-content: center;
-    align-self: center;
-    justify-self: right;
-    align-items: center;
+  display: flex;
+  align-content: center;
+  align-self: center;
+  justify-self: right;
+  align-items: center;
 
-    a {
-        color: white;
-    }
+  a {
+    color: white;
+  }
 }
 
 .kozossegi i {
-    font-size: 1.5em;
-    padding: 2px;
-    cursor: pointer;
+  font-size: 1.5em;
+  padding: 2px;
+  cursor: pointer;
 }
 
 .kozossegi .fa-facebook-square:hover {
-    color: rgb(8, 122, 234);
+  color: rgb(8, 122, 234);
 }
 
 .kozossegi .fa-instagram:hover {
-    background: -webkit-linear-gradient(69deg, rgba(221, 242, 6, 1) 39%, rgba(240, 3, 3, 1) 72%, rgba(255, 0, 215, 1) 100%);
-    background-clip: 'text';
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  background: -webkit-linear-gradient(
+    69deg,
+    rgba(221, 242, 6, 1) 39%,
+    rgba(240, 3, 3, 1) 72%,
+    rgba(255, 0, 215, 1) 100%
+  );
+  background-clip: "text";
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .kozossegi .fa-youtube:hover {
-    color: red;
+  color: red;
 }
 
 .kozossegi .fa-whatsapp:hover {
-    color: rgb(0, 163, 86);
+  color: rgb(0, 163, 86);
 }
 
 .admin_full {
-    min-height: 100vh;
-    width: 100%;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    padding: 0px;
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 0px;
 
-    & .admin_content {
-        display: grid;
-        grid-template-columns: auto 1fr;
-    }
+  & .admin_content {
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
 }
 
 .loading {
-    display: grid;
-    place-items: center;
-    // min-width: 100vw;
-    // min-height: 100vh;
-    width: 100%;
-    height: 100%;
+  display: grid;
+  place-items: center;
+  // min-width: 100vw;
+  // min-height: 100vh;
+  width: 100%;
+  height: 100%;
 
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(0, 0, 0, 0.8);
 
-    .text-success {
-        color: #14ac89 !important;
-    }
+  .text-success {
+    color: #14ac89 !important;
+  }
 
-    .spinner-border {
-        width: 100px;
-        height: 100px;
-        border-width: 0.5em;
-    }
+  .spinner-border {
+    width: 100px;
+    height: 100px;
+    border-width: 0.5em;
+  }
 }
 
 .tartalom {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  min-height: calc(100vh - 200px);
+  margin: 0px;
+  // padding: 10px 10px 10px 0px;
+  // background: var(themes-public-navbarbgimage);
+  background-image: var(themes-public-navbarbgimage);
+  // background: var(themes-public-navbarbgimage);
+  background-size: contain;
+
+  // .btn.btn-info {
+  //     background-color: var(themes-public-new);
+  //     color: var(themes-public-newfont);
+  // }
+
+  .inner_tartalom {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .myjob {
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(255, 238, 139);
+    padding: 20px 5%;
+    margin: 0px;
+
+    @media screen and (min-width: 950px) {
+      margin: 0px 15%;
+    }
+
+    & .job_title {
+      text-align: center;
+    }
+
+    & .koszonjuk {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      justify-content: center;
+      align-content: center;
+      font-size: 25px;
+      font-weight: bolder;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .ingatlan_szolgaltatas {
+    width: 100%;
+    height: 100%;
+    padding: 20px 5%;
+    background-color: rgb(255, 238, 139);
+    margin: 0px;
+
+    @media screen and (min-width: 950px) {
+      margin: 0px 15%;
+    }
+
+    img {
+      float: left;
+      border-radius: 50%;
+      height: 100px;
+      width: 100px;
+      margin: 5px 5px 5px 0px;
+
+      @media screen and (min-width: 950px) {
+        height: 200px;
+        width: 200px;
+        margin: 20px 20px 10px 0px;
+      }
+    }
+
+    &__leiras {
+      width: inherit;
+      height: inherit;
+    }
+  }
+
+  .public_myart {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background-color: rgb(255, 238, 139);
+    margin: 0px;
+
+    @media screen and (min-width: 950px) {
+      margin: 0px 15%;
+    }
+
+    .myart_galeriak {
+      display: flex;
+      gap: 10px;
+    }
+
+    .galeria_cim {
+      text-align: center;
+    }
+
+    .muvesz_adatok {
+      // display: flex;
+      // justify-content: center;
+      .col-md-12 {
+        text-align: justify;
+      }
+    }
+
+    .muvesz_kepek {
+      display: flex;
+
+      img {
+        margin: 10px;
+        width: 30%;
+      }
+    }
+  }
+
+  .penzugyi_szolgaltatas {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background-color: rgb(255, 238, 139);
+    margin: 0px;
+
+    @media screen and (min-width: 950px) {
+      margin: 0px 15%;
+    }
+
+    img {
+      float: left;
+      border-radius: 50%;
+      height: 300px;
+      width: 300px;
+      margin: 20px;
+    }
+
+    &__leiras {
+      width: inherit;
+      height: inherit;
+    }
+  }
+
+  .adatkezeles {
+    display: flex;
+    background-color: #ffee8b;
+    margin: 0px auto;
+    max-width: 100%;
+    padding: 20px 5vw;
+    width: 100%;
+
+    @media screen and (min-width: 950px) {
+      width: 80%;
+    }
+
+    &__leiras {
+      max-width: 100%;
+    }
+  }
+
+  & .row {
+    // min-width: 100%;
+    max-width: 100%;
+    margin: 0px !important;
+    padding: 0px !important;
+  }
+
+  .reszletes_kereso {
+    background-color: var(themes-public-reszl_keresobg);
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
-    min-height: calc(100vh - 200px);
-    margin: 0px;
-    // padding: 10px 10px 10px 0px;
-    // background: var(themes-public-navbarbgimage);
-    background-image: var(themes-public-navbarbgimage);
-    // background: var(themes-public-navbarbgimage);
-    background-size: contain;
+    padding: 20px;
+    max-width: 100%;
 
-    // .btn.btn-info {
-    //     background-color: var(themes-public-new);
-    //     color: var(themes-public-newfont);
-    // }
-
-    .inner_tartalom {
-        background-color: rgba(255, 255, 255, 0.1);
+    button {
+      background-color: rgba(255, 213, 13, 0.6);
+      color: black;
     }
+  }
 
-    .myjob {
-        width: 100%;
-        height: 100vh;
-        background-color: rgb(255, 238, 139);
-        padding: 20px 5%;
-        margin: 0px;
+  .card {
+    margin: 0px !important;
+    padding: 0px !important;
+  }
 
-        @media screen and (min-width: 950px) {
-            margin: 0px 15%;
-        }
-
-        & .job_title {
-            text-align: center;
-        }
-
-        & .koszonjuk {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-            justify-content: center;
-            align-content: center;
-            font-size: 25px;
-            font-weight: bolder;
-            width: 100%;
-            height: 100%;
-        }
-    }
-
-    .ingatlan_szolgaltatas {
-        width: 100%;
-        height: 100%;
-        padding: 20px 5%;
-        background-color: rgb(255, 238, 139);
-        margin: 0px;
-
-        @media screen and (min-width: 950px) {
-            margin: 0px 15%;
-        }
-
-        img {
-            float: left;
-            border-radius: 50%;
-            height: 100px;
-            width: 100px;
-            margin: 5px 5px 5px 0px;
-
-            @media screen and (min-width: 950px) {
-                height: 200px;
-                width: 200px;
-                margin: 20px 20px 10px 0px;
-            }
-        }
-
-        &__leiras {
-            width: inherit;
-            height: inherit;
-        }
-    }
-
-    .public_myart {
-        width: 100%;
-        height: 100%;
-        padding: 20px;
-        background-color: rgb(255, 238, 139);
-        margin: 0px;
-
-        @media screen and (min-width: 950px) {
-            margin: 0px 15%;
-        }
-
-        .myart_galeriak {
-            display: flex;
-            gap: 10px;
-        }
-
-        .galeria_cim {
-            text-align: center;
-        }
-
-        .muvesz_adatok {
-            // display: flex;
-            // justify-content: center;
-            .col-md-12 {
-                text-align: justify;
-            }
-        }
-
-        .muvesz_kepek {
-            display: flex;
-
-            img {
-                margin: 10px;
-                width: 30%;
-            }
-        }
-    }
-
-    .penzugyi_szolgaltatas {
-        width: 100%;
-        height: 100%;
-        padding: 20px;
-        background-color: rgb(255, 238, 139);
-        margin: 0px;
-
-        @media screen and (min-width: 950px) {
-            margin: 0px 15%;
-        }
-
-        img {
-            float: left;
-            border-radius: 50%;
-            height: 300px;
-            width: 300px;
-            margin: 20px;
-        }
-
-        &__leiras {
-            width: inherit;
-            height: inherit;
-        }
-    }
-
-    .adatkezeles {
-        display: flex;
-        background-color: #ffee8b;
-        margin: 0px auto;
-        max-width: 100%;
-        padding: 20px 5vw;
-        width: 100%;
-
-        @media screen and (min-width: 950px) {
-            width: 80%;
-        }
-
-        &__leiras {
-            max-width: 100%;
-        }
-    }
-
-    & .row {
-        // min-width: 100%;
-        max-width: 100%;
-        margin: 0px !important;
-        padding: 0px !important;
-    }
-
-    .reszletes_kereso {
-        background-color: var(themes-public-reszl_keresobg);
-        display: flex;
-        flex-wrap: wrap;
-        padding: 20px;
-        max-width: 100%;
-
-        button {
-            background-color: rgba(255, 213, 13, 0.6);
-            color: black;
-        }
-    }
-
-    .card {
-        margin: 0px !important;
-        padding: 0px !important;
-    }
-
-    @media screen and (min-width: 992px) {
-        box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor);
-        border-radius: 10px;
-    }
+  @media screen and (min-width: 992px) {
+    box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor);
+    border-radius: 10px;
+  }
 }
 
 .tartalom-admin {
-    display: flex;
+  display: flex;
+  min-width: 100%;
+  max-width: inherit;
+  min-height: 100%;
+  max-height: inherit;
+  background-color: var(themes-public-tartalombgcolor);
+  padding: 10px;
+
+  table {
+    border: 1px black solid;
+  }
+
+  .pagination.react-bootstrap-table-page-btns-ul {
+    justify-content: flex-end;
+  }
+
+  .react-bootstrap-table-pagination div {
+    padding: 0px;
+  }
+
+  & .row {
     min-width: 100%;
-    max-width: inherit;
-    min-height: 100%;
-    max-height: inherit;
-    background-color: var(themes-public-tartalombgcolor);
-    padding: 10px;
+    max-width: 100%;
+    margin: 0px !important;
+    padding: 0px !important;
+  }
 
-    table {
-        border: 1px black solid;
+  .tab_nav {
+    & .nav-link {
+      color: black;
+      cursor: pointer;
+      padding: 10px;
+
+      &:hover,
+      &.active {
+        background-color: white;
+        color: black;
+        border-top: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+      }
     }
+  }
 
-    .pagination.react-bootstrap-table-page-btns-ul {
-        justify-content: flex-end;
-    }
+  .tab-content {
+    margin: 10px -10px;
+    padding: 20px 0px;
+  }
 
-    .react-bootstrap-table-pagination div {
-        padding: 0px;
-    }
-
-    & .row {
-        min-width: 100%;
-        max-width: 100%;
-        margin: 0px !important;
-        padding: 0px !important;
-    }
-
-    .tab_nav {
-        & .nav-link {
-            color: black;
-            cursor: pointer;
-            padding: 10px;
-
-            &:hover,
-            &.active {
-                background-color: white;
-                color: black;
-                border-top: 1px solid black;
-                border-left: 1px solid black;
-                border-right: 1px solid black;
-            }
-        }
-    }
-
-    .tab-content {
-        margin: 10px -10px;
-        padding: 20px 0px;
-    }
-
-    .ow-wysiwyg-editor {
-        height: 400px;
-        overflow-y: auto;
-    }
+  .ow-wysiwyg-editor {
+    height: 400px;
+    overflow-y: auto;
+  }
 }
 
 .ow-wysiwyg-editor {
-    max-height: 400px !important;
-    overflow-y: auto !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
 }
 
 .keresos {
-    padding: 0px;
+  padding: 0px;
+  margin: 0px;
+  min-width: inherit;
+  // display: grid;
+  // grid-template-columns: auto 1fr;
+
+  & .row {
     margin: 0px;
-    min-width: inherit;
-    // display: grid;
-    // grid-template-columns: auto 1fr;
-
-    & .row {
-        margin: 0px;
-        min-height: 100% !important;
-        height: 100% !important;
-
-        @media screen and (min-width: 992px) {
-            height: 100% !important;
-            min-height: 100% !important;
-        }
-    }
+    min-height: 100% !important;
+    height: 100% !important;
 
     @media screen and (min-width: 992px) {
-        min-height: 100% !important;
-        height: 100% !important;
+      height: 100% !important;
+      min-height: 100% !important;
     }
+  }
+
+  @media screen and (min-width: 992px) {
+    min-height: 100% !important;
+    height: 100% !important;
+  }
 }
 
 .public-sidebar {
-    margin-top: 10px;
-    background-color: #14ac89;
-    min-width: 100%;
-    border-radius: 0px;
+  margin-top: 10px;
+  background-color: #14ac89;
+  min-width: 100%;
+  border-radius: 0px;
 
-    & .gyorskereso {
-        width: 100%;
-        padding: 10px;
+  & .gyorskereso {
+    width: 100%;
+    padding: 10px;
+  }
+
+  & .ingatlanfeladform {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .accordion-item {
+    border: none;
+  }
+
+  .accordion-button {
+    background-color: var(themes-public-collapsebg);
+    color: var(themes-public-collapsefontcolor);
+
+    &::after {
+      color: var(themes-public-collapsefontcolor) !important;
+      border: none;
     }
+  }
 
-    & .ingatlanfeladform {
-        width: 100%;
-        padding: 10px;
-    }
-
-    .accordion-item {
-        border: none;
-    }
-
-    .accordion-button {
-        background-color: var(themes-public-collapsebg);
-        color: var(themes-public-collapsefontcolor);
-
-        &::after {
-            color: var(themes-public-collapsefontcolor) !important;
-            border: none;
-        }
-    }
-
-    @media screen and (min-width: 992px) {
-        min-width: 300px;
-        max-width: 300px;
-        border-radius: 10px;
-    }
+  @media screen and (min-width: 992px) {
+    min-width: 300px;
+    max-width: 300px;
+    border-radius: 10px;
+  }
 }
 
 .public-inner-content {
-    display: flex;
-    flex: 1 1 calc(100% - 400px);
-    flex-wrap: wrap;
-    // padding: 10px;
-    justify-content: flex-start;
-    border: none;
+  display: flex;
+  flex: 1 1 calc(100% - 400px);
+  flex-wrap: wrap;
+  // padding: 10px;
+  justify-content: flex-start;
+  border: none;
 
-    // background-color: rgb(255, 238, 139);
+  // background-color: rgb(255, 238, 139);
+  margin: 0px;
+
+  @media screen and (min-width: 768px) {
+    justify-content: flex-start;
     margin: 0px;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1400px) {
+    justify-content: center;
+    margin: 0px 5%;
+  }
+
+  @media screen and (min-width: 1401px) {
+    justify-content: flex-start;
+    margin: 0px 8%;
+  }
+
+  .nodata {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    min-width: 100%;
+    position: relative;
+    top: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    // min-height: inherit;
+    // max-height: inherit;
 
     @media screen and (min-width: 768px) {
-        justify-content: flex-start;
-        margin: 0px;
+      font-size: 1.2rem;
+    }
+  }
+
+  & .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 300px; /*  Stretching: */
+    // flex: 0 1 150px; /*  No stretching: */
+    // max-width: ;
+    max-height: 600px;
+    margin: 6px !important;
+    text-align: center;
+    border: 1px black solid;
+    box-shadow: none;
+
+    @media screen and (min-width: 768px) {
+      flex: 0 1 300px;
     }
 
-    @media screen and (min-width: 768px) and (max-width: 1400px) {
-        justify-content: center;
-        margin: 0px 5%;
+    @media screen and (min-width: 768px) and (max-width: 1200px) {
+      flex: 0 1 300px;
     }
 
-    @media screen and (min-width: 1401px) {
-        justify-content: flex-start;
-        margin: 0px 8%;
+    @media screen and (min-width: 1201px) {
+      flex: 0 1 300px;
     }
 
-    .nodata {
-        background-color: rgba(0, 0, 0, 0.8);
-        color: white;
+    & img {
+      /* min-height: 200px; */
+      min-width: 100%;
+      /* max-height: 200px; */
+      max-width: 100%;
+
+      @media screen and (min-width: 768px) {
+        min-height: 200px;
         min-width: 100%;
-        position: relative;
-        top: 0px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1rem;
-        // min-height: inherit;
-        // max-height: inherit;
-
-        @media screen and (min-width: 768px) {
-            font-size: 1.2rem;
-        }
+        max-height: 200px;
+        max-width: 100%;
+      }
     }
 
-    & .card {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex: 1 1 300px; /*  Stretching: */
-        // flex: 0 1 150px; /*  No stretching: */
-        // max-width: ;
-        max-height: 600px;
-        margin: 6px !important;
-        text-align: center;
-        border: 1px black solid;
-        box-shadow: none;
-
-        @media screen and (min-width: 768px) {
-            flex: 0 1 300px;
-        }
-
-        @media screen and (min-width: 768px) and (max-width: 1200px) {
-            flex: 0 1 300px;
-        }
-
-        @media screen and (min-width: 1201px) {
-            flex: 0 1 300px;
-        }
-
-        & img {
-            /* min-height: 200px; */
-            min-width: 100%;
-            /* max-height: 200px; */
-            max-width: 100%;
-
-            @media screen and (min-width: 768px) {
-                min-height: 200px;
-                min-width: 100%;
-                max-height: 200px;
-                max-width: 100%;
-            }
-        }
-
-        .btn.btn-info {
-            background-color: var(themes-public-viewbutton);
-            color: var(themes-public-newfont);
-        }
-
-        &:hover {
-            box-shadow: 5px 5px var(themes-public-ingatlanlistacardhover);
-        }
-
-        & .card-footer {
-            background-color: transparent;
-            border: none;
-        }
+    .btn.btn-info {
+      background-color: var(themes-public-viewbutton);
+      color: var(themes-public-newfont);
     }
+
+    &:hover {
+      box-shadow: 5px 5px var(themes-public-ingatlanlistacardhover);
+    }
+
+    & .card-footer {
+      background-color: transparent;
+      border: none;
+    }
+  }
 }
 
 .public-ingatlan-lista {
+  display: flex;
+  flex: 1 1 calc(100% - 400px);
+  flex-wrap: wrap;
+  padding: 10px;
+  justify-content: center;
+  border: none;
+
+  @media screen and (min-width: 768px) {
+    justify-content: flex-start;
+  }
+
+  & .card {
     display: flex;
-    flex: 1 1 calc(100% - 400px);
-    flex-wrap: wrap;
-    padding: 10px;
     justify-content: center;
+    align-items: center;
+    flex: 1 1 300px; /*  Stretching: */
+    // flex: 0 1 150px; /*  No stretching: */
+    max-height: 480px;
+    margin: 6px !important;
+    text-align: center;
     border: none;
+    box-shadow: none;
 
     @media screen and (min-width: 768px) {
-        justify-content: flex-start;
+      flex: 0 1 300px;
     }
 
-    & .card {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex: 1 1 300px; /*  Stretching: */
-        // flex: 0 1 150px; /*  No stretching: */
-        max-height: 480px;
-        margin: 6px !important;
-        text-align: center;
-        border: none;
-        box-shadow: none;
-
-        @media screen and (min-width: 768px) {
-            flex: 0 1 300px;
-        }
-
-        @media screen and (min-width: 768px) and (max-width: 1090px) {
-            flex: 0 1 300px;
-        }
-
-        @media screen and (min-width: 1090px) {
-            flex: 0 1 calc(20% - 12px);
-        }
-
-        & img {
-            min-height: 200px;
-            min-width: 100%;
-            max-height: 200px;
-            max-width: 100%;
-
-            @media screen and (min-width: 768px) {
-                min-height: 200px;
-                min-width: 200px;
-                max-height: 200px;
-                max-width: 200px;
-            }
-        }
-
-        &:hover {
-            box-shadow: 5px 5px var(themes-public-ingatlanlistacardhover);
-        }
-
-        & .card-footer {
-            background-color: white;
-            border: none;
-        }
+    @media screen and (min-width: 768px) and (max-width: 1090px) {
+      flex: 0 1 300px;
     }
+
+    @media screen and (min-width: 1090px) {
+      flex: 0 1 calc(20% - 12px);
+    }
+
+    & img {
+      min-height: 200px;
+      min-width: 100%;
+      max-height: 200px;
+      max-width: 100%;
+
+      @media screen and (min-width: 768px) {
+        min-height: 200px;
+        min-width: 200px;
+        max-height: 200px;
+        max-width: 200px;
+      }
+    }
+
+    &:hover {
+      box-shadow: 5px 5px var(themes-public-ingatlanlistacardhover);
+    }
+
+    & .card-footer {
+      background-color: white;
+      border: none;
+    }
+  }
 }
 
 .admin {
-    padding: 10px;
+  padding: 10px;
 }
 
 .dropzone {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    border-width: 2px;
-    border-radius: 2px;
-    border-color: #aaaaaa;
-    border-style: dashed;
-    background-color: #fafafa;
-    color: #bdbdbd;
-    outline: none;
-    transition: border 0.24s ease-in-out;
-    cursor: pointer;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-width: 2px;
+  border-radius: 2px;
+  border-color: #aaaaaa;
+  border-style: dashed;
+  background-color: #fafafa;
+  color: #bdbdbd;
+  outline: none;
+  transition: border 0.24s ease-in-out;
+  cursor: pointer;
 }
 
 .logincard {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    min-width: 300px;
-    min-height: 300px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  min-width: 300px;
+  min-height: 300px;
 
-    .card {
-        min-width: inherit;
-        min-height: inherit;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 20px;
-        border-radius: 10px;
-    }
+  .card {
+    min-width: inherit;
+    min-height: inherit;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+  }
 }

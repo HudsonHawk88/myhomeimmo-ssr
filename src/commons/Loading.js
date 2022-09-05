@@ -1,23 +1,23 @@
-import React from 'react';
-import { Spinner } from 'reactstrap';
-import PropTypes from 'prop-types';
+import React from "react";
+import { Spinner } from "reactstrap";
+import PropTypes from "prop-types";
 
 const Loading = ({ isLoading }) => {
-    return isLoading ? (
-        <div className="loading">
-            <div>
-                <Spinner color="success" size="xl">
-                    Loading...
-                </Spinner>
-            </div>
-        </div>
-    ) : (
-        ''
-    );
+  return isLoading ? (
+    <div className="loading">
+      <div>
+        <Spinner color="success" size="xl">
+          Loading...
+        </Spinner>
+      </div>
+    </div>
+  ) : (
+    ""
+  );
 };
 
 export default Loading;
 
 Loading.propTypes = {
-    isLoading: PropTypes.bool.isRequired
+  isLoading: PropTypes.bool.isRequired,
 };

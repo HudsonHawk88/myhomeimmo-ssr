@@ -1,30 +1,30 @@
-import { Microservices } from '../../../../shared/MicroServices';
-const location = typeof window !== 'undefined' ? window.location : {};
-const ingatlanokUrl = location.origin + '/api/ingatlanok/aktiv';
-const telepulesekUrl = location.origin + '/api/telepulesek';
+import { Microservices } from "../../../../shared/MicroServices";
+const location = typeof window !== "undefined" ? window.location : {};
+const ingatlanokUrl = location.origin + "/api/ingatlanok/aktiv";
+const telepulesekUrl = location.origin + "/api/telepulesek";
 
 export default class Services {
-    // INGATLANOK START
+  // INGATLANOK START
 
-    static listIngatlanok = () => {
-        let result = Microservices.fetchApi(ingatlanokUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+  static listIngatlanok = () => {
+    let result = Microservices.fetchApi(ingatlanokUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    // INGATLANOK END
+  // INGATLANOK END
 
-    // ORSZAGOK START
+  // ORSZAGOK START
 
-    /*   static listOrszagok = () => {
+  /*   static listOrszagok = () => {
     let result = Microservices.fetchApi(orszagokUrl, {
       method: "GET",
       mode: "cors",
@@ -38,68 +38,68 @@ export default class Services {
     return result;
   }; */
 
-    // ORSZAGOK END
+  // ORSZAGOK END
 
-    // TELEPÜLÉSEK START
+  // TELEPÜLÉSEK START
 
-    static listTelepulesek = () => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+  static listTelepulesek = () => {
+    let result = Microservices.fetchApi(telepulesekUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static getTelepulesById = (id) => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                id: id
-            }
-        });
+  static getTelepulesById = (id) => {
+    let result = Microservices.fetchApi(telepulesekUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        id: id,
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static getTelepulesByIrsz = (irsz) => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                irsz: irsz
-            }
-        });
+  static getTelepulesByIrsz = (irsz) => {
+    let result = Microservices.fetchApi(telepulesekUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        irsz: irsz,
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    static listTelepulesekLike = (like) => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                like: like
-            }
-        });
+  static listTelepulesekLike = (like) => {
+    let result = Microservices.fetchApi(telepulesekUrl, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+        like: like,
+      },
+    });
 
-        return result;
-    };
+    return result;
+  };
 
-    // TELEPÜLÉSEK END
+  // TELEPÜLÉSEK END
 }
