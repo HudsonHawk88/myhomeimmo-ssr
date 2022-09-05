@@ -83,7 +83,7 @@ export default () => (req, res, next) => {
     /*   console.log('activeRoute', activeRoute); */
     const newPath = getRequestPath(req.path, req.url);
     console.log(newPath);
-    const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Microservices.fetchApi(newPath, { method: 'GET' });
+    const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Promise.resolve();
     console.log(promise);
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
