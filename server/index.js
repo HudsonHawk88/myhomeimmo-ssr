@@ -95,7 +95,7 @@ const actionIndex = (req, res, next) => {
 
 app.get('/', actionIndex);
 app.get('/admin', actionIndex);
-app.use(express.static('build/public'));
+app.use(express.static('public'));
 
 app.use(['/api/admin'], adminAuthService);
 // PUBLIC USERS
