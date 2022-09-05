@@ -107,7 +107,7 @@ router.get('/', async (req, res) => {
                     }
                 });
             } else {
-                const sql = `SELECT id, refid, cim, leiras, helyseg, irsz, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo, hirdeto
+                const sql = `SELECT id, refid, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo, hirdeto
                 FROM ingatlanok`;
                 ingatlanok.query(sql, async (err, result) => {
                     if (!err) {
