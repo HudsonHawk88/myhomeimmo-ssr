@@ -33,15 +33,21 @@ const getMetaTags = async (req, activeRoute) => {
     return meta;
 };
 
-const getRequestPath = (path) => {
-    console.log(path);
-    switch (path) {
-        case '/':
-            '/api/ingatlan';
-        case '/ingatlanok':
-            '/api/ingatlan';
-        default:
-            `/api${path}`;
+const getRequestPath = (path, reqUrl) => {
+    let url = reqUrl ? reqUrl : undefined;
+    if (url) {
+        if (url.includes('ingatlan?id=')) {
+            return url;
+        }
+    } else {
+        switch (path) {
+            case '/':
+                '/api/ingatlan';
+            case '/ingatlanok':
+                '/api/ingatlan';
+            default:
+                `/api${path}`;
+        }
     }
 };
 
@@ -72,7 +78,7 @@ export default () => (req, res, next) => {
     const activeRoute = aR[0] || {};
     /* const activeRoute = allRoutes.find((route) => matchPath(req.path, route.path)) || {} */
     /*   console.log('activeRoute', activeRoute); */
-    const newPath = getRequestPath(req.path);
+    const newPath = getRequestPath(req.path, req.url);
     const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Promise.resolve();
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
