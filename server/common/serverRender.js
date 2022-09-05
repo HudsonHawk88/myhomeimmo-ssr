@@ -41,15 +41,15 @@ const getRequestPath = (path, url) => {
         console.log(url.includes('ingatlan?id='));
         if (url.includes('ingatlan?id=')) {
             res = '/api' + url;
-        }
-    } else {
-        switch (path) {
-            case '/':
-                res = '/api/ingatlan';
-            case '/ingatlanok':
-                res = '/api/ingatlan';
-            default:
-                res = `/api${path}`;
+        } else {
+            switch (path) {
+                case '/':
+                    res = '/api/ingatlan';
+                case '/ingatlanok':
+                    res = '/api/ingatlan';
+                default:
+                    res = `/api${path}`;
+            }
         }
     }
     return res;
