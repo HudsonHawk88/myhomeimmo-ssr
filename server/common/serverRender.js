@@ -75,45 +75,44 @@ export default () => (req, res, next) => {
     const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Promise.resolve();
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
-    fs.readFile(filePath, 'utf8', (err, htmlData) => {
-        if (err) {
-            console.error('err', err);
-            return res.status(404).end();
-        }
 
-        if (req.url.startsWith('/admin') && !req.cookies.JWT_TOKEN) {
-            return res.redirect('/login');
-        }
+    if (req.url.startsWith('/admin') && !req.cookies.JWT_TOKEN) {
+        return res.redirect('/login');
+    }
 
-        return promise
-            .then(async (data) => {
-                const context = { data };
-                const markup = ReactDOMServer.renderToString(
-                    <StaticRouter location={req.path} context={context}>
-                        <HelmetProvider>
-                            <App serverData={data} history={{}} />
-                        </HelmetProvider>
-                    </StaticRouter>
-                );
-                /*       let metaTags = await getMetaTags(req, activeRoute); */
-                const initialData = `window.__INITIAL_DATA__ = ${JSON.stringify(data)}`;
+    return promise
+        .then(async (data) => {
+            const context = { data };
+            const markup = ReactDOMServer.renderToString(
+                <StaticRouter location={req.path} context={context}>
+                    <HelmetProvider>
+                        <App serverData={data} history={{}} />
+                    </HelmetProvider>
+                </StaticRouter>
+            );
+            /*       let metaTags = await getMetaTags(req, activeRoute); */
+            const initialData = `window.__INITIAL_DATA__ = ${JSON.stringify(data)}`;
 
-                // get HTML headers
-                const helmet = Helmet.renderStatic();
-                const resx = res.send(
-                    htmlData
-                        .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
-                        /*     // append the extra js assets
-          .replace("</body>", extraChunks.join("") + "</body>") */
-                        // write the HTML header tags
-                        .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() + helmet.meta.toString())
-                        .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
-                        .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
-                );
-                return resx;
-            })
-            .catch((error) => console.log('errrrrr: ', error));
-    });
+            // get HTML headers
+            const helmet = Helmet.renderStatic();
+            const html = `<!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <title>MyHome - Ingatlanközvetítő iroda</title>
+                        ${helmet.title.toString()}
+                        ${helmet.meta.toString()}
+                        <script>' + ${initialData} + '</script>
+                    </head>
+                    <body>
+                        <div id="root">
+                        ${markup}
+                        </div>
+                    </body>
+                    </html>
+                `;
+            res.send(html);
+        })
+        .catch((error) => console.log('errrrrr: ', error));
 
     /*   return res.render('index', { metaTags: metaTags, reactApp: markup, initialData: initialData }); */
 
