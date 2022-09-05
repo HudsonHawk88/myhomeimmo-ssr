@@ -1,6 +1,6 @@
 // const { Pool } = require("pg");
 import express from 'express';
-import { poolConnect, getTelepulesekByKm, getTypeForXml, getAllapotForXml, getKepekForXml, UseQuery, getJSONfromLongtext } from '../../../common/QueryHelpers.js';
+import { poolConnect, getTelepulesekByKm, getTypeForXml, getAllapotForXml, getKepekForXml, UseQuery, getJSONfromLongtext, isIngatlanokTableExists } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { serverRender } from '../../../common/serverRender.js';
 import path from 'path';
@@ -10,16 +10,19 @@ const ingatlanok = poolConnect;
 // INGATLANOK START
 
 router.get('/', async (req, res) => {
-    const id = req.query.id;
-    const sql = id
-        ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'`
-        : `SELECT id, refid, cim, leiras, helyseg, irsz, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
+    const isExist = await isIngatlanokTableExists(ingatlanok);
+    console.log(isExist);
+    if (isExist) {
+        const id = req.query.id;
+        const sql = id
+            ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'`
+            : `SELECT id, refid, cim, leiras, helyseg, irsz, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
 
-    let result = await UseQuery(ingatlanok, sql);
-    console.log(result);
-    let ress = result.map((ing) => {
-        return getJSONfromLongtext(ing);
-        /*    if (ing.kepek) {
+        let result = await UseQuery(ingatlanok, sql);
+        console.log(result);
+        let ress = result.map((ing) => {
+            return getJSONfromLongtext(ing);
+            /*    if (ing.kepek) {
             ing.kepek = JSON.parse(JSON.stringify(ing.kepek));
         }
         if (ing.rogzitoAvatar) {
@@ -35,9 +38,12 @@ router.get('/', async (req, res) => {
         ing.isLift = ing.isLift === 0 ? true : false;
         ing.isAktiv = ing.isAktiv === 0 ? true : false;
         ing.isUjEpitesu = ing.isUjEpitesu === 0 ? true : false; */
-    });
-    /* return result; */
-    res.send(ress);
+        });
+        /* return result; */
+        res.send(ress);
+    } else {
+        res.status(200).send([]);
+    }
 });
 
 /* router.get('/ingatlanok/aktiv', (req, res) => {

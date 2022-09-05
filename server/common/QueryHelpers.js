@@ -300,6 +300,17 @@ const hasRole = (userRoles, minRoles) => {
     return result;
 };
 
+const isIngatlanokTableExists = async (ingatlanok) => {
+    const isExistSql = `SHOW TABLES LIKE "ingatlanok";`;
+    const isExist = await UseQuery(ingatlanok, isExistSql);
+
+    if (isExist.length !== 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 const getTelepulesekByKm = async (pool, telepules, irszam, km) => {
     const getCoordinatesSql = irszam ? `SELECT geoLong, geoLat FROM telep_1 WHERE irszam='${irszam}'` : `SELECT geoLong, geoLat FROM telep_1 WHERE telepulesnev='${telepules}'`;
     const coordinates = await UseQuery(pool, getCoordinatesSql);
@@ -419,7 +430,8 @@ export {
     getKepekForXml,
     getJSONfromLongtext,
     getBooleanFromNumber,
-    getNumberFromBoolean
+    getNumberFromBoolean,
+    isIngatlanokTableExists
 };
 
 /* exports.poolConnect = poolConnect;
