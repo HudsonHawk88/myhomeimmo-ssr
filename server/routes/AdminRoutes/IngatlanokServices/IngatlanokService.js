@@ -39,6 +39,8 @@ const getId = async (reqID) => {
             } else {
                 id = 1;
             }
+        } else {
+            id = 1;
         }
     }
 

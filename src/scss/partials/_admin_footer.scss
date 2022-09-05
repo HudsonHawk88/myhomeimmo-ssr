@@ -1,15 +1,15 @@
-@use "../variables/colors";
-@use "../functions/var" as *;
+@use '../variables/colors';
+@use '../functions/var' as *;
 
 .admin-footer {
-  position: relative;
-  bottom: 0px;
-  height: 55px;
-  width: 100%;
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  background-color: var(themes-admin-footerbgcolor);
-  color: var(themes-admin-footerfontcolor);
+    position: relative;
+    bottom: 0px;
+    height: 55px;
+    width: 100%;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    background-color: var(themes-admin-footerbgcolor);
+    color: var(themes-admin-footerfontcolor);
 }

@@ -1,137 +1,137 @@
 .ingatlan_card {
-  min-width: 100%;
-  // max-width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0px;
-
-  .ingatlan_adatok {
-    padding: 0px;
-    width: 100%;
-
-    @media screen and (min-width: 992px) {
-      width: 70%;
-    }
-
-    .ingatlan_cim {
-      background-color: darkcyan;
-      color: white;
-      padding: 10px 5px;
-      font-size: 1em;
-
-      @media screen and (min-width: 992px) {
-        font-size: 1.2em;
-      }
-    }
-
-    .galeria {
-      min-width: 66%;
-      min-height: 400px;
-      padding: 0px;
-
-      @media screen and (min-width: 768px) {
-        padding: 10px;
-      }
-
-      .image-gallery-slides {
-        background-color: rgba(0, 0, 0, 0.8);
-      }
-
-      .image-gallery-thumbnails {
-        background-color: rgba(0, 0, 0, 0.8);
-      }
-
-      .image-gallery-thumbnail-image {
-        height: 65px;
-      }
-
-      .image-gallery-image {
-        object-fit: contain !important;
-      }
-
-      .image-gallery-icon.image-gallery-fullscreen-button {
-        background-color: rgba(0, 0, 0, 0.2);
-
-        svg {
-          height: 20px;
-          width: 20px;
-        }
-      }
-
-      .image-gallery-content.fullscreen {
-        margin: auto 0px;
-        height: 100%;
-
-        // .image-gallery-slide-wrapper {
-        //     height: 100%;
-
-        // }
-
-        // .image-gallery-swipe, .image-gallery-slides, .image-gallery-slide {
-        //     height: 100%;
-        // }
-
-        // .image-gallery-thumbnails-wrapper {
-        //     position: fixed;
-        //     bottom: 0px;
-        // }
-        .image-gallery-icon.image-gallery-fullscreen-button {
-          background-color: rgba(0, 0, 0, 0.8);
-        }
-
-        .image-gallery-image {
-          object-fit: fill !important;
-          height: 100vh;
-        }
-      }
-    }
-
-    .alapadatok {
-      font-size: 25px;
-      background-color: darkcyan;
-      color: white;
-      padding: 15px;
-    }
-
-    .adatok {
-      & .card-header {
-        padding: 1rem !important;
-      }
-
-      & .card-body {
-        padding: 10px auto;
-        white-space: pre-line;
-      }
-    }
-  }
-
-  .ertekesito_adatok {
-    background-color: rgb(255, 238, 139);
+    min-width: 100%;
+    // max-width: 100%;
     display: flex;
-    // align-items: center;
-    text-align: center;
-    flex-direction: column;
-    // align-items: center;
-    width: 100%;
-    padding: 5% 20px;
-    gap: 20px;
+    flex-wrap: wrap;
+    padding: 0px;
 
-    & .elado_adatok {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    .ingatlan_adatok {
+        padding: 0px;
+        width: 100%;
+
+        @media screen and (min-width: 992px) {
+            width: 70%;
+        }
+
+        .ingatlan_cim {
+            background-color: darkcyan;
+            color: white;
+            padding: 10px 5px;
+            font-size: 1em;
+
+            @media screen and (min-width: 992px) {
+                font-size: 1.2em;
+            }
+        }
+
+        .galeria {
+            min-width: 66%;
+            min-height: 400px;
+            padding: 0px;
+
+            @media screen and (min-width: 768px) {
+                padding: 10px;
+            }
+
+            .image-gallery-slides {
+                background-color: rgba(0, 0, 0, 0.8);
+            }
+
+            .image-gallery-thumbnails {
+                background-color: rgba(0, 0, 0, 0.8);
+            }
+
+            .image-gallery-thumbnail-image {
+                height: 65px;
+            }
+
+            .image-gallery-image {
+                object-fit: contain !important;
+            }
+
+            .image-gallery-icon.image-gallery-fullscreen-button {
+                background-color: rgba(0, 0, 0, 0.2);
+
+                svg {
+                    height: 20px;
+                    width: 20px;
+                }
+            }
+
+            .image-gallery-content.fullscreen {
+                margin: auto 0px;
+                height: 100%;
+
+                // .image-gallery-slide-wrapper {
+                //     height: 100%;
+
+                // }
+
+                // .image-gallery-swipe, .image-gallery-slides, .image-gallery-slide {
+                //     height: 100%;
+                // }
+
+                // .image-gallery-thumbnails-wrapper {
+                //     position: fixed;
+                //     bottom: 0px;
+                // }
+                .image-gallery-icon.image-gallery-fullscreen-button {
+                    background-color: rgba(0, 0, 0, 0.8);
+                }
+
+                .image-gallery-image {
+                    object-fit: fill !important;
+                    height: 100vh;
+                }
+            }
+        }
+
+        .alapadatok {
+            font-size: 25px;
+            background-color: darkcyan;
+            color: white;
+            padding: 15px;
+        }
+
+        .adatok {
+            & .card-header {
+                padding: 1rem !important;
+            }
+
+            & .card-body {
+                padding: 10px auto;
+                white-space: pre-line;
+            }
+        }
     }
 
-    & .elado_avatar {
-      img {
-        border-radius: 50%;
-        height: 150px;
-        width: 150px;
-      }
-    }
+    .ertekesito_adatok {
+        background-color: rgb(255, 238, 139);
+        display: flex;
+        // align-items: center;
+        text-align: center;
+        flex-direction: column;
+        // align-items: center;
+        width: 100%;
+        padding: 5% 20px;
+        gap: 20px;
 
-    @media screen and (min-width: 992px) {
-      width: 30%;
+        & .elado_adatok {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        & .elado_avatar {
+            img {
+                border-radius: 50%;
+                height: 150px;
+                width: 150px;
+            }
+        }
+
+        @media screen and (min-width: 992px) {
+            width: 30%;
+        }
     }
-  }
 }
