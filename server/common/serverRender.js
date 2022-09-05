@@ -79,7 +79,7 @@ export default () => (req, res, next) => {
     /* const activeRoute = allRoutes.find((route) => matchPath(req.path, route.path)) || {} */
     /*   console.log('activeRoute', activeRoute); */
     const newPath = getRequestPath(req.path, req.url);
-    const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Promise.resolve();
+    const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : fetch(newPath, { method: 'GET' });
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
 
