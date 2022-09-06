@@ -169,85 +169,89 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                     if (!isExist) {
                         ingatlanok.query(createIngatlanokSql, (errr) => {
                             if (!errr) {
-                                ingatlanok.query(createIngatlanokTriggerSql);
+                                ingatlanok.query(createIngatlanokTriggerSql, async (eeee) => {
+                                    if (!eeee) {
+                                        felvitelObj.isKiemelt = getNumberFromBoolean(felvitelObj.isKiemelt);
+                                        felvitelObj.isErkely = getNumberFromBoolean(felvitelObj.isErkely);
+                                        felvitelObj.isLift = getNumberFromBoolean(felvitelObj.isLift);
+                                        felvitelObj.isAktiv = getNumberFromBoolean(felvitelObj.isAktiv);
+                                        felvitelObj.isUjEpitesu = getNumberFromBoolean(felvitelObj.isUjEpitesu);
+
+                                        felvitelObj.helyseg = JSON.parse(felvitelObj.helyseg);
+                                        /* felvitelObj.hirdeto = JSON.parse(felvitelObj.hirdeto); */
+                                        felvitelObj.telepules = felvitelObj.helyseg.telepules.telepulesnev;
+                                        const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
+                                        const userAvatar = await UseQuery(ingatlanok, getUserAvatarSql);
+                                        const avatar = userAvatar ? userAvatar[0].avatar : [];
+                                        let id = await getId(req.headers.id);
+                                        const sql = `INSERT INTO ingatlanok(id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, hirdeto) VALUES ('${id}', '${
+                                            felvitelObj.cim
+                                        }', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
+                                            felvitelObj.kaucio
+                                        }', '${felvitelObj.penznem}', '${felvitelObj.statusz}', '${felvitelObj.tipus}', '${felvitelObj.altipus}', '${felvitelObj.rendeltetes}', '${
+                                            felvitelObj.allapot
+                                        }', '${felvitelObj.emelet}', '${felvitelObj.alapterulet}', '${felvitelObj.telek}', '${felvitelObj.telektipus}', '${felvitelObj.beepithetoseg}', '${
+                                            felvitelObj.viz
+                                        }', '${felvitelObj.gaz}', '${felvitelObj.villany}', '${felvitelObj.szennyviz}', '${felvitelObj.szobaszam}', '${felvitelObj.felszobaszam}', '${
+                                            felvitelObj.epitesmod
+                                        }', '${felvitelObj.futes}', '${felvitelObj.isHirdetheto}', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${felvitelObj.isLift}', '${
+                                            felvitelObj.isAktiv
+                                        }', '${felvitelObj.isUjEpitesu}', '${felvitelObj.hirdeto}');`;
+
+                                        ingatlanok.query(sql, async (error) => {
+                                            if (!error) {
+                                                let kepek = [];
+                                                if (req.files) {
+                                                    req.files.map((kep, index) => {
+                                                        kepek.push({
+                                                            filename: kep.filename,
+                                                            isCover: index.toString() === '0' ? true : false,
+                                                            src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
+                                                            title: kep.filename
+                                                        });
+                                                    });
+                                                }
+
+                                                felvitelObj.kepek = kepek;
+
+                                                // const dir = `/home/eobgycvo/public_html/images/ingatlanok/${id}/`;
+                                                // let exist = existsSync(dir);
+                                                // if (!exist) {
+                                                //   mkdirSync(dir);
+                                                //   felvitelObj.kepek.forEach((item) => {
+                                                //     const img = item.preview;
+                                                //     // const data = img.replace(/^data:image\/\w+;base64,/, "");
+                                                //     const buf = Buffer.from(item.file);
+                                                //     console.log(buf);
+                                                //     writeFileSync(path.join(dir,item.filename), buf);
+                                                //     delete item.preview
+                                                //   })
+                                                // }
+
+                                                const updateImagesSql = `UPDATE ingatlanok SET kepek='${JSON.stringify(felvitelObj.kepek)}' WHERE id='${id}';`;
+
+                                                const images = await UseQuery(ingatlanok, updateImagesSql);
+                                                if (images) {
+                                                    res.status(200).send({ msg: 'Ingatlan sikeresen hozzáadva!' });
+                                                } else {
+                                                    res.status(500).send({ err: 'ingatlan képek feltöltése sikertelen!' });
+                                                }
+                                            } else {
+                                                res.status(500).send({
+                                                    err: error,
+                                                    msg: 'Hiba történt az adatbázis létrehozásakor! Értesítse a weboldal rendszergazdáját!'
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        res.status(400).send({ err: 'Ingatlan adatainak megadása kötelező' });
+                                    }
+                                });
                             } else {
                                 res.status(500).send({ err: errr });
                             }
                         });
                     }
-
-                    felvitelObj.isKiemelt = getNumberFromBoolean(felvitelObj.isKiemelt);
-                    felvitelObj.isErkely = getNumberFromBoolean(felvitelObj.isErkely);
-                    felvitelObj.isLift = getNumberFromBoolean(felvitelObj.isLift);
-                    felvitelObj.isAktiv = getNumberFromBoolean(felvitelObj.isAktiv);
-                    felvitelObj.isUjEpitesu = getNumberFromBoolean(felvitelObj.isUjEpitesu);
-
-                    felvitelObj.helyseg = JSON.parse(felvitelObj.helyseg);
-                    /* felvitelObj.hirdeto = JSON.parse(felvitelObj.hirdeto); */
-                    felvitelObj.telepules = felvitelObj.helyseg.telepules.telepulesnev;
-                    const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
-                    const userAvatar = await UseQuery(ingatlanok, getUserAvatarSql);
-                    const avatar = userAvatar ? userAvatar[0].avatar : [];
-                    let id = await getId(req.headers.id);
-                    const sql = `INSERT INTO ingatlanok(id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, hirdeto) VALUES ('${id}', '${
-                        felvitelObj.cim
-                    }', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
-                        felvitelObj.kaucio
-                    }', '${felvitelObj.penznem}', '${felvitelObj.statusz}', '${felvitelObj.tipus}', '${felvitelObj.altipus}', '${felvitelObj.rendeltetes}', '${felvitelObj.allapot}', '${
-                        felvitelObj.emelet
-                    }', '${felvitelObj.alapterulet}', '${felvitelObj.telek}', '${felvitelObj.telektipus}', '${felvitelObj.beepithetoseg}', '${felvitelObj.viz}', '${felvitelObj.gaz}', '${
-                        felvitelObj.villany
-                    }', '${felvitelObj.szennyviz}', '${felvitelObj.szobaszam}', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.isHirdetheto}', '${
-                        felvitelObj.isKiemelt
-                    }', '${felvitelObj.isErkely}', '${felvitelObj.isLift}', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.hirdeto}');`;
-
-                    ingatlanok.query(sql, async (error) => {
-                        if (!error) {
-                            let kepek = [];
-                            if (req.files) {
-                                req.files.map((kep, index) => {
-                                    kepek.push({
-                                        filename: kep.filename,
-                                        isCover: index.toString() === '0' ? true : false,
-                                        src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
-                                        title: kep.filename
-                                    });
-                                });
-                            }
-
-                            felvitelObj.kepek = kepek;
-
-                            // const dir = `/home/eobgycvo/public_html/images/ingatlanok/${id}/`;
-                            // let exist = existsSync(dir);
-                            // if (!exist) {
-                            //   mkdirSync(dir);
-                            //   felvitelObj.kepek.forEach((item) => {
-                            //     const img = item.preview;
-                            //     // const data = img.replace(/^data:image\/\w+;base64,/, "");
-                            //     const buf = Buffer.from(item.file);
-                            //     console.log(buf);
-                            //     writeFileSync(path.join(dir,item.filename), buf);
-                            //     delete item.preview
-                            //   })
-                            // }
-
-                            const updateImagesSql = `UPDATE ingatlanok SET kepek='${JSON.stringify(felvitelObj.kepek)}' WHERE id='${id}';`;
-
-                            const images = await UseQuery(ingatlanok, updateImagesSql);
-                            if (images) {
-                                res.status(200).send({ msg: 'Ingatlan sikeresen hozzáadva!' });
-                            } else {
-                                res.status(500).send({ err: 'ingatlan képek feltöltése sikertelen!' });
-                            }
-                        } else {
-                            res.status(500).send({
-                                err: error,
-                                msg: 'Hiba történt az adatbázis létrehozásakor! Értesítse a weboldal rendszergazdáját!'
-                            });
-                        }
-                    });
-                } else {
-                    res.status(400).send({ err: 'Ingatlan adatainak megadása kötelező' });
                 }
             } else {
                 res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
