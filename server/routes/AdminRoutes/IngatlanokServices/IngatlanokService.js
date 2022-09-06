@@ -168,8 +168,8 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                     const isExist = await isIngatlanokTableExists(ingatlanok);
                     if (!isExist) {
                         ingatlanok.query(createIngatlanokSql);
-                        ingatlanok.query(createIngatlanokTriggerSql);
                     }
+                    ingatlanok.query(createIngatlanokTriggerSql);
 
                     felvitelObj.isKiemelt = getNumberFromBoolean(felvitelObj.isKiemelt);
                     felvitelObj.isErkely = getNumberFromBoolean(felvitelObj.isErkely);
