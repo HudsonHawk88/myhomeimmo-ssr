@@ -39,7 +39,8 @@ const getRequestPath = (path, url) => {
     console.log('URL: ', url);
     console.log('isIncludeUrl: ', url.includes('ingatlan?id='));
     if (url.includes('ingatlan?id=')) {
-        if (url.includes('/api')) {
+        console.log('isapiURL: ', url.includes('/api'));
+        if (!url.includes('/api')) {
             newPath = '/api' + url;
         } else {
             newPath = url;
