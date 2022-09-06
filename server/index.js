@@ -1,4 +1,5 @@
 /* eslint-disable no-eval */
+'use strict';
 // DEPENDENCIES
 import path from 'path';
 import dotenv from 'dotenv';
@@ -87,7 +88,6 @@ app.use(express.static(__dirname + '/views')) */
 
 /* ejs.open = '{{';
 ejs.close = '}}'; */
-
 const actionIndex = (req, res, next) => {
     serverRender()(req, res, next);
     /* next(req, res, next); */
