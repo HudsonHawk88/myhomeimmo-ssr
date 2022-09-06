@@ -6,7 +6,6 @@ import { StaticRouter } from 'react-router-dom/server';
 import { matchPath } from 'react-router-dom';
 /* import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'; */
 import { Helmet } from 'react-helmet';
-import { HelmetProvider } from 'react-helmet-async';
 import { Microservices } from '../../shared/MicroServices';
 
 import PublicRoutes from '../../shared/PublicRoutes';
@@ -104,9 +103,7 @@ export default () => (req, res, next) => {
                 const context = { data };
                 const markup = ReactDOMServer.renderToString(
                     <StaticRouter location={req.path} context={context}>
-                        <HelmetProvider>
-                            <App serverData={data} history={{}} />
-                        </HelmetProvider>
+                        <App serverData={data} history={{}} />
                     </StaticRouter>
                 );
                 /*       let metaTags = await getMetaTags(req, activeRoute); */
