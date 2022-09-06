@@ -532,7 +532,7 @@ const Ingatlan = (props) => {
                         </div>
                     </div>
                     <div className="fb-share-button" data-href={`http://teszt.myhomeimmo.inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`} data-layout="button" data-size="large">
-                        <a target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=http%3A//inftechsol.hu%3A8460/ingatlan%26id%3D${ingatlanObj.id}`} className="fb-xfbml-parse-ignore">
+                        <a target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=http://inftechsol.hu:8460/ingatlan?id={ingatlanObj.id}`} className="fb-xfbml-parse-ignore">
                             Megosztás
                         </a>
                     </div>
