@@ -42,7 +42,7 @@ const getRequestPath = (path, url) => {
         default:
             `/api${path}`;
     }
-}
+};
 /*     if (url) {
         console.log(url.includes('ingatlan?id='));
         if (url.includes('ingatlan?id=')) {
@@ -58,8 +58,8 @@ const getRequestPath = (path, url) => {
             }
         }
     } */
-    return res;
-};
+/*     return res;
+}; */
 
 export default () => (req, res, next) => {
     /*   const postId = req.query.id;
