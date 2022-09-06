@@ -165,9 +165,9 @@ router.post('/', upload.array('kepek'), async (req, res) => {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
                 let felvitelObj = req.body;
                 if (felvitelObj) {
-                    ingatlanok.query(createIngatlanokSql);
                     const isExist = await isIngatlanokTableExists(ingatlanok);
-                    if (isExist) {
+                    if (!isExist) {
+                        ingatlanok.query(createIngatlanokSql);
                         ingatlanok.query(createIngatlanokTriggerSql);
                     }
 
