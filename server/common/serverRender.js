@@ -35,21 +35,23 @@ const getMetaTags = async (req, activeRoute) => {
 };
 
 const getRequestPath = (path, url) => {
-    if (url) {
-        console.log(url.includes('ingatlan?id='));
-        if (url.includes('ingatlan?id=')) {
-            return '/api' + url;
-        } else {
-            switch (path) {
-                case '/':
-                    '/api/ingatlan';
-                case '/ingatlanok':
-                    '/api/ingatlan';
-                default:
-                    `/api${path}`;
-            }
+    let newPath = '';
+    console.log('URL: ', url);
+    console.log('isIncludeUrl: ', url.includes('ingatlan?id='));
+    if (url.includes('ingatlan?id=')) {
+        newPath = '/api' + url;
+    } else {
+        switch (path) {
+            case '/':
+                newPath = '/api/ingatlan';
+            case '/ingatlanok':
+                newPath = '/api/ingatlan';
+            default:
+                newPath = `/api${path}`;
         }
     }
+    console.log('getNewPath: ', newPath);
+    return newPath;
 };
 
 export default () => (req, res, next) => {
@@ -78,10 +80,11 @@ export default () => (req, res, next) => {
     const activeRoute = aR[0] || {};
     /* const activeRoute = allRoutes.find((route) => matchPath(req.path, route.path)) || {} */
     /*   console.log('activeRoute', activeRoute); */
+    /*  const newPath = getRequestPath(req.path, req.url); */
     const newPath = getRequestPath(req.path, req.url);
-    console.log(newPath);
+    /*   console.log('NEWPATH: ', newPath); */
     const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Promise.resolve();
-    console.log(promise);
+    /*  console.log(promise); */
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
 
@@ -108,11 +111,11 @@ export default () => (req, res, next) => {
                     </StaticRouter>
                 );
                 /*       let metaTags = await getMetaTags(req, activeRoute); */
-                const initialData = `window.__INITIAL_DATA__ = ${JSON.stringify(data)}`;
+                const initialData = `window.__INITIAL_DATA__ = ${data ? JSON.stringify(data) : JSON.stringify([])}`;
 
                 // get HTML headers
                 const helmet = Helmet.renderStatic();
-                console.log(data);
+                console.log('DATA: ', data);
                 const resx = res.send(
                     htmlData
                         .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)

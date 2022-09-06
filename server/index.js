@@ -93,7 +93,7 @@ const actionIndex = (req, res, next) => {
     /* next(req, res, next); */
 };
 
-app.get('/', actionIndex);
+app.get('/$', actionIndex);
 app.get('/admin', actionIndex);
 app.use(express.static('build/public'));
 
