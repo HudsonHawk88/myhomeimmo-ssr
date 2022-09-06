@@ -171,7 +171,13 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                         ingatlanok.query(createIngatlanokSql, (errr) => {
                             console.log('ERRR: ', errr);
                             if (!errr) {
-                                UseQuery(ingatlanok, createIngatlanokTriggerSql);
+                                ingatlanok.query(createIngatlanokTriggerSql, (eee) => {
+                                    if (!eee) {
+                                        console.log('OK');
+                                    } else {
+                                        console.log('NOK');
+                                    }
+                                });
                             } else {
                                 res.status(500).send({ err: errr });
                             }
