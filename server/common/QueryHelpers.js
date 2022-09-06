@@ -340,7 +340,7 @@ const createIngatlanokSql = `
         penznem text DEFAULT NULL,
         statusz text DEFAULT NULL,
         tipus INT DEFAULT NULL,
-        altipus INT DEFAULT NULL,
+        altipus text DEFAULT NULL,
         rendeltetes text DEFAULT NULL,
         allapot text DEFAULT NULL,
         emelet text DEFAULT NULL,
