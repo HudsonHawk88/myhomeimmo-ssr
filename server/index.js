@@ -89,6 +89,7 @@ app.use(express.static(__dirname + '/views')) */
 ejs.close = '}}'; */
 
 const actionIndex = (req, res, next) => {
+    console.log(req);
     serverRender()(req, res, next);
     /* next(req, res, next); */
 };
