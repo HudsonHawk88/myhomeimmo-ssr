@@ -203,7 +203,7 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                                 req.files.map((kep, index) => {
                                     kepek.push({
                                         filename: kep.filename,
-                                        isCover: index.toString() === '1' ? true : false,
+                                        isCover: index.toString() === '0' ? true : false,
                                         src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
                                         title: kep.filename
                                     });
