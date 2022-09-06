@@ -81,7 +81,7 @@
     },
     "scripts": {
         "test": "react scripts test",
-        "copyfiles": "rm -rf build && mkdir build && cp -r public build && cp ./server/server.config.js ./build && prettier --write src/",
+        "copyfiles": "cp -r build/public/images public && rm -rf build && mkdir build && cp -r public build && cp ./server/server.config.js ./build && prettier --write src/",
         "webpack:client": "webpack --env development --config webpack.client.js --watch",
         "webpack:server": "webpack --env development --config webpack.server.js --watch",
         "webpack:run": "nodemon --watch build --exec node build/bundle.js",

@@ -34,26 +34,68 @@ const getMetaTags = async (req, activeRoute) => {
     return meta;
 };
 
-const getRequestPath = (path, url) => {
+const getRequestPath = (path, url, originalUrl) => {
     let newPath = '';
-    console.log('URL: ', url);
-    console.log('isIncludeUrl: ', url.includes('ingatlan?id='));
-    if (url.includes('/api')) {
-        newPath = url;
+    console.log(path);
+    if (path.startsWith('/api')) {
+        newPath = path;
+    } else if (url.includes('ingatlan?id=')) {
+        newPath = '/api' + url;
     } else {
-        if (url.includes('ingatlan?id=')) {
-            newPath = '/api' + url;
-        } else {
-            switch (path) {
-                case '/':
-                    newPath = '/api/ingatlan';
-                case '/ingatlanok':
-                    newPath = '/api/ingatlan';
-                default:
-                    newPath = `/api${path}`;
+        switch (path) {
+            case '/': {
+                console.log('ANYÁD1');
+                newPath = '/api/ingatlan';
+            }
+
+            case '/ingatlanok': {
+                console.log('ANYÁD2');
+                newPath = '/api/ingatlan';
+            }
+
+            /*  default: {
+            console.log('ANYÁD3');
+            newPath = `/api${path}`;
+        } */
+        }
+    }
+
+    /*     const regtext = '/^/api//';
+    const regexp = new RegExp('/^/api//');
+
+    if (originalUrl.includes('/api')) {
+        newPath = originalUrl;
+        console.log('ORIGNNALURL: ', url);
+    } else if (originalUrl === '/') {
+        newPath = '/api/ingatlan/';
+    } else {
+        newPath = '/api' + path;
+    } */
+    /*     console.log('issdfjdsfj: ', url.startsWith('ingatlan?id=') || url !== '/api/'); */
+    /* if (url.startsWith('ingatlan?id=') || url === '/api/') {
+        newPath = '/api' + url;
+    } else {
+        switch (path) {
+            case '/api': {
+                newPath = '/api/ingatlan';
+            }
+            case '/': {
+                console.log('ANYÁD1');
+                newPath = '/api/ingatlan';
+            }
+
+            case '/ingatlanok': {
+                console.log('ANYÁD2');
+                newPath = '/api/ingatlan';
+            }
+
+            default: {
+                console.log('ANYÁD3');
+                newPath = `/api${path}`;
             }
         }
     }
+ */
     console.log('getNewPath: ', newPath);
     return newPath;
 };
@@ -85,10 +127,10 @@ export default () => (req, res, next) => {
     /* const activeRoute = allRoutes.find((route) => matchPath(req.path, route.path)) || {} */
     /*   console.log('activeRoute', activeRoute); */
     /*  const newPath = getRequestPath(req.path, req.url); */
-    const newPath = getRequestPath(req.path, req.url);
+    const newPath = getRequestPath(req.path, req.url, req.originalUrl);
     /*   console.log('NEWPATH: ', newPath); */
     const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Promise.resolve();
-    /*  console.log(promise); */
+    console.log(promise);
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
 
