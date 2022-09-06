@@ -6,7 +6,7 @@ import FooldalContent from './FooldalContent';
 const Fooldal = (props) => {
     return (
         <div className="public-inner-content">
-            <Helmet defer={false}>
+            <Helmet>
                 <title>Myhome Ingatlanközvetítő Iroda</title>
                 <meta property="og:image" content={'https://inftechsol.hu/images/megoszt2.png'} />
             </Helmet>
