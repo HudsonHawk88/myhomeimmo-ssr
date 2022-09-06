@@ -2,7 +2,7 @@ import React, { useState, useEffect, createRef } from 'react';
 import { Card, CardBody, CardHeader, Form, Label, Input, Button } from 'reactstrap';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 
 import { handleInputChange, recaptchaOnChange } from '../../../commons/InputHandlers';
 
