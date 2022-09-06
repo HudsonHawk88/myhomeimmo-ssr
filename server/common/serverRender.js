@@ -6,7 +6,6 @@ import { StaticRouter } from 'react-router-dom/server';
 import { matchPath } from 'react-router-dom';
 /* import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'; */
 import { Helmet } from 'react-helmet';
-import { HelmetProvider } from 'react-helmet-async';
 import { Microservices } from '../../shared/MicroServices';
 
 import PublicRoutes from '../../shared/PublicRoutes';
@@ -36,24 +35,21 @@ const getMetaTags = async (req, activeRoute) => {
 };
 
 const getRequestPath = (path, url) => {
-    console.log(url);
-    let res = '';
     if (url) {
         console.log(url.includes('ingatlan?id='));
         if (url.includes('ingatlan?id=')) {
-            res = '/api' + url;
-        }
-    } else {
-        switch (path) {
-            case '/':
-                res = '/api/ingatlan';
-            case '/ingatlanok':
-                res = '/api/ingatlan';
-            default:
-                res = `/api${path}`;
+            return '/api' + url;
+        } else {
+            switch (path) {
+                case '/':
+                    '/api/ingatlan';
+                case '/ingatlanok':
+                    '/api/ingatlan';
+                default:
+                    `/api${path}`;
+            }
         }
     }
-    return res;
 };
 
 export default () => (req, res, next) => {
@@ -108,9 +104,7 @@ export default () => (req, res, next) => {
                 const context = { data };
                 const markup = ReactDOMServer.renderToString(
                     <StaticRouter location={req.path} context={context}>
-                        <HelmetProvider>
-                            <App serverData={data} history={{}} />
-                        </HelmetProvider>
+                        <App serverData={data} history={{}} />
                     </StaticRouter>
                 );
                 /*       let metaTags = await getMetaTags(req, activeRoute); */
