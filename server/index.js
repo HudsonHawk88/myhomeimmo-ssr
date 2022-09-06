@@ -93,7 +93,18 @@ const actionIndex = (req, res, next) => {
     /* next(req, res, next); */
 };
 
-app.get('/$', actionIndex);
+//in a general route, you check all incoming traffic for your preferred crawlers through the user-agent
+app.use(function (req, res, next) {
+    var ua = req.headers['user-agent'];
+    if (/^(facebookexternalhit|twitterbot)/gi.test(ua)) {
+        console.log('elfdskgndsml,fgnjmk,');
+        actionIndex(req, res, next);
+    } else {
+        next();
+    }
+});
+
+app.get('/', actionIndex);
 app.get('/admin', actionIndex);
 app.use(express.static('build/public'));
 
