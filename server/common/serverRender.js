@@ -34,9 +34,16 @@ const getMetaTags = async (req, activeRoute) => {
 };
 
 const getRequestPath = (path, url) => {
-    console.log(url);
-    let res = path;
-    if (url) {
+    switch (path) {
+        case '/':
+            '/api/ingatlan';
+        case '/ingatlanok':
+            '/api/ingatlan';
+        default:
+            `/api${path}`;
+    }
+}
+/*     if (url) {
         console.log(url.includes('ingatlan?id='));
         if (url.includes('ingatlan?id=')) {
             res = '/api' + url;
@@ -50,7 +57,7 @@ const getRequestPath = (path, url) => {
                     res = `/api${path}`;
             }
         }
-    }
+    } */
     return res;
 };
 
