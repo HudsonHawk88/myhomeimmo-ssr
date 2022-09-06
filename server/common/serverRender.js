@@ -7,10 +7,12 @@ import { matchPath } from 'react-router-dom';
 /* import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'; */
 import { Helmet } from 'react-helmet';
 import { HelmetProvider } from 'react-helmet-async';
+import { Microservices } from '../../shared/MicroServices';
 
 import PublicRoutes from '../../shared/PublicRoutes';
 import AdminRoutes from '../../shared/AdminRoutes';
 import App from '../../src/App';
+import { array } from 'prop-types';
 
 /* const statsFile = path.resolve(__dirname, '../build/loadable-stats.json');
 const extractor = new ChunkExtractor({ statsFile }) */
@@ -33,15 +35,25 @@ const getMetaTags = async (req, activeRoute) => {
     return meta;
 };
 
-const getRequestPath = (path) => {
-    switch (path) {
-        case '/':
-            '/api/ingatlan';
-        case '/ingatlanok':
-            '/api/ingatlan';
-        default:
-            `/api${path}`;
+const getRequestPath = (path, url) => {
+    console.log(url);
+    let res = '';
+    if (url) {
+        console.log(url.includes('ingatlan?id='));
+        if (url.includes('ingatlan?id=')) {
+            res = '/api' + url;
+        }
+    } else {
+        switch (path) {
+            case '/':
+                res = '/api/ingatlan';
+            case '/ingatlanok':
+                res = '/api/ingatlan';
+            default:
+                res = `/api${path}`;
+        }
     }
+    return res;
 };
 
 export default () => (req, res, next) => {
@@ -54,7 +66,6 @@ export default () => (req, res, next) => {
     const allRoutes = PublicRoutes.concat(AdminRoutes);
     let aR = [];
     allRoutes.forEach((route) => {
-        console.log(matchPath(req.path, route.path), req.path, route.path);
         if (route.children) {
             aR = route.children.filter((subroute) => matchPath(subroute.path, req.path));
         } else {
@@ -71,8 +82,10 @@ export default () => (req, res, next) => {
     const activeRoute = aR[0] || {};
     /* const activeRoute = allRoutes.find((route) => matchPath(req.path, route.path)) || {} */
     /*   console.log('activeRoute', activeRoute); */
-    const newPath = getRequestPath(req.path);
+    const newPath = getRequestPath(req.path, req.url);
+    console.log(newPath);
     const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Promise.resolve();
+    console.log(promise);
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
 
@@ -105,19 +118,20 @@ export default () => (req, res, next) => {
 
                 // get HTML headers
                 const helmet = Helmet.renderStatic();
-                console.log(data, typeof data[0], data[0]);
+                console.log(data);
                 const resx = res.send(
                     htmlData
                         .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
                         /*     // append the extra js assets
           .replace("</body>", extraChunks.join("") + "</body>") */
                         // write the HTML header tags
-                        .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() /* + helmet.meta.toString() */)
-                        .replace('__OG_TITLE__', data[0].cim)
-                        .replace('__OG_DESCRIPTION__', data[0].leiras)
-                        .replace('__OG_IMAGE__', data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src)
+                        .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() + helmet.meta.toString())
+
                         .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
                         .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
+                        .replace('__OG_TITLE__', data && Array.isArray(data) && data.length > 0 && data[0].cim)
+                        .replace('__OG_DESCRIPTION__', data && Array.isArray(data) && data.length > 0 && data[0].leiras)
+                        .replace('__OG_IMAGE__', data && Array.isArray(data) && data.length > 0 && data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src)
                 );
                 return resx;
             })

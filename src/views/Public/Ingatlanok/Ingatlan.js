@@ -619,7 +619,7 @@ const Ingatlan = (props) => {
         <Loading isLoading={loading} />
     ) : (
         <React.Fragment>
-            <Helmet defer={false}>
+            <Helmet>
                 <meta name="description" content={ingatlanObj.leiras} />
                 <meta name="og:title" content={ingatlanObj.cim} />
                 <meta name="og:description" content={ingatlanObj.leiras} />
