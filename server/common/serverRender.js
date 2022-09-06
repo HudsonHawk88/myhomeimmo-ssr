@@ -6,7 +6,7 @@ import { StaticRouter } from 'react-router-dom/server';
 import { matchPath } from 'react-router-dom';
 /* import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'; */
 import { Helmet } from 'react-helmet';
-import { Microservices } from '../../shared/MicroServices';
+import { HelmetProvider } from 'react-helmet-async';
 
 import PublicRoutes from '../../shared/PublicRoutes';
 import AdminRoutes from '../../shared/AdminRoutes';
@@ -33,7 +33,7 @@ const getMetaTags = async (req, activeRoute) => {
     return meta;
 };
 
-const getRequestPath = (path, url) => {
+const getRequestPath = (path) => {
     switch (path) {
         case '/':
             '/api/ingatlan';
@@ -43,23 +43,6 @@ const getRequestPath = (path, url) => {
             `/api${path}`;
     }
 };
-/*     if (url) {
-        console.log(url.includes('ingatlan?id='));
-        if (url.includes('ingatlan?id=')) {
-            res = '/api' + url;
-        } else {
-            switch (path) {
-                case '/':
-                    res = '/api/ingatlan';
-                case '/ingatlanok':
-                    res = '/api/ingatlan';
-                default:
-                    res = `/api${path}`;
-            }
-        }
-    } */
-/*     return res;
-}; */
 
 export default () => (req, res, next) => {
     /*   const postId = req.query.id;
@@ -71,6 +54,7 @@ export default () => (req, res, next) => {
     const allRoutes = PublicRoutes.concat(AdminRoutes);
     let aR = [];
     allRoutes.forEach((route) => {
+        console.log(matchPath(req.path, route.path), req.path, route.path);
         if (route.children) {
             aR = route.children.filter((subroute) => matchPath(subroute.path, req.path));
         } else {
@@ -87,13 +71,14 @@ export default () => (req, res, next) => {
     const activeRoute = aR[0] || {};
     /* const activeRoute = allRoutes.find((route) => matchPath(req.path, route.path)) || {} */
     /*   console.log('activeRoute', activeRoute); */
-    console.log(req.path, activeRoute);
-    const newPath = getRequestPath(req.path, req.url);
-    console.log(newPath);
+    const newPath = getRequestPath(req.path);
     const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Promise.resolve();
-    console.log(promise);
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
+
+    if (req.url.startsWith('/admin') && !req.cookies.JWT_TOKEN) {
+        return res.redirect('/login');
+    }
 
     fs.readFile(filePath, 'utf8', (err, htmlData) => {
         if (err) {
@@ -110,7 +95,9 @@ export default () => (req, res, next) => {
                 const context = { data };
                 const markup = ReactDOMServer.renderToString(
                     <StaticRouter location={req.path} context={context}>
-                        <App serverData={data} history={{}} />
+                        <HelmetProvider>
+                            <App serverData={data} history={{}} />
+                        </HelmetProvider>
                     </StaticRouter>
                 );
                 /*       let metaTags = await getMetaTags(req, activeRoute); */
@@ -118,17 +105,17 @@ export default () => (req, res, next) => {
 
                 // get HTML headers
                 const helmet = Helmet.renderStatic();
-                console.log(data);
+                console.log(data, typeof data[0], data[0]);
                 const resx = res.send(
                     htmlData
                         .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
                         /*     // append the extra js assets
           .replace("</body>", extraChunks.join("") + "</body>") */
                         // write the HTML header tags
-                        .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() /*  + helmet.meta.toString() */)
-                        .replace('__OG_TITLE__', data && data[0].cim)
-                        .replace('__OG_DESCRIPTION__', data && data[0].leiras)
-                        .replace('__OG_IMAGE__', data && data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src)
+                        .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() /* + helmet.meta.toString() */)
+                        .replace('__OG_TITLE__', data[0].cim)
+                        .replace('__OG_DESCRIPTION__', data[0].leiras)
+                        .replace('__OG_IMAGE__', data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src)
                         .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
                         .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
                 );
