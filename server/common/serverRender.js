@@ -38,21 +38,20 @@ const getRequestPath = (path, url) => {
     let newPath = '';
     console.log('URL: ', url);
     console.log('isIncludeUrl: ', url.includes('ingatlan?id='));
-    if (url.includes('ingatlan?id=')) {
-        console.log('isapiURL: ', url.includes('/api'));
-        if (!url.includes('/api')) {
+    if (!url.includes('/api')) {
+        newPath = url;
+    } else {
+        if (url.includes('ingatlan?id=')) {
             newPath = '/api' + url;
         } else {
-            newPath = url;
-        }
-    } else {
-        switch (path) {
-            case '/':
-                newPath = '/api/ingatlan';
-            case '/ingatlanok':
-                newPath = '/api/ingatlan';
-            default:
-                newPath = `/api${path}`;
+            switch (path) {
+                case '/':
+                    newPath = '/api/ingatlan';
+                case '/ingatlanok':
+                    newPath = '/api/ingatlan';
+                default:
+                    newPath = `/api${path}`;
+            }
         }
     }
     console.log('getNewPath: ', newPath);
