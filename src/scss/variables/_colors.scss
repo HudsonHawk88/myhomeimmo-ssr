@@ -6,9 +6,9 @@ $colors: (
     themes: (
         public: (
             bgcolor: rgba(255, 255, 255, 1),
-            bgimage: url('../images/blackback.png'),
+            bgimage: url('../static/images/blackback.png'),
             // navbarbgimage: url('/images/borito.jpg'),
-            navbarbgimage: url('/images/borito2.jpg'),
+            navbarbgimage: url('/static/images/borito2.jpg'),
             navbarbgcolor: rgba(255, 255, 255, 0.4),
             navbgcolor: rgba(0, 0, 0, 0.7),
             navbarlogo: url('../images/logo.jpg'),
@@ -24,7 +24,7 @@ $colors: (
             ingatlanlistacardborder: darkgray,
             ingatlanlistacardhover: black,
             tartalombgcolor: rgba(215, 197, 153, 0.5),
-            footerbgimage: url('/images/borito.jpg'),
+            footerbgimage: url('/static/images/borito.jpg'),
             footerbgcolor: rgba(255, 255, 255, 0.4),
             footerdivbgcolor: rgba(0, 0, 0, 0.7),
             footerfontcolor: rgba(255, 255, 255, 1),
@@ -33,7 +33,7 @@ $colors: (
             viewbutton: #14ac89
         ),
         admin: (
-            bgimage: url('../images/blackback.png'),
+            bgimage: url('../static/images/blackback.png'),
             navbarlogo: url('../images/logo.jpg'),
             navbarbgcolor: #ffc107,
             navbarlinkcolor: black,

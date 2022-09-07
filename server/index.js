@@ -97,16 +97,15 @@ const actionIndex = (req, res, next) => {
 app.use(function (req, res, next) {
     var ua = req.headers['user-agent'];
     if (/^(facebookexternalhit|twitterbot)/gi.test(ua)) {
-        console.log('elfdskgndsml,fgnjmk,');
         actionIndex(req, res, next);
     } else {
         next();
     }
 });
-app.use(express.static('build/public'));
 
 app.get('/', actionIndex);
 app.get('/admin', actionIndex);
+app.use(express.static('build/public'));
 
 app.use(['/api/admin'], adminAuthService);
 // PUBLIC USERS
