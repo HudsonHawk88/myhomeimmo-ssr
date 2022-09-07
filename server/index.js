@@ -106,7 +106,9 @@ app.use(function (req, res, next) {
 
 app.get('/', actionIndex);
 app.get('/admin', actionIndex);
-app.use(express.static('build/public'));
+
+console.log('STATIC': process.env);
+app.use(express.static('public'));
 
 app.use(['/api/admin'], adminAuthService);
 // PUBLIC USERS
