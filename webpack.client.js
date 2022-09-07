@@ -11,7 +11,7 @@ module.exports = {
     mode: isProduction ? 'production' : 'development',
     entry: './src/index.js',
     output: {
-        path: path.resolve(__dirname, 'build/public'),
+        path: path.resolve(__dirname, 'build/public/static'),
         filename: 'client_bundle.js',
         publicPath: '/build/public'
         /* publicPath: '/' */
