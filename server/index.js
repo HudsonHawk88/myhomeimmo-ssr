@@ -105,6 +105,7 @@ app.use(function (req, res, next) {
 
 app.get('/', actionIndex);
 app.get('/admin', actionIndex);
+app.get('/static', actionIndex);
 
 app.use(express.static('build/public'));
 
