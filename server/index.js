@@ -103,12 +103,16 @@ app.use(function (req, res, next) {
         next();
     }
 });
+app.use(express.static('build/public'));
 
 app.get('/', actionIndex);
 app.get('/admin', actionIndex);
+<<<<<<< HEAD
 
 console.log('STATIC': process.env);
 app.use(express.static('public'));
+=======
+>>>>>>> 018c27848b7daf8af025547ebfe3389f5f4d0053
 
 app.use(['/api/admin'], adminAuthService);
 // PUBLIC USERS
