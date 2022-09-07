@@ -13,8 +13,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'build/public'),
         filename: 'client_bundle.js',
-        /*  publicPath: '/build/public' */
-        publicPath: '/'
+        publicPath: '/build/public'
+        /* publicPath: '/' */
     },
     plugins: [
         new webpack.ProvidePlugin({

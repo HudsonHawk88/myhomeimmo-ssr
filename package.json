@@ -90,7 +90,7 @@
         "build": "npm run copyfiles; npm-run-all --parallel build:*",
         "prod": "pm2 start build/server.config.js",
         "stop:prod": "pm2 stop myhome & pm2 delete myhome",
-        "make-dev": "concurrently -n frontend,server \"npm run webpack:client\" \"npm run webpack:server\"",
+        "make-dev": "concurrently -n frontend,server,node \"npm run webpack:client\" \"npm run webpack:server\" \"npm run webpack:run\"",
         "dev": "npm run webpack:run"
     },
     "eslintConfig": {
@@ -115,4 +115,3 @@
         ]
     }
 }
-
