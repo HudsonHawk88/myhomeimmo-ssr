@@ -356,7 +356,6 @@ const Ingatlan = (props) => {
     };
 
     const isIngatlanAdatokHidden = () => {
-        console.log(ingatlanObj.tipus, typeof ingatlanObj.tipus);
         let isHidden = false;
         if (ingatlanObj.tipus === '3' || ingatlanObj.tipus === '6' || ingatlanObj.tipus === '13' || ingatlanObj.tipus === '10') {
             isHidden = true;
@@ -549,13 +548,9 @@ const Ingatlan = (props) => {
                         <span
                             onClick={() => openFacebookShare(`https://www.facebook.com/sharer/sharer.php?u=http://inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`, 'Megosztás facebookon', 800, 800)}
                         >
-                            <i className="fa fa-facebook-f" /> &nbsp; Megosztás
+                            <i className="fa fa-facebook-f" /> Megosztás
                         </span>
                     </button>
-
-                    <div className="fb-share-button" data-href={`http://inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`} data-layout="button_count">
-                        Megosztás
-                    </div>
                     <div className="erdeklodes_form">
                         <Form onSubmit={sendMail}>
                             <div className="row">

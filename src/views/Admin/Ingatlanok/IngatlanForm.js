@@ -303,7 +303,6 @@ const IngatlanForm = (props) => {
 
     const handleTelepulesChange = (e) => {
         if (e) {
-            console.log(e);
             setTelepulesekOpts([e]);
             setTelepulesObj({
                 ...telepulesObj,
@@ -394,7 +393,6 @@ const IngatlanForm = (props) => {
     };
 
     const isIngatlanAdatokHidden = () => {
-        console.log(ingatlanObj.tipus, typeof ingatlanObj.tipus);
         let isHidden = false;
         if (ingatlanObj.tipus === '3' || ingatlanObj.tipus === '6' || ingatlanObj.tipus === '13' || ingatlanObj.tipus === '10') {
             isHidden = true;
@@ -439,7 +437,6 @@ const IngatlanForm = (props) => {
     };
 
     const onSubmit = (e) => {
-        console.log('ffdsdmlfnsdfjin');
         /*    e.preventDefault(); */
         let kuldObj = ingatlanObj;
         kuldObj.helyseg = helyseg;
@@ -523,7 +520,6 @@ const IngatlanForm = (props) => {
 
     return (
         <RVForm onSubmit={onSubmit} encType="multipart/form-data" noValidate={true}>
-            {console.log(ingatlanObj)}
             <ModalHeader>{!currentId ? 'Ingatlan hirdetés felvitele' : 'Ingatlan hirdetés módosítása'}</ModalHeader>
             <ModalBody>
                 <div className="row">
@@ -701,7 +697,6 @@ const IngatlanForm = (props) => {
                                 placeholder="Válasszon települést..."
                                 isDisabled={helyseg.irszam === '' || helyseg.irszam.length < 4}
                                 onChange={(e) => {
-                                    console.log(e);
                                     handleTelepulesChange(e);
                                     if (e) {
                                         setTelepulesObj({ ...telepulesObj, telepulesnev: e.value });

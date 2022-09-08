@@ -113,11 +113,31 @@ const Ingatlanok = (props) => {
         setCurrentId(id);
     };
 
+    const openFacebookShare = (url, title, w, h) => {
+        if (__isBrowser__) {
+            var left = screen.width / 2 - w / 2;
+            var top = screen.height / 2 - h / 2;
+            return window.open(
+                url,
+                title,
+                'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left
+            );
+        } else {
+            return false;
+        }
+    };
+
     const tableIconFormatter = (cell, row) => {
         return (
             <React.Fragment>
-                <Button key={row.id} color="link" onClick={() => handleViewClick(row.id)}>
-                    <i className="fas fa-eye" />
+                <Button
+                    key={row.id + 1}
+                    color="link"
+                    onClick={() => {
+                        openFacebookShare(`https://www.facebook.com/sharer/sharer.php?u=${process.env.shareUrl + row.id}`, 'Megosztás facebookon', 800, 800);
+                    }}
+                >
+                    <i className="fa fa-facebook-square" />
                 </Button>
                 <Button key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
                     <i className="fas fa-pencil-alt" />

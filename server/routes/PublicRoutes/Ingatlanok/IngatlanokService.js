@@ -38,7 +38,6 @@ router.get('/', async (req, res) => {
         ing.isUjEpitesu = ing.isUjEpitesu === 0 ? true : false; */
         });
         /* return result; */
-        console.log(ress);
         res.send(ress);
     } else {
         res.send([]);

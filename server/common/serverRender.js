@@ -39,7 +39,6 @@ const getMetaTags = async (req, activeRoute) => {
 
 const getRequestPath = (path, url, originalUrl) => {
     let newPath = '';
-    console.log(path);
     if (path.startsWith('/api')) {
         newPath = path;
     } else if (url.includes('ingatlan?id=')) {
@@ -47,12 +46,10 @@ const getRequestPath = (path, url, originalUrl) => {
     } else {
         switch (path) {
             case '/': {
-                console.log('ANYÁD1');
                 newPath = '/api/ingatlan';
             }
 
             case '/ingatlanok': {
-                console.log('ANYÁD2');
                 newPath = '/api/ingatlan';
             }
 
@@ -99,7 +96,6 @@ const getRequestPath = (path, url, originalUrl) => {
         }
     }
  */
-    console.log('getNewPath: ', newPath);
     return newPath;
 };
 
@@ -133,7 +129,6 @@ export default () => (req, res, next) => {
     const newPath = getRequestPath(req.path, req.url, req.originalUrl);
     /*   console.log('NEWPATH: ', newPath); */
     const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(newPath) : Promise.resolve();
-    console.log(promise);
 
     const filePath = resolve(__dirname, '..', 'build/public', 'index.html');
 
@@ -143,7 +138,6 @@ export default () => (req, res, next) => {
 
     fs.readFile(filePath, 'utf8', (err, htmlData) => {
         if (err) {
-            console.error('err', err);
             return res.status(404).end();
         }
 
@@ -164,7 +158,6 @@ export default () => (req, res, next) => {
 
                 // get HTML headers
                 const helmet = Helmet.renderStatic();
-                console.log('DATA: ', data);
                 let resx;
                 if (data) {
                     resx = res.send(
@@ -179,7 +172,7 @@ export default () => (req, res, next) => {
                             .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
                             .replace('__OG_TITLE__', data && Array.isArray(data) && data.length > 0 && data[0].cim)
                             .replace('__OG_DESCRIPTION__', data && Array.isArray(data) && data.length > 0 && data[0].leiras)
-                            .replace('__OG_URL__', process.env.url + data && Array.isArray(data) && data.length > 0 && data[0].id)
+                            .replace('__OG_URL__', process.env.REACT_APP_url + data && Array.isArray(data) && data.length > 0 && data[0].id)
                             .replace(
                                 '__OG_IMAGE__',
                                 data && Array.isArray(data) && data.length > 0 && data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src

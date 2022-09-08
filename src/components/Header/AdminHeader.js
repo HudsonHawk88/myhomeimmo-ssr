@@ -4,7 +4,6 @@ import NavLink from '../../commons/NavLink';
 
 const AdminHeader = (props) => {
     const { user, history, logout } = props;
-    console.log('avatar: ', user.avatar);
     const avatar = user && user.avatar && user.avatar.length !== 0 ? user.avatar[0].src : '/images/noavatar.png';
 
     return (

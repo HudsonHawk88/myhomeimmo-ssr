@@ -990,7 +990,7 @@ html body {
   /*  position: relative; */
   width: fit-content;
   text-align: center;
-  padding: 10px;
+  padding: 5px 10px;
   background-color: #4267b2;
   color: #fafafa;
   margin: 0 auto;
@@ -1001,6 +1001,7 @@ html body {
 }
 .ingatlan_card .ertekesito_adatok .facebook-share i {
   font-size: 18px;
+  padding: 5px;
 }
 .ingatlan_card .ertekesito_adatok .facebook-share :hover {
   /* padding: 10px; */

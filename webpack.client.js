@@ -25,7 +25,8 @@ module.exports = {
         }),
         new EnvironmentPlugin({
             reachaptchaApiKey: process.env.REACT_APP_recaptchakey,
-            reachaptchaSecretKey: process.env.REACT_APP_recaptchasecret
+            reachaptchaSecretKey: process.env.REACT_APP_recaptchasecret,
+            shareUrl: process.env.REACT_APP_url
         })
         /*         new LoadablePlugin() */
     ],

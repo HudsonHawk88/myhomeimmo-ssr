@@ -10,8 +10,6 @@ const Logroutes = (props) => {
         LoginRoutes.length !== 0 &&
         LoginRoutes.map(({ path, element: Component, index, children, ...rest }) => <Route key={path} path={path} index={index} element={<Component {...props} {...rest} />} />);
 
-    console.log(isAdmin && user);
-
     return (
         <React.Fragment>
             <Routes>{getMainRoutes()}</Routes>
