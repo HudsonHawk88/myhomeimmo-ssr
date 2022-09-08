@@ -157,6 +157,7 @@ export default () => (req, res, next) => {
                 const initialData = `window.__INITIAL_DATA__ = ${data ? JSON.stringify(data) : JSON.stringify([])}`;
 
                 // get HTML headers
+                console.log(process.env);
                 const helmet = Helmet.renderStatic();
                 let resx;
                 if (data) {
@@ -172,7 +173,7 @@ export default () => (req, res, next) => {
                             .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
                             .replace('__OG_TITLE__', data && Array.isArray(data) && data.length > 0 && data[0].cim)
                             .replace('__OG_DESCRIPTION__', data && Array.isArray(data) && data.length > 0 && data[0].leiras)
-                            .replace('__OG_URL__', process.env.REACT_APP_url + data && Array.isArray(data) && data.length > 0 && data[0].id)
+                            .replace('__OG_URL__', data && Array.isArray(data) && data.length > 0 && process.env.REACT_APP_url + data[0].id)
                             .replace(
                                 '__OG_IMAGE__',
                                 data && Array.isArray(data) && data.length > 0 && data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src
