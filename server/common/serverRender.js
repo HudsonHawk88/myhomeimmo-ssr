@@ -19,6 +19,7 @@ const getMetaTags = async (req, activeRoute) => {
     let meta = `<meta name="description" content={{__META_DESCRIPTION__}}/>
   <meta name="og:title" content={{__META_OG_TITLE__}}/>
   <meta name="og:description" content={{__META_OG_DESCRIPTION__}}/>
+  <meta property="og:url" content="__OG_URL__" />
   <meta name="og:image" content={{__META_OG_IMAGE__}}/>`;
     let ingatlan = {};
     if (req.query.id && req.url.startsWith('/?id=')) {
@@ -29,7 +30,9 @@ const getMetaTags = async (req, activeRoute) => {
         meta = `<meta name="description" content="${ingatlan[0].leiras}"/>
       <meta name="og:title" content="${ingatlan[0].cim}"/>
       <meta name="og:description" content="${ingatlan[0].leiras}"/>
-      <meta name="og:image" content=${ingatlan[0].kepek && ingatlan[0].kepek.length !== 0 && ingatlan[0].kepek[0].src}/>`;
+      <meta name="og:url" content="${process.env.url + ingatlan[0].id}"/>
+      <meta name="og:image" content=${ingatlan[0].kepek && ingatlan[0].kepek.length !== 0 && ingatlan[0].kepek[0].src}/>
+      `;
     }
     return meta;
 };
@@ -162,20 +165,40 @@ export default () => (req, res, next) => {
                 // get HTML headers
                 const helmet = Helmet.renderStatic();
                 console.log('DATA: ', data);
-                const resx = res.send(
-                    htmlData
-                        .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
-                        /*     // append the extra js assets
+                let resx;
+                if (data) {
+                    resx = res.send(
+                        htmlData
+                            .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
+                            /*     // append the extra js assets
           .replace("</body>", extraChunks.join("") + "</body>") */
-                        // write the HTML header tags
-                        .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() + helmet.meta.toString())
+                            // write the HTML header tags
+                            .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() + helmet.meta.toString())
 
-                        .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
-                        .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
-                        .replace('__OG_TITLE__', data && Array.isArray(data) && data.length > 0 && data[0].cim)
-                        .replace('__OG_DESCRIPTION__', data && Array.isArray(data) && data.length > 0 && data[0].leiras)
-                        .replace('__OG_IMAGE__', data && Array.isArray(data) && data.length > 0 && data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src)
-                );
+                            .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
+                            .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
+                            .replace('__OG_TITLE__', data && Array.isArray(data) && data.length > 0 && data[0].cim)
+                            .replace('__OG_DESCRIPTION__', data && Array.isArray(data) && data.length > 0 && data[0].leiras)
+                            .replace('__OG_URL__', process.env.url + data[0].id)
+                            .replace(
+                                '__OG_IMAGE__',
+                                data && Array.isArray(data) && data.length > 0 && data[0].kepek && Array.isArray(data[0].kepek) && data[0].kepek.length > 0 && data[0].kepek[0].src
+                            )
+                    );
+                } else {
+                    resx = res.send(
+                        htmlData
+                            .replace('<div id="root"></div>', `<div id="root">${markup}</div>`)
+                            /*     // append the extra js assets
+          .replace("</body>", extraChunks.join("") + "</body>") */
+                            // write the HTML header tags
+                            .replace('<title>MyHome - Ingatlanközvetítő iroda</title>', helmet.title.toString() + helmet.meta.toString())
+
+                            .replace('<noscript>You need to enable JavaScript to run this app.</noscript>', '')
+                            .replace('</head>', '<script>' + initialData + '</script>' + '</head>')
+                    );
+                }
+
                 return resx;
             })
             .catch((error) => console.log('errrrrr: ', error));

@@ -1,3 +1,6 @@
+@use '../variables/colors';
+@use '../functions/var' as *;
+
 .ingatlan_card {
     min-width: 100%;
     // max-width: 100%;
@@ -115,6 +118,31 @@
         width: 100%;
         padding: 5% 20px;
         gap: 20px;
+
+        .facebook-share {
+            display: block;
+            /*  position: relative; */
+            width: fit-content;
+            text-align: center;
+            padding: 10px;
+            background-color: var(base-fbcolor);
+            color: #fafafa;
+            margin: 0 auto;
+            font-size: 18px;
+            border: none;
+            box-shadow: none;
+            border-radius: 10px;
+
+            i {
+                font-size: 18px;
+            }
+        }
+
+        .facebook-share :hover {
+            /* padding: 10px; */
+            background-color: var(base-color);
+            color: #fafafa;
+        }
 
         & .elado_adatok {
             display: flex;

@@ -365,6 +365,20 @@ const Ingatlan = (props) => {
         return isHidden;
     };
 
+    const openFacebookShare = (url, title, w, h) => {
+        if (__isBrowser__) {
+            var left = screen.width / 2 - w / 2;
+            var top = screen.height / 2 - h / 2;
+            return window.open(
+                url,
+                title,
+                'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left
+            );
+        } else {
+            return false;
+        }
+    };
+
     const renderIngatlan = () => {
         let kep = ingatlanObj.hirdeto && getAvatar(ingatlanObj.hirdeto.feladoAvatar);
         return (
@@ -531,10 +545,16 @@ const Ingatlan = (props) => {
                             {ingatlanObj.hirdeto && ingatlanObj.hirdeto.feladoTelefon}
                         </div>
                     </div>
-                    <div className="fb-share-button" data-href={`http://teszt.myhomeimmo.inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`} data-layout="button" data-size="large">
-                        <a target="_blank" href={`https://www.facebook.com/sharer/sharer.php?u=http://inftechsol.hu:8460/ingatlan?id={ingatlanObj.id}`} className="fb-xfbml-parse-ignore">
-                            Megosztás
-                        </a>
+                    <button className="facebook-share" data-href={`http://inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`} data-layout="button" data-size="large">
+                        <span
+                            onClick={() => openFacebookShare(`https://www.facebook.com/sharer/sharer.php?u=http://inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`, 'Megosztás facebookon', 800, 800)}
+                        >
+                            <i className="fa fa-facebook-f" /> &nbsp; Megosztás
+                        </span>
+                    </button>
+
+                    <div className="fb-share-button" data-href={`http://inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`} data-layout="button_count">
+                        Megosztás
                     </div>
                     <div className="erdeklodes_form">
                         <Form onSubmit={sendMail}>

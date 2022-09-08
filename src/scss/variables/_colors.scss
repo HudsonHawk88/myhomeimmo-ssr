@@ -1,12 +1,14 @@
 $colors: (
     base: (
         black: #222,
-        white: #efefef
+        white: #efefef,
+        fbcolor: #4267b2
     ),
     themes: (
         public: (
             bgcolor: rgba(255, 255, 255, 1),
             bgimage: url('../static/images/blackback.png'),
+            fbcolor: #4267b2,
             // navbarbgimage: url('/images/borito.jpg'),
             navbarbgimage: url('/static/images/borito2.jpg'),
             navbarbgcolor: rgba(255, 255, 255, 0.4),
@@ -35,6 +37,7 @@ $colors: (
         admin: (
             bgimage: url('../static/images/blackback.png'),
             navbarlogo: url('../images/logo.jpg'),
+            fbcolor: #4267b2,
             navbarbgcolor: #ffc107,
             navbarlinkcolor: black,
             navbarlinkbgactivehover: whitesmoke,

@@ -27,7 +27,12 @@
     </head>
     <body>
         <!--  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/hu_HU/sdk.js#xfbml=1&version=v13.0&appId=996475810974610&autoLogAppEvents=1" nonce="BYaRYZHj"></script> -->
-        <div id="fb-root"></div>
+
+        <!--      <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/hu_HU/sdk.js#xfbml=1&version=v14.0&appId=996475810974610&autoLogAppEvents=1" nonce="JjAFNFyN"></script> -->
+
+        <!--  <div id="fb-root"></div>
+
         <script>
             (function (d, s, id) {
                 var js,
@@ -38,7 +43,14 @@
                 js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0';
                 fjs.parentNode.insertBefore(js, fjs);
             })(document, 'script', 'facebook-jssdk');
-        </script>
+
+            window.fbAsyncInit = function () {
+                // this gets triggered when FB object gets initialized
+                console.log('FB Object initiated');
+                console.log('FACEBOOK: ', FB);
+                FB.XFBML.parse(); // now we can safely call parse method
+            };
+        </script> -->
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
         <script defer src="/static/client_bundle.js"></script>

@@ -368,7 +368,7 @@ const IngatlanForm = (props) => {
 
     const IsAllapotFieldHidden = () => {
         let isHidden = true;
-        if (ingatlanObj.tipus === '1' || ingatlanObj.tipus === '2' || ingatlanObj.tipus === '4' || ingatlanObj.tipus === '9' || ingatlanObj.tipus === '12') {
+        if (ingatlanObj.tipus === '1' || ingatlanObj.tipus === '2' || ingatlanObj.tipus === '4' || ingatlanObj.tipus === '5' || ingatlanObj.tipus === '9' || ingatlanObj.tipus === '12') {
             isHidden = false;
         }
 
