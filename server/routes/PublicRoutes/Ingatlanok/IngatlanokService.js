@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
         const id = req.query.id;
         const sql = id
             ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'`
-            : `SELECT id, refid, iroda, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
+            : `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
 
         let result = await UseQuery(ingatlanok, sql);
         let ress = result.map((ing) => {
@@ -222,12 +222,12 @@ router.post('/keres', async (req, res) => {
                 /*   ing.kepek = JSON.parse(ing.kepek); */
                 ing.kepek = ing.kepek.filter((kep) => kep.isCover);
                 /*        ing.helyseg = JSON.parse(ing.helyseg); */
-                ing.isHirdetheto = ing.isHirdetheto === 0 ? true : false;
-                ing.isKiemelt = ing.isKiemelt === 0 ? true : false;
-                ing.isErkely = ing.isErkely === 0 ? true : false;
-                ing.isLift = ing.isLift === 0 ? true : false;
-                ing.isAktiv = ing.isAktiv === 0 ? true : false;
-                ing.isUjEpitesu = ing.isUjEpitesu === 0 ? true : false;
+                ing.isHirdetheto = ing.isHirdetheto === 1 ? true : false;
+                ing.isKiemelt = ing.isKiemelt === 1 ? true : false;
+                ing.isErkely = ing.isErkely === 1 ? true : false;
+                ing.isLift = ing.isLift === 1 ? true : false;
+                ing.isAktiv = ing.isAktiv === 1 ? true : false;
+                ing.isUjEpitesu = ing.isUjEpitesu === 1 ? true : false;
             });
             res.status(200).send(ressss);
         } else {
