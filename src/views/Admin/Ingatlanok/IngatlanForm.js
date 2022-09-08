@@ -16,6 +16,7 @@ const IngatlanForm = (props) => {
     };
 
     const defaultObj = {
+        office_id: '',
         cim: '',
         leiras: '',
         kepek: [],
@@ -527,21 +528,41 @@ const IngatlanForm = (props) => {
                         <h5>Feladó adatok</h5>
                     </div>
                     <hr />
-                    <div className="col-md-4">
+                    <div className="col-md-3">
+                        <RVFormGroup>
+                            <Label>{'Iroda: *'}</Label>
+                            <RVInput
+                                required
+                                disabled={formType === 'MOD'}
+                                type="select"
+                                name="iroda"
+                                id="iroda"
+                                value={ingatlanObj.office_id}
+                                onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)}
+                            >
+                                <option key="defaultIroda" value="">
+                                    Kérjük válasszon típust...
+                                </option>
+                                {renderOptions('iroda')}
+                            </RVInput>
+                            <RVFormFeedback />
+                        </RVFormGroup>
+                    </div>
+                    <div className="col-md-3">
                         <RVFormGroup>
                             <Label>{isRequired('Feladó neve:', true)}</Label>
                             <RVInput required name="feladoNev" id="feladoNev" value={hirdeto.feladoNev} onChange={(e) => handleInputChange(e, hirdeto, setHirdeto)} />
                             <RVFormFeedback />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <RVFormGroup>
                             <Label>{isRequired('Feladó e-mail címe:', true)}</Label>
                             <RVInput required type="email" name="feladoEmail" id="feladoEmail" value={hirdeto.feladoEmail} onChange={(e) => handleInputChange(e, hirdeto, setHirdeto)} />
                             <RVFormFeedback />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <RVFormGroup>
                             <Label>{isRequired('Feladó telefonszáma:', true)}</Label>
                             <RVInput required name="feladoTelefon" id="feladoTelefon" value={hirdeto.feladoTelefon} onChange={(e) => handleInputChange(e, hirdeto, setHirdeto)} />

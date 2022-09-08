@@ -329,6 +329,7 @@ const createIngatlanokSql = `
     CREATE TABLE IF NOT EXISTS eobgycvo_myhome.ingatlanok (
         id INT NOT NULL PRIMARY KEY,
         refid text DEFAULT NULL,
+        office_id text DEFAULT NULL,
         cim text DEFAULT NULL,
         leiras text DEFAULT NULL,
         helyseg json DEFAULT NULL,

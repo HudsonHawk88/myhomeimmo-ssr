@@ -107,7 +107,7 @@ router.get('/', async (req, res) => {
                     }
                 });
             } else {
-                const sql = `SELECT id, refid, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo, hirdeto
+                const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo, hirdeto
                 FROM ingatlanok`;
                 ingatlanok.query(sql, async (err, result) => {
                     if (!err) {
@@ -185,19 +185,19 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                                         const userAvatar = await UseQuery(ingatlanok, getUserAvatarSql);
                                         const avatar = userAvatar ? userAvatar[0].avatar : [];
                                         let id = await getId(req.headers.id);
-                                        const sql = `INSERT INTO ingatlanok(id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, hirdeto) VALUES ('${id}', '${
-                                            felvitelObj.cim
-                                        }', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
-                                            felvitelObj.kaucio
-                                        }', '${felvitelObj.penznem}', '${felvitelObj.statusz}', '${felvitelObj.tipus}', '${felvitelObj.altipus}', '${felvitelObj.rendeltetes}', '${
-                                            felvitelObj.allapot
-                                        }', '${felvitelObj.emelet}', '${felvitelObj.alapterulet}', '${felvitelObj.telek}', '${felvitelObj.telektipus}', '${felvitelObj.beepithetoseg}', '${
-                                            felvitelObj.viz
-                                        }', '${felvitelObj.gaz}', '${felvitelObj.villany}', '${felvitelObj.szennyviz}', '${felvitelObj.szobaszam}', '${felvitelObj.felszobaszam}', '${
-                                            felvitelObj.epitesmod
-                                        }', '${felvitelObj.futes}', '${felvitelObj.isHirdetheto}', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${felvitelObj.isLift}', '${
-                                            felvitelObj.isAktiv
-                                        }', '${felvitelObj.isUjEpitesu}', '${felvitelObj.hirdeto}');`;
+                                        const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, hirdeto) VALUES ('${id}', '${
+                                            felvitelObj.office_id
+                                        }', '${felvitelObj.cim}', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${
+                                            felvitelObj.ar
+                                        }', '${felvitelObj.kaucio}', '${felvitelObj.penznem}', '${felvitelObj.statusz}', '${felvitelObj.tipus}', '${felvitelObj.altipus}', '${
+                                            felvitelObj.rendeltetes
+                                        }', '${felvitelObj.allapot}', '${felvitelObj.emelet}', '${felvitelObj.alapterulet}', '${felvitelObj.telek}', '${felvitelObj.telektipus}', '${
+                                            felvitelObj.beepithetoseg
+                                        }', '${felvitelObj.viz}', '${felvitelObj.gaz}', '${felvitelObj.villany}', '${felvitelObj.szennyviz}', '${felvitelObj.szobaszam}', '${
+                                            felvitelObj.felszobaszam
+                                        }', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.isHirdetheto}', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${
+                                            felvitelObj.isLift
+                                        }', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.hirdeto}');`;
 
                                         ingatlanok.query(sql, async (error) => {
                                             if (!error) {
@@ -266,15 +266,15 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                         const userAvatar = await UseQuery(ingatlanok, getUserAvatarSql);
                         const avatar = userAvatar ? userAvatar[0].avatar : [];
                         let id = await getId(req.headers.id);
-                        const sql = `INSERT INTO ingatlanok(id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, hirdeto) VALUES ('${id}', '${
-                            felvitelObj.cim
-                        }', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
-                            felvitelObj.kaucio
-                        }', '${felvitelObj.penznem}', '${felvitelObj.statusz}', '${felvitelObj.tipus}', '${felvitelObj.altipus}', '${felvitelObj.rendeltetes}', '${felvitelObj.allapot}', '${
-                            felvitelObj.emelet
-                        }', '${felvitelObj.alapterulet}', '${felvitelObj.telek}', '${felvitelObj.telektipus}', '${felvitelObj.beepithetoseg}', '${felvitelObj.viz}', '${felvitelObj.gaz}', '${
-                            felvitelObj.villany
-                        }', '${felvitelObj.szennyviz}', '${felvitelObj.szobaszam}', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${
+                        const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, hirdeto) VALUES ('${id}', '${
+                            felvitelObj.office_id
+                        }',  '${felvitelObj.cim}', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${
+                            felvitelObj.ar
+                        }', '${felvitelObj.kaucio}', '${felvitelObj.penznem}', '${felvitelObj.statusz}', '${felvitelObj.tipus}', '${felvitelObj.altipus}', '${felvitelObj.rendeltetes}', '${
+                            felvitelObj.allapot
+                        }', '${felvitelObj.emelet}', '${felvitelObj.alapterulet}', '${felvitelObj.telek}', '${felvitelObj.telektipus}', '${felvitelObj.beepithetoseg}', '${felvitelObj.viz}', '${
+                            felvitelObj.gaz
+                        }', '${felvitelObj.villany}', '${felvitelObj.szennyviz}', '${felvitelObj.szobaszam}', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${
                             felvitelObj.isHirdetheto
                         }', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${felvitelObj.isLift}', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.hirdeto}');`;
 
@@ -386,19 +386,19 @@ router.put('/', upload.array('uj_kepek'), async (req, res) => {
                             kep.isCover = index.toString() === '0' ? true : false;
                         });
 
-                        const sql = `UPDATE ingatlanok SET cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(modositoObj.helyseg)}', kepek='${JSON.stringify(
-                            kepek
-                        )}', irsz='${modositoObj.irsz}', telepules='${modositoObj.telepules}', ar='${modositoObj.ar}', kaucio='${modositoObj.kaucio}', penznem='${modositoObj.penznem}', statusz='${
-                            modositoObj.statusz
-                        }', tipus='${modositoObj.tipus}', altipus='${modositoObj.altipus}', rendeltetes='${modositoObj.rendeltetes}', allapot='${modositoObj.allapot}', emelet='${
-                            modositoObj.emelet
-                        }', alapterulet='${modositoObj.alapterulet}', telek='${modositoObj.telek}', telektipus='${modositoObj.telektipus}', beepithetoseg='${modositoObj.beepithetoseg}', viz='${
-                            modositoObj.viz
-                        }', gaz='${modositoObj.gaz}', villany='${modositoObj.villany}', szennyviz='${modositoObj.szennyviz}', szobaszam='${modositoObj.szobaszam}', felszobaszam='${
-                            modositoObj.felszobaszam
-                        }', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${modositoObj.isKiemelt}', isErkely='${
-                            modositoObj.isErkely
-                        }', isLift='${modositoObj.isLift}', isAktiv='${modositoObj.isAktiv}', isUjEpitesu='${modositoObj.isUjEpitesu}', hirdeto='${JSON.stringify(
+                        const sql = `UPDATE ingatlanok SET office_id='${modositoObj.office_id}', cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(
+                            modositoObj.helyseg
+                        )}', kepek='${JSON.stringify(kepek)}', irsz='${modositoObj.irsz}', telepules='${modositoObj.telepules}', ar='${modositoObj.ar}', kaucio='${modositoObj.kaucio}', penznem='${
+                            modositoObj.penznem
+                        }', statusz='${modositoObj.statusz}', tipus='${modositoObj.tipus}', altipus='${modositoObj.altipus}', rendeltetes='${modositoObj.rendeltetes}', allapot='${
+                            modositoObj.allapot
+                        }', emelet='${modositoObj.emelet}', alapterulet='${modositoObj.alapterulet}', telek='${modositoObj.telek}', telektipus='${modositoObj.telektipus}', beepithetoseg='${
+                            modositoObj.beepithetoseg
+                        }', viz='${modositoObj.viz}', gaz='${modositoObj.gaz}', villany='${modositoObj.villany}', szennyviz='${modositoObj.szennyviz}', szobaszam='${
+                            modositoObj.szobaszam
+                        }', felszobaszam='${modositoObj.felszobaszam}', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${
+                            modositoObj.isKiemelt
+                        }', isErkely='${modositoObj.isErkely}', isLift='${modositoObj.isLift}', isAktiv='${modositoObj.isAktiv}', isUjEpitesu='${modositoObj.isUjEpitesu}', hirdeto='${JSON.stringify(
                             modositoObj.hirdeto
                         )}' WHERE id='${id}';`;
                         ingatlanok.query(sql, (err) => {

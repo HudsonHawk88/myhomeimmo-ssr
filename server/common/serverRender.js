@@ -157,7 +157,6 @@ export default () => (req, res, next) => {
                 const initialData = `window.__INITIAL_DATA__ = ${data ? JSON.stringify(data) : JSON.stringify([])}`;
 
                 // get HTML headers
-                console.log(process.env);
                 const helmet = Helmet.renderStatic();
                 let resx;
                 if (data) {
