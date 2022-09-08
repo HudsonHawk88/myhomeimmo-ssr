@@ -535,12 +535,12 @@ const IngatlanForm = (props) => {
                                 required
                                 disabled={formType === 'MOD'}
                                 type="select"
-                                name="iroda"
-                                id="iroda"
+                                name="office_id"
+                                id="office_id"
                                 value={ingatlanObj.office_id}
                                 onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)}
                             >
-                                <option key="defaultIroda" value="">
+                                <option key="defaultOffice_id" value="">
                                     Kérjük válasszon típust...
                                 </option>
                                 {renderOptions('iroda')}
