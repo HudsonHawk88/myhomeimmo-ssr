@@ -1,20 +1,40 @@
-import { jwtparams, UseQuery, poolConnect, validateToken, hasRole } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole, isAdminUsersTableExists } from '../../../common/QueryHelpers.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import multer from 'multer';
+import { getJSONfromLongtext } from '../../../common/QueryHelpers';
 const router = express.Router();
-const adminusers = poolConnect;
+const adminusers = pool;
+
+const getId = async (reqID) => {
+    let id = undefined;
+    if (reqID !== undefined) {
+        id = parseInt(reqID, 10);
+    } else {
+        const isExist = await isAdminUsersTableExists(adminusers);
+        if (isExist) {
+            const getLastIdSql = `SELECT MAX(id) as id FROM adminusers;`;
+            let result = await UseQuery(getLastIdSql);
+            let newID = result[0].id;
+            if (newID && newID !== 'null') {
+                id = newID + 1;
+            } else {
+                id = 1;
+            }
+        } else {
+            id = 1;
+        }
+    }
+
+    return id;
+};
+
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         if (file) {
-            let id = req.headers.id;
-            if (!id) {
-                const getLastIdSql = `SELECT auto_increment FROM INFORMATION_SCHEMA.TABLES WHERE table_name = 'adminusers'`;
-                id = await UseQuery(adminusers, getLastIdSql);
-                id = parseInt(id[0].auto_increment);
-            }
-            const dir = `${process.env.avatardir}/${isNaN(id) ? 1 : id}/`;
+            const id = await getId(req.headers.id);
+            const dir = `${process.env.avatardir}/${id}/`;
             let exist = existsSync(dir);
             if (!exist) {
                 mkdirSync(dir);
@@ -71,6 +91,7 @@ router.get('/', async (req, res) => {
                     } else {
                         let resss = ress;
                         resss.map((item) => {
+                            /*    getJSONfromLongtext(item); */
                             item.cim = JSON.parse(item.cim);
                             item.nev = JSON.parse(item.nev);
                             item.roles = JSON.parse(item.roles);
@@ -121,13 +142,11 @@ router.post('/', upload.array('avatar'), async (req, res) => {
                     adminusers.query(sql, async (error) => {
                         if (!error) {
                             const sqlEmail = `SELECT email FROM adminusers WHERE email = '${felvitelObj.email}';`;
-                            const resultEmail = await UseQuery(adminusers, sqlEmail);
+                            const resultEmail = await UseQuery(sqlEmail);
                             // if (resultEmail.rowCount === 0) {
                             if (resultEmail.length === 0) {
                                 felvitelObj.isErtekesito = felvitelObj.isErtekesito === 'true' ? 0 : 1;
-                                const getLastIdSql = `SELECT MAX( id ) as id FROM adminusers;`;
-                                let id = await UseQuery(adminusers, getLastIdSql);
-                                id = id[0].id;
+                                let id = await getId(req.headers.id);
                                 let kepek = [];
                                 if (req.files) {
                                     req.files.forEach((kep) => {
@@ -138,10 +157,10 @@ router.post('/', upload.array('avatar'), async (req, res) => {
                                     });
                                 }
                                 felvitelObj.avatar = kepek;
-                                const sql = `INSERT INTO adminusers (nev, cim, telefon, avatar, username, email, password, roles, token, isErtekesito)
-                          VALUES ('${JSON.stringify(felvitelObj.nev)}', '${JSON.stringify(felvitelObj.cim)}', '${JSON.stringify(felvitelObj.telefon)}', '${JSON.stringify(felvitelObj.avatar)}', '${
-                                    felvitelObj.username
-                                }', '${felvitelObj.email}', '${hash}', '${JSON.stringify(felvitelObj.roles)}', '${null}', '${felvitelObj.isErtekesito}');`;
+                                const sql = `INSERT INTO adminusers (id, nev, cim, telefon, avatar, username, email, password, roles, token, isErtekesito)
+                          VALUES ('${id}', '${felvitelObj.nev}', '${felvitelObj.cim}', '${felvitelObj.telefon}', '${JSON.stringify(felvitelObj.avatar)}', '${felvitelObj.username}', '${
+                                    felvitelObj.email
+                                }', '${hash}', '${felvitelObj.roles}', '${null}', '${felvitelObj.isErtekesito}');`;
                                 adminusers.query(sql, (err) => {
                                     if (!err) {
                                         res.status(200).send({

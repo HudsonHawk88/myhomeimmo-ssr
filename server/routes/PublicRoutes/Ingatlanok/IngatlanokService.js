@@ -1,11 +1,27 @@
 // const { Pool } = require("pg");
 import express from 'express';
-import { poolConnect, getTelepulesekByKm, getTypeForXml, getAllapotForXml, getKepekForXml, UseQuery, getJSONfromLongtext, isIngatlanokTableExists } from '../../../common/QueryHelpers.js';
+import { pool, getTelepulesekByKm, getKepekForXml, UseQuery, getJSONfromLongtext, isIngatlanokTableExists } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { serverRender } from '../../../common/serverRender.js';
 import path from 'path';
 const router = express.Router();
-const ingatlanok = poolConnect;
+const ingatlanok = pool;
+
+const getPenznem = (penznem) => {
+    switch (penznem) {
+        case 'Forint': {
+            return 'HUF';
+        }
+        case 'Euró': {
+            return 'EUR';
+        }
+        case 'USA Dollár': {
+            return 'USD';
+        }
+        default: {
+            return 'HUF';
+        }
+    }
+};
 
 // INGATLANOK START
 
@@ -17,9 +33,9 @@ router.get('/', async (req, res) => {
             ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'`
             : `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
 
-        let result = await UseQuery(ingatlanok, sql);
+        let result = await UseQuery(sql);
         let ress = result.map((ing) => {
-            return getJSONfromLongtext(ing);
+            return getJSONfromLongtext(ing, 'toBool');
             /*    if (ing.kepek) {
             ing.kepek = JSON.parse(JSON.stringify(ing.kepek));
         }
@@ -56,12 +72,9 @@ router.get('/', async (req, res) => {
         ing.kepek = JSON.parse(ing.kepek);
         if (!id) {
           ing.kepek = ing.kepek.filter((kep) => kep.isCover);
-          
         } else {
           ing.rogzitoAvatar = JSON.parse(ing.rogzitoAvatar)
         }
-
-        
         ing.helyseg = JSON.parse(ing.helyseg);
         ing.isHirdetheto = ing.isHirdetheto === 0 ? true : false;
         ing.isKiemelt = ing.isKiemelt === 0 ? true : false;
@@ -88,12 +101,9 @@ router.get('/', async (req, res) => {
         ing.kepek = JSON.parse(ing.kepek);
         if (!id) {
           ing.kepek = ing.kepek.filter((kep) => kep.isCover);
-          
         } else {
           ing.rogzitoAvatar = JSON.parse(ing.rogzitoAvatar)
         }
-
-        
         ing.helyseg = JSON.parse(ing.helyseg);
         ing.isHirdetheto = ing.isHirdetheto === 0 ? true : false;
         ing.isKiemelt = ing.isKiemelt === 0 ? true : false;
@@ -187,7 +197,7 @@ router.post('/keres', async (req, res) => {
             let km = kereso['telepules'].km;
             let telepnev = kereso['telepules'].telepulesnev;
             let irszam = kereso['telepules'].irszam;
-            const nearTelep = await getTelepulesekByKm(ingatlanok, telepnev, irszam, km);
+            const nearTelep = await getTelepulesekByKm(telepnev, irszam, km);
             let telepek = nearTelep.map((telep, index) => {
                 return `'${telep.telepulesnev}'`;
             });
@@ -214,7 +224,7 @@ router.post('/keres', async (req, res) => {
         newWhere = newWhere.slice(0, resultNew - 1);
     }
 
-    let sql = `SELECT * FROM ingatlanok WHERE isAktiv='1' ${where !== '' ? `AND ` + where : ''} ${newWhere !== '' ? `AND ` + newWhere : ''};`;
+    let sql = `SELECT * FROM ingatlanok WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''} ${newWhere !== '' ? 'AND ' + newWhere : ''};`;
     ingatlanok.query(sql, (err, result) => {
         if (!err) {
             let ressss = result;
@@ -246,48 +256,63 @@ router.get('/ingatlanokapi', (req, res, next) => {
             await Promise.all(
                 ingatlanJson.map(async (ingatlan) => {
                     const getLatLongSql = `SELECT geoLat, geoLong FROM telep_1 WHERE irszam='${ingatlan.irsz}';`;
-                    const latLong = await UseQuery(ingatlanok, getLatLongSql);
+                    const tipus = ingatlan.tipus + '';
+                    const hirdeto = ingatlan.hirdeto;
+                    const latLong = await UseQuery(getLatLongSql);
                     const kepek = ingatlan.kepek;
-                    data += `<item refnum="${ingatlan.refid}"> 
-        <agent-name>${ingatlan.rogzitoNev}</agent-name>
-        <agent-email>${ingatlan.rogzitoEmail}</agent-email>
-        <agent-phone>${ingatlan.rogzitoTelefon}</agent-phone>
-        <status>${'Aktív'}</status>
-        <type>${getTypeForXml(ingatlan.tipus)}</type>
-        <refnum>${ingatlan.refid}</refnum>
-        <city>${ingatlan.telepules}</city>
-        <zip>${ingatlan.irsz}</zip>
-        <mbtyp>${ingatlan.statusz}</mbtyp>
-        <price>${ingatlan.ar}</price>
-        <currency>${'HUF'}</currency>
-        ${ingatlan.tipus !== 'Telek' && ingatlan.tipus !== 'Fejlesztési terület' && ingatlan.tipus !== 'Mezőgazdasági terület' && `<sqrm>${ingatlan.alapterulet}</sqrm>`}
-        ${
-            ingatlan.tipus === 'Telek' || ingatlan.tipus === 'Fejlesztési terület' || ingatlan.tipus === 'Mezőgazdasági terület'
-                ? `<land>${ingatlan.telek}</land>
-           <ltyp>Egyéb</ltyp>
-          `
-                : ''
-        }
-        <pname>${ingatlan.cim}</pname>
-        <note>
-        <![CDATA[${ingatlan.leiras}]]>
-        </note>
-        <lat>${latLong[0].geoLat}</lat>
-        <lng>${latLong[0].geoLong}</lng>
-  
-        ${getAllapotForXml(ingatlan.allapot, ingatlan.tipus)}
-        ${ingatlan.emelet ? `<floor>${ingatlan.emelet}</floor>` : ''}
-        <builds>${ingatlan.epitesmod}</builds>
-        <htyp>${ingatlan.futes}</htyp>
-        <images>
-          ${getKepekForXml(kepek, data)}
-        </images>
-        </item>`;
+                    data += `<item refnum="${ingatlan.refid}">
+                  <agent-name>${hirdeto && hirdeto.feladoNev}</agent-name>
+                  <agent-email>${hirdeto && hirdeto.feladoEmail}</agent-email>
+                  <agent-phone>${hirdeto && hirdeto.feladoTelefon}</agent-phone>
+                  <status>${'Aktív'}</status>
+                  <type>${ingatlan.tipus}</type>
+                  <refnum>${ingatlan.refid}</refnum>
+                  <city>${ingatlan.telepules}</city>
+                  <zip>${ingatlan.irsz}</zip>
+                  <mbtyp>${ingatlan.statusz}</mbtyp>
+                  ${ingatlan.statusz === 'Kiadó' ? `<kaucio>${ingatlan.kaucio}</kaucio>` : ''}
+                  <price>${ingatlan.ar}</price>
+                  <currency>${getPenznem(ingatlan.penznem)}</currency>
+                  ${tipus !== '3' && tipus !== '10' && tipus !== '13' ? `<sqrm>${ingatlan.alapterulet}</sqrm>` : ''}
+                  ${
+                      tipus === '2' || tipus === '3' || tipus === '10' || tipus === '13'
+                          ? `<land>${ingatlan.telek}</land>
+                    <ltyp>${ingatlan.telektipus}</ltyp>`
+                          : ''
+                  }
+                  ${
+                      tipus === '2' || tipus === '6' || tipus === '8' || tipus === '9' || tipus === '10' || tipus === '11' || tipus === '12' || tipus === '13'
+                          ? `<btype>${ingatlan.altipus}</btype>`
+                          : ''
+                  }
+                  ${tipus === '2' || tipus === '3' ? `<rend>${ingatlan.rendeltetes}</rend>` : ''}
+                  ${ingatlan.szobaszam && `<room>${ingatlan.szobaszam}</room>`}
+                  ${ingatlan.felszobaszam && `<froom>${ingatlan.felszobaszam}<froom>`}
+                  ${ingatlan.viz && `<water>${ingatlan.viz}</water>`}
+                  ${ingatlan.gaz && `<gas>${ingatlan.gaz}</gas>`}
+                  ${ingatlan.villany && `<electr>${ingatlan.villany}</electr>`}
+                  ${ingatlan.szennyviz && `<sewage>${ingatlan.szennyviz}</sewage>`}
+                  <pname>${ingatlan.cim}</pname>
+                  <note>
+                  <![CDATA[${ingatlan.leiras}]]>
+                  </note>
+                  <lat>${latLong[0].geoLat}</lat>
+                  <lng>${latLong[0].geoLong}</lng>
+            
+                  ${tipus === '1' || tipus === '2' || tipus === '4' || tipus === '9' || tipus === '12' ? `<property-condition>${ingatlan.allapot}</property-condition>` : ''}
+                  ${tipus === '1' ? `<floor>${ingatlan.emelet}</floor>` : ''}
+                  <builds>${ingatlan.epitesmod}</builds>
+                  <htyp>${ingatlan.futes}</htyp>
+                  <images>
+                    ${getKepekForXml(kepek, data)}
+                  </images>
+                  </item>`;
                     return data;
                 })
             );
             data += `</items>`;
-            const dir = `/home/eobgycvo/public_html/xml/ingatlanok/`;
+            /*       const dir = `/home/eobgycvo/public_html/xml/ingatlanok/`; */
+            const dir = process.env.xmlUrl;
             let exist = existsSync(dir);
             if (!exist) {
                 mkdirSync(path.normalize(dir));

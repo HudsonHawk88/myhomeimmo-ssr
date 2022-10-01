@@ -1,7 +1,7 @@
-import { jwtparams, UseQuery, poolConnect, validateToken, hasRole } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole } from '../../../common/QueryHelpers.js';
 import express from 'express';
 const router = express.Router();
-const roles = poolConnect;
+const roles = pool;
 
 // ROLES START
 
@@ -72,7 +72,7 @@ router.post('/', async (req, res) => {
                     roles.query(sql, async (error) => {
                         if (!error) {
                             const roleSql = `SELECT value FROM roles WHERE value = '${felvitelObj.role}';`;
-                            const resultRole = await UseQuery(roles, roleSql);
+                            const resultRole = await UseQuery(roleSql);
                             // if (resultEmail.rowCount === 0) {
                             if (resultRole.length === 0) {
                                 const sql = `INSERT INTO roles (label, leiras, value)

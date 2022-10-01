@@ -6,6 +6,8 @@ import { useDropzone } from 'react-dropzone';
 
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
+import { makeFormData } from '../../../commons/Lib';
+import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
 
 const AdminUsers = (props) => {
     const defaultNev = {
@@ -232,7 +234,17 @@ const AdminUsers = (props) => {
         let datas = new FormData();
 
         if (!currentId) {
-            for (var key in user) {
+            datas = makeFormData(user, 'avatar', false);
+            Services.addAdminUser(datas).then((res) => {
+                if (!res.err) {
+                    toggleModal();
+                    listAdminUsers();
+                    addNotification('success', res.msg);
+                } else {
+                    addNotification('error', res.err);
+                }
+            });
+            /*  for (var key in user) {
                 if (key === 'avatar' || key === 'telefon' || key === 'cim' || key === 'nev' || key === 'roles' || key === 'password') {
                     if (key === 'avatar') {
                         // console.log(user.avatar);
@@ -252,9 +264,19 @@ const AdminUsers = (props) => {
                 } else {
                     datas.append(key, user[key]);
                 }
-            }
+            } */
         } else {
-            for (var key in user) {
+            datas = makeFormData(user, 'avatar', true);
+            Services.editAdminUser(datas, currentId).then((res) => {
+                if (!res.err) {
+                    toggleModal();
+                    listAdminUsers();
+                    addNotification('success', res.msg);
+                } else {
+                    addNotification('error', res.err);
+                }
+            });
+            /*   for (var key in user) {
                 if (key === 'avatar' || key === 'telefon' || key === 'cim' || key === 'nev' || key === 'roles' || key === 'password') {
                     if (key === 'avatar') {
                         // console.log(user.avatar);
@@ -276,10 +298,10 @@ const AdminUsers = (props) => {
                 } else {
                     datas.append(key, user[key]);
                 }
-            }
+            } */
         }
 
-        if (!currentId) {
+        /*    if (!currentId) {
             Services.addAdminUser(datas).then((res) => {
                 if (!res.err) {
                     toggleModal();
@@ -299,7 +321,7 @@ const AdminUsers = (props) => {
                     addNotification('error', res.err);
                 }
             });
-        }
+        } */
     };
 
     const deleteImage = (src) => {
@@ -383,7 +405,7 @@ const AdminUsers = (props) => {
         // console.log(adminUser);
         return (
             <Modal isOpen={modalOpen} toggle={toggleModal} size="xl" backdrop="static">
-                <Form onSubmit={onSave} encType="multipart/form-data">
+                <RVForm onSubmit={onSave} encType="multipart/form-data" noValidate={true}>
                     <ModalHeader>{!currentId ? 'Admin felhasználó hozzáadása' : 'Admin felhasználó módosítása'}</ModalHeader>
                     <ModalBody>
                         <h4>Alapadatok:</h4>
@@ -391,34 +413,34 @@ const AdminUsers = (props) => {
                         <div className="row">
                             <div className="col-md-2">
                                 <Label>Titulus:</Label>
-                                <Input name="titulus" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.titulus} />
+                                <RVInput name="titulus" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.titulus} />
                             </div>
                             <div className="col-md-5">
                                 <Label>Vezetéknév:</Label>
-                                <Input name="vezeteknev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.vezeteknev} />
+                                <RVInput name="vezeteknev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.vezeteknev} />
                             </div>
                             <div className="col-md-5">
                                 <Label>Keresztnév:</Label>
-                                <Input name="keresztnev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.keresztnev} />
+                                <RVInput name="keresztnev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.keresztnev} />
                             </div>
                             <div className="col-md-12" />
                             <br />
                             <div className="col-md-5">
                                 <Label>Ország:</Label>
-                                <Input type="select" id="orszag" name="orszag" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.orszag.id}>
+                                <RVInput type="select" id="orszag" name="orszag" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.orszag.id}>
                                     <option key="default" value="">
                                         {'Kérjük válasszon országot...'}
                                     </option>
                                     {renderOrszagokOptions()}
-                                </Input>
+                                </RVInput>
                             </div>
                             <div className="col-md-2">
                                 <Label>Irányítószám:</Label>
-                                <Input name="irszam" id="irszam" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.irszam} />
+                                <RVInput name="irszam" id="irszam" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.irszam} />
                             </div>
                             <div className="col-md-5">
                                 <Label>Település:</Label>
-                                <Input
+                                <RVInput
                                     type="select"
                                     name="telepules"
                                     id="telepules"
@@ -430,39 +452,39 @@ const AdminUsers = (props) => {
                                         {'Kérjük válasszon települést...'}
                                     </option>
                                     {renderTelepulesekOptions()}
-                                </Input>
+                                </RVInput>
                             </div>
                             <div className="col-md-12" />
                             <br />
                             <div className="col-md-6">
                                 <Label>Közterület:</Label>
-                                <Input name="kozterulet" id="kozterulet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.kozterulet} />
+                                <RVInput name="kozterulet" id="kozterulet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.kozterulet} />
                             </div>
                             <div className="col-md-2">
                                 <Label>Házszám:</Label>
-                                <Input name="hazszam" id="hazszam" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.hazszam} />
+                                <RVInput name="hazszam" id="hazszam" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.hazszam} />
                             </div>
                             <div className="col-md-2">
                                 <Label>Helyrajzi szám:</Label>
-                                <Input name="hrsz" id="hrsz" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.hrsz} />
+                                <RVInput name="hrsz" id="hrsz" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.hrsz} />
                             </div>
                             <div className="col-md-2">
                                 <Label>Postafiók:</Label>
-                                <Input name="postafiok" id="postafiok" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.postafiok} />
+                                <RVInput name="postafiok" id="postafiok" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.postafiok} />
                             </div>
                             <div className="col-md-12" />
                             <br />
                             <div className="col-md-4">
                                 <Label>Épület:</Label>
-                                <Input name="epulet" id="epulet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.epulet} />
+                                <RVInput name="epulet" id="epulet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.epulet} />
                             </div>
                             <div className="col-md-4">
                                 <Label>Emelet:</Label>
-                                <Input name="emelet" id="emelet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.emelet} />
+                                <RVInput name="emelet" id="emelet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.emelet} />
                             </div>
                             <div className="col-md-4">
                                 <Label>Ajtó:</Label>
-                                <Input name="ajto" id="ajto" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.ajto} />
+                                <RVInput name="ajto" id="ajto" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.ajto} />
                             </div>
                             <div className="col-md-12" />
                             <br />
@@ -470,15 +492,15 @@ const AdminUsers = (props) => {
                                 <div className="row">
                                     <div className="col-md-3">
                                         <Label>Országhívó:</Label>
-                                        <Input type="text" name="orszaghivo" id="orszaghivo" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.orszaghivo} />
+                                        <RVInput type="text" name="orszaghivo" id="orszaghivo" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.orszaghivo} />
                                     </div>
                                     <div className="col-md-3">
                                         <Label>Körzetszám:</Label>
-                                        <Input type="text" name="korzet" id="korzet" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.korzet} />
+                                        <RVInput type="text" name="korzet" id="korzet" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.korzet} />
                                     </div>
                                     <div className="col-md-6">
                                         <Label>Telefonszám:</Label>
-                                        <Input type="text" name="telszam" id="telszam" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.telszam} />
+                                        <RVInput type="text" name="telszam" id="telszam" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.telszam} />
                                     </div>
                                 </div>
                             </div>
@@ -499,19 +521,19 @@ const AdminUsers = (props) => {
                         <div className="row">
                             <div className="col-md-3">
                                 <Label>Email: *</Label>
-                                <Input name="email" id="email" type="email" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.email} />
+                                <RVInput name="email" id="email" type="email" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.email} />
                             </div>
                             <div className="col-md-3">
                                 <Label>Felhasználónév: *</Label>
-                                <Input name="username" id="username" type="text" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.username} />
+                                <RVInput name="username" id="username" type="text" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.username} />
                             </div>
                             <div className="col-md-3">
                                 <Label>Jelszó: *</Label>
-                                <Input name="password" id="password" type="password" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.password} />
+                                <RVInput name="password" id="password" type="password" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.password} />
                             </div>
                             <div className="col-md-3">
                                 <Label>Értékesítő: *</Label>
-                                <Input name="isErtekesito" id="isErtekesito" type="checkbox" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} checked={adminUser.isErtekesito} />
+                                <RVInput name="isErtekesito" id="isErtekesito" type="checkbox" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} checked={adminUser.isErtekesito} />
                             </div>
                         </div>
                     </ModalBody>
@@ -523,7 +545,7 @@ const AdminUsers = (props) => {
                             Mégsem
                         </Button>
                     </ModalFooter>
-                </Form>
+                </RVForm>
             </Modal>
         );
     };

@@ -1,7 +1,7 @@
-import { jwtparams, UseQuery, poolConnect, validateToken, hasRole } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole } from '../../../common/QueryHelpers.js';
 import express from 'express';
 const router = express.Router();
-const kapcsolat = poolConnect;
+const kapcsolat = pool;
 
 // KAPCSOLAT START
 
@@ -80,7 +80,7 @@ router.post('/', async (req, res) => {
                     kapcsolat.query(sql, async (error) => {
                         if (!error) {
                             const kapcsolatSql = `SELECT azonosito FROM kapcsolat WHERE azonosito = '${felvitelObj.azonosito}';`;
-                            const result = await UseQuery(kapcsolat, kapcsolatSql);
+                            const result = await UseQuery(kapcsolatSql);
                             // if (resultEmail.rowCount === 0) {
                             if (result.length === 0) {
                                 const sql = `INSERT INTO kapcsolat (azonosito, kep, nev, cim, email, telefon, kapcsolatcim, kapcsolatleiras)

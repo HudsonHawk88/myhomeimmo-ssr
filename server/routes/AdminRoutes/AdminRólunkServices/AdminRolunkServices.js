@@ -1,7 +1,7 @@
-import { jwtparams, UseQuery, poolConnect, validateToken, hasRole } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole } from '../../../common/QueryHelpers.js';
 import express from 'express';
 const router = express.Router();
-const rolunk = poolConnect;
+const rolunk = pool;
 
 // ROLUNK START
 
@@ -79,7 +79,7 @@ router.post('/', async (req, res) => {
                     rolunk.query(sql, async (error) => {
                         if (!error) {
                             const rolunkSql = `SELECT azonosito FROM rolunk WHERE azonosito = '${felvitelObj.azonosito}';`;
-                            const result = await UseQuery(rolunk, rolunkSql);
+                            const result = await UseQuery(rolunkSql);
                             // if (resultEmail.rowCount === 0) {
                             if (result.length === 0) {
                                 const sql = `INSERT INTO rolunk (azonosito, kep, nev, beosztas, email, telefon, leiras)

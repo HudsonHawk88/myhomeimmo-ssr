@@ -1,9 +1,9 @@
-import { poolConnect, UseQuery } from '../../../common/QueryHelpers.js';
+import { pool, UseQuery } from '../../../common/QueryHelpers.js';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
 const router = express.Router();
-const ocData = poolConnect;
+const ocData = pool;
 
 // OCDATA START
 
@@ -17,7 +17,7 @@ router.get('/*', (req, res, next) => {
         }
         const postId = req.query.id;
         const sql = `SELECT kepek, leiras, cim FROM ingatlanok WHERE id='${postId}';`;
-        const result = await UseQuery(ocData, sql);
+        const result = await UseQuery(sql);
         if (!result) return res.status(404).send('Post not found');
         let datas = result[0];
         let kepek = datas && datas.kepek ? JSON.parse(datas.kepek) : [];

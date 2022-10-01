@@ -1,6 +1,6 @@
-const { jwtparams, poolConnect, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, useQuery } = require('../../../common/QueryHelpers');
+const { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, useQuery } = require('../../../common/QueryHelpers');
 const router = require('express').Router();
-const ingatlanok = poolConnect();
+const ingatlanok = pool;
 const { existsSync, mkdirSync, writeFileSync, rmdirSync, rmSync } = require('fs');
 const multer = require('multer');
 
@@ -10,7 +10,7 @@ const getId = async (reqID) => {
         id = parseInt(reqID, 10);
     } else {
         const getLastIdSql = `SELECT MAX(id) as id FROM ingatlanok;`;
-        let result = await useQuery(ingatlanok, getLastIdSql);
+        let result = await useQuery(getLastIdSql);
         let newID = result[0].id;
         if (newID && newID !== 'null') {
             id = newID + 1;
@@ -146,7 +146,7 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                             felvitelObj.isUjEpitesu = felvitelObj.isUjEpitesu === 'true' ? 0 : 1;
                             felvitelObj.helyseg = JSON.parse(felvitelObj.helyseg);
                             const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
-                            const userAvatar = await useQuery(ingatlanok, getUserAvatarSql);
+                            const userAvatar = await useQuery(getUserAvatarSql);
                             const avatar = userAvatar ? userAvatar[0].avatar : [];
                             let id = await getId(req.headers.id);
                             const sql = `INSERT INTO ingatlanok(id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitoNev, rogzitoEmail, rogzitoTelefon, rogzitoAvatar) VALUES ('${id}', '${
@@ -195,7 +195,7 @@ router.post('/', upload.array('kepek'), async (req, res) => {
 
                                     const updateImagesSql = `UPDATE ingatlanok SET kepek='${JSON.stringify(felvitelObj.kepek)}' WHERE id='${id}';`;
 
-                                    const images = await useQuery(ingatlanok, updateImagesSql);
+                                    const images = await useQuery(updateImagesSql);
                                     if (images) {
                                         res.status(200).send({ msg: 'Ingatlan sikeresen hozzáadva!' });
                                     } else {

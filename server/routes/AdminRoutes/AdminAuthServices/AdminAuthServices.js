@@ -1,8 +1,8 @@
-import { jwtparams, UseQuery, poolConnect, validateToken } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken } from '../../../common/QueryHelpers.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-const adminusers = poolConnect;
+const adminusers = pool;
 const router = express.Router();
 
 router.post('/token', async (req, res) => {
@@ -24,14 +24,14 @@ router.post('/token', async (req, res) => {
         //now that we know the refresh token is valid
         //lets take an extra hit the database
         const sql = `SELECT username, roles, avatar, email, nev, telefon, isErtekesito FROM adminusers WHERE token = '${token}';`;
-        const result = await UseQuery(adminusers, sql);
+        const result = await UseQuery(sql);
         if (result.length === 0) {
             res.sendStatus(401);
         } else {
             const user = result[0];
             let ertekesito = {};
             const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
-            const userAvatar = await UseQuery(adminusers, getUserAvatarSql);
+            const userAvatar = await UseQuery(getUserAvatarSql);
             user.roles = user.roles ? user.roles : [];
             const avatar = userAvatar ? userAvatar[0].avatar : [];
             user.telefon = user.telefon ? user.telefon : {};
@@ -39,7 +39,7 @@ router.post('/token', async (req, res) => {
             user.isErtekesito = user.isErtekesito === 0 ? true : false;
             if (!user.isErtekesito) {
                 const getAdminSql = `SELECT nev, telefon, email, avatar FROM adminusers WHERE username='berkimonika';`;
-                const admin = await UseQuery(adminusers, getAdminSql);
+                const admin = await UseQuery(getAdminSql);
                 ertekesito['nev'] = JSON.parse(admin[0].nev);
                 ertekesito['telefon'] = JSON.parse(admin[0].telefon);
                 ertekesito['email'] = admin[0].email;
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
         if (userObj) {
             const sql = `SELECT username, password, roles, avatar, nev, telefon, email, isErtekesito FROM adminusers WHERE email = '${userObj.email}'`;
 
-            const result = await UseQuery(adminusers, sql);
+            const result = await UseQuery(sql);
             //fail
             if (result.length === 0) {
                 res.status(403).send({ err: 'Nincs ilyen felhasználó regisztrálva!' });
@@ -90,7 +90,7 @@ router.post('/login', async (req, res) => {
                     const user = result[0];
                     let ertekesito = {};
                     // const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
-                    // const userAvatar = await UseQuery(adminusers, getUserAvatarSql);
+                    // const userAvatar = await UseQuery(getUserAvatarSql);
                     user.roles = user.roles ? user.roles : null;
                     let avatar = user.avatar ? user.avatar : [];
                     user.telefon = user.telefon ? user.telefon : {};
@@ -98,7 +98,7 @@ router.post('/login', async (req, res) => {
                     user.isErtekesito = user.isErtekesito === 0 ? true : false;
                     if (!user.isErtekesito) {
                         const getAdminSql = `SELECT nev, telefon, email, avatar FROM adminusers WHERE username='berkimonika';`;
-                        const admin = await UseQuery(adminusers, getAdminSql);
+                        const admin = await UseQuery(getAdminSql);
                         ertekesito['nev'] = JSON.parse(admin[0].nev);
                         ertekesito['telefon'] = JSON.parse(admin[0].telefon);
                         ertekesito['email'] = admin[0].email;

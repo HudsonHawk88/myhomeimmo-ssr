@@ -68,6 +68,7 @@ const FooldalContent = (props) => {
         return data.map((ingat, index) => {
             // if (ingat.isKiemelt) {
             let keplista = ingat.kepek;
+            const kaucio = ingat.kaucio + '';
             return (
                 <Card key={index.toString()} id={`ingatlan_${index.toString()}`}>
                     <CardBody>
@@ -107,6 +108,15 @@ const FooldalContent = (props) => {
                             </div>
                             <div className="col-md-12" />
                             <br />
+                            <div className="col-md-12">
+                                <strong>Ár: {ingat.ar + ' ' + ingat.penznem}</strong>
+                                {kaucio && (
+                                    <>
+                                        <br />
+                                        <strong>Kaució: {kaucio + ' ' + ingat.penznem}</strong>
+                                    </>
+                                )}
+                            </div>
                             <div className="col-md-12">
                                 <strong>{ingat.cim}</strong>
                             </div>

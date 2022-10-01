@@ -1,7 +1,7 @@
-import { poolConnect } from '../../../common/QueryHelpers.js';
+import { pool } from '../../../common/QueryHelpers.js';
 import express from 'express';
 const router = express.Router();
-const telepulesek = poolConnect;
+const telepulesek = pool;
 
 // TELEPULESEK START
 

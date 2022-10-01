@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
-import { poolConnect } from '../../../common/QueryHelpers.js';
-const myArt = poolConnect;
+import { pool } from '../../../common/QueryHelpers.js';
+const myArt = pool;
 
 // MYART START
 

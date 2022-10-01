@@ -13,40 +13,28 @@ const db_params = {
 };
 const pool = createPool(db_params);
 
-const poolConnect = (() => {
-    /*   function _query(query, params, callback) {
-      pool.connect((err, connection) => {
-        if (err) {
-            callback(null, err);
-            throw err;
+const getIngatlanId = async (reqID) => {
+    let id = undefined;
+    if (reqID !== undefined) {
+        id = parseInt(reqID, 10);
+    } else {
+        const isExist = await isIngatlanokTableExists();
+        if (isExist) {
+            const getLastIdSql = `SELECT MAX(id) as id FROM ingatlanok;`;
+            let result = await UseQuery(getLastIdSql);
+            let newID = result[0].id;
+            if (newID && newID !== 'null') {
+                id = newID + 1;
+            } else {
+                id = 1;
+            }
         } else {
-          connection.query(query, params, (err, rows) => {
-            connection.release();
-            if (!err) {
-                callback(rows);
-            }
-            else {
-                callback(null, err);
-            }
-  
-        });
-  
-        connection.on('error', (err) => {
-            callback(null, err);
-            throw err;
-        });
+            id = 1;
         }
-        
-    });
+    }
 
-  };
-  console.log(db_params)
-  console.log(_query)
-  return {
-      query: _query
-  }; */
-    return pool;
-})();
+    return id;
+};
 
 function verifyJson(input) {
     try {
@@ -57,42 +45,31 @@ function verifyJson(input) {
     return true;
 }
 
-const getJSONfromLongtext = (object) => {
+const getJSONfromLongtext = (object, direction = 'toBool') => {
     const keys = Object.keys(object);
     let newObj = {};
     keys.forEach((key) => {
         if (key === 'isHirdetheto' || key === 'isKiemelt' || key === 'isErkely' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu') {
-            if (object[key] === 0 || object[key] === '0') {
-                newObj[key] = false;
-            } else {
-                newObj[key] = true;
+            if (direction) {
+                if (direction === 'toBool') {
+                    if (object[key] === 0 || object[key] === '0') {
+                        newObj[key] = false;
+                    } else {
+                        newObj[key] = true;
+                    }
+                } else if (direction === 'toNumber') {
+                    if (object[key] === false || object[key] === 'false') {
+                        newObj[key] = 0;
+                    } else {
+                        newObj[key] = 1;
+                    }
+                }
             }
         } else {
             verifyJson(object[key]) ? (newObj[key] = JSON.parse(object[key])) : (newObj[key] = object[key]);
         }
     });
     return newObj;
-
-    /*    console.log('RESSSSSSSSSSSSS: ', res); */
-    /*     let res = Object.entries(object).map(([key, value]) => {
-        let result = null;
-        console.log('KEYYYYYYYYY: ', key);
-        console.log('VALUEEEEEEEEEE: ', value);
-        if (key === 'isHirdetheto' || key === 'isKiemelt' || key === 'isErkely' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu') {
-            if (value === 0 || value === '0') {
-                return (object[key] = object[key] = true);
-            } else {
-                return (object[key] = object[key] = false);
-            }
-        } else {
-            return (object[key] = verifyJson(object[value]) ? JSON.parse(value) : value);
-        }
-    });
-
-
-    console.log(res);
-
-    return res; */
 };
 
 const getDataFromDatabase = async (method, sql, datas) => {
@@ -133,84 +110,6 @@ const jwtparams = {
     expire: process.env.JWT_EXPIRE
 };
 
-const getTypeForXml = (type) => {
-    switch (type) {
-        case 'Lakás': {
-            return 1;
-        }
-        case 'Családi ház': {
-            return 2;
-        }
-        case 'Telek': {
-            return 3;
-        }
-        case 'Iroda': {
-            return 4;
-        }
-        case 'Üzlethelyiség': {
-            return 5;
-        }
-        case 'Ipari ingatlan': {
-            return 6;
-        }
-        case 'Garázs': {
-            return 7;
-        }
-        case 'Vendéglátó hely': {
-            return 9;
-        }
-        case 'Fejlesztési terület': {
-            return 10;
-        }
-        case 'Irodaház': {
-            return 11;
-        }
-        case 'Szálláshely': {
-            return 12;
-        }
-        case 'Mezőgazdasági terület': {
-            return 13;
-        }
-        default: {
-            return 2;
-        }
-    }
-};
-
-const getAllapotForXml = (allapot, tipus) => {
-    if (
-        tipus === 'Lakás' ||
-        tipus === 'Családi ház' ||
-        tipus === 'Vendéglátóhely' ||
-        tipus === 'Szálláshely' ||
-        tipus === 'Iroda' ||
-        tipus === 'Sorház' ||
-        tipus === 'Üzlethelyiség' ||
-        tipus === 'Hétvégi ház/Nyaraló'
-    ) {
-        switch (allapot) {
-            case 'Átlagos': {
-                return `<property-condition>3 - Lakható</property-condition>`;
-            }
-            case 'Felújítandó': {
-                return `<property-condition>2 - Felújítandó</property-condition>`;
-            }
-            case 'Jó': {
-                return `<property-condition>4 - Jó</property-condition>`;
-            }
-            case 'Kiváló': {
-                return `<property-condition>5 - Nagyon jó</property-condition>`;
-            }
-            case 'Új': {
-                return `<property-condition>Új ép.</property-condition>`;
-            }
-            default: {
-                return `<property-condition>3 - Lakható</property-condition>`;
-            }
-        }
-    } else return '';
-};
-
 const getKepekForXml = (kepek, data) => {
     let kepekdata = '';
     kepek.forEach((kep) => {
@@ -223,10 +122,10 @@ const getKepekForXml = (kepek, data) => {
     return kepekdata;
 };
 
-const UseQuery = async (pool, sql) => {
+const UseQuery = async (sql) => {
     return new Promise((data) => {
         // console.log(pool)
-        pool.query(sql, function (error, result, ff) {
+        pool.query(sql, function (error, result) {
             // change db->connection for your code
             if (error) {
                 // console.log(error);
@@ -241,20 +140,6 @@ const UseQuery = async (pool, sql) => {
             }
         });
     });
-
-    /*   let result = await pool.query(sql, function (error, result, ff) {
-    // change db->connection for your code
-    if (error) {
-      // console.log(error);
-      throw error;
-    }
-    try {
-      return result;
-    } catch (error) {
-      return [];
-    }
-  });
-  return await result; */
 };
 
 const getBooleanFromNumber = (value) => {
@@ -301,7 +186,18 @@ const hasRole = (userRoles, minRoles) => {
 
 const isIngatlanokTableExists = async (ingatlanok) => {
     const isExistSql = `SHOW TABLES LIKE "ingatlanok";`;
-    const isExist = await UseQuery(ingatlanok, isExistSql);
+    const isExist = await UseQuery(isExistSql);
+
+    if (isExist.length !== 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+const isAdminUsersTableExists = async (adminusers) => {
+    const isExistSql = `SHOW TABLES LIKE "adminusers";`;
+    const isExist = await UseQuery(isExistSql);
 
     if (isExist.length !== 0) {
         return true;
@@ -312,7 +208,7 @@ const isIngatlanokTableExists = async (ingatlanok) => {
 
 const getTelepulesekByKm = async (pool, telepules, irszam, km) => {
     const getCoordinatesSql = irszam ? `SELECT geoLong, geoLat FROM telep_1 WHERE irszam='${irszam}'` : `SELECT geoLong, geoLat FROM telep_1 WHERE telepulesnev='${telepules}'`;
-    const coordinates = await UseQuery(pool, getCoordinatesSql);
+    const coordinates = await UseQuery(getCoordinatesSql);
     const sql = `
   SELECT telepulesnev, ROUND((6371 * acos(cos(radians(${coordinates[0].geoLat})) * cos(radians(geoLat)) * cos(radians(geoLong) - radians(${coordinates[0].geoLong})) + sin(radians(${coordinates[0].geoLat})) * sin(radians(geoLat)))), (2)), id 
   AS distance
@@ -320,7 +216,7 @@ const getTelepulesekByKm = async (pool, telepules, irszam, km) => {
   GROUP BY telepulesnev
   HAVING distance < '${km}'
   ORDER BY distance;`;
-    const nearTelepulesek = await UseQuery(pool, sql);
+    const nearTelepulesek = await UseQuery(sql);
 
     return nearTelepulesek;
 };
@@ -399,23 +295,9 @@ END IF;
 END IF;
 `;
 
-const uploadFile = (files, upload) => {
-    // upload(req, res, function (err) {
-    //     if (err instanceof multer.MulterError) {
-    //       console.log(err)
-    //         // A Multer error occurred when uploading.
-    //     } else if (err) {
-    //       console.log(err)
-    //         // An unknown error occurred when uploading.
-    //     }
-    //     console.log(files)
-    //     // Everything went fine.
-    //     next()
-    // })
-};
-
 export {
-    poolConnect,
+    pool,
+    getIngatlanId,
     getDataFromDatabase,
     jwtparams,
     UseQuery,
@@ -424,25 +306,10 @@ export {
     createIngatlanokSql,
     createIngatlanokTriggerSql,
     getTelepulesekByKm,
-    uploadFile,
-    getTypeForXml,
-    getAllapotForXml,
     getKepekForXml,
     getJSONfromLongtext,
     getBooleanFromNumber,
     getNumberFromBoolean,
-    isIngatlanokTableExists
+    isIngatlanokTableExists,
+    isAdminUsersTableExists
 };
-
-/* exports.poolConnect = poolConnect;
-exports.jwtparams = jwtparams;
-exports.UseQuery = UseQuery;
-exports.validateToken = validateToken;
-exports.hasRole = hasRole;
-exports.createIngatlanokSql = createIngatlanokSql;
-exports.createIngatlanokTriggerSql = createIngatlanokTriggerSql;
-exports.getTelepulesekByKm = getTelepulesekByKm;
-exports.uploadFile = uploadFile;
-exports.getTypeForXml = getTypeForXml;
-exports.getAllapotForXml = getAllapotForXml;
-exports.getKepekForXml = getKepekForXml; */

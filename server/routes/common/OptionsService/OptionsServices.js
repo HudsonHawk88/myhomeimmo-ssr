@@ -1,4 +1,4 @@
-import { poolConnect as pool, UseQuery } from '../../../common/QueryHelpers.js';
+import { pool as pool, UseQuery } from '../../../common/QueryHelpers.js';
 import express from 'express';
 const router = express.Router();
 

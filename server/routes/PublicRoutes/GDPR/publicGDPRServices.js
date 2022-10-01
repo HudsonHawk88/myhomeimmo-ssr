@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
-import { poolConnect } from '../../../common/QueryHelpers.js';
-const GDPR = poolConnect;
+import { pool } from '../../../common/QueryHelpers.js';
+const GDPR = pool;
 
 // GDPR START
 

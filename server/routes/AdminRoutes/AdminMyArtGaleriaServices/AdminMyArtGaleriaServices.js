@@ -1,7 +1,7 @@
-import { jwtparams, UseQuery, poolConnect, validateToken, hasRole } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole } from '../../../common/QueryHelpers.js';
 import express from 'express';
 const router = express.Router();
-const myArt = poolConnect;
+const myArt = pool;
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import path from 'path';
 
@@ -74,7 +74,7 @@ router.post('/altalanos', async (req, res) => {
                     myArt.query(sql, async (error) => {
                         if (!error) {
                             const myArtAltalanosSql = `SELECT azonosito FROM myart_altalanos WHERE azonosito = '${felvitelObj.azonosito}';`;
-                            const result = await UseQuery(myArt, myArtAltalanosSql);
+                            const result = await UseQuery(myArtAltalanosSql);
                             // if (resultEmail.rowCount === 0) {
                             if (result.length === 0) {
                                 const sql = `INSERT INTO myart_altalanos (azonosito, nev, leiras)
@@ -301,7 +301,7 @@ router.post('/galeriak', async (req, res) => {
                     myArt.query(sql, async (error) => {
                         if (!error) {
                             const myArtGaleriakSql = `SELECT azonosito FROM myart_galeriak WHERE azonosito = '${felvitelObj.azonosito}';`;
-                            const result = await UseQuery(myArt, myArtGaleriakSql);
+                            const result = await UseQuery(myArtGaleriakSql);
                             // if (resultEmail.rowCount === 0) {
                             if (result.length === 0) {
                                 const sql = `INSERT INTO myart_galeriak (azonosito, nev, muveszNev, muveszTelefon, muveszEmail, muveszUrl, leiras, isActive)
@@ -309,7 +309,7 @@ router.post('/galeriak', async (req, res) => {
                                 const getLastIdSql = `SELECT MAX( id ) as id FROM ingatlanok;`;
                                 myArt.query(sql, async (err) => {
                                     if (!err) {
-                                        let id = await UseQuery(ingatlanok, getLastIdSql);
+                                        let id = await UseQuery(getLastIdSql);
                                         id = id[0].id;
                                         let kepek = [];
                                         felvitelObj.kepek.map((kep) => {
@@ -340,7 +340,7 @@ router.post('/galeriak', async (req, res) => {
 
                                         const updateImagesSql = `UPDATE myart_galeriak SET kepek='${JSON.stringify(felvitelObj.kepek)}' WHERE id='${id}';`;
 
-                                        const images = await UseQuery(myArt, updateImagesSql);
+                                        const images = await UseQuery(updateImagesSql);
                                         if (images) {
                                             res.status(200).send({ msg: 'MyArt galéria bejegyzés sikeresen hozzáadva!' });
                                         } else {

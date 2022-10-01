@@ -3,9 +3,10 @@ import { Button, ModalHeader, ModalBody, ModalFooter, Label } from 'reactstrap';
 import { RVForm, RVFormGroup, RVInput, RVInputGroup, RVFormFeedback, RVInputGroupText } from '@inftechsol/reactstrap-form-validation';
 import { useDropzone } from 'react-dropzone';
 import Select from 'react-select';
-import { handleInputChange } from '../../../commons/InputHandlers';
-import KepCard from './KepCard';
-import Services from './Services';
+import { handleInputChange } from '../../../commons/InputHandlers.js';
+import { arFormatter } from '../../../commons/Lib.js';
+import KepCard from './KepCard.js';
+import Services from './Services.js';
 
 const IngatlanForm = (props) => {
     const { user, listIngatlanok, currentId, formType, ertekesito, toggleModal, nevFormatter, telefonFormatter, addNotification } = props;
@@ -443,7 +444,8 @@ const IngatlanForm = (props) => {
         kuldObj.helyseg = helyseg;
         kuldObj.helyseg.telepules = telepulesObj;
         kuldObj.hirdeto = hirdeto;
-
+        kuldObj.ar = arFormatter(kuldObj.ar);
+        kuldObj.kaucio = arFormatter(kuldObj.kaucio);
         /* console.log(telepulesObj, kuldObj, helyseg); */
         /* if (kuldObj.helyseg.telepules.id) {
             kuldObj.telepules = kuldObj.helyseg.telepules.telepulesnev;
@@ -774,7 +776,7 @@ const IngatlanForm = (props) => {
                     <div className="col-md-4">
                         <RVFormGroup>
                             <Label>{isRequired('Ár:', true)}</Label>
-                            <RVInput required pattern="[0-9]+" name="ar" id="ar" value={ingatlanObj.ar} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
+                            <RVInput required name="ar" id="ar" value={arFormatter(ingatlanObj.ar)} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
                             <RVFormFeedback />
                         </RVFormGroup>
                     </div>
@@ -783,10 +785,10 @@ const IngatlanForm = (props) => {
                             <Label>{isRequired('Kaució:', ingatlanObj.statusz === 'Kiadó')}</Label>
                             <RVInput
                                 required={ingatlanObj.statusz === 'Kiadó'}
-                                pattern="[0-9]+"
+                                /*  pattern="([0-9]*[.])?[0-9]+" */
                                 name="kaucio"
                                 id="kaucio"
-                                value={ingatlanObj.kaucio}
+                                value={arFormatter(ingatlanObj.kaucio)}
                                 onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)}
                             />
                             <RVFormFeedback />

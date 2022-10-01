@@ -4,11 +4,12 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
-import { handleInputChange, recaptchaOnChange } from '../../../commons/InputHandlers';
+import { handleInputChange } from '../../../commons/InputHandlers';
 
-import Gallery from '../../../commons/Gallery';
-import Loading from '../../../commons/Loading';
-import Services from './Services';
+import Gallery from '../../../commons/Gallery.js';
+import Loading from '../../../commons/Loading.js';
+import Services from './Services.js';
+import { arFormatter } from '../../../commons/Lib.js';
 
 const Ingatlan = (props) => {
     const { addNotification, reCaptchaKey, history } = props;
@@ -164,50 +165,33 @@ const Ingatlan = (props) => {
         }
     };
 
-    const arFormatter = (ingatlan) => {
-        let kaucio = '';
-        let ar = '';
-        let illetek = '';
-        function chunk(str, n) {
-            var ret = [];
-            var i;
-            var len;
-
-            for (i = 0, len = str.length; i < len; i += n) {
-                ret.push(str.substr(i, n));
+    const illetekFormatter = (illetek) => {
+        let newAr = illetek;
+        newAr = newAr.replace(/\D/g, '');
+        newAr = newAr.replace('.', '').split('').reverse().join(''); // reverse
+        if (newAr.length > 0) {
+            var newValue = '';
+            for (var i = 0; i < newAr.length; i++) {
+                if (i % 3 === 0 && i > 0) {
+                    newValue += '.';
+                }
+                newValue += newAr[i];
             }
+            newValue = newValue.split('').reverse().join('');
+            return newValue;
+        }
+    };
 
-            return ret;
-        }
-
-        if (ingatlan.kaucio) {
-            kaucio = ingatlan.kaucio + '';
-            kaucio = kaucio.split('').reverse().join('');
-            kaucio = chunk(kaucio, 3).join('.');
-            kaucio = kaucio.split('').reverse().join('');
-        }
-        if (ingatlan.ar) {
-            ar = ingatlan.ar + '';
-            ar = ar.split('').reverse().join('');
-            ar = chunk(ar, 3).join('.');
-            ar = ar.split('').reverse().join('');
-        }
-
-        if (ingatlan.illetek) {
-            illetek = ingatlan.illetek + '';
-            illetek = illetek.split('').reverse().join('');
-            illetek = chunk(illetek, 3).join('.');
-            illetek = illetek.split('').reverse().join('');
-        }
+    const ertekFormatter = (ingatlan) => {
         switch (ingatlan.statusz) {
             case 'Kiadó': {
-                return `Ár: ${ar} ${ingatlanObj.penznem}/hó ${ingatlanObj.kaucio ? 'Kaució: ' + kaucio + ' ' + ingatlanObj.penznem : ''}`;
+                return `Ár: ${ingatlanObj.ar} ${ingatlanObj.penznem}/hó ${ingatlanObj.kaucio ? 'Kaució: ' + ingatlanObj.kaucio + ' ' + ingatlanObj.penznem : ''}`;
             }
             case 'Illeték': {
-                return `${illetek} ${ingatlanObj.penznem}`;
+                return `${arFormatter(ingatlan.illetek)} ${ingatlanObj.penznem}`;
             }
             default: {
-                return `Ár: ${ar} ${ingatlanObj.penznem}`;
+                return `Ár: ${ingatlanObj.ar} ${ingatlanObj.penznem}`;
             }
         }
     };
@@ -336,12 +320,15 @@ const Ingatlan = (props) => {
 
     const getIlletek = (ar) => {
         let illetek = '';
-        let ingar = parseInt(ar, 10);
-        if (ingar && !isNaN(ar)) {
+        let ingar = ar + '';
+        ingar = ingar.replace(/\D/g, '');
+        ingar = ingar.replace('.', '').split('').join('');
+        ingar = parseInt(ingar, 10);
+        if (ingar && !isNaN(ingar)) {
             illetek = Math.round(ingar * 0.04);
             illetek = illetek + '';
         }
-        return arFormatter({ illetek: illetek, statusz: 'Illeték' });
+        return ertekFormatter({ illetek: illetek, statusz: 'Illeték' });
     };
 
     const isTelekAdatokHidden = () => {

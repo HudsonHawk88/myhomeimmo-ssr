@@ -1,7 +1,7 @@
-import { jwtparams, UseQuery, poolConnect, validateToken, hasRole } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole } from '../../../common/QueryHelpers.js';
 import express from 'express';
 const router = express.Router();
-const GDRP = poolConnect;
+const GDRP = pool;
 
 // GDPR START
 
@@ -75,7 +75,7 @@ router.post('/', async (req, res) => {
                     GDRP.query(sql, async (error) => {
                         if (!error) {
                             const gdprSql = `SELECT azonosito FROM gdpr WHERE azonosito = '${felvitelObj.azonosito}';`;
-                            const result = await UseQuery(GDRP, gdprSql);
+                            const result = await UseQuery(gdprSql);
                             // if (resultEmail.rowCount === 0) {
                             if (result.length === 0) {
                                 const sql = `INSERT INTO gdpr (azonosito, tipus, leiras)

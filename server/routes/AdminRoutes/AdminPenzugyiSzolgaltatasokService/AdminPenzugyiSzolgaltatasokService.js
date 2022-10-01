@@ -1,7 +1,7 @@
-import { jwtparams, UseQuery, poolConnect, validateToken, hasRole } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole } from '../../../common/QueryHelpers.js';
 import express from 'express';
 const router = express.Router();
-const penzugyiSzolg = poolConnect;
+const penzugyiSzolg = pool;
 
 // ROLES START
 
@@ -78,7 +78,7 @@ router.post('/', async (req, res) => {
                     penzugyiSzolg.query(sql, async (error) => {
                         if (!error) {
                             const penzugyiSzolgSql = `SELECT azonosito FROM penzugyi_szolg WHERE azonosito = '${felvitelObj.azonosito}';`;
-                            const result = await UseQuery(penzugyiSzolg, penzugyiSzolgSql);
+                            const result = await UseQuery(penzugyiSzolgSql);
                             // if (resultEmail.rowCount === 0) {
                             if (result.length === 0) {
                                 const sql = `INSERT INTO penzugyi_szolg (azonosito, kep, leiras)
