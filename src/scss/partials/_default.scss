@@ -177,11 +177,12 @@ html body {
     flex-direction: row;
     min-height: calc(100vh - 200px);
     margin: 0px;
+    background-color: var(themes-public-bgcolor2);
     // padding: 10px 10px 10px 0px;
     // background: var(themes-public-navbarbgimage);
-    background-image: var(themes-public-navbarbgimage);
+    /*     background-image: var(themes-public-navbarbgimage); */
     // background: var(themes-public-navbarbgimage);
-    background-size: contain;
+    /*  background-size: contain; */
 
     // .btn.btn-info {
     //     background-color: var(themes-public-new);
@@ -251,6 +252,68 @@ html body {
         }
     }
 
+    .galeria {
+        min-width: 66%;
+        min-height: 400px;
+        padding: 0px;
+
+        @media screen and (min-width: 768px) {
+            padding: 10px;
+        }
+
+        .image-gallery-slides {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .image-gallery-thumbnails {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .image-gallery-thumbnail-image {
+            height: 65px;
+        }
+
+        .image-gallery-image {
+            object-fit: contain !important;
+        }
+
+        .image-gallery-icon.image-gallery-fullscreen-button {
+            background-color: rgba(0, 0, 0, 0.2);
+
+            svg {
+                height: 20px;
+                width: 20px;
+            }
+        }
+
+        .image-gallery-content.fullscreen {
+            margin: auto 0px;
+            height: 100%;
+
+            // .image-gallery-slide-wrapper {
+            //     height: 100%;
+
+            // }
+
+            // .image-gallery-swipe, .image-gallery-slides, .image-gallery-slide {
+            //     height: 100%;
+            // }
+
+            // .image-gallery-thumbnails-wrapper {
+            //     position: fixed;
+            //     bottom: 0px;
+            // }
+            .image-gallery-icon.image-gallery-fullscreen-button {
+                background-color: rgba(0, 0, 0, 0.8);
+            }
+
+            .image-gallery-image {
+                object-fit: fill !important;
+                height: 100vh;
+            }
+        }
+    }
+
     .public_myart {
         width: 100%;
         height: 100%;
@@ -265,6 +328,11 @@ html body {
         .myart_galeriak {
             display: flex;
             gap: 10px;
+
+            .myart_galeria {
+                min-width: 100%;
+                max-width: 100%;
+            }
         }
 
         .galeria_cim {
@@ -280,11 +348,13 @@ html body {
         }
 
         .muvesz_kepek {
-            display: flex;
+            display: block;
+            min-width: 100%;
+            max-width: 100%;
 
-            img {
+            .image-gallery-image {
                 margin: 10px;
-                width: 30%;
+                width: 100%;
             }
         }
     }
@@ -311,6 +381,17 @@ html body {
         &__leiras {
             width: inherit;
             height: inherit;
+        }
+
+        &__kalkulator {
+            position: relative;
+            display: flex;
+            min-height: 500px;
+            max-height: 500px;
+
+            /*  iframe {
+            height: 500px;
+        } */
         }
     }
 
@@ -556,9 +637,11 @@ html body {
 
         & img {
             /* min-height: 200px; */
-            min-width: 100%;
+            min-width: 250px;
+            min-height: 200px;
             /* max-height: 200px; */
-            max-width: 100%;
+            max-width: 250px;
+            max-height: 200px;
 
             @media screen and (min-width: 768px) {
                 min-height: 200px;

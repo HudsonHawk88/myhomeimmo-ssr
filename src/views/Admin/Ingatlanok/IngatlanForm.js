@@ -4,8 +4,8 @@ import { RVForm, RVFormGroup, RVInput, RVInputGroup, RVFormFeedback, RVInputGrou
 import { useDropzone } from 'react-dropzone';
 import Select from 'react-select';
 import { handleInputChange } from '../../../commons/InputHandlers.js';
-import { arFormatter } from '../../../commons/Lib.js';
-import KepCard from './KepCard.js';
+import { arFormatter, makeFormData } from '../../../commons/Lib.js';
+import KepCard from '../../../commons/KepCard.js';
 import Services from './Services.js';
 
 const IngatlanForm = (props) => {
@@ -273,7 +273,7 @@ const IngatlanForm = (props) => {
                     <input {...getInputProps()} />
                     <p>Kattintson vagy húzza id a feltöltendő képeket...</p>
                 </div>
-                <KepCard list={ingatlanObj} property="kepek" setList={setIngatlanObj} {...props} />
+                <KepCard services={Services} list={ingatlanObj} property="kepek" setList={setIngatlanObj} {...props} />
             </React.Fragment>
         );
     };
@@ -463,11 +463,11 @@ const IngatlanForm = (props) => {
         kuldObj.feladoTelefon = felado.feladoTelefon;
         kuldObj.feladoAvatar = felado.feladoAvatar;
         kuldObj.isErtekesito = user.isErtekesito; */
-        let datas = new FormData();
+        let datas = {};
 
         // datas.append('kepek', kuldObj.kepek);
         if (!currentId) {
-            for (var key in kuldObj) {
+            /*   for (var key in kuldObj) {
                 if (key === 'kepek' || key === 'feladoAvatar' || key === 'helyseg' || key === 'hirdeto') {
                     if (key === 'kepek') {
                         kuldObj.kepek.forEach((kep) => {
@@ -481,7 +481,8 @@ const IngatlanForm = (props) => {
                 } else {
                     datas.append(key, kuldObj[key]);
                 }
-            }
+            } */
+            datas = makeFormData(kuldObj, 'kepek', false);
             Services.addEIngatlan(datas).then((res) => {
                 if (!res.err) {
                     toggleModal();
@@ -492,7 +493,7 @@ const IngatlanForm = (props) => {
                 }
             });
         } else {
-            for (var key in kuldObj) {
+            /*  for (var key in kuldObj) {
                 if (key === 'kepek' || key === 'feladoAvatar' || key === 'helyseg' || key === 'hirdeto') {
                     if (key === 'kepek') {
                         kuldObj.kepek.forEach((kep) => {
@@ -508,7 +509,9 @@ const IngatlanForm = (props) => {
                 } else {
                     datas.append(key, kuldObj[key]);
                 }
-            }
+            } */
+
+            datas = makeFormData(kuldObj, 'kepek', true);
             Services.editIngatlan(datas, currentId).then((res) => {
                 if (!res.err) {
                     toggleModal();
@@ -520,6 +523,8 @@ const IngatlanForm = (props) => {
             });
         }
     };
+
+    //TODO: Egyéb (nem publikus) dokumentumok felvitelét megoldani!!!
 
     return (
         <RVForm onSubmit={onSubmit} encType="multipart/form-data" noValidate={true}>

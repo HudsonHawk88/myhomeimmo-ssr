@@ -43,11 +43,11 @@ const PublicHeader = (props) => {
                 <Collapse navbar id="public_navbar_collapse">
                     <Nav navbar className="me-auto public-navbar__nav">
                         <NavItem className="nav-item public-navbar__nav-item">
-                            <Link className="nav-link public-navbar__nav-link" to="/" replace>
+                            <a className="nav-link public-navbar__nav-link" href="/">
                                 {/* <i className="far fa-bookmark"></i> */}
                                 <i aria-hidden className="fas fa-home" />
                                 &nbsp; Főoldal
-                            </Link>
+                            </a>
                         </NavItem>
                         <NavItem className="nav-item public-navbar__nav-item">
                             <Link className="nav-link public-navbar__nav-link" to="/ingatlanok" replace>

@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { pool } from '../../../common/QueryHelpers.js';
+import { getJSONfromLongtext, pool } from '../../../common/QueryHelpers.js';
 const rolunk = pool;
 
 // ROLUNK START
@@ -9,9 +9,8 @@ router.get('/', (req, res) => {
     const sql = `SELECT * FROM rolunk;`;
     rolunk.query(sql, (err, result) => {
         if (!err) {
-            let ress = result;
-            ress.forEach((item) => {
-                item.kep = JSON.parse(item.kep);
+            let ress = result.map((item) => {
+                return getJSONfromLongtext(item, 'toBool');
             });
             res.status(200).send(ress);
         } else {

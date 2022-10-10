@@ -1,39 +1,16 @@
-import { jwtparams, UseQuery, pool, validateToken, hasRole, isAdminUsersTableExists } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole, getId, getJSONfromLongtext, getNumberFromBoolean } from '../../../common/QueryHelpers.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import multer from 'multer';
-import { getJSONfromLongtext } from '../../../common/QueryHelpers';
+/* import { getJSONfromLongtext } from '../../../common/QueryHelpers'; */
 const router = express.Router();
 const adminusers = pool;
-
-const getId = async (reqID) => {
-    let id = undefined;
-    if (reqID !== undefined) {
-        id = parseInt(reqID, 10);
-    } else {
-        const isExist = await isAdminUsersTableExists(adminusers);
-        if (isExist) {
-            const getLastIdSql = `SELECT MAX(id) as id FROM adminusers;`;
-            let result = await UseQuery(getLastIdSql);
-            let newID = result[0].id;
-            if (newID && newID !== 'null') {
-                id = newID + 1;
-            } else {
-                id = 1;
-            }
-        } else {
-            id = 1;
-        }
-    }
-
-    return id;
-};
 
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         if (file) {
-            const id = await getId(req.headers.id);
+            const id = await getId(req.headers.id, 'adminusers');
             const dir = `${process.env.avatardir}/${id}/`;
             let exist = existsSync(dir);
             if (!exist) {
@@ -68,13 +45,7 @@ router.get('/', async (req, res) => {
                 adminusers.query(sql, (err, result) => {
                     if (!err) {
                         if (result[0].email === user.email || (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']))) {
-                            const resss = result[0];
-                            resss.cim = JSON.parse(resss.cim);
-                            resss.nev = JSON.parse(resss.nev);
-                            resss.roles = JSON.parse(resss.roles);
-                            resss.telefon = JSON.parse(resss.telefon);
-                            resss.avatar = JSON.parse(resss.avatar);
-                            resss.isErtekesito = resss.isErtekesito === 0 ? true : false;
+                            const resss = getJSONfromLongtext(result[0], 'toBool');
                             res.status(200).send(resss);
                         } else {
                             res.status(403).send({
@@ -89,13 +60,8 @@ router.get('/', async (req, res) => {
                     if (error) {
                         res.status(500).send({ err: 'Hiba történt a felhasználók lekérdezésekor!' });
                     } else {
-                        let resss = ress;
-                        resss.map((item) => {
-                            /*    getJSONfromLongtext(item); */
-                            item.cim = JSON.parse(item.cim);
-                            item.nev = JSON.parse(item.nev);
-                            item.roles = JSON.parse(item.roles);
-                            item.telefon = JSON.parse(item.telefon);
+                        let resss = ress.map((item) => {
+                            return getJSONfromLongtext(item, 'toBool');
                         });
                         res.status(200).send(resss);
                     }
@@ -127,7 +93,7 @@ router.post('/', upload.array('avatar'), async (req, res) => {
                     const hash = await bcrypt.hash(felvitelObj.password, 10);
                     //store user, password and role
                     const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.adminusers (
-                    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    id INT NOT NULL PRIMARY KEY,
                     nev json DEFAULT NULL,
                     cim json DEFAULT NULL,
                     telefon json DEFAULT NULL,
@@ -145,14 +111,15 @@ router.post('/', upload.array('avatar'), async (req, res) => {
                             const resultEmail = await UseQuery(sqlEmail);
                             // if (resultEmail.rowCount === 0) {
                             if (resultEmail.length === 0) {
-                                felvitelObj.isErtekesito = felvitelObj.isErtekesito === 'true' ? 0 : 1;
-                                let id = await getId(req.headers.id);
+                                felvitelObj.isErtekesito = getNumberFromBoolean(felvitelObj.isErtekesito);
+                                let id = await getId(req.headers.id, 'adminusers');
                                 let kepek = [];
                                 if (req.files) {
                                     req.files.forEach((kep) => {
                                         kepek.push({
-                                            src: `${process.env.avatarUrl}/${isNaN(id) ? 1 : id}/${kep.filename}`,
-                                            title: kep.filename
+                                            src: `${process.env.avatarUrl}/${id}/${kep.filename}`,
+                                            title: kep.filename,
+                                            filename: kep.filename
                                         });
                                     });
                                 }
@@ -242,7 +209,8 @@ router.put('/', upload.array('uj_avatar'), async (req, res) => {
                             req.files.map((kep) => {
                                 kepek.push({
                                     src: `${process.env.avatarUrl}/${id}/${kep.filename}`,
-                                    title: kep.filename
+                                    title: kep.filename,
+                                    filename: kep.filename
                                 });
                             });
                         }
@@ -310,6 +278,8 @@ router.delete('/', async (req, res) => {
                     const sql = `DELETE FROM adminusers WHERE id='${id}';`;
                     adminusers.query(sql, (err) => {
                         if (!err) {
+                            const dir = `${process.env.avatardir}/${id}/`;
+                            rmSync(dir, { recursive: true, force: true });
                             res.status(200).send({
                                 msg: 'Felhasználó sikeresen törölve!'
                             });
@@ -334,6 +304,29 @@ router.delete('/', async (req, res) => {
         res.status(401).send({
             err: 'Nincs belépve! Kérem jelentkezzen be!'
         });
+    }
+});
+
+router.post('/deleteimage', async (req, res) => {
+    const token = req.cookies.JWT_TOKEN;
+    if (token) {
+        const user = await validateToken(token, jwtparams.secret);
+        const adminUserId = req.headers.id;
+        const { filename } = req.body;
+
+        if (user === null) {
+            res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
+        } else {
+            if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
+                const image = `${process.env.avatardir}/${adminUserId}/${filename}`;
+                rmSync(image, {
+                    force: true
+                });
+                res.status(200).send({ err: null, msg: 'Kép sikeresen törölve!' });
+            } else {
+                res.status(401).send({ err: 'Nincs jogosultsága az adott művelethez!' });
+            }
+        }
     }
 });
 

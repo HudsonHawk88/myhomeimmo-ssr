@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-export const serializeValue = (type, obj, setObj, name, callback) => {
+export const serializeValue = async (type, obj, setObj, name, callback) => {
     const defaultWysiwygValue = '<p align="left" style="font-size:17px"></p>';
     if (__isBrowser__) {
         let imp = new Promise((resolve, reject) => {

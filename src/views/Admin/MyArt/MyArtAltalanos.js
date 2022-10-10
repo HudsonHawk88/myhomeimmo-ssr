@@ -5,6 +5,7 @@ import Wysiwyg from '../../../commons/Wysiwyg';
 import { serializeValue } from '../../../commons/Serializer';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
+import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
 
 const MyArtAltalanos = (props) => {
     const defaultMyArtAltalanosObj = {
@@ -189,29 +190,31 @@ const MyArtAltalanos = (props) => {
     const renderModal = () => {
         return (
             <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <ModalHeader>{!currentId ? 'MyArt általános bejegyzés hozzáadása' : 'MyArt általános bejegyzés módosítása'}</ModalHeader>
-                <ModalBody>
-                    <div className="col-md-12">
-                        <Label>Azonosító:</Label>
-                        <Input type="text" name="azonosito" id="azonosito" value={myArtAltalanosObj.azonosito} onChange={(e) => handleInputChange(e, myArtAltalanosObj, setMyArtAltalanosObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Név:</Label>
-                        <Input type="text" name="nev" id="nev" value={myArtAltalanosObj.nev} onChange={(e) => handleInputChange(e, myArtAltalanosObj, setMyArtAltalanosObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Leiras:</Label>
-                        <Wysiwyg fontId="myArtAltalanos" onChange={onChangeEditor} value={myArtAltalanosObj.leiras} />
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="success" onClick={() => serializeValue('se', myArtAltalanosObj, () => {}, 'leiras', onSave)}>
-                        Mentés
-                    </Button>
-                    <Button color="secondary" onClick={() => toggleModal()}>
-                        Mégsem
-                    </Button>
-                </ModalFooter>
+                <RVForm onSubmit={() => serializeValue('se', myArtAltalanosObj, () => {}, 'leiras', onSave)} noValidate={true}>
+                    <ModalHeader>{!currentId ? 'MyArt általános bejegyzés hozzáadása' : 'MyArt általános bejegyzés módosítása'}</ModalHeader>
+                    <ModalBody>
+                        <div className="col-md-12">
+                            <Label>Azonosító:</Label>
+                            <RVInput type="text" name="azonosito" id="azonosito" value={myArtAltalanosObj.azonosito} onChange={(e) => handleInputChange(e, myArtAltalanosObj, setMyArtAltalanosObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Név:</Label>
+                            <RVInput type="text" name="nev" id="nev" value={myArtAltalanosObj.nev} onChange={(e) => handleInputChange(e, myArtAltalanosObj, setMyArtAltalanosObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Leiras:</Label>
+                            <Wysiwyg fontId="myArtAltalanos" onChange={onChangeEditor} value={myArtAltalanosObj.leiras} />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" type="submit">
+                            Mentés
+                        </Button>
+                        <Button color="secondary" type="button" onClick={() => toggleModal()}>
+                            Mégsem
+                        </Button>
+                    </ModalFooter>
+                </RVForm>
             </Modal>
         );
     };

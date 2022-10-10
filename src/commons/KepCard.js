@@ -2,9 +2,7 @@ import React from 'react';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 import { Button, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
 
-import Services from './Services';
-
-const KepCard = ({ list, property, setList, ...rest }) => {
+const KepCard = ({ list, property, setList, services, ...rest }) => {
     const { addNotification } = rest;
 
     const CustomComponent = (props) => {
@@ -29,7 +27,7 @@ const KepCard = ({ list, property, setList, ...rest }) => {
             ...list,
             [property]: filtered
         });
-        Services.deleteImage(filename, list['id']).then((res) => {
+        services.deleteImage(filename, list['id']).then((res) => {
             if (!res.err) {
                 addNotification('success', res.msg);
             } else {

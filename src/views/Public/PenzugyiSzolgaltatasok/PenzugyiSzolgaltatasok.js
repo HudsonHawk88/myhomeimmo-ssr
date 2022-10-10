@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-
+import { Button } from 'reactstrap';
 import Services from './Services';
 
 const PenzugyiSzolgaltatasok = () => {
     const defaultSzolgaltatas = {
         kep: [],
-        leiras: ''
+        leiras: '',
+        kalkulator: ''
     };
     const [szolgaltatas, setSzolgaltatas] = useState(defaultSzolgaltatas);
 
@@ -14,7 +15,8 @@ const PenzugyiSzolgaltatasok = () => {
             if (!res.err) {
                 setSzolgaltatas({
                     kep: res.kep[0],
-                    leiras: res.leiras
+                    leiras: res.leiras,
+                    kalkulator: res.kalkulator
                 });
             }
         });
@@ -28,6 +30,13 @@ const PenzugyiSzolgaltatasok = () => {
         init();
     }, []);
 
+    useEffect(() => {
+        if (__isBrowser__) {
+            let elem = document.getElementById('hncc04-05e3');
+            console.log(elem);
+        }
+    }, [__isBrowser__]);
+
     const renderSzolgaltatas = () => {
         return (
             <React.Fragment>
@@ -37,7 +46,16 @@ const PenzugyiSzolgaltatasok = () => {
         );
     };
 
-    return <div className="penzugyi_szolgaltatas">{szolgaltatas && renderSzolgaltatas()}</div>;
+    return (
+        <div className="penzugyi_szolgaltatas">
+            <div className="row">
+                <div className="col-md-12">{szolgaltatas && renderSzolgaltatas()}</div>
+            </div>
+            <div className="row">
+                <div className="col-md-12 penzugyi_szolgaltatas__kalkulator" dangerouslySetInnerHTML={{ __html: szolgaltatas.kalkulator }} />
+            </div>
+        </div>
+    );
 };
 
 export default PenzugyiSzolgaltatasok;

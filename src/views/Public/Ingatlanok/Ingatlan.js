@@ -344,7 +344,7 @@ const Ingatlan = (props) => {
 
     const isIngatlanAdatokHidden = () => {
         let isHidden = false;
-        if (ingatlanObj.tipus === '3' || ingatlanObj.tipus === '6' || ingatlanObj.tipus === '13' || ingatlanObj.tipus === '10') {
+        if (ingatlanObj.tipus === '3' || ingatlanObj.tipus === '6' || ingatlanObj.tipus === '7' || ingatlanObj.tipus === '10' || ingatlanObj.tipus === '13') {
             isHidden = true;
         }
 
@@ -377,8 +377,15 @@ const Ingatlan = (props) => {
                         <Gallery showPlayButton={false} useBrowserFullscreen={true} thumbnailPosition="bottom" items={getKepek()} />
                     </div>
                     <div className="alapadatok">
-                        <strong>{arFormatter(ingatlanObj)}</strong>&nbsp;&nbsp;
-                        {`Település: ${ingatlanObj.helyseg.telepules && ingatlanObj.helyseg.telepules.telepulesnev}`}
+                        <strong>Ár: {arFormatter(ingatlanObj.ar) + ' ' + ingatlanObj.penznem}</strong>&nbsp;&nbsp;
+                        {ingatlanObj.kaucio && ingatlanObj.kaucio !== '' && (
+                            <>
+                                {' '}
+                                {console.log(ingatlanObj.kaucio === 'undefined')}
+                                <strong>Kaució: {arFormatter(ingatlanObj.kaucio) + ' ' + ingatlanObj.penznem}</strong>
+                            </>
+                        )}
+                        {`${ingatlanObj.kaucio && ' '}Település: ${ingatlanObj.helyseg.telepules && ingatlanObj.helyseg.telepules.telepulesnev}`}
                         &nbsp;&nbsp;
                         {(ingatlanObj.telek || ingatlanObj.alapterulet) && meretFormatter(ingatlanObj)}
                         <sup>2</sup>&nbsp;&nbsp;

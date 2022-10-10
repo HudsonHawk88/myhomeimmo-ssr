@@ -29,6 +29,10 @@ function App(props) {
         }, 60000 * 60);
     }, []);
 
+    /*    useEffect(() => {
+        setInitialData(__isBrowser__ ? window.__INITIAL_DATA__ : serverData);
+    }, [__isBrowser__]); */
+
     /*   const [ ingatlanok, setIngatlanok ] = useState([]); */
 
     /*   const getIngatlanok = () => {

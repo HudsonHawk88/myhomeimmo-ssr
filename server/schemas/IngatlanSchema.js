@@ -1,4 +1,5 @@
-import { pool, UseQuery, getIngatlanId, getJSONfromLongtext } from '../common/QueryHelpers.js';
+import { getFID } from 'web-vitals';
+import { pool, UseQuery, getIngatlanId, getJSONfromLongtext, getId } from '../common/QueryHelpers.js';
 
 const addIngatlan = async (req, res) => {
     const felvitelObj = getJSONfromLongtext(req.body, 'toNumber');
@@ -10,7 +11,7 @@ const addIngatlan = async (req, res) => {
     felvitelObj.helyseg = JSON.parse(felvitelObj.helyseg); */
     /* felvitelObj.hirdeto = JSON.parse(felvitelObj.hirdeto); */
     felvitelObj.telepules = felvitelObj.helyseg.telepules.telepulesnev;
-    let id = await getIngatlanId(req.headers.id);
+    let id = await getId(req.headers.id, 'ingatlanok');
     const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, hirdeto) VALUES ('${id}', '${
         felvitelObj.office_id
     }', '${felvitelObj.cim}', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
@@ -88,13 +89,13 @@ const editIngatlan = async (req, res) => {
 
         const sql = `UPDATE ingatlanok SET office_id='${modositoObj.office_id}', cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(
             modositoObj.helyseg
-        )}', kepek='${JSON.stringify(kepek)}', irsz='${modositoObj.irsz}', telepules='${modositoObj.telepules}', ar='${modositoObj.ar}', kaucio='${modositoObj.kaucio}', penznem='${
-            modositoObj.penznem
-        }', statusz='${modositoObj.statusz}', tipus='${modositoObj.tipus}', altipus='${modositoObj.altipus}', rendeltetes='${modositoObj.rendeltetes}', allapot='${modositoObj.allapot}', emelet='${
-            modositoObj.emelet
-        }', alapterulet='${modositoObj.alapterulet}', telek='${modositoObj.telek}', telektipus='${modositoObj.telektipus}', beepithetoseg='${modositoObj.beepithetoseg}', viz='${
-            modositoObj.viz
-        }', gaz='${modositoObj.gaz}', villany='${modositoObj.villany}', szennyviz='${modositoObj.szennyviz}', szobaszam='${modositoObj.szobaszam}', felszobaszam='${
+        )}', kepek='${JSON.stringify(kepek)}', irsz='${modositoObj.helyseg.irszam}', telepules='${modositoObj.helyseg.telepules.telepulesnev}', ar='${modositoObj.ar}', kaucio='${
+            modositoObj.kaucio
+        }', penznem='${modositoObj.penznem}', statusz='${modositoObj.statusz}', tipus='${modositoObj.tipus}', altipus='${modositoObj.altipus}', rendeltetes='${modositoObj.rendeltetes}', allapot='${
+            modositoObj.allapot
+        }', emelet='${modositoObj.emelet}', alapterulet='${modositoObj.alapterulet}', telek='${modositoObj.telek}', telektipus='${modositoObj.telektipus}', beepithetoseg='${
+            modositoObj.beepithetoseg
+        }', viz='${modositoObj.viz}', gaz='${modositoObj.gaz}', villany='${modositoObj.villany}', szennyviz='${modositoObj.szennyviz}', szobaszam='${modositoObj.szobaszam}', felszobaszam='${
             modositoObj.felszobaszam
         }', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${modositoObj.isKiemelt}', isErkely='${
             modositoObj.isErkely

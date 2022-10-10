@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import Gallery from '../../../commons/Gallery';
 import Services from './Services';
 
 const MyArt = (props) => {
@@ -27,24 +28,45 @@ const MyArt = (props) => {
         init();
     }, []);
 
-    const renderKepek = (galeria) => {
-        const kepek = JSON.parse(JSON.stringify(galeria.kepek));
+    const getKepek = (galeria) => {
+        let items = [];
+        if (galeria && galeria.kepek.length > 0) {
+            galeria.kepek.forEach((kep) => {
+                items.push({
+                    original: kep.src,
+                    thumbnail: kep.src,
+                    originalHeight: '400px',
+                    // originalWidth: '100%',
+                    /* thumbnailHeight: '300px', */
+                    thumbnailWidth: '500px'
+                    // sizes: '100%'
+                });
+            });
+        }
+        return items;
+    };
 
-        return kepek.map((kep) => {
-            return <img key={kep.filename} src={kep.src} alt={kep.filename} />;
-        });
+    const renderKepek = (galeria) => {
+        return (
+            <div className="galeria">
+                <Gallery showPlayButton={false} useBrowserFullscreen={true} thumbnailPosition="bottom" items={getKepek(galeria)} />
+            </div>
+        );
     };
 
     const renderGaleriak = () => {
-        const galeriakJson = JSON.parse(JSON.stringify(galeriak));
-        return galeriakJson.map((galeria) => {
+        return galeriak.map((galeria) => {
             if (galeria.isActive) {
                 return (
                     <div className="myart_galeria" key={galeria.id.toString()}>
                         <div className="galeria_cim">
                             <h3>{galeria.nev}</h3>
                         </div>
-                        <div className="muvesz_leiras" dangerouslySetInnerHTML={{ __html: galeria.leiras }} />
+                        <div className="muvesz_leiras">
+                            <div className="row">
+                                <div className="col-md-12" dangerouslySetInnerHTML={{ __html: galeria.leiras }} />
+                            </div>
+                        </div>
                         <div className="muvesz_adatok">
                             <div className="row">
                                 <div className="col-md-12">

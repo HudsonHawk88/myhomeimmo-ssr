@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { pool } from '../../../common/QueryHelpers.js';
+import { getJSONfromLongtext, pool } from '../../../common/QueryHelpers.js';
 const myArt = pool;
 
 // MYART START
@@ -17,13 +17,11 @@ router.get('/altalanos', (req, res) => {
 });
 
 router.get('/galeriak', (req, res) => {
-    const sql = `SELECT * FROM myart_galeriak WHERE isActive='0';`;
+    const sql = `SELECT * FROM myart_galeriak WHERE isActive='1';`;
     myArt.query(sql, (err, result) => {
         if (!err) {
-            let ress = result;
-            ress.map((item) => {
-                item.kepek = JSON.parse(item.kepek);
-                item.isActive = item.isActive === 0 ? true : false;
+            let ress = result.map((item) => {
+                return getJSONfromLongtext(item, 'toBool');
             });
             res.status(200).send(ress);
         } else {

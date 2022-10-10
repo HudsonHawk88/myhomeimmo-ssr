@@ -1,15 +1,17 @@
 import express from 'express';
 import multer from 'multer';
-import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isIngatlanokTableExists, getIngatlanId } from '../../../common/QueryHelpers.js';
+import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync } from 'fs';
 import { addIngatlan, editIngatlan } from '../../../schemas/IngatlanSchema.js';
 
 const router = express.Router();
 const ingatlanok = pool;
 
+//TODO: Egyéb (nem publikus) dokumentumok, képek feltöltését megvalósítani!!!
+
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
-        let id = await getIngatlanId(req.headers.id);
+        let id = await getId(req.headers.id, 'ingatlanok');
         const dir = `${process.env.ingatlankepekdir}/${id}/`;
         let exist = existsSync(dir);
         if (!exist) {
@@ -37,11 +39,8 @@ router.get('/', async (req, res) => {
                 const sql = `SELECT * FROM ingatlanok WHERE id='${id}';`;
                 ingatlanok.query(sql, (err, result) => {
                     if (!err) {
-                        let ressss = [];
-
-                        result.map((ing) => {
-                            const rrrr = getJSONfromLongtext(ing, 'toBool');
-                            ressss.push(rrrr);
+                        let ressss = result.map((ing) => {
+                            return getJSONfromLongtext(ing, 'toBool');
                         });
                         res.status(200).send(ressss);
                     } else {
@@ -51,13 +50,10 @@ router.get('/', async (req, res) => {
             } else {
                 const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo, hirdeto
                 FROM ingatlanok`;
-                ingatlanok.query(sql, async (err, result) => {
+                ingatlanok.query(sql, (err, result) => {
                     if (!err) {
-                        let ressss = result;
-
-                        await ressss.map((ing) => {
-                            const rrrr = getJSONfromLongtext(ing, 'toBool');
-                            return rrrr;
+                        let ressss = result.map((ing) => {
+                            return getJSONfromLongtext(ing, 'toBool');
                         });
                         res.status(200).send(ressss);
                     } else {
@@ -103,7 +99,7 @@ router.post('/', upload.array('kepek'), async (req, res) => {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
-                const isExist = await isIngatlanokTableExists();
+                const isExist = await isTableExists('ingatlanok');
                 if (!isExist) {
                     ingatlanok.query(createIngatlanokSql, (errr) => {
                         if (!errr) {

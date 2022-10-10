@@ -1,6 +1,6 @@
 // const { Pool } = require("pg");
 import express from 'express';
-import { pool, getTelepulesekByKm, getKepekForXml, UseQuery, getJSONfromLongtext, isIngatlanokTableExists } from '../../../common/QueryHelpers.js';
+import { pool, getTelepulesekByKm, getKepekForXml, UseQuery, getJSONfromLongtext, isTableExists } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
 const router = express.Router();
@@ -26,7 +26,7 @@ const getPenznem = (penznem) => {
 // INGATLANOK START
 
 router.get('/', async (req, res) => {
-    const isExist = await isIngatlanokTableExists(ingatlanok);
+    const isExist = await isTableExists('ingatlanok');
     if (isExist) {
         const id = req.query.id;
         const sql = id
@@ -36,24 +36,7 @@ router.get('/', async (req, res) => {
         let result = await UseQuery(sql);
         let ress = result.map((ing) => {
             return getJSONfromLongtext(ing, 'toBool');
-            /*    if (ing.kepek) {
-            ing.kepek = JSON.parse(JSON.stringify(ing.kepek));
-        }
-        if (ing.rogzitoAvatar) {
-            JSON.parse(JSON.stringify(ing.rogzitoAvatar));
-        }
-        if (ing.helyseg) {
-            ing.helyseg = JSON.parse(JSON.stringify(ing.helyseg));
-        }
-
-        ing.isHirdetheto = ing.isHirdetheto === 0 ? true : false;
-        ing.isKiemelt = ing.isKiemelt === 0 ? true : false;
-        ing.isErkely = ing.isErkely === 0 ? true : false;
-        ing.isLift = ing.isLift === 0 ? true : false;
-        ing.isAktiv = ing.isAktiv === 0 ? true : false;
-        ing.isUjEpitesu = ing.isUjEpitesu === 0 ? true : false; */
         });
-        /* return result; */
         res.send(ress);
     } else {
         res.send([]);

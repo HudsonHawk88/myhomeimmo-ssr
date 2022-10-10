@@ -324,12 +324,28 @@ const AdminUsers = (props) => {
         } */
     };
 
-    const deleteImage = (src) => {
+    /*     const deleteImage = (src) => {
         let kepek = adminUser.avatar;
         let filtered = kepek.filter((kep) => kep.src !== src);
         setAdminUser({
             ...adminUser,
             avatar: filtered
+        });
+    };
+ */
+    const deleteImage = (filename) => {
+        let kepek = adminUser.avatar;
+        let filtered = kepek.filter((kep) => kep.filename !== filename);
+        setAdminUser({
+            ...adminUser,
+            avatar: filtered
+        });
+        Services.deleteImage(filename, adminUser.id).then((res) => {
+            if (!res.err) {
+                addNotification('success', res.msg);
+            } else {
+                addNotification('error', res.err);
+            }
         });
     };
 
@@ -339,36 +355,23 @@ const AdminUsers = (props) => {
             maxWidth: '100%'
         };
 
-        let kep = {};
         const onDrop = useCallback((acceptedFiles) => {
-            acceptedFiles.forEach((file) => {
-                let base64 = '';
-                const reader = new FileReader();
-
-                reader.onabort = () => console.log('file reading was aborted');
-                reader.onerror = () => console.log('file reading has failed');
-                reader.onload = (event) => {
-                    //   console.log(file);
-                    // Do whatever you want with the file contents
-                    base64 = event.target.result;
-                    const obj = {
-                        filename: file.name,
-                        title: file.name,
-                        isCover: false,
-                        preview: URL.createObjectURL(file),
-                        src: URL.createObjectURL(file),
-                        file: file
-                    };
-
-                    // console.log(event.target.result);
-
-                    setAdminUser({
-                        ...adminUser,
-                        avatar: [...adminUser.avatar, obj]
-                    });
+            const kepek = acceptedFiles.map((file) => {
+                // Do whatever you want with the file contents
+                let obj = {
+                    filename: file.name,
+                    title: file.name,
+                    isCover: false,
+                    preview: URL.createObjectURL(file),
+                    src: URL.createObjectURL(file),
+                    file: file
                 };
 
-                reader.readAsBinaryString(file);
+                return obj;
+            });
+            setAdminUser({
+                ...adminUser,
+                avatar: [...adminUser.avatar, ...kepek]
             });
         }, []);
 
@@ -391,7 +394,7 @@ const AdminUsers = (props) => {
                                         <img style={imageStyle} src={kep.src || kep.preview} alt={kep.nev} />
                                     </CardBody>
                                     <CardFooter>
-                                        <Button onClick={() => deleteImage(kep.src)}>Törlés</Button>
+                                        <Button onClick={() => deleteImage(kep.filename)}>Törlés</Button>
                                     </CardFooter>
                                 </Card>
                             );

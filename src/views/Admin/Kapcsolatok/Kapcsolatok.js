@@ -4,6 +4,8 @@ import { DataTable } from '@inftechsol/react-data-table';
 import { useDropzone } from 'react-dropzone';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
+import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
+import { makeFormData } from '../../../commons/Lib';
 
 const Kapcsolatok = (props) => {
     const defaultKapcsolatObj = {
@@ -74,81 +76,88 @@ const Kapcsolatok = (props) => {
         toggleDeleteModal();
     };
 
-    const MyDropzone = () => {
-        const imageStyle = {
-            // maxHeight: '100%',
-            maxWidth: '50%'
-        };
-        let kep = {};
-        const onDrop = useCallback((acceptedFiles) => {
-            acceptedFiles.forEach((file) => {
-                let base64 = '';
-                const reader = new FileReader();
-
-                reader.onabort = () => console.log('file reading was aborted');
-                reader.onerror = () => console.log('file reading has failed');
-                reader.onload = (event) => {
-                    // Do whatever you want with the file contents
-                    base64 = event.target.result;
-                    kep = {
-                        src: base64,
-                        title: file.name,
-                        isCover: false
-                    };
-
-                    setKapcsolatObj({
-                        ...kapcsolatObj,
-                        kep: [...kapcsolatObj.kep, kep]
-                    });
-                };
-                reader.readAsDataURL(file);
-            });
-        }, []);
-        const { getRootProps, getInputProps } = useDropzone({ onDrop });
-        return (
-            <React.Fragment>
-                <div hidden={kapcsolatObj.kep.length > 0} {...getRootProps({ className: 'dropzone' })}>
-                    <input {...getInputProps()} />
-                    <p>Kattintson vagy húzza id a feltöltendő képeket...</p>
-                </div>
-                <div className="row">
-                    {kapcsolatObj.kep.map((kep, index) => {
-                        return (
-                            <Card key={index.toString()} className="col-md-12">
-                                <CardTitle>{kep.nev}</CardTitle>
-                                <CardBody
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <img style={imageStyle} src={kep.src} alt={kep.nev} />
-                                </CardBody>
-                                <CardFooter
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <Button onClick={() => deleteImage(kep.src)}>Törlés</Button>
-                                </CardFooter>
-                            </Card>
-                        );
-                    })}
-                </div>
-            </React.Fragment>
-        );
-    };
-
-    const deleteImage = (src) => {
+    const deleteImage = (filename) => {
         let kepek = kapcsolatObj.kep;
-        let filtered = kepek.filter((kep) => kep.src !== src);
+        let filtered = kepek.filter((kep) => kep.filename !== filename);
         setKapcsolatObj({
             ...kapcsolatObj,
             kep: filtered
         });
+        Services.deleteImage(filename, currentId).then((res) => {
+            if (!res.err) {
+                addNotification('success', res.msg);
+            } else {
+                addNotification('error', res.err);
+            }
+        });
+    };
+
+    const MyDropzone = () => {
+        const imageStyle = {
+            maxHeight: '100%',
+            maxWidth: '100%'
+        };
+
+        const onDrop = useCallback((acceptedFiles) => {
+            const kepek = acceptedFiles.map((file) => {
+                // Do whatever you want with the file contents
+                let obj = {
+                    filename: file.name,
+                    title: file.name,
+                    isCover: false,
+                    preview: URL.createObjectURL(file),
+                    src: URL.createObjectURL(file),
+                    file: file
+                };
+
+                return obj;
+            });
+
+            setKapcsolatObj({
+                ...kapcsolatObj,
+                kep: [...kapcsolatObj.kep, ...kepek]
+            });
+        }, []);
+
+        const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+        return (
+            <React.Fragment>
+                <div hidden={kapcsolatObj && kapcsolatObj.kep && kapcsolatObj.kep.length > 0} {...getRootProps({ className: 'dropzone' })}>
+                    <input {...getInputProps()} />
+                    <p>Kattintson vagy húzza id a feltöltendő képeket...</p>
+                </div>
+                <div className="row">
+                    {kapcsolatObj &&
+                        kapcsolatObj.kep &&
+                        kapcsolatObj.kep.map((kep, index) => {
+                            return (
+                                <Card key={index.toString()} className="col-md-12">
+                                    <CardTitle>{kep.nev}</CardTitle>
+                                    <CardBody
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center'
+                                        }}
+                                    >
+                                        <img style={imageStyle} src={kep.src} alt={kep.nev} />
+                                    </CardBody>
+                                    <CardFooter
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center'
+                                        }}
+                                    >
+                                        <Button onClick={() => deleteImage(kep.filename)}>Törlés</Button>
+                                    </CardFooter>
+                                </Card>
+                            );
+                        })}
+                </div>
+            </React.Fragment>
+        );
     };
 
     const tableIconFormatter = (cell, row) => {
@@ -227,8 +236,10 @@ const Kapcsolatok = (props) => {
     };
 
     const onSave = () => {
+        let datas = {};
         if (!currentId) {
-            Services.addKapcsolat(kapcsolatObj).then((res) => {
+            datas = makeFormData(kapcsolatObj, 'kep', false);
+            Services.addKapcsolat(datas).then((res) => {
                 if (!res.err) {
                     listKapcsolatok();
                     toggleModal();
@@ -238,7 +249,8 @@ const Kapcsolatok = (props) => {
                 }
             });
         } else {
-            Services.editKapcsolat(kapcsolatObj, currentId).then((res) => {
+            datas = makeFormData(kapcsolatObj, 'kep', true);
+            Services.editKapcsolat(datas, currentId).then((res) => {
                 if (!res.err) {
                     listKapcsolatok();
                     toggleModal();
@@ -265,56 +277,58 @@ const Kapcsolatok = (props) => {
     const renderModal = () => {
         return (
             <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <ModalHeader>{!currentId ? 'Kapcsolati bejegyzés hozzáadása' : 'Kapcsolati bejegyzés módosítása'}</ModalHeader>
-                <ModalBody>
-                    <div className="col-md-12">
-                        <Label>Azonosító:</Label>
-                        <Input type="text" name="azonosito" id="azonosito" value={kapcsolatObj.azonosito} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Kép:</Label>
-                        <MyDropzone />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Név:</Label>
-                        <Input type="text" name="nev" id="nev" value={kapcsolatObj.nev} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Cím:</Label>
-                        <Input type="text" name="cim" id="cim" value={kapcsolatObj.cim} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>E-mail:</Label>
-                        <Input type="email" name="email" id="email" value={kapcsolatObj.email} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Telefon:</Label>
-                        <Input type="text" name="telefon" id="telefon" value={kapcsolatObj.telefon} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Kapcsolat címsor:</Label>
-                        <Input type="text" name="kapcsolatcim" id="kapcsolatcim" value={kapcsolatObj.kapcsolatcim} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Kapcsolati leiras:</Label>
-                        <Input
-                            type="textarea"
-                            name="kapcsolatleiras"
-                            id="kapcsolatleiras"
-                            rows="7"
-                            value={kapcsolatObj.kapcsolatleiras}
-                            onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)}
-                        />
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="success" onClick={() => onSave()}>
-                        Mentés
-                    </Button>
-                    <Button color="secondary" onClick={() => toggleModal()}>
-                        Mégsem
-                    </Button>
-                </ModalFooter>
+                <RVForm onSubmit={onSave} encType="multipart/form-data" noValidate={true}>
+                    <ModalHeader>{!currentId ? 'Kapcsolati bejegyzés hozzáadása' : 'Kapcsolati bejegyzés módosítása'}</ModalHeader>
+                    <ModalBody>
+                        <div className="col-md-12">
+                            <Label>Azonosító:</Label>
+                            <RVInput type="text" name="azonosito" id="azonosito" value={kapcsolatObj.azonosito} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Kép:</Label>
+                            <MyDropzone />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Név:</Label>
+                            <RVInput type="text" name="nev" id="nev" value={kapcsolatObj.nev} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Cím:</Label>
+                            <RVInput type="text" name="cim" id="cim" value={kapcsolatObj.cim} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>E-mail:</Label>
+                            <RVInput type="email" name="email" id="email" value={kapcsolatObj.email} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Telefon:</Label>
+                            <RVInput type="text" name="telefon" id="telefon" value={kapcsolatObj.telefon} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Kapcsolat címsor:</Label>
+                            <RVInput type="text" name="kapcsolatcim" id="kapcsolatcim" value={kapcsolatObj.kapcsolatcim} onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Kapcsolati leiras:</Label>
+                            <RVInput
+                                type="textarea"
+                                name="kapcsolatleiras"
+                                id="kapcsolatleiras"
+                                rows="7"
+                                value={kapcsolatObj.kapcsolatleiras}
+                                onChange={(e) => handleInputChange(e, kapcsolatObj, setKapcsolatObj)}
+                            />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" type="submit">
+                            Mentés
+                        </Button>
+                        <Button color="secondary" type="button" onClick={() => toggleModal()}>
+                            Mégsem
+                        </Button>
+                    </ModalFooter>
+                </RVForm>
             </Modal>
         );
     };

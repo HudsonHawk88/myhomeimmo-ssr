@@ -27,8 +27,6 @@ const PublicHeaderCarousel = (props) => {
             <div className="carousel_image" key={index.toString()}>
                 <img src={kep.src} alt={kep.title} />
                 <p className="image-gallery-description">
-                    {ingatlan.cim}
-                    <br />
                     <span>{`Referenciaszám: `}</span>
                     {ingatlan.refid}
                     <br />

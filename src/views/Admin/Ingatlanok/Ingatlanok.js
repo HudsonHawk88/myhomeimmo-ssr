@@ -167,20 +167,12 @@ const Ingatlanok = (props) => {
         return tipus;
     };
 
-    const altipusFormatter = (cell, row) => {
-        let altipus = '';
-        altipusOptions.forEach((option) => {
-            if (option.tipus_id === row.tipus) {
-                option.options.forEach((opt) => {
-                    if (opt.value === row.altipus || parseInt(opt.value, 10) === row.altipus) {
-                        altipus = opt.nev;
-                    }
-                });
-            }
-        });
-        return altipus;
+    /*     const arFormatter = (cell, row) => {
+        let ar = row.ar + '';
+        ar = ar + ' ' + row.penznem;
+        return ar;
     };
-
+ */
     const renderTable = () => {
         const columns = [
             {
@@ -229,6 +221,7 @@ const Ingatlanok = (props) => {
                 text: 'Ár',
                 filter: true,
                 filterType: 'textFilter',
+                /* formatter: arFormatter, */
                 filterDefaultValue: 'Keresés...'
             },
             {

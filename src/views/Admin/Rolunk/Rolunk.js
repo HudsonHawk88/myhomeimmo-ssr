@@ -6,6 +6,8 @@ import Wysiwyg from '../../../commons/Wysiwyg';
 import { serializeValue } from '../../../commons/Serializer';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
+import { makeFormData } from '../../../commons/Lib';
+import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
 
 const Rolunk = (props) => {
     const { addNotification } = props;
@@ -104,36 +106,49 @@ const Rolunk = (props) => {
         toggleDeleteModal();
     };
 
+    const deleteImage = (filename) => {
+        let kepek = rolunkObj.kep;
+        let filtered = kepek.filter((kep) => kep.filename !== filename);
+        setRolunkObj({
+            ...rolunkObj,
+            kep: filtered
+        });
+        Services.deleteImage(filename, currentId).then((res) => {
+            if (!res.err) {
+                addNotification('success', res.msg);
+            } else {
+                addNotification('error', res.err);
+            }
+        });
+    };
+
     const MyDropzone = () => {
         const imageStyle = {
             // maxHeight: '100%',
             maxWidth: '50%'
         };
-        let kep = {};
+
         const onDrop = useCallback((acceptedFiles) => {
-            acceptedFiles.forEach((file) => {
-                let base64 = '';
-                const reader = new FileReader();
-
-                reader.onabort = () => console.log('file reading was aborted');
-                reader.onerror = () => console.log('file reading has failed');
-                reader.onload = (event) => {
-                    // Do whatever you want with the file contents
-                    base64 = event.target.result;
-                    kep = {
-                        src: base64,
-                        title: file.name,
-                        isCover: false
-                    };
-
-                    setRolunkObj({
-                        ...rolunkObj,
-                        kep: [...rolunkObj.kep, kep]
-                    });
+            const kepek = acceptedFiles.map((file) => {
+                // Do whatever you want with the file contents
+                let obj = {
+                    filename: file.name,
+                    title: file.name,
+                    isCover: false,
+                    preview: URL.createObjectURL(file),
+                    src: URL.createObjectURL(file),
+                    file: file
                 };
-                reader.readAsDataURL(file);
+
+                return obj;
+            });
+
+            setRolunkObj({
+                ...rolunkObj,
+                kep: [...rolunkObj.kep, ...kepek]
             });
         }, []);
+
         const { getRootProps, getInputProps } = useDropzone({ onDrop });
         return (
             <React.Fragment>
@@ -162,7 +177,7 @@ const Rolunk = (props) => {
                                         alignItems: 'center'
                                     }}
                                 >
-                                    <Button onClick={() => deleteImage(kep.src)}>Törlés</Button>
+                                    <Button onClick={() => deleteImage(kep.filename)}>Törlés</Button>
                                 </CardFooter>
                             </Card>
                         );
@@ -170,15 +185,6 @@ const Rolunk = (props) => {
                 </div>
             </React.Fragment>
         );
-    };
-
-    const deleteImage = (src) => {
-        let kepek = rolunkObj.kep;
-        let filtered = kepek.filter((kep) => kep.src !== src);
-        setRolunkObj({
-            ...rolunkObj,
-            kep: filtered
-        });
     };
 
     const tableIconFormatter = (cell, row) => {
@@ -257,8 +263,10 @@ const Rolunk = (props) => {
     };
 
     const onSave = (kuldObj) => {
+        let datas = {};
         if (!currentId) {
-            Services.addRolunk(kuldObj).then((res) => {
+            datas = makeFormData(kuldObj, 'kep', false);
+            Services.addRolunk(datas).then((res) => {
                 if (!res.err) {
                     listRolunk();
                     toggleModal();
@@ -268,7 +276,8 @@ const Rolunk = (props) => {
                 }
             });
         } else {
-            Services.editRolunk(kuldObj, currentId).then((res) => {
+            datas = makeFormData(kuldObj, 'kep', true);
+            Services.editRolunk(datas, currentId).then((res) => {
                 if (!res.err) {
                     listRolunk();
                     toggleModal();
@@ -295,45 +304,47 @@ const Rolunk = (props) => {
     const renderModal = () => {
         return (
             <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <ModalHeader>{!currentId ? 'Rólunk bejegyzés hozzáadása' : 'Rólunk bejegyzés módosítása'}</ModalHeader>
-                <ModalBody>
-                    <div className="col-md-12">
-                        <Label>Azonosító:</Label>
-                        <Input type="text" name="azonosito" id="azonosito" value={rolunkObj.azonosito} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Kép:</Label>
-                        <MyDropzone />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Név:</Label>
-                        <Input type="text" name="nev" id="nev" value={rolunkObj.nev} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Beosztás:</Label>
-                        <Input type="text" name="beosztas" id="beosztas" value={rolunkObj.beosztas} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Email:</Label>
-                        <Input type="email" name="email" id="email" value={rolunkObj.email} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Telefon:</Label>
-                        <Input type="text" name="telefon" id="telefon" value={rolunkObj.telefon} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Leiras:</Label>
-                        <Wysiwyg fontId="rolunk" onChange={onChangeEditor} value={rolunkObj.leiras} />
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="success" onClick={() => serializeValue('se', rolunkObj, () => {}, 'leiras', onSave)}>
-                        Mentés
-                    </Button>
-                    <Button color="secondary" onClick={() => toggleModal()}>
-                        Mégsem
-                    </Button>
-                </ModalFooter>
+                <RVForm onSubmit={() => serializeValue('se', rolunkObj, () => {}, 'leiras', onSave)} encType="multipart/form-data" noValidate={true}>
+                    <ModalHeader>{!currentId ? 'Rólunk bejegyzés hozzáadása' : 'Rólunk bejegyzés módosítása'}</ModalHeader>
+                    <ModalBody>
+                        <div className="col-md-12">
+                            <Label>Azonosító:</Label>
+                            <RVInput type="text" name="azonosito" id="azonosito" value={rolunkObj.azonosito} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Kép:</Label>
+                            <MyDropzone />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Név:</Label>
+                            <RVInput type="text" name="nev" id="nev" value={rolunkObj.nev} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Beosztás:</Label>
+                            <RVInput type="text" name="beosztas" id="beosztas" value={rolunkObj.beosztas} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Email:</Label>
+                            <RVInput type="email" name="email" id="email" value={rolunkObj.email} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Telefon:</Label>
+                            <RVInput type="text" name="telefon" id="telefon" value={rolunkObj.telefon} onChange={(e) => handleInputChange(e, rolunkObj, setRolunkObj)} />
+                        </div>
+                        <div className="col-md-12">
+                            <Label>Leiras:</Label>
+                            <Wysiwyg fontId="rolunk" onChange={onChangeEditor} value={rolunkObj.leiras} />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" type="submit">
+                            Mentés
+                        </Button>
+                        <Button color="secondary" type="button" onClick={() => toggleModal()}>
+                            Mégsem
+                        </Button>
+                    </ModalFooter>
+                </RVForm>
             </Modal>
         );
     };

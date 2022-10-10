@@ -36,6 +36,29 @@ const getIngatlanId = async (reqID) => {
     return id;
 };
 
+const getId = async (reqID, tableName) => {
+    let id = undefined;
+    if (reqID !== undefined) {
+        id = parseInt(reqID, 10);
+    } else {
+        const isExist = await isTableExists(tableName);
+        if (isExist) {
+            const getLastIdSql = `SELECT MAX(id) as id FROM ${tableName};`;
+            let result = await UseQuery(getLastIdSql);
+            let newID = result[0].id;
+            if (newID && newID !== 'null') {
+                id = newID + 1;
+            } else {
+                id = 1;
+            }
+        } else {
+            id = 1;
+        }
+    }
+
+    return id;
+};
+
 function verifyJson(input) {
     try {
         JSON.parse(input);
@@ -49,7 +72,7 @@ const getJSONfromLongtext = (object, direction = 'toBool') => {
     const keys = Object.keys(object);
     let newObj = {};
     keys.forEach((key) => {
-        if (key === 'isHirdetheto' || key === 'isKiemelt' || key === 'isErkely' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu') {
+        if (key === 'isHirdetheto' || key === 'isKiemelt' || key === 'isErkely' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu' || key === 'isErtekesito' || key === 'isActive') {
             if (direction) {
                 if (direction === 'toBool') {
                     if (object[key] === 0 || object[key] === '0') {
@@ -65,8 +88,14 @@ const getJSONfromLongtext = (object, direction = 'toBool') => {
                     }
                 }
             }
+            return newObj[key];
         } else {
-            verifyJson(object[key]) ? (newObj[key] = JSON.parse(object[key])) : (newObj[key] = object[key]);
+            if (verifyJson(object[key])) {
+                newObj[key] = JSON.parse(object[key]);
+            } else {
+                newObj[key] = object[key];
+            }
+            return newObj[key];
         }
     });
     return newObj;
@@ -184,8 +213,8 @@ const hasRole = (userRoles, minRoles) => {
     return result;
 };
 
-const isIngatlanokTableExists = async (ingatlanok) => {
-    const isExistSql = `SHOW TABLES LIKE "ingatlanok";`;
+const isTableExists = async (tableName) => {
+    const isExistSql = `SHOW TABLES LIKE "${tableName}";`;
     const isExist = await UseQuery(isExistSql);
 
     if (isExist.length !== 0) {
@@ -297,7 +326,7 @@ END IF;
 
 export {
     pool,
-    getIngatlanId,
+    getId,
     getDataFromDatabase,
     jwtparams,
     UseQuery,
@@ -310,6 +339,6 @@ export {
     getJSONfromLongtext,
     getBooleanFromNumber,
     getNumberFromBoolean,
-    isIngatlanokTableExists,
+    isTableExists,
     isAdminUsersTableExists
 };

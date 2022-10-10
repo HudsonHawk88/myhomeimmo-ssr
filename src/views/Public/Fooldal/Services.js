@@ -5,6 +5,7 @@ const ingatlanokUrl = location.origin + '/api/ingatlan';
 const keresIngatlanokUrl = location.origin + '/ingatlan/keres';
 const telepulesekUrl = location.origin + '/api/telepulesek';
 const mailUrl = location.origin + '/api/contactmail';
+const optionsUrl = location.origin + '/api/options';
 
 export default class Services {
     // INGATLANOK START
@@ -95,6 +96,20 @@ export default class Services {
                 id: id
             }
         });
+        return result;
+    };
+
+    static getIngatlanOptions = () => {
+        let result = Microservices.fetchApi(optionsUrl + '/ingatlanoptions', {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+            }
+        });
+
         return result;
     };
 

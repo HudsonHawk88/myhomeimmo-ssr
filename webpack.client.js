@@ -12,8 +12,8 @@ module.exports = {
     entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'build/public/static'),
-        filename: 'client_bundle.js',
-        publicPath: '/build/public'
+        filename: 'client_bundle.js'
+        /* publicPath: '/build/public' */
         /* publicPath: '/' */
     },
     plugins: [

@@ -6,6 +6,8 @@ import Wysiwyg from '../../../commons/Wysiwyg';
 import { serializeValue } from '../../../commons/Serializer';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
+import { makeFormData } from '../../../commons/Lib';
+import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
 
 const PenzugyiSzolgaltatasok = (props) => {
     const { addNotification } = props;
@@ -87,34 +89,45 @@ const PenzugyiSzolgaltatasok = (props) => {
         toggleDeleteModal();
     };
 
+    const deleteImage = (filename) => {
+        let kepek = penzugyiSzolgObj.kep;
+        let filtered = kepek.filter((kep) => kep.filename !== filename);
+        setPenzugyiSzolgObj({
+            ...penzugyiSzolgObj,
+            kep: filtered
+        });
+        Services.deleteImage(filename, currentId).then((res) => {
+            if (!res.err) {
+                addNotification('success', res.msg);
+            } else {
+                addNotification('error', res.err);
+            }
+        });
+    };
+
     const MyDropzone = () => {
         const imageStyle = {
             // maxHeight: '100%',
             maxWidth: '50%'
         };
-        let kep = {};
         const onDrop = useCallback((acceptedFiles) => {
-            acceptedFiles.forEach((file) => {
-                let base64 = '';
-                const reader = new FileReader();
-
-                reader.onabort = () => console.log('file reading was aborted');
-                reader.onerror = () => console.log('file reading has failed');
-                reader.onload = (event) => {
-                    // Do whatever you want with the file contents
-                    base64 = event.target.result;
-                    kep = {
-                        src: base64,
-                        title: file.name,
-                        isCover: false
-                    };
-
-                    setPenzugyiSzolgObj({
-                        ...penzugyiSzolgObj,
-                        kep: [...penzugyiSzolgObj.kep, kep]
-                    });
+            const kepek = acceptedFiles.map((file) => {
+                // Do whatever you want with the file contents
+                let obj = {
+                    filename: file.name,
+                    title: file.name,
+                    isCover: false,
+                    preview: URL.createObjectURL(file),
+                    src: URL.createObjectURL(file),
+                    file: file
                 };
-                reader.readAsDataURL(file);
+
+                return obj;
+            });
+
+            setPenzugyiSzolgObj({
+                ...penzugyiSzolgObj,
+                kep: [...penzugyiSzolgObj.kep, ...kepek]
             });
         }, []);
         const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -145,7 +158,7 @@ const PenzugyiSzolgaltatasok = (props) => {
                                         alignItems: 'center'
                                     }}
                                 >
-                                    <Button onClick={() => deleteImage(kep.src)}>Törlés</Button>
+                                    <Button onClick={() => deleteImage(kep.filename)}>Törlés</Button>
                                 </CardFooter>
                             </Card>
                         );
@@ -153,15 +166,6 @@ const PenzugyiSzolgaltatasok = (props) => {
                 </div>
             </React.Fragment>
         );
-    };
-
-    const deleteImage = (src) => {
-        let kepek = penzugyiSzolgObj.kep;
-        let filtered = kepek.filter((kep) => kep.src !== src);
-        setPenzugyiSzolgObj({
-            ...penzugyiSzolgObj,
-            kep: filtered
-        });
     };
 
     const tableIconFormatter = (cell, row) => {
@@ -224,8 +228,10 @@ const PenzugyiSzolgaltatasok = (props) => {
     };
 
     const onSave = (kuldObj) => {
+        let datas = {};
         if (!currentId) {
-            Services.addPenzugyiSzolgaltatas(kuldObj).then((res) => {
+            datas = makeFormData(kuldObj, 'kep', false);
+            Services.addPenzugyiSzolgaltatas(datas).then((res) => {
                 if (!res.err) {
                     listPenzugyiSzolgaltatasok();
                     toggleModal();
@@ -235,7 +241,8 @@ const PenzugyiSzolgaltatasok = (props) => {
                 }
             });
         } else {
-            Services.editPenzugyiSzolgaltatas(kuldObj, currentId).then((res) => {
+            datas = makeFormData(kuldObj, 'kep', true);
+            Services.editPenzugyiSzolgaltatas(datas, currentId).then((res) => {
                 if (!res.err) {
                     listPenzugyiSzolgaltatasok();
                     toggleModal();
@@ -262,31 +269,33 @@ const PenzugyiSzolgaltatasok = (props) => {
     const renderModal = () => {
         return (
             <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <ModalHeader>{!currentId ? 'Pénzügyi szolgáltatás hozzáadása' : 'Pénzügyi szolgaltatas módosítása'}</ModalHeader>
-                <ModalBody>
-                    <div className="col-md-12">
-                        <Label>Azonosító:</Label>
-                        <Input type="text" name="azonosito" id="azonosito" value={penzugyiSzolgObj.azonosito} onChange={(e) => handleInputChange(e, penzugyiSzolgObj, setPenzugyiSzolgObj)} />
-                    </div>
-                    <div className="col-md-12">
-                        <Label>Kép:</Label>
-                        <MyDropzone />
-                    </div>
-                    <div className="col-md-12">
+                <RVForm onSubmit={() => serializeValue('se', penzugyiSzolgObj, () => {}, 'leiras', onSave)} encType="multipart/form-data" noValidate={true}>
+                    <ModalHeader>{!currentId ? 'Pénzügyi szolgáltatás hozzáadása' : 'Pénzügyi szolgaltatas módosítása'}</ModalHeader>
+                    <ModalBody>
                         <div className="col-md-12">
-                            <Label>Leiras:</Label>
-                            <Wysiwyg fontId="penzugyszolg" onChange={onChangeEditor} value={penzugyiSzolgObj.leiras} />
+                            <Label>Azonosító:</Label>
+                            <RVInput type="text" name="azonosito" id="azonosito" value={penzugyiSzolgObj.azonosito} onChange={(e) => handleInputChange(e, penzugyiSzolgObj, setPenzugyiSzolgObj)} />
                         </div>
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="success" onClick={() => serializeValue('se', penzugyiSzolgObj, () => {}, 'leiras', onSave)}>
-                        Mentés
-                    </Button>
-                    <Button color="secondary" onClick={() => toggleModal()}>
-                        Mégsem
-                    </Button>
-                </ModalFooter>
+                        <div className="col-md-12">
+                            <Label>Kép:</Label>
+                            <MyDropzone />
+                        </div>
+                        <div className="col-md-12">
+                            <div className="col-md-12">
+                                <Label>Leiras:</Label>
+                                <Wysiwyg fontId="penzugyszolg" onChange={onChangeEditor} value={penzugyiSzolgObj.leiras} />
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" type="submit">
+                            Mentés
+                        </Button>
+                        <Button color="secondary" type="button" onClick={() => toggleModal()}>
+                            Mégsem
+                        </Button>
+                    </ModalFooter>
+                </RVForm>
             </Modal>
         );
     };

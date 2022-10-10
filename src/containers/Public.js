@@ -22,7 +22,7 @@ const Public = (props) => {
         return () => {
             setLoading(true);
         };
-    }, [data]);
+    }, [data, location.pathname]);
 
     return location.pathname === '/login' && !isAdmin ? (
         <React.Fragment>{children}</React.Fragment>

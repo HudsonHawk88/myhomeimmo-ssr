@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
+import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
-import Wysiwyg from '../../../commons/Wysiwyg';
-import { serializeValue } from '../../../commons/Serializer';
+import Wysiwyg from '../../../commons/Wysiwyg.js';
+import { serializeValue } from '../../../commons/Serializer.js';
 import { useDropzone } from 'react-dropzone';
-/* import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'; */
+import KepCard from '../../../commons/KepCard.js';
 
-import { handleInputChange } from '../../../commons/InputHandlers';
-import Services from './Services';
+import { handleInputChange } from '../../../commons/InputHandlers.js';
+import Services from './Services.js';
+import { makeFormData } from '../../../commons/Lib';
+import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
 
 const MyArtGaleriak = (props) => {
     const defaultMyArtGaleriakObj = {
@@ -45,89 +47,30 @@ const MyArtGaleriak = (props) => {
         serializeValue('def', defaultMyArtGaleriakObj, setMyArtGaleriakObj, 'leiras');
     }, []);
 
-    const reorder = (list, startIndex, endIndex) => {
-        const result = Array.from(list);
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-
-        return result;
-    };
-
-    const grid = 2;
-
-    const getItemStyle = (isDragging, draggableStyle) => ({
-        // some basic styles to make the items look a bit nicer
-        userSelect: 'none',
-        // padding: grid * 2,
-        // margin: `0 ${grid}px 0 0`,
-
-        // change background colour if dragging
-        // background: isDragging ? 'lightgreen' : 'grey',
-
-        // styles we need to apply on draggables
-        ...draggableStyle
-    });
-
-    const getListStyle = (isDraggingOver) => ({
-        display: 'flex',
-        overflow: 'auto',
-        flexWrap: 'wrap'
-    });
-
-    const onDragEnd = (result) => {
-        // dropped outside the list
-        if (!result.destination) {
-            return;
-        }
-
-        const items = reorder(myArtGaleriakObj.kepek, result.source.index, result.destination.index);
-
-        setMyArtGaleriakObj({
-            ...myArtGaleriakObj,
-            kepek: items
-        });
-    };
-
-    const deleteImage = (filename) => {
-        let kepek = myArtGaleriakObj.kepek;
-        let filtered = kepek.filter((kep) => kep.filename !== filename);
-        setMyArtGaleriakObj({
-            ...myArtGaleriakObj,
-            kepek: filtered
-        });
-    };
-
     const MyDropzone = () => {
         const imageStyle = {
             // maxHeight: '100%',
             maxWidth: '50%'
         };
-        let kep = {};
+
         const onDrop = useCallback((acceptedFiles) => {
-            acceptedFiles.forEach((file) => {
-                let base64 = '';
-                const reader = new FileReader();
-
-                reader.onabort = () => console.log('file reading was aborted');
-                reader.onerror = () => console.log('file reading has failed');
-                reader.onload = (event) => {
-                    // Do whatever you want with the file contents
-                    base64 = event.target.result;
-                    kep = {
-                        preview: base64,
-                        src: base64,
-                        file: file,
-                        filename: file.name,
-                        title: file.name,
-                        isCover: false
-                    };
-
-                    setMyArtGaleriakObj({
-                        ...myArtGaleriakObj,
-                        kepek: [...myArtGaleriakObj.kepek, kep]
-                    });
+            const kepek = acceptedFiles.map((file) => {
+                // Do whatever you want with the file contents
+                let obj = {
+                    filename: file.name,
+                    title: file.name,
+                    isCover: false,
+                    preview: URL.createObjectURL(file),
+                    src: URL.createObjectURL(file),
+                    file: file
                 };
-                reader.readAsDataURL(file);
+
+                return obj;
+            });
+
+            setMyArtGaleriakObj({
+                ...myArtGaleriakObj,
+                kepek: [...myArtGaleriakObj.kepek, ...kepek]
             });
         }, []);
         const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -137,49 +80,7 @@ const MyArtGaleriak = (props) => {
                     <input {...getInputProps()} />
                     <p>Kattintson vagy húzza id a feltöltendő képeket...</p>
                 </div>
-                <div className="row">
-                    {/*       <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="droppable" direction="horizontal">
-                    {(provided, snapshot) => (
-                        <div
-                        ref={provided.innerRef}
-                        style={getListStyle(snapshot.isDraggingOver)}
-                        {...provided.droppableProps}
-                        
-                        >
-                        {myArtGaleriakObj.kepek.map((item, index) => (
-                            <Draggable key={item.title} draggableId={index.toString()} index={index} isDragDisabled={item.isCover}>
-                            {(provided, snapshot) => (
-                                <div
-                                className='col-md-3'
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                style={getItemStyle(
-                                    snapshot.isDragging,
-                                    provided.draggableProps.style
-                                )}
-                                >
-                                <Card key={index.toString()}>
-                                    <CardTitle>{item.nev}</CardTitle>
-                                    <CardBody>
-                                        <img style={imageStyle} src={item.src || item.preview} alt={item.nev} />
-                                    </CardBody>
-                                    <CardFooter>
-                                        <Button onClick={() => deleteImage(item.filename)}>Törlés</Button>
-                                    </CardFooter>
-                                </Card>
-                                </div>
-                            )}
-                            </Draggable>
-                            
-                        ))}
-                        {provided.placeholder}
-                        </div>
-                    )}
-                    </Droppable>
-                </DragDropContext> */}
-                </div>
+                <KepCard services={Services} list={myArtGaleriakObj} property="kepek" setList={setMyArtGaleriakObj} {...props} />
             </React.Fragment>
         );
     };
@@ -302,8 +203,10 @@ const MyArtGaleriak = (props) => {
     };
 
     const onSave = (kuldObj) => {
+        let datas = {};
         if (!currentId) {
-            Services.addGaleria(kuldObj).then((res) => {
+            datas = makeFormData(kuldObj, 'kepek', false);
+            Services.addGaleria(datas).then((res) => {
                 if (!res.err) {
                     listGaleriak();
                     toggleModal();
@@ -313,7 +216,8 @@ const MyArtGaleriak = (props) => {
                 }
             });
         } else {
-            Services.editGaleria(kuldObj, currentId).then((res) => {
+            datas = makeFormData(kuldObj, 'kepek', true);
+            Services.editGaleria(datas, currentId).then((res) => {
                 if (!res.err) {
                     listGaleriak();
                     toggleModal();
@@ -347,75 +251,83 @@ const MyArtGaleriak = (props) => {
     const renderModal = () => {
         return (
             <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <ModalHeader>{!currentId ? 'MyArt galéria hozzáadása' : 'MyArt galéria módosítása'}</ModalHeader>
-                <ModalBody>
-                    <div className="row">
-                        <div className="col-md-4">
-                            <Label>Azonosító:</Label>
-                            <Input type="text" name="azonosito" id="azonosito" value={myArtGaleriakObj.azonosito} onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)} />
+                <RVForm onSubmit={() => serializeValue('se', myArtGaleriakObj, () => {}, 'leiras', onSave)} encType="multipart/form-data" noValidate={true}>
+                    <ModalHeader>{!currentId ? 'MyArt galéria hozzáadása' : 'MyArt galéria módosítása'}</ModalHeader>
+                    <ModalBody>
+                        <div className="row">
+                            <div className="col-md-4">
+                                <Label>Azonosító:</Label>
+                                <RVInput type="text" name="azonosito" id="azonosito" value={myArtGaleriakObj.azonosito} onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)} />
+                            </div>
+                            <div className="col-md-4">
+                                <Label>Név:</Label>
+                                <RVInput type="text" name="nev" id="nev" value={myArtGaleriakObj.nev} onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)} />
+                            </div>
+                            <div className="col-md-4">
+                                <Label>Művész neve:</Label>
+                                <RVInput type="text" name="muveszNev" id="muveszNev" value={myArtGaleriakObj.muveszNev} onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)} />
+                            </div>
+                            <div className="col-md-12" />
+                            <br />
+                            <div className="col-md-4">
+                                <Label>Művész telefonszáma:</Label>
+                                <RVInput
+                                    type="text"
+                                    name="muveszTelefon"
+                                    id="muveszTelefon"
+                                    value={myArtGaleriakObj.muveszTelefon}
+                                    onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <Label>Művész e-mail címe:</Label>
+                                <RVInput
+                                    type="email"
+                                    name="muveszEmail"
+                                    id="muveszEmail"
+                                    value={myArtGaleriakObj.muveszEmail}
+                                    onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <Label>Művész weblapja:</Label>
+                                <RVInput type="text" name="muveszUrl" id="muveszUrl" value={myArtGaleriakObj.muveszUrl} onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)} />
+                            </div>
+                            <div className="col-md-12" />
+                            <br />
+                            <div className="col-md-12">
+                                <Label>Képek: *</Label>
+                                <MyDropzone multiple />
+                            </div>
+                            <div className="col-md-12" />
+                            <br />
+                            <div className="col-md-4">
+                                <Label>Publikus:</Label>
+                                <RVInput
+                                    type="checkbox"
+                                    name="isActive"
+                                    id="isActive"
+                                    checked={myArtGaleriakObj.isActive}
+                                    onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)}
+                                />
+                            </div>
+                            <div className="col-md-12" />
+                            <br />
+                            <div className="col-md-12">
+                                <Label>Leiras:</Label>
+                                <Wysiwyg fontId="myArtGaleria" onChange={onChangeEditor} value={myArtGaleriakObj.leiras} />
+                            </div>
                         </div>
-                        <div className="col-md-4">
-                            <Label>Név:</Label>
-                            <Input type="text" name="nev" id="nev" value={myArtGaleriakObj.nev} onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)} />
-                        </div>
-                        <div className="col-md-4">
-                            <Label>Művész neve:</Label>
-                            <Input type="text" name="muveszNev" id="muveszNev" value={myArtGaleriakObj.muveszNev} onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)} />
-                        </div>
-                        <div className="col-md-12" />
-                        <br />
-                        <div className="col-md-4">
-                            <Label>Művész telefonszáma:</Label>
-                            <Input
-                                type="text"
-                                name="muveszTelefon"
-                                id="muveszTelefon"
-                                value={myArtGaleriakObj.muveszTelefon}
-                                onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)}
-                            />
-                        </div>
-                        <div className="col-md-4">
-                            <Label>Művész e-mail címe:</Label>
-                            <Input
-                                type="email"
-                                name="muveszEmail"
-                                id="muveszEmail"
-                                value={myArtGaleriakObj.muveszEmail}
-                                onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)}
-                            />
-                        </div>
-                        <div className="col-md-4">
-                            <Label>Művész weblapja:</Label>
-                            <Input type="text" name="muveszUrl" id="muveszUrl" value={myArtGaleriakObj.muveszUrl} onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)} />
-                        </div>
-                        <div className="col-md-12" />
-                        <br />
-                        <div className="col-md-12">
-                            <Label>Képek: *</Label>
-                            <MyDropzone multiple />
-                        </div>
-                        <div className="col-md-12" />
-                        <br />
-                        <div className="col-md-4">
-                            <Label>Publikus:</Label>
-                            <Input type="checkbox" name="isActive" id="isActive" checked={myArtGaleriakObj.isActive} onChange={(e) => handleInputChange(e, myArtGaleriakObj, setMyArtGaleriakObj)} />
-                        </div>
-                        <div className="col-md-12" />
-                        <br />
-                        <div className="col-md-12">
-                            <Label>Leiras:</Label>
-                            <Wysiwyg fontId="myArtGaleria" onChange={onChangeEditor} value={myArtGaleriakObj.leiras} />
-                        </div>
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="success" onClick={() => serializeValue('se', myArtGaleriakObj, () => {}, 'leiras', onSave)}>
-                        Mentés
-                    </Button>
-                    <Button color="secondary" onClick={() => toggleModal()}>
-                        Mégsem
-                    </Button>
-                </ModalFooter>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" type="submit">
+                            Mentés
+                        </Button>
+                        <Button color="secondary" type="button" onClick={() => toggleModal()}>
+                            Mégsem
+                        </Button>
+                    </ModalFooter>
+                </RVForm>
             </Modal>
         );
     };

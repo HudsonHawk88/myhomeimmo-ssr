@@ -29,14 +29,14 @@ const PublicRoutes = [
     { path: '/login', element: Login },
     { path: '/', element: Fooldal, fetchInitialData: (path = `/api/ingatlan`) => Microservices.fetchApi(getReqUrl(path)) },
     { path: '/ingatlan', element: Ingatlan, fetchInitialData: (path = `/api/ingatlan`) => Microservices.fetchApi(getReqUrl(path)) },
-    { path: '/ingatlanok', element: Ingatlanok, fetchInitialData: (path = `/api/ingatlan`) => Microservices.fetchApi(getReqUrl(path)) },
-    { path: '/ingatlanszolgaltatasok', element: IngatlanSzolgaltatasok, fetchInitialData: (path = `/api/ingatlanszolg`) => Microservices.fetchApi(getReqUrl(path)) },
-    { path: '/penzugyiszolgaltatasok', element: PenzugyiSzolgaltatasok, fetchInitialData: (path = `/api/penzugyszolg`) => Microservices.fetchApi(getReqUrl(path)) },
-    { path: '/adatkezeles', element: Adatkezeles, fetchInitialData: (path = `/api/adatkezeles`) => Microservices.fetchApi(getReqUrl(path)) },
-    { path: '/rolunk', element: Rolunk, fetchInitialData: (path = `/api/rolunk`) => Microservices.fetchApi(getReqUrl(path)) },
-    { path: '/kapcsolat', element: Kapcsolat, fetchInitialData: (path = `/api/kapcsolat`) => Microservices.fetchApi(getReqUrl(path)) },
+    { path: '/ingatlanok', element: Ingatlanok },
+    { path: '/ingatlanszolgaltatasok', element: IngatlanSzolgaltatasok },
+    { path: '/penzugyiszolgaltatasok', element: PenzugyiSzolgaltatasok },
+    { path: '/adatkezeles', element: Adatkezeles },
+    { path: '/rolunk', element: Rolunk },
+    { path: '/kapcsolat', element: Kapcsolat },
     { path: '/myjob', element: MyJob, fetchInitialData: (path = `/api/myjob`) => Microservices.fetchApi(getReqUrl(path)) },
-    { path: '/myart', element: MyArt, fetchInitialData: (path = `/api/myart`) => Microservices.fetchApi(getReqUrl(path)) }
+    { path: '/myart', element: MyArt }
 ];
 
 export default PublicRoutes;

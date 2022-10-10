@@ -19,33 +19,32 @@ function isObject(input) {
 }
 
 function makeFormData(dataObj, kepKey, isMod) {
-    let formData = new FormData();
-
+    let data = new FormData();
     for (var key in dataObj) {
         if (key === kepKey) {
             if (isMod) {
-                dataObj.avatar.forEach((kep) => {
+                dataObj[kepKey].forEach((kep) => {
                     if (kep.file) {
-                        formData.append(`uj_${kepKey}`, kep.file);
+                        data.append(`uj_${kepKey}`, kep.file);
                     } else {
-                        formData.append(kepKey, JSON.stringify(kep));
+                        data.append(kepKey, JSON.stringify(kep));
                     }
                 });
             } else {
                 dataObj[kepKey].forEach((kep) => {
                     if (kep.file) {
-                        formData.append(kepKey, kep.file);
+                        data.append(kepKey, kep.file);
                     }
                 });
             }
         } else if (isObject(dataObj[key])) {
-            formData.append(key, JSON.stringify(dataObj[key]));
+            data.append(key, JSON.stringify(dataObj[key]));
         } else {
-            formData.append(key, dataObj[key]);
+            data.append(key, dataObj[key]);
         }
     }
-
-    return formData;
+    /*     console.log('FormData: ', data.getAll('leiras')); */
+    return data;
 }
 
 function arFormatter(ar) {

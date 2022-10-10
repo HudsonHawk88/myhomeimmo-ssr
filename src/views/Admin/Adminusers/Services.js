@@ -194,4 +194,20 @@ export default class Services {
 
         return result;
     };
+
+    static deleteImage = (filename, adminUserId) => {
+        let result = Microservices.fetchApi(adminUsersUrl + '/deleteimage', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                id: adminUserId
+            },
+            body: JSON.stringify({ filename: filename })
+        });
+
+        return result;
+    };
 }

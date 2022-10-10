@@ -40,10 +40,10 @@ export default class Services {
             mode: 'cors',
             cache: 'no-cache',
             headers: {
-                'Content-Type': 'application/json',
+                /*  'Content-Type': 'application/json', */
                 'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
             },
-            body: JSON.stringify(data)
+            body: data
         });
         return result;
     };
@@ -54,11 +54,11 @@ export default class Services {
             mode: 'cors',
             cache: 'no-cache',
             headers: {
-                'Content-Type': 'application/json',
+                /*       'Content-Type': 'application/json', */
                 'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
                 id: id
             },
-            body: JSON.stringify(data)
+            body: data
         });
         return result;
     };
@@ -74,6 +74,22 @@ export default class Services {
                 id: id
             }
         });
+        return result;
+    };
+
+    static deleteImage = (filename, adminIngSzolgId) => {
+        let result = Microservices.fetchApi(ingatlanSzolgAdminUrl + '/deleteimage', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                id: adminIngSzolgId
+            },
+            body: JSON.stringify({ filename: filename })
+        });
+
         return result;
     };
 
