@@ -304,17 +304,8 @@ router.post('/keres', async (req, res) => {
     let sql = `SELECT * FROM ingatlanok WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''} ${newWhere !== '' ? 'AND ' + newWhere : ''};`;
     ingatlanok.query(sql, (err, result) => {
         if (!err) {
-            let ressss = result;
-            ressss.forEach((ing) => {
-                /*   ing.kepek = JSON.parse(ing.kepek); */
-                ing.kepek = ing.kepek.filter((kep) => kep.isCover);
-                /*        ing.helyseg = JSON.parse(ing.helyseg); */
-                ing.isHirdetheto = ing.isHirdetheto === 1 ? true : false;
-                ing.isKiemelt = ing.isKiemelt === 1 ? true : false;
-                ing.isErkely = ing.isErkely === 1 ? true : false;
-                ing.isLift = ing.isLift === 1 ? true : false;
-                ing.isAktiv = ing.isAktiv === 1 ? true : false;
-                ing.isUjEpitesu = ing.isUjEpitesu === 1 ? true : false;
+            let ressss = result.ressss.map((ing) => {
+                return getJSONfromLongtext(ing, 'toBool');
             });
             res.status(200).send(ressss);
         } else {
