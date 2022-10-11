@@ -304,7 +304,7 @@ router.post('/keres', async (req, res) => {
     let sql = `SELECT * FROM ingatlanok WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''} ${newWhere !== '' ? 'AND ' + newWhere : ''};`;
     ingatlanok.query(sql, (err, result) => {
         if (!err) {
-            let ressss = result.ressss.map((ing) => {
+            let ressss = result.map((ing) => {
                 return getJSONfromLongtext(ing, 'toBool');
             });
             res.status(200).send(ressss);
