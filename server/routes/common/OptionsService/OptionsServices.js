@@ -8,7 +8,9 @@ router.get('/ingatlanoptions', (req, res, next) => {
     const sql = `SELECT * FROM ingatlan_options;`;
     pool.query(sql, (error, result) => {
         if (!error) {
-            let ress = getJSONfromLongtext(result);
+            let ress = result.map((item) => {
+                return getJSONfromLongtext(item, 'toBool');
+            });
             /*  ress.options = JSON.parse(res.options); */
             res.status(200).send(ress);
         } else {
@@ -21,7 +23,9 @@ router.get('/altipusoptions', (req, res, next) => {
     const sql = `SELECT * FROM ingatlan_subtypes;`;
     pool.query(sql, (error, result) => {
         if (!error) {
-            let ress = getJSONfromLongtext(result);
+            let ress = result.map((item) => {
+                return getJSONfromLongtext(item, 'toBool');
+            });
             /*  ress.options = JSON.parse(res.options); */
             res.status(200).send(ress);
         } else {
