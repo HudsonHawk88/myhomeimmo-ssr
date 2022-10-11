@@ -49,14 +49,14 @@ router.get('/javitas', async (req, res) => {
         const id = req.query.id;
         const sql = id
             ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'`
-            : `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
+            : `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok;`;
 
         let result = await UseQuery(sql);
         let ress = [];
         result.forEach((ing) => {
             ing = getJSONfromLongtext(ing, 'toBool');
             ing.kepek = ing.kepek.map((item) => {
-                item.src = `https://myhomeimmo.hu/static/images/ingatlanok/${item.id}/${item.filename}`;
+                item.src = `https://myhomeimmo.hu/static/images/ingatlanok/${ing.id}/${item.filename}`;
                 return item;
             });
             switch (ing.tipus) {
@@ -102,7 +102,18 @@ router.get('/javitas', async (req, res) => {
             }
             ress.push(ing);
         });
-        res.send(ress);
+
+        ress.forEach((elem) => {
+            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}', tipus='${elem.tipus}';`;
+            ingatlanok.query(sql, (errrrr) => {
+                if (!errrrr) {
+                    console.log('JÓ');
+                } else {
+                    console.log('ROSSZ');
+                }
+            });
+        });
+        res.send({ msg: 'HELLO' });
     } else {
         res.send([]);
     }
