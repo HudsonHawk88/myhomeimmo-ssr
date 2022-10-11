@@ -104,7 +104,7 @@ router.get('/javitas', async (req, res) => {
         });
 
         ress.forEach((elem) => {
-            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}';`;
+            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}' WHERE id='${elem.id}';`;
             ingatlanok.query(sql, (errrrr) => {
                 if (!errrrr) {
                     console.log('JÓ');
