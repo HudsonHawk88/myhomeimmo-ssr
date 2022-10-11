@@ -55,11 +55,9 @@ router.get('/javitas', async (req, res) => {
         let ress = [];
         ress = result.map((ing) => {
             ing = getJSONfromLongtext(ing, 'toBool');
-            let kepek = ing.kepek.map((item) => {
-                let newItem = item;
-                newItem.src = `https://myhomeimmo.hu/static/images/ingatlanok/${ing.id}/${item.filename}`;
-
-                return newItem;
+            ing.kepek.map((item) => {
+                item.src = `https://myhomeimmo.hu/static/images/ingatlanok/${ing.id}/${item.filename}`;
+                return item;
             });
             ing.kepek = kepek;
             switch (ing.tipus) {
