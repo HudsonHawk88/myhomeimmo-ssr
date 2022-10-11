@@ -367,7 +367,7 @@ router.get('/ingatlanokapi', (req, res, next) => {
                   </note>
                   <lat>${latLong[0].geoLat}</lat>
                   <lng>${latLong[0].geoLong}</lng>
-                  ${tipus === '1' || tipus === '2' || tipus === '4' || tipus === '9' || tipus === '12' ? `<property-condition>${ingatlan.allapot}<property-condition>` : ''}
+                  ${tipus === '1' || tipus === '2' || tipus === '4' || tipus === '9' || tipus === '12' ? `<property-condition>${ingatlan.allapot}</property-condition>` : ''}
                   ${tipus === '1' ? `<floor>${ingatlan.emelet}</floor>` : ''}
                   ${ingatlan.epitesmod ? `<builds>${ingatlan.epitesmod}</builds>` : ''}
                   ${ingatlan.futes ? `<htyp>${ingatlan.futes}</htyp>` : ''}
