@@ -109,8 +109,20 @@ router.get('/javitas', async (req, res) => {
             return ing;
         });
 
+        const hird = {
+            feladoNev: 'Berki Mónika',
+            feladoEmail: 'berkimonika@myhomezala.hu',
+            feladoAvatar: [
+                {
+                    src: 'https://myhomeimmo.hu/static/images/avatars/7/berkimonika2.png',
+                    title: 'berkimonika.png'
+                }
+            ],
+            feladoTelefon: '+36 20 461 9075'
+        };
+
         ress.forEach((elem) => {
-            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}', tipus='${elem.tipus}' WHERE id='${elem.id}';`;
+            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}', tipus='${elem.tipus}', hirdeto='${JSON.stringify(hird)}' WHERE id='${elem.id}';`;
             ingatlanok.query(sql, (errrrr) => {
                 if (!errrrr) {
                     console.log('JÓ');
