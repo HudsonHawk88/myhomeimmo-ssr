@@ -538,10 +538,8 @@ const Ingatlan = (props) => {
                             {ingatlanObj.hirdeto && ingatlanObj.hirdeto.feladoTelefon}
                         </div>
                     </div>
-                    <button className="facebook-share" data-href={`http://inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`} data-layout="button" data-size="large">
-                        <span
-                            onClick={() => openFacebookShare(`https://www.facebook.com/sharer/sharer.php?u=http://inftechsol.hu:8460/ingatlan?id=${ingatlanObj.id}`, 'Megosztás facebookon', 800, 800)}
-                        >
+                    <button className="facebook-share" data-href={`${process.env.shareUrl}${ingatlanObj.id}`} data-layout="button" data-size="large">
+                        <span onClick={() => openFacebookShare(`https://www.facebook.com/sharer/sharer.php?u=${process.env.shareUrl}${ingatlanObj.id}`, 'Megosztás facebookon', 800, 800)}>
                             <i className="fa fa-facebook-f" /> Megosztás
                         </span>
                     </button>
