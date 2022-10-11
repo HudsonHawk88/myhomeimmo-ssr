@@ -43,6 +43,71 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/javitas', async (req, res) => {
+    const isExist = await isTableExists('ingatlanok');
+    if (isExist) {
+        const id = req.query.id;
+        const sql = id
+            ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'`
+            : `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1';`;
+
+        let result = await UseQuery(sql);
+        let ress = [];
+        result.forEach((ing) => {
+            ing = getJSONfromLongtext(ing, 'toBool');
+            ing.kepek = ing.kepek.map((item) => {
+                item.src = `https://myhomeimmo.hu/static/images/ingatlanok/${item.id}/${item.filename}`;
+                return item;
+            });
+            switch (ing.tipus) {
+                case 'Lakás': {
+                    ing.tipus = 1;
+                }
+                case 'Családi ház': {
+                    ing.tipus = 2;
+                }
+                case 'Telek': {
+                    ing.tipus = 3;
+                }
+                case 'Iroda': {
+                    ing.tipus = 4;
+                }
+                case 'Üzlethelyiség': {
+                    ing.tipus = 5;
+                }
+                case 'Ipari ingatlan': {
+                    ing.tipus = 6;
+                }
+                case 'Garázs': {
+                    ing.tipus = 7;
+                }
+                case 'Tároló': {
+                    ing.tipus = 8;
+                }
+                case 'Vendéglátóhely': {
+                    ing.tipus = 9;
+                }
+                case 'Fejlesztési terület': {
+                    ing.tipus = 10;
+                }
+                case 'Irodaház': {
+                    ing.tipus = 11;
+                }
+                case 'Szálláshely': {
+                    ing.tipus = 12;
+                }
+                case 'Mezőgazdasági terület': {
+                    ing.tipus = 13;
+                }
+            }
+            ress.push(ing);
+        });
+        res.send(ress);
+    } else {
+        res.send([]);
+    }
+});
+
 /* router.get('/ingatlanok/aktiv', (req, res) => {
   // const id = req.headers.id;
   const id = req.headers.id;
