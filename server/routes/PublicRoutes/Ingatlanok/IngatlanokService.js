@@ -346,10 +346,14 @@ router.get('/ingatlanokapi', (req, res, next) => {
                   ${
                       tipus === '2' || tipus === '3' || tipus === '10' || tipus === '13'
                           ? `<land>${ingatlan.telek}</land>
-                    <ltyp>${ingatlan.telektipus}</ltyp>`
+                  <ltyp>${ingatlan.telektipus}</ltyp>`
                           : ''
                   }
-             
+                  ${
+                      tipus === '2' || tipus === '6' || tipus === '8' || tipus === '9' || tipus === '10' || tipus === '11' || tipus === '12' || tipus === '13'
+                          ? `<btype>${ingatlan.altipus}</btype>`
+                          : ''
+                  }
                   ${tipus === '2' || tipus === '3' ? `<rend>${ingatlan.rendeltetes}</rend>` : ''}
                   ${ingatlan.szobaszam && `<room>${ingatlan.szobaszam}</room>`}
                   ${ingatlan.felszobaszam && `<froom>${ingatlan.felszobaszam}</froom>`}
@@ -363,11 +367,10 @@ router.get('/ingatlanokapi', (req, res, next) => {
                   </note>
                   <lat>${latLong[0].geoLat}</lat>
                   <lng>${latLong[0].geoLong}</lng>
-            
-                  ${tipus === '1' || tipus === '2' || tipus === '4' || tipus === '9' || tipus === '12' ? `<property-condition>${ingatlan.allapot}</property-condition>` : ''}
+                  ${tipus === '1' || tipus === '2' || tipus === '4' || tipus === '9' || tipus === '12' ? `<property-condition>${ingatlan.allapot}<property-condition>` : ''}
                   ${tipus === '1' ? `<floor>${ingatlan.emelet}</floor>` : ''}
-                  <builds>${ingatlan.epitesmod}</builds>
-                  <htyp>${ingatlan.futes}</htyp>
+                  ${ingatlan.epitesmod ? `<builds>${ingatlan.epitesmod}</builds>` : ''}
+                  ${ingatlan.futes ? `<htyp>${ingatlan.futes}</htyp>` : ''}
                   <images>
                     ${getKepekForXml(kepek, data)}
                   </images>
