@@ -2,9 +2,8 @@
 const path = require('path');
 const isProduction = process.env.NODE_ENV === 'production';
 const target = isProduction ? 'web' : 'browserslist';
-const webpack = require('webpack');
 require('dotenv').config();
-const { EnvironmentPlugin } = require('webpack');
+const { EnvironmentPlugin, ProvidePlugin, DefinePlugin } = require('webpack');
 /* const LoadablePlugin = require('@loadable/webpack-plugin') */
 
 module.exports = {
@@ -17,10 +16,10 @@ module.exports = {
         /* publicPath: '/' */
     },
     plugins: [
-        new webpack.ProvidePlugin({
+        new ProvidePlugin({
             process: 'process/browser'
         }),
-        new webpack.DefinePlugin({
+        new DefinePlugin({
             __isBrowser__: 'true'
         }),
         new EnvironmentPlugin({

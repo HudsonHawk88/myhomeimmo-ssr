@@ -2,7 +2,7 @@
 const path = require('path');
 const webpackNodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const webpack = require('webpack');
+const { DefinePlugin } = require('webpack');
 const isProduction = process.env.NODE_ENV === 'production';
 /* const LoadablePlugin = require('@loadable/webpack-plugin') */
 
@@ -17,7 +17,7 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin(),
-        new webpack.DefinePlugin({
+        new DefinePlugin({
             __isBrowser__: 'false'
         })
         /*         new LoadablePlugin() */
