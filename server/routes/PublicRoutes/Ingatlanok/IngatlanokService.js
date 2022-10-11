@@ -332,6 +332,7 @@ router.get('/ingatlanokapi', (req, res, next) => {
         if (!error) {
             await Promise.all(
                 ingatlanJson.map(async (ingatlan) => {
+                    ingatlan = getJSONfromLongtext(ingatlan, 'toBool');
                     const getLatLongSql = `SELECT geoLat, geoLong FROM telep_1 WHERE irszam='${ingatlan.irsz}';`;
                     const tipus = ingatlan.tipus + '';
                     const hirdeto = ingatlan.hirdeto;
