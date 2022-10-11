@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/javitas', async (req, res) => {
+/* router.get('/javitas', async (req, res) => {
     const isExist = await isTableExists('ingatlanok');
     if (isExist) {
         const id = req.query.id;
@@ -135,7 +135,7 @@ router.get('/javitas', async (req, res) => {
     } else {
         res.send([]);
     }
-});
+}); */
 
 /* router.get('/ingatlanok/aktiv', (req, res) => {
   // const id = req.headers.id;
@@ -256,7 +256,8 @@ router.post('/keres', async (req, res) => {
                         where = where.concat(`${filter}>='${kereso[filter]}' AND `);
                     }
                     if (filter === 'ar') {
-                        where = where.concat(`${filter}<=${kereso[filter]} AND `);
+                        const ar = kereso[filter].replace(/ /g, '');
+                        where = where.concat(`${filter}<=${ar} AND `);
                     }
                     if (filter === 'isHirdetheto' || filter === 'isKiemelt' || filter === 'isLift' || filter === 'isErkely' || filter === 'isUjEpitesu') {
                         where = where.concat(`${filter}='${0}' AND `);

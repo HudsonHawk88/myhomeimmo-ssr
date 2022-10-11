@@ -30,17 +30,10 @@ const PenzugyiSzolgaltatasok = () => {
         init();
     }, []);
 
-    useEffect(() => {
-        if (__isBrowser__) {
-            let elem = document.getElementById('hncc04-05e3');
-            console.log(elem);
-        }
-    }, [__isBrowser__]);
-
     const renderSzolgaltatas = () => {
         return (
             <React.Fragment>
-                <img src={szolgaltatas && szolgaltatas.kep && szolgaltatas.kep.src} alt="Pajér András" />
+                <img src={szolgaltatas && szolgaltatas.kep && szolgaltatas.kep.src} alt="Berki Mónika" />
                 <div className="penzugyi_szolgaltatas__leiras" dangerouslySetInnerHTML={{ __html: szolgaltatas.leiras }} />
             </React.Fragment>
         );

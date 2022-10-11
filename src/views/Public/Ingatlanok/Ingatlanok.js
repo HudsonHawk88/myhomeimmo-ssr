@@ -43,6 +43,37 @@ const Ingatlanok = (props) => {
     };
 
     const [keresoObj, setKeresoObj] = useState(defaultKeresoObj);
+    const [tipusOptions, setTipusOptions] = useState([]);
+    const [statuszOptions, setStatuszOptions] = useState([]);
+    const [futesOptions, setFutesOptions] = useState([]);
+    const [epitesmodOptions, setEpitesmodOptions] = useState([]);
+    const [allapotOptions, setAllapotOptions] = useState([]);
+
+    const getOptions = () => {
+        Services.getIngatlanOptions().then((res) => {
+            if (!res.err) {
+                res.forEach((item) => {
+                    if (item.nev === 'tipus' || item.nev === 'statusz' || item.nev === 'futesmod' || item.nev === 'epitesmod' || item.nev === 'allapot') {
+                        if (item.nev === 'tipus') {
+                            setTipusOptions(item.options);
+                        } else if (item.nev === 'statusz') {
+                            setStatuszOptions(item.options);
+                        } else if (item.nev === 'futesmod') {
+                            setFutesOptions(item.options);
+                        } else if (item.nev === 'epitesmod') {
+                            setEpitesmodOptions(item.options);
+                        } else if (item.nev === 'allapot') {
+                            setAllapotOptions(item.options);
+                        }
+                    }
+                });
+            }
+        });
+    };
+
+    useEffect(() => {
+        getOptions();
+    }, []);
 
     const getTelepulesekOpts = (items) => {
         let telOpts = [];
@@ -287,12 +318,13 @@ const Ingatlanok = (props) => {
                                 <option key="" value="">
                                     Kérjük válasszon státuszt...
                                 </option>
-                                <option key="elado" value="Eladó">
-                                    Eladó
-                                </option>
-                                <option key="kiadó" value="Kiadó">
-                                    Kiadó
-                                </option>
+                                {statuszOptions.map((statusz) => {
+                                    return (
+                                        <option key={statusz.id} value={statusz.value}>
+                                            {statusz.nev}
+                                        </option>
+                                    );
+                                })}
                             </Input>
                         </div>
                         <div className="col-md-6">
@@ -301,54 +333,13 @@ const Ingatlanok = (props) => {
                                 <option key="" value="">
                                     Kérjük válasszon típust...
                                 </option>
-                                <option key="csaladi" value="Családi ház">
-                                    Családi ház
-                                </option>
-                                <option key="ikerhaz" value="Ikerház">
-                                    Ikerház
-                                </option>
-                                <option key="sorhaz" value="Sorház">
-                                    Sorház
-                                </option>
-                                <option key="lakas" value="Lakás">
-                                    Lakás
-                                </option>
-                                <option key="iroda" value="Iroda">
-                                    Iroda
-                                </option>
-                                <option key="irodahaz" value="Irodaház">
-                                    Irodaház
-                                </option>
-                                <option key="uzlet" value="Üzlethelyiség">
-                                    Üzlethelyiség
-                                </option>
-                                <option key="ipari" value="Ipari ingatlan">
-                                    Ipari ingatlan
-                                </option>
-                                <option key="vendeg" value="Vendéglátó hely">
-                                    Vendéglátó hely
-                                </option>
-                                <option key="mezogazd" value="Mezőgazdasági terület">
-                                    Mezőgazdasági terület
-                                </option>
-                                <option key="fejlesztesi" value="Fejlesztési terület">
-                                    Fejlesztési terület
-                                </option>
-                                <option key="garazs" value="Garázs">
-                                    Garázs
-                                </option>
-                                <option key="raktar" value="Raktár">
-                                    Raktár
-                                </option>
-                                <option key="szallas" value="Szálláshely">
-                                    Szálláshely
-                                </option>
-                                <option key="nyaralo" value="Hétvégi ház/Nyaraló">
-                                    Hétvégi ház/Nyaraló
-                                </option>
-                                <option key="telek" value="Telek">
-                                    Telek
-                                </option>
+                                {tipusOptions.map((tipus) => {
+                                    return (
+                                        <option key={tipus.id} value={tipus.value + ''}>
+                                            {tipus.nev}
+                                        </option>
+                                    );
+                                })}
                             </Input>
                         </div>
                     </div>
@@ -417,95 +408,28 @@ const Ingatlanok = (props) => {
                                 <option key="" value="">
                                     Kérjük válasszon építési módot...
                                 </option>
-                                <option key="tegla" value="Tégla">
-                                    Tégla
-                                </option>
-                                <option key="konnyu" value="Könnyűszerkezetes">
-                                    Könnyűszerkezetes
-                                </option>
-                                <option key="panel" value="Panel">
-                                    Panel
-                                </option>
-                                <option key="ytong" value="Ytong">
-                                    Ytong
-                                </option>
-                                <option key="fa" value="Fa">
-                                    Fa
-                                </option>
-                                <option key="csúsztatott_zsalu" value="Csúsztatott zsalu">
-                                    Csúsztatott zsalu
-                                </option>
-                                <option key="valyog" value="Vályog">
-                                    Vályog
-                                </option>
-                                <option key="vert_falazat" value="Vert falazat">
-                                    Vert falazat
-                                </option>
-                                <option key="vegyes" value="Vegyes falazatú">
-                                    Vegyes falazatú
-                                </option>
-                                <option key="egyeb" value="Egyéb">
-                                    Egyéb
-                                </option>
+                                {epitesmodOptions.map((epitesmod) => {
+                                    return (
+                                        <option key={epitesmod.id} value={epitesmod.value}>
+                                            {epitesmod.nev}
+                                        </option>
+                                    );
+                                })}
                             </Input>
                         </div>
                         <div className="col-md-4">
                             <Label>Fűtés módja:</Label>
                             <Input type="select" name="futes" id="futes" value={keresoObj.futes} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
                                 <option key="" value="">
-                                    Kérjük válasszon építési fűtési módot...
+                                    Kérjük válasszon fűtési módot...
                                 </option>
-                                <option key="cirko" value="Gáz (cirkó)">
-                                    Gáz (cirkó)
-                                </option>
-                                <option key="gaz" value="Gáz">
-                                    Gáz
-                                </option>
-                                <option key="gazkonvektor" value="Gázkonvektor">
-                                    Gázkonvektor
-                                </option>
-                                <option key="gaz_hera" value="Gáz (héra)">
-                                    Gáz (héra)
-                                </option>
-                                <option key="gaz_napkollektor" value="Gáz + napkollektor">
-                                    Gáz + napkollektor
-                                </option>
-                                <option key="gazkazan" value="Gázkazán">
-                                    Gázkazán
-                                </option>
-                                <option key="egyeb_kazan" value="Egyéb kazán">
-                                    Egyéb kazán
-                                </option>
-                                <option key="elektromos" value="Elektromos">
-                                    Elektromos
-                                </option>
-                                <option key="hazkozponti" value="Házközponti">
-                                    Házközponti
-                                </option>
-                                <option key="hazkozponti_egyedi" value="Házközponti egyedi méréssel">
-                                    Házközponti egyedi méréssel
-                                </option>
-                                <option key="geotermikus" value="Geotermikus">
-                                    Geotermikus
-                                </option>
-                                <option key="egyedikozponti" value="Egyedi központi">
-                                    Egyedi központi
-                                </option>
-                                <option key="egyedituzeles" value="Egyedi tüzelésű">
-                                    Egyedi tüzelésű
-                                </option>
-                                <option key="vegyestuzeles" value="Vegyes tüzelésű">
-                                    Vegyes tüzelésű
-                                </option>
-                                <option key="tavfutes" value="Távfűtés">
-                                    Távfűtés
-                                </option>
-                                <option key="tavfutes_egyedi" value="Távfűtés egyedi mérővel">
-                                    Távfűtés egyedi mérővel
-                                </option>
-                                <option key="egyeb" value="Egyéb">
-                                    Egyéb
-                                </option>
+                                {futesOptions.map((futesmod) => {
+                                    return (
+                                        <option key={futesmod.id} value={futesmod.value}>
+                                            {futesmod.nev}
+                                        </option>
+                                    );
+                                })}
                             </Input>
                         </div>
                         <div className="col-md-4">
@@ -514,24 +438,13 @@ const Ingatlanok = (props) => {
                                 <option key="" value="">
                                     Kérjük válasszon állapotot...
                                 </option>
-                                <option key="atlagos" value="Átlagos">
-                                    Átlagos
-                                </option>
-                                <option key="felujitando" value="Felújítandó">
-                                    Felújítandó
-                                </option>
-                                <option key="felujitott" value="Felújított">
-                                    Felújított
-                                </option>
-                                <option key="jo" value="Jó">
-                                    Jó
-                                </option>
-                                <option key="kivalo" value="Kiváló">
-                                    Kiváló
-                                </option>
-                                <option key="uj" value="Új">
-                                    Új
-                                </option>
+                                {allapotOptions.map((allapot) => {
+                                    return (
+                                        <option key={allapot.id} value={allapot.value}>
+                                            {allapot.nev}
+                                        </option>
+                                    );
+                                })}
                             </Input>
                         </div>
                     </div>

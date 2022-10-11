@@ -31,6 +31,8 @@ const KeresoForm = (props) => {
     const [keresoObj, setKeresoObj] = useState(defaultKeresoObj);
     const [telepulesek, setTelepulesek] = useState([]);
     const [telepulesekOpts, setTelepulesekOpts] = useState([]);
+    const [tipusOptions, setTipusOptions] = useState([]);
+    const [statuszOptions, setStatuszOptions] = useState([]);
 
     const getTelepulesekOpts = (items) => {
         let telOpts = [];
@@ -101,6 +103,26 @@ const KeresoForm = (props) => {
         }
     }, [isIrszamTyped()]);
 
+    const getOptions = () => {
+        Services.getIngatlanOptions().then((res) => {
+            if (!res.err) {
+                res.forEach((item) => {
+                    if (item.nev === 'tipus' || item.nev === 'statusz') {
+                        if (item.nev === 'tipus') {
+                            setTipusOptions(item.options);
+                        } else {
+                            setStatuszOptions(item.options);
+                        }
+                    }
+                });
+            }
+        });
+    };
+
+    useEffect(() => {
+        getOptions();
+    }, []);
+
     // const getTelepulesekOpts = () => {
     //     if (telepulesekOpts.length !== 0) {
     //         return telepulesekOpts.map((telepules) => {
@@ -122,8 +144,14 @@ const KeresoForm = (props) => {
         // } else {
         keys.forEach((filter) => {
             if (keresoObj[filter] !== '') {
-                newKereso[filter] = keresoObj[filter];
-                newKereso.telepules = telepulesObj;
+                if (filter === 'ar') {
+                    let ar = keresoObj[filter] + '';
+                    ar = ar.replace(/ /g, '');
+                    newKereso['ar'] = ar;
+                } else {
+                    newKereso[filter] = keresoObj[filter];
+                    newKereso.telepules = telepulesObj;
+                }
             }
         });
         // }
@@ -133,6 +161,7 @@ const KeresoForm = (props) => {
     const keres = () => {
         let keres = getOnlyFiltered();
         keres.telepules = JSON.stringify(keres.telepules);
+
         const queryParams = Object.keys(keres)
             .map((key) => key + '=' + keres[key])
             .join('&');
@@ -179,12 +208,19 @@ const KeresoForm = (props) => {
                         <option key="" value="">
                             Kérjük válasszon státuszt...
                         </option>
-                        <option key="elado" value="Eladó">
+                        {statuszOptions.map((statusz) => {
+                            return (
+                                <option key={statusz.id} value={statusz.value}>
+                                    {statusz.nev}
+                                </option>
+                            );
+                        })}
+                        {/*   <option key="elado" value="Eladó">
                             Eladó
                         </option>
                         <option key="kiadó" value="Kiadó">
                             Kiadó
-                        </option>
+                        </option> */}
                     </Input>
                 </div>
                 <div className="col-lg-6 col-md-12">
@@ -192,6 +228,16 @@ const KeresoForm = (props) => {
                     <Input type="select" name="tipus" id="tipus" value={keresoObj.tipus} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
                         <option key="" value="">
                             Kérjük válasszon típust...
+                        </option>
+                        {tipusOptions.map((tipus) => {
+                            return (
+                                <option key={tipus.id} value={tipus.value + ''}>
+                                    {tipus.nev}
+                                </option>
+                            );
+                        })}
+                        {/*   <option key="lakas" value="Lakás">
+                            Lakás
                         </option>
                         <option key="csaladi" value="Családi ház">
                             Családi ház
@@ -240,7 +286,7 @@ const KeresoForm = (props) => {
                         </option>
                         <option key="telek" value="Telek">
                             Telek
-                        </option>
+                        </option> */}
                     </Input>
                 </div>
             </div>

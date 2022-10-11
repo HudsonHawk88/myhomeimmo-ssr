@@ -94,7 +94,6 @@ router.post('/', upload.array('kep'), async (req, res) => {
                   ) ENGINE=InnoDB;`;
                     ingatlanSzolg.query(sql, async (error) => {
                         if (!error) {
-                            console.log(req.files, req.file);
                             const ingSzolgSql = `SELECT azonosito FROM ingatlan_szolg WHERE azonosito = '${felvitelObj.azonosito}';`;
                             const result = await UseQuery(ingSzolgSql);
                             // if (resultEmail.rowCount === 0) {
@@ -286,7 +285,6 @@ router.post('/deleteimage', async (req, res) => {
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
                 const image = `${process.env.adminIngSzolgDir}/${adminIngSzolgId}/${filename}`;
-                console.log(image);
                 rmSync(image, {
                     force: true
                 });

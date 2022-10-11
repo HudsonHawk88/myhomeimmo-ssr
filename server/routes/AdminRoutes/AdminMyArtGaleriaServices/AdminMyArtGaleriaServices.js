@@ -508,7 +508,6 @@ router.post('/galeriak/deleteimage', async (req, res) => {
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
                 const image = `${process.env.myartGaleriakDir}/${myartGaleriaId}/${filename}`;
-                console.log(image);
                 rmSync(image, {
                     force: true
                 });

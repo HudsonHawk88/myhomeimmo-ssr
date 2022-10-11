@@ -96,7 +96,6 @@ const actionIndex = (req, res, next) => {
 //in a general route, you check all incoming traffic for your preferred crawlers through the user-agent
 app.use(function (req, res, next) {
     var ua = req.headers['user-agent'];
-    console.log(req.url);
     if (/^(facebookexternalhit|twitterbot)/gi.test(ua)) {
         actionIndex(req, res, next);
     } else {

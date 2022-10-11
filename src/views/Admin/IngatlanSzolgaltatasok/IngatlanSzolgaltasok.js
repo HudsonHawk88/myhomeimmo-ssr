@@ -151,7 +151,6 @@ const IngatlanSzolgaltatasok = (props) => {
                     {ingatlanSzolgObj &&
                         ingatlanSzolgObj.kep &&
                         ingatlanSzolgObj.kep.map((kep, index) => {
-                            console.log(kep);
                             return (
                                 <Card key={index.toString()} className="col-md-3">
                                     <CardTitle>{kep.nev}</CardTitle>
