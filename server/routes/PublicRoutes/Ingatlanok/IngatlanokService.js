@@ -53,7 +53,7 @@ router.get('/javitas', async (req, res) => {
 
         let result = await UseQuery(sql);
         let ress = [];
-        result.forEach((ing) => {
+        ress = result.map((ing) => {
             ing = getJSONfromLongtext(ing, 'toBool');
             ing.kepek = ing.kepek.map((item) => {
                 item.src = `https://myhomeimmo.hu/static/images/ingatlanok/${ing.id}/${item.filename}`;
@@ -100,11 +100,11 @@ router.get('/javitas', async (req, res) => {
                     ing.tipus = 13;
                 }
             }
-            ress.push(ing);
+            return ing;
         });
 
         ress.forEach((elem) => {
-            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}', tipus='${elem.tipus}';`;
+            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}';`;
             ingatlanok.query(sql, (errrrr) => {
                 if (!errrrr) {
                     console.log('JÓ');
