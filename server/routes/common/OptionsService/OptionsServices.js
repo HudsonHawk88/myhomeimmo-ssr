@@ -1,4 +1,4 @@
-import { pool as pool, UseQuery } from '../../../common/QueryHelpers.js';
+import { pool as pool, getJSONfromLongtext } from '../../../common/QueryHelpers.js';
 import express from 'express';
 const router = express.Router();
 
@@ -8,7 +8,7 @@ router.get('/ingatlanoptions', (req, res, next) => {
     const sql = `SELECT * FROM ingatlan_options;`;
     pool.query(sql, (error, result) => {
         if (!error) {
-            let ress = result;
+            let ress = getJSONfromLongtext(result);
             /*  ress.options = JSON.parse(res.options); */
             res.status(200).send(ress);
         } else {
@@ -21,7 +21,7 @@ router.get('/altipusoptions', (req, res, next) => {
     const sql = `SELECT * FROM ingatlan_subtypes;`;
     pool.query(sql, (error, result) => {
         if (!error) {
-            let ress = result;
+            let ress = getJSONfromLongtext(result);
             /*  ress.options = JSON.parse(res.options); */
             res.status(200).send(ress);
         } else {
