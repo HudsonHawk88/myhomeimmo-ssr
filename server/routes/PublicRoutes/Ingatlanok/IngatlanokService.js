@@ -78,6 +78,12 @@ router.get('/javitas', async (req, res) => {
                 case 'Ipari ingatlan': {
                     ing.tipus = 6;
                 }
+                case 'Hétvégi ház/Nyaraló': {
+                    ing.tipus = 2;
+                }
+                case 'Családi ház': {
+                    ing.tipus = 2;
+                }
                 case 'Garázs': {
                     ing.tipus = 7;
                 }
