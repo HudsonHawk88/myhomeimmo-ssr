@@ -59,7 +59,6 @@ router.get('/javitas', async (req, res) => {
                 item.src = `https://myhomeimmo.hu/static/images/ingatlanok/${ing.id}/${item.filename}`;
                 return item;
             });
-            ing.kepek = kepek;
             switch (ing.tipus) {
                 case 'Lakás': {
                     ing.tipus = 1;
