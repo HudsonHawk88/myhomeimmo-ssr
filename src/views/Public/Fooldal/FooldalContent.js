@@ -79,7 +79,7 @@ const FooldalContent = (props) => {
     };
 
     const meretFormatter = (ingatlan) => {
-        switch (ingatlan.tipus) {
+        switch (ingatlan.tipus + '') {
             case '3': {
                 return `Méret: ${ingatlan.telek} m`;
             }
