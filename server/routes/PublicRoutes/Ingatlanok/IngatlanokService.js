@@ -257,7 +257,7 @@ router.post('/keres', async (req, res) => {
                     }
                     if (filter === 'ar') {
                         const ar = kereso[filter].replace(/ /g, '');
-                        where = where.concat(`${filter}<=${ar} AND `);
+                        where = where.concat(`REPLACE(${filter}, ' ', '') <= ${ar} AND `);
                     }
                     if (filter === 'isHirdetheto' || filter === 'isKiemelt' || filter === 'isLift' || filter === 'isErkely' || filter === 'isUjEpitesu') {
                         where = where.concat(`${filter}='${0}' AND `);
