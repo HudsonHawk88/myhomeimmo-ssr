@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-/* router.get('/javitas', async (req, res) => {
+router.get('/javitas', async (req, res) => {
     const isExist = await isTableExists('ingatlanok');
     if (isExist) {
         const id = req.query.id;
@@ -56,10 +56,10 @@ router.get('/', async (req, res) => {
         ress = result.map((ing) => {
             ing = getJSONfromLongtext(ing, 'toBool');
             ing.kepek.map((item) => {
-                item.src = `https://myhomeimmo.hu/static/images/ingatlanok/${ing.id}/${item.filename}`;
+                item.src = `https://myhomezala.hu/static/images/ingatlanok/${ing.id}/${item.filename}`;
                 return item;
             });
-            switch (ing.tipus) {
+            /*             switch (ing.tipus) {
                 case 'Lakás': {
                     ing.tipus = 1;
                 }
@@ -105,7 +105,7 @@ router.get('/', async (req, res) => {
                 case 'Mezőgazdasági terület': {
                     ing.tipus = 13;
                 }
-            }
+            } */
             return ing;
         });
 
@@ -114,7 +114,7 @@ router.get('/', async (req, res) => {
             feladoEmail: 'berkimonika@myhomezala.hu',
             feladoAvatar: [
                 {
-                    src: 'https://myhomeimmo.hu/static/images/avatars/7/berkimonika2.png',
+                    src: 'https://myhomezala.hu/static/images/avatars/7/berkimonika2.png',
                     title: 'berkimonika.png'
                 }
             ],
@@ -122,20 +122,22 @@ router.get('/', async (req, res) => {
         };
 
         ress.forEach((elem) => {
-            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}', tipus='${elem.tipus}', hirdeto='${JSON.stringify(hird)}' WHERE id='${elem.id}';`;
-            ingatlanok.query(sql, (errrrr) => {
-                if (!errrrr) {
-                    console.log('JÓ');
-                } else {
-                    console.log('ROSSZ');
-                }
-            });
+            if (elem.hirdeto.feladoNev === 'Berki Mónika') {
+                const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}', hirdeto='${JSON.stringify(hird)}' WHERE id='${elem.id}';`;
+                ingatlanok.query(sql, (errrrr) => {
+                    if (!errrrr) {
+                        console.log('JÓ');
+                    } else {
+                        console.log('ROSSZ');
+                    }
+                });
+            }
         });
         res.send({ msg: 'HELLO' });
     } else {
         res.send([]);
     }
-}); */
+});
 
 /* router.get('/ingatlanok/aktiv', (req, res) => {
   // const id = req.headers.id;
