@@ -445,7 +445,7 @@ const IngatlanForm = (props) => {
         kuldObj.helyseg.telepules = telepulesObj;
         kuldObj.hirdeto = hirdeto;
         kuldObj.ar = arFormatter(kuldObj.ar);
-        kuldObj.kaucio = arFormatter(kuldObj.kaucio);
+        kuldObj.kaucio = kuldObj.kaucio !== '' ? arFormatter(kuldObj.kaucio) : '';
         /* console.log(telepulesObj, kuldObj, helyseg); */
         /* if (kuldObj.helyseg.telepules.id) {
             kuldObj.telepules = kuldObj.helyseg.telepules.telepulesnev;

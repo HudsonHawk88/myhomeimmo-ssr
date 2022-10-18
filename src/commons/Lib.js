@@ -48,7 +48,6 @@ function makeFormData(dataObj, kepKey, isMod) {
 }
 
 function arFormatter(ar) {
-    console.log('Ár: ', ar);
     /*   var inputElement = document.getElementById(id); */
     let newAr = ar + '';
     newAr = newAr.replace(/\D/g, '');
