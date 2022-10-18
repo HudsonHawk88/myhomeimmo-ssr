@@ -36,7 +36,7 @@ router.post('/token', async (req, res) => {
             const avatar = userAvatar ? userAvatar[0].avatar : [];
             user.telefon = user.telefon ? user.telefon : {};
             user.nev = user.nev ? user.nev : {};
-            user.isErtekesito = user.isErtekesito === 0 ? true : false;
+            user.isErtekesito = user.isErtekesito === 1 ? true : false;
             if (!user.isErtekesito) {
                 const getAdminSql = `SELECT nev, telefon, email, avatar FROM adminusers WHERE username='berkimonika';`;
                 const admin = await UseQuery(getAdminSql);
