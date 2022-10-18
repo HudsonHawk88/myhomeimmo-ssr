@@ -43,7 +43,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/javitas', async (req, res) => {
+/* router.get('/javitas', async (req, res) => {
     const isExist = await isTableExists('ingatlanok');
     if (isExist) {
         const id = req.query.id;
@@ -59,7 +59,7 @@ router.get('/javitas', async (req, res) => {
                 item.src = `https://myhomezala.hu/static/images/ingatlanok/${ing.id}/${item.filename}`;
                 return item;
             });
-            /*             switch (ing.tipus) {
+                        switch (ing.tipus) {
                 case 'Lakás': {
                     ing.tipus = 1;
                 }
@@ -105,7 +105,7 @@ router.get('/javitas', async (req, res) => {
                 case 'Mezőgazdasági terület': {
                     ing.tipus = 13;
                 }
-            } */
+            }
             return ing;
         });
 
@@ -137,7 +137,7 @@ router.get('/javitas', async (req, res) => {
     } else {
         res.send([]);
     }
-});
+}); */
 
 /* router.get('/ingatlanok/aktiv', (req, res) => {
   // const id = req.headers.id;
