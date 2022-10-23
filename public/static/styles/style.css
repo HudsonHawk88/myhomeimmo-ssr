@@ -35,8 +35,8 @@ html body {
 .plus_nav {
   display: grid;
   grid-template-columns: auto;
-  background-color: rgb(0, 0, 0);
-  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.9);
+  /*   border-radius: 10px; */
   min-height: 30px;
 }
 .plus_nav .nav-link {
@@ -151,7 +151,7 @@ html body {
   flex-direction: row;
   min-height: calc(100vh - 200px);
   margin: 0px;
-  background-color: rgb(255, 238, 139);
+  background-color: rgb(237, 224, 122);
   /*     background-image: var(themes-public-navbarbgimage); */
   /*  background-size: contain; */
 }
@@ -360,7 +360,7 @@ html body {
 @media screen and (min-width: 992px) {
   .tartalom {
     box-shadow: 0.25rem 0.25rem 4px 4px rgba(174, 255, 237, 0.514);
-    border-radius: 10px;
+    /*         border-radius: 10px; */
   }
 }
 
@@ -439,7 +439,7 @@ html body {
 
 .public-sidebar {
   margin-top: 10px;
-  background-color: #14ac89;
+  background-color: rgb(120, 212, 223);
   min-width: 100%;
   border-radius: 0px;
 }
@@ -556,7 +556,7 @@ html body {
   }
 }
 .public-inner-content .card .btn.btn-info {
-  background-color: #14ac89;
+  background-color: rgb(147, 245, 98);
   color: white;
 }
 .public-inner-content .card:hover {
@@ -670,10 +670,10 @@ html body {
 
 .public-navbar {
   font-size: 1em;
-  padding: 0px;
+  background-color: rgba(0, 0, 0, 0.9);
   box-shadow: none;
-  background-image: url("/static/images/borito2.jpg");
-  background-size: contain;
+  /* background-image: var(themes-public-navbarbgimage);
+  background-size: contain; */
   margin: 0px auto;
   min-width: 100%;
   border-radius: 0px;
@@ -682,20 +682,21 @@ html body {
   .public-navbar {
     box-shadow: 0.25rem 0.25rem 4px 4px rgba(174, 255, 237, 0.514);
     font-size: 1em;
-    border-radius: 10px;
+    /*  border-radius: 10px; */
   }
 }
 @media screen and (min-width: 992px) and (max-width: 1080px) {
   .public-navbar {
     box-shadow: 0.25rem 0.25rem 4px 4px rgba(174, 255, 237, 0.514);
     font-size: 1em;
-    border-radius: 10px;
+    /*     border-radius: 10px; */
   }
 }
 .public-navbar .container-fluid {
-  background-color: rgba(255, 255, 255, 0.4);
+  /*    background-color: var(themes-public-navbarbgcolor); */
   min-height: 100%;
   border-radius: 0px;
+  padding: 0px 5px;
 }
 .public-navbar .container-fluid .navbar-toggler {
   cursor: pointer;
@@ -713,14 +714,16 @@ html body {
 }
 .public-navbar #logo {
   display: block;
-  content: url("../images/logo.jpg");
+  /*   background-color: rgba(0, 0, 0, 0.7); */
+  content: url("../images/logo2.png");
   height: 60px;
   width: 80px;
+  padding: 5px 0px;
 }
 @media screen and (min-width: 992px) {
   .public-navbar #logo {
     display: block;
-    border-radius: 10px 0px 0px 10px;
+    /*  border-radius: 10px 0px 0px 10px; */
   }
 }
 @media screen and (min-width: 992px) {
@@ -731,10 +734,10 @@ html body {
 }
 .public-navbar__nav {
   padding: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
+  /*  background-color: var(themes-public-navbgcolor); */
   width: 100%;
   border-radius: 0px;
-  margin: 10px 0px;
+  /* margin: 10px 0px; */
   font-size: 1em;
 }
 @media screen and (min-width: 992px) {
@@ -742,7 +745,7 @@ html body {
     align-items: center;
     padding: 0px;
     min-height: 60px;
-    border-radius: 0px 10px 10px 0px;
+    /*   border-radius: 0px 10px 10px 0px; */
     font-size: 1.1em;
   }
 }
@@ -778,23 +781,23 @@ html body {
   cursor: pointer;
 }
 .public-navbar .nav-link:hover {
-  background-color: #14ac89;
+  background-color: rgb(120, 212, 223);
   border: unset;
-  text-shadow: 1px 1px #14ac89;
+  text-shadow: 1px 1px rgb(120, 212, 223);
 }
 @media screen and (min-width: 992px) {
   .public-navbar .nav-link:hover {
-    border-bottom: 5px solid #14ac89;
+    border-bottom: 5px solid rgb(120, 212, 223);
     background-color: unset;
   }
 }
 .public-navbar .nav-link.active {
-  background-color: #14ac89;
+  background-color: rgb(120, 212, 223);
   border: unset;
 }
 @media screen and (min-width: 992px) {
   .public-navbar .nav-link.active {
-    border-bottom: 5px solid #14ac89;
+    border-bottom: 5px solid rgb(120, 212, 223);
     background-color: unset;
   }
 }
@@ -814,7 +817,7 @@ html body {
 }
 @media screen and (min-width: 992px) {
   .public-navbar .dropdown-item {
-    background-color: rgba(0, 0, 0, 0.7) !important;
+    background-color: rgba(0, 0, 0, 0.9) !important;
     padding: 5px !important;
   }
 }
@@ -846,7 +849,7 @@ html body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #14ac89;
+  background-color: rgb(120, 212, 223);
   padding: 0px;
 }
 .undernav .accordion {
@@ -869,7 +872,7 @@ html body {
   }
 }
 .undernav .accordion-body {
-  background-color: #14ac89;
+  background-color: rgb(120, 212, 223);
   padding: 0px;
 }
 .undernav .accordion-button {
@@ -1345,7 +1348,7 @@ html body {
   left: 0px;
   top: 0px;
   display: none;
-  content: url("../images/logo.jpg");
+  content: url("../images/logo2.png");
   height: 80px;
   width: 300px;
 }
@@ -1450,17 +1453,18 @@ html body {
   align-items: center;
   border-radius: 0px;
   box-shadow: none;
-  background-image: url("/static/images/borito.jpg");
+  background-color: rgba(0, 0, 0, 0.9);
+  /* background-image: var(themes-public-footerbgimage); */
   background-size: contain;
 }
 @media screen and (min-width: 992px) {
   .public-footer {
     box-shadow: 0.25rem 0.25rem 4px 4px rgba(174, 255, 237, 0.514);
-    border-radius: 10px;
+    /* border-radius: 10px; */
   }
 }
 .public-footer__div {
-  background-color: rgba(255, 255, 255, 0.4);
+  /* background-color: var(themes-public-footerdivbgcolor); */
   width: 100%;
   height: 100%;
   display: flex;
@@ -1468,7 +1472,6 @@ html body {
   align-items: center;
 }
 .public-footer__div span {
-  background-color: rgba(0, 0, 0, 0.7);
   min-height: 55px;
   min-width: 100%;
   border-radius: 0px;
@@ -1481,7 +1484,7 @@ html body {
 }
 @media screen and (min-width: 992px) {
   .public-footer__div span {
-    border-radius: 10px;
+    /*  border-radius: 10px; */
     font-size: 2vw;
   }
 }

@@ -49,7 +49,7 @@ router.get('/', async (req, res) => {
                 });
             } else {
                 const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo, hirdeto
-                FROM ingatlanok`;
+                FROM ingatlanok ORDER BY rogzitIdo DESC`;
                 ingatlanok.query(sql, (err, result) => {
                     if (!err) {
                         let ressss = result.map((ing) => {

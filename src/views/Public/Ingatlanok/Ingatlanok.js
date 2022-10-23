@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Input, Label, Button } from 'reactstrap';
 import Select from 'react-select';
 import { Helmet } from 'react-helmet';
@@ -15,7 +15,6 @@ const Ingatlanok = (props) => {
 
     const defaultTelepulesObj = {
         telepulesnev: '',
-        irszam: '',
         km: '0'
     };
 
@@ -25,7 +24,6 @@ const Ingatlanok = (props) => {
     const defaultKeresoObj = {
         tipus: '',
         statusz: '',
-        irszam: '',
         referenciaSzam: '',
         ar: '',
         alapterulet: '',
@@ -43,13 +41,17 @@ const Ingatlanok = (props) => {
     };
 
     const [keresoObj, setKeresoObj] = useState(defaultKeresoObj);
+    const [selectedTelepules, setSelectedTelepules] = useState([]);
     const [tipusOptions, setTipusOptions] = useState([]);
     const [statuszOptions, setStatuszOptions] = useState([]);
     const [futesOptions, setFutesOptions] = useState([]);
     const [epitesmodOptions, setEpitesmodOptions] = useState([]);
     const [allapotOptions, setAllapotOptions] = useState([]);
+    const [ingatlanok, setIngatlanok] = useState([]);
+    const [telepulesekOpts, setTelepulesekOpts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const getOptions = () => {
+    const getOptions = useCallback(() => {
         Services.getIngatlanOptions().then((res) => {
             if (!res.err) {
                 res.forEach((item) => {
@@ -69,64 +71,36 @@ const Ingatlanok = (props) => {
                 });
             }
         });
-    };
-
-    useEffect(() => {
-        getOptions();
     }, []);
 
-    const getTelepulesekOpts = (items) => {
-        let telOpts = [];
-        items.forEach((item) => {
-            telOpts.push({
-                label: item.telepulesnev,
-                value: item.telepulesnev,
-                irszam: item.irszam
-            });
+    const getTelepulesekOpts = useCallback(() => {
+        Services.listTelepulesek().then((res) => {
+            if (!res.err) {
+                let telOpts = [];
+                res.forEach((item) => {
+                    telOpts.push({
+                        label: item.telepulesnev,
+                        value: item.telepulesnev
+                    });
+                });
+                setTelepulesekOpts(telOpts);
+                setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
+                setKeresoObj({ ...keresoObj, telepules: { telepulesnev: 'Zalaegerszeg', km: '0' } });
+            } else {
+                props.notification('error', res.msg);
+            }
         });
-        setTelepulesekOpts(telOpts);
-        if (telOpts.length === 1) {
-            setTelepulesObj({
-                ...telepulesObj,
-                telepulesnev: telOpts[0].value,
-                irszam: telOpts[0].irszam
-            });
-        }
-    };
+    }, []);
 
-    const handleTelepulesChange = (e) => {
-        if (e) {
-            setTelepulesekOpts([e]);
-            setTelepulesObj({
-                ...telepulesObj,
-                telepulesnev: e.label,
-                irszam: e.irszam
-            });
-            setKeresoObj({
-                ...keresoObj,
-                telepules: {
-                    ...keresoObj.telepules,
-                    telepulesnev: e.label,
-                    irszam: e.irszam
-                }
-            });
-        } else {
-            setKeresoObj({
-                ...keresoObj,
-                telepules: {
-                    telepulesnev: '',
-                    irszam: '',
-                    km: '0'
-                },
-                irszam: ''
-            });
-            setTelepulesObj({
-                ...telepulesObj,
-                telepulesnev: '',
-                irszam: ''
-            });
-            getTelepulesekOpts(telepulesek);
-        }
+    const listIngatlanok = (kereso) => {
+        setLoading(true);
+        Services.keresesIngatlanok(kereso).then((res) => {
+            if (!res.err) {
+                // console.log(res);
+                setIngatlanok(res);
+                setLoading(false);
+            }
+        });
     };
 
     useEffect(() => {
@@ -144,15 +118,14 @@ const Ingatlanok = (props) => {
                 keresoKey.forEach((kkey) => {
                     if (key === kkey) {
                         if (kkey === 'telepules') {
-                            newObj[kkey] = kereso[kkey];
-                            if (kereso[kkey].telepulesnev !== '' || kereso[kkey].irszam !== '') {
-                                setTelepulesObj(kereso[kkey]);
+                            console.log(kereso[kkey]);
+                            if (kereso[kkey].telepulesnev !== '') {
+                                setSelectedTelepules({ label: kereso[kkey].telepulesnev, value: kereso[kkey].telepulesnev });
+                                setTelepulesObj({ telepulesnev: kereso[kkey].telepulesnev, km: '0' });
+                                newObj[kkey] = { telepulesnev: kereso[kkey].telepulesnev, km: '0' };
                             } else {
-                                setTelepulesObj({
-                                    ...telepulesObj,
-                                    irszam: 8900
-                                });
-                                getTelepulesByIrsz('8900');
+                                setSelectedTelepules(null);
+                                setTelepulesObj(defaultTelepulesObj);
                             }
                         } else {
                             newObj[kkey] = kereso[kkey];
@@ -163,19 +136,45 @@ const Ingatlanok = (props) => {
                 });
             });
             setKeresoObj(newObj);
+            console.log(newObj);
             listIngatlanok(newObj);
         } else {
-            setTelepulesObj({
-                ...telepulesObj,
-                irszam: 8900
-            });
-            getTelepulesByIrsz('8900');
+            setSelectedTelepules(null);
         }
     }, [location]);
 
-    const [ingatlanok, setIngatlanok] = useState([]);
-    const [telepulesekOpts, setTelepulesekOpts] = useState([]);
-    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        getOptions();
+        getTelepulesekOpts();
+    }, [getOptions, getTelepulesekOpts]);
+
+    const handleTelepulesChange = (e) => {
+        if (e) {
+            setSelectedTelepules(e);
+            setKeresoObj({
+                ...keresoObj,
+                telepules: {
+                    telepulesnev: e.label,
+                    km: '0'
+                }
+            });
+            setTelepulesObj({
+                telepulesnev: e.label,
+                km: '0'
+            });
+        } else {
+            setSelectedTelepules(null);
+            setKeresoObj({
+                ...keresoObj,
+                telepules: {
+                    telepulesnev: '',
+                    km: '0'
+                },
+                irszam: ''
+            });
+            setTelepulesObj(defaultTelepulesObj);
+        }
+    };
 
     const scrollToElement = (id) => {
         var element = document.getElementById(id);
@@ -190,81 +189,13 @@ const Ingatlanok = (props) => {
         }
     }, [loading]);
 
-    const listIngatlanok = (kereso) => {
-        setLoading(true);
-        Services.keresesIngatlanok(kereso).then((res) => {
-            if (!res.err) {
-                // console.log(res);
-                setIngatlanok(res);
-                setLoading(false);
-            }
-        });
-        // console.log(ingatlanok);
-    };
-
-    const listTelepulesek = () => {
-        Services.listTelepulesek().then((res) => {
-            if (!res.err) {
-                setTelepulesek(res);
-            }
-        });
-    };
-
-    const isIrszamTyped = () => {
-        if (telepulesObj.irszam && telepulesObj.irszam.length === 4) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-
-    useEffect(() => {
-        listTelepulesek();
-    }, []);
-
     const keres = () => {
         let newKereso = keresoObj;
+        /*  newKereso.telepules.km = telepulesObj.km; */
         newKereso.telepules = telepulesObj;
+        console.log(newKereso);
         listIngatlanok(newKereso);
     };
-
-    const getTelepulesByIrsz = (irsz) => {
-        Services.getTelepulesByIrsz(irsz).then((res) => {
-            if (!res.err) {
-                if (res.length === 1) {
-                    setTelepulesObj({
-                        ...telepulesObj,
-                        telepulesnev: res[0].telepulesnev,
-                        irszam: res[0].irszam
-                    });
-                    getTelepulesekOpts(res);
-                } else {
-                    setTelepulesObj({
-                        ...telepulesObj,
-                        telepulesnev: keresoObj.telepules.telepulesnev,
-                        irszam: res[0].irszam
-                    });
-                    if (keresoObj.telepules.telepulesnev === '') {
-                        getTelepulesekOpts(res);
-                    } else {
-                        setTelepulesekOpts([
-                            {
-                                label: keresoObj.telepules.telepulesnev,
-                                value: keresoObj.telepules.telepulesnev,
-                                irszam: keresoObj.telepules.irszam
-                            }
-                        ]);
-                    }
-                }
-            }
-        });
-    };
-
-    useEffect(() => {
-        if (isIrszamTyped()) {
-            getTelepulesByIrsz(telepulesObj.irszam);
-        }
-    }, [isIrszamTyped()]);
 
     const renderKmOptions = () => {
         return (
@@ -355,20 +286,28 @@ const Ingatlanok = (props) => {
                                 name="telepulesnev"
                                 id="telepulesnev"
                                 options={telepulesekOpts}
-                                value={telepulesekOpts.length === 1 ? telepulesekOpts[0] : ''}
+                                value={selectedTelepules}
                                 isClearable
                                 placeholder="Kérjük válasszon települést..."
                                 onChange={(e) => {
                                     handleTelepulesChange(e);
-                                    if (e) {
-                                        setTelepulesObj({ ...telepulesObj, telepulesnev: e.value });
-                                    }
                                 }}
                             />
                         </div>
                         <div className="col-md-4">
                             <Label>+ km </Label>
-                            <Input type="select" name="km" id="km" value={telepulesObj.km} onChange={(e) => handleInputChange(e, telepulesObj, setTelepulesObj)}>
+                            <Input
+                                type="select"
+                                name="km"
+                                id="km"
+                                value={telepulesObj.km}
+                                onChange={(e) =>
+                                    setTelepulesObj({
+                                        ...telepulesObj,
+                                        km: e.target.value
+                                    })
+                                }
+                            >
                                 {renderKmOptions()}
                             </Input>
                         </div>

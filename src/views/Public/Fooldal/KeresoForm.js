@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Label } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
@@ -11,16 +11,12 @@ const KeresoForm = (props) => {
 
     const defaultTelepulesObj = {
         telepulesnev: '',
-        irszam: '',
         km: '0'
     };
-
-    const [telepulesObj, setTelepulesObj] = useState(defaultTelepulesObj);
 
     const defaultKeresoObj = {
         tipus: '',
         statusz: '',
-        irszam: '8900',
         referenciaSzam: '',
         ar: '',
         alapterulet: '',
@@ -29,81 +25,31 @@ const KeresoForm = (props) => {
     };
 
     const [keresoObj, setKeresoObj] = useState(defaultKeresoObj);
-    const [telepulesek, setTelepulesek] = useState([]);
+    const [selectedTelepules, setSelectedTelepules] = useState([]);
     const [telepulesekOpts, setTelepulesekOpts] = useState([]);
     const [tipusOptions, setTipusOptions] = useState([]);
     const [statuszOptions, setStatuszOptions] = useState([]);
 
-    const getTelepulesekOpts = (items) => {
-        let telOpts = [];
-        items.forEach((item) => {
-            telOpts.push({
-                label: item.telepulesnev,
-                value: item.telepulesnev,
-                irszam: item.irszam
-            });
-        });
-        setTelepulesekOpts(telOpts);
-        // console.log(telOpts.length);
-        if (telOpts.length === 1) {
-            setTelepulesObj({
-                ...telepulesObj,
-                telepulesnev: telOpts[0].value,
-                irszam: telOpts[0].irszam
-            });
-        }
-    };
-
-    const listTelepulesek = () => {
+    const getTelepulesekOpts = useCallback(() => {
         Services.listTelepulesek().then((res) => {
             if (!res.err) {
-                setTelepulesek(res);
-                getTelepulesekOpts(res);
-            }
-        });
-    };
-
-    const isIrszamTyped = () => {
-        if (keresoObj.irszam && keresoObj.irszam.length === 4) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-
-    // useEffect(() => {
-
-    // }, []);
-
-    const getTelepulesekByIrsz = (irszam) => {
-        Services.getTelepulesByIrsz(irszam).then((res) => {
-            if (!res.err) {
-                if (res.length === 1) {
-                    getTelepulesekOpts(res);
-                } else {
-                    setTelepulesObj({
-                        ...telepulesObj,
-                        irszam: res[0].irszam
+                let telOpts = [];
+                res.forEach((item) => {
+                    telOpts.push({
+                        label: item.telepulesnev,
+                        value: item.telepulesnev
                     });
-                    getTelepulesekOpts(res);
-                }
+                });
+                setTelepulesekOpts(telOpts);
+                setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
+                setKeresoObj({ ...keresoObj, telepules: { telepulesnev: 'Zalaegerszeg', km: '0' } });
             } else {
                 props.notification('error', res.msg);
             }
         });
-    };
+    }, []);
 
-    useEffect(() => {
-        if (isIrszamTyped()) {
-            getTelepulesekByIrsz(keresoObj.irszam);
-        } else {
-            listTelepulesek();
-            getTelepulesekOpts(telepulesek);
-            setTelepulesObj(defaultTelepulesObj);
-        }
-    }, [isIrszamTyped()]);
-
-    const getOptions = () => {
+    const getOptions = useCallback(() => {
         Services.getIngatlanOptions().then((res) => {
             if (!res.err) {
                 res.forEach((item) => {
@@ -117,11 +63,45 @@ const KeresoForm = (props) => {
                 });
             }
         });
-    };
+    }, []);
+
+    /*     const listTelepulesek = () => {
+        Services.listTelepulesek().then((res) => {
+            if (!res.err) {
+                setTelepulesek(res);
+                getTelepulesekOpts(res);
+            }
+        });
+    }; */
+
+    /*     const isIrszamTyped = () => {
+        if (keresoObj.irszam && keresoObj.irszam.length === 4) {
+            return true;
+        } else {
+            return false;
+        }
+    }; */
+
+    // useEffect(() => {
+
+    // }, []);
+
+    const getTelepulesek = () => {};
+
+    /*     useEffect(() => {
+        if (isIrszamTyped()) {
+            getTelepulesekByIrsz(keresoObj.irszam);
+        } else {
+            listTelepulesek();
+            getTelepulesekOpts(telepulesek);
+            setTelepulesObj(defaultTelepulesObj);
+        }
+    }, [isIrszamTyped()]); */
 
     useEffect(() => {
+        getTelepulesekOpts();
         getOptions();
-    }, []);
+    }, [getTelepulesekOpts, getOptions]);
 
     // const getTelepulesekOpts = () => {
     //     if (telepulesekOpts.length !== 0) {
@@ -137,11 +117,8 @@ const KeresoForm = (props) => {
 
     const getOnlyFiltered = () => {
         let newKereso = {};
-
         const keys = Object.keys(keresoObj);
-        // if (keresoObj['referenciaSzam'] !== '') {
-        //     newKereso['referenciaSzam'] = keresoObj.referenciaSzam;
-        // } else {
+
         keys.forEach((filter) => {
             if (keresoObj[filter] !== '') {
                 if (filter === 'ar') {
@@ -150,11 +127,11 @@ const KeresoForm = (props) => {
                     newKereso['ar'] = ar;
                 } else {
                     newKereso[filter] = keresoObj[filter];
-                    newKereso.telepules = telepulesObj;
+                    /*    newKereso.telepules = telepulesObj; */
                 }
             }
         });
-        // }
+
         return newKereso;
     };
 
@@ -170,31 +147,23 @@ const KeresoForm = (props) => {
 
     const handleTelepulesChange = (e) => {
         if (e) {
-            setTelepulesekOpts([e]);
-            setTelepulesObj({
-                ...telepulesObj,
-                telepulesnev: e.label,
-                irszam: e.irszam
-            });
+            setSelectedTelepules(e);
             setKeresoObj({
                 ...keresoObj,
                 telepules: {
-                    telepulesnev: e.label,
-                    irszam: e.irszam,
+                    telepulesnev: e.value,
                     km: '0'
                 }
             });
         } else {
+            setSelectedTelepules(null);
             setKeresoObj({
                 ...keresoObj,
-                irszam: ''
+                telepules: {
+                    telepulesnev: '',
+                    km: '0'
+                }
             });
-            setTelepulesObj({
-                ...telepulesObj,
-                telepulesnev: '',
-                irszam: ''
-            });
-            setTelepulesekOpts(telepulesek);
         }
     };
 
@@ -215,12 +184,6 @@ const KeresoForm = (props) => {
                                 </option>
                             );
                         })}
-                        {/*   <option key="elado" value="Eladó">
-                            Eladó
-                        </option>
-                        <option key="kiadó" value="Kiadó">
-                            Kiadó
-                        </option> */}
                     </Input>
                 </div>
                 <div className="col-lg-6 col-md-12">
@@ -236,74 +199,10 @@ const KeresoForm = (props) => {
                                 </option>
                             );
                         })}
-                        {/*   <option key="lakas" value="Lakás">
-                            Lakás
-                        </option>
-                        <option key="csaladi" value="Családi ház">
-                            Családi ház
-                        </option>
-                        <option key="ikerhaz" value="Ikerház">
-                            Ikerház
-                        </option>
-                        <option key="sorhaz" value="Sorház">
-                            Sorház
-                        </option>
-                        <option key="lakas" value="Lakás">
-                            Lakás
-                        </option>
-                        <option key="iroda" value="Iroda">
-                            Iroda
-                        </option>
-                        <option key="irodahaz" value="Irodaház">
-                            Irodaház
-                        </option>
-                        <option key="uzlet" value="Üzlethelyiség">
-                            Üzlethelyiség
-                        </option>
-                        <option key="ipari" value="Ipari ingatlan">
-                            Ipari ingatlan
-                        </option>
-                        <option key="vendeg" value="Vendéglátó hely">
-                            Vendéglátó hely
-                        </option>
-                        <option key="mezogazd" value="Mezőgazdasági terület">
-                            Mezőgazdasági terület
-                        </option>
-                        <option key="fejlesztesi" value="Fejlesztési terület">
-                            Fejlesztési terület
-                        </option>
-                        <option key="garazs" value="Garázs">
-                            Garázs
-                        </option>
-                        <option key="raktar" value="Raktár">
-                            Raktár
-                        </option>
-                        <option key="szallas" value="Szálláshely">
-                            Szálláshely
-                        </option>
-                        <option key="nyaralo" value="Hétvégi ház/Nyaraló">
-                            Hétvégi ház/Nyaraló
-                        </option>
-                        <option key="telek" value="Telek">
-                            Telek
-                        </option> */}
                     </Input>
                 </div>
             </div>
             <div className="row g-2">
-                <div className="col-lg-6 col-md-12">
-                    <Label>Irányítószám:</Label>
-                    <Input
-                        type="text"
-                        name="irszam"
-                        id="irszam"
-                        value={keresoObj.irszam}
-                        onChange={(e) => {
-                            handleInputChange(e, keresoObj, setKeresoObj);
-                            setTelepulesObj({ ...telepulesObj, irszam: e.target.value });
-                        }}
-                    />
-                </div>
                 <div className="col-lg-6 col-md-12">
                     <Label>Település:</Label>
                     <Select
@@ -311,27 +210,27 @@ const KeresoForm = (props) => {
                         name="telepulesnev"
                         id="telepulesnev"
                         options={telepulesekOpts}
-                        value={telepulesekOpts.length === 1 ? telepulesekOpts[0] : ''}
+                        value={selectedTelepules}
                         isClearable
                         placeholder="Kérjük válasszon települést..."
                         onChange={handleTelepulesChange}
                     />
                 </div>
-            </div>
-            <div className="row g-2">
-                <div className="col-lg-3 col-md-6">
+                <div className="col-lg-6 col-md-12">
                     <Label>Referenciaszám:</Label>
                     <Input type="text" name="referenciaSzam" id="referenciaSzam" value={keresoObj.referenciaSzam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                 </div>
-                <div className="col-lg-3 col-md-6">
+            </div>
+            <div className="row g-2">
+                <div className="col-lg-4 col-md-6">
                     <Label>Ár:</Label>
                     <Input type="text" name="ar" id="ar" value={keresoObj.ar} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                 </div>
-                <div className="col-lg-3 col-md-6">
+                <div className="col-lg-4 col-md-6">
                     <Label>Alapterület:</Label>
                     <Input type="text" name="alapterulet" id="alapterulet" value={keresoObj.alapterulet} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                 </div>
-                <div className="col-lg-3 col-md-6">
+                <div className="col-lg-4 col-md-6">
                     <Label>Szobaszám:</Label>
                     <Input type="text" name="szobaszam" id="szobaszam" value={keresoObj.szobaszam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                 </div>

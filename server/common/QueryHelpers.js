@@ -235,19 +235,14 @@ const isAdminUsersTableExists = async (adminusers) => {
     }
 };
 
-const getTelepulesekByKm = async (pool, telepules, irszam, km) => {
-    const getCoordinatesSql = irszam ? `SELECT geoLong, geoLat FROM telep_1 WHERE irszam='${irszam}'` : `SELECT geoLong, geoLat FROM telep_1 WHERE telepulesnev='${telepules}'`;
+const getIngatlanokByKm = async (telepules, km) => {
+    const getCoordinatesSql = `SELECT geoLong, geoLat FROM telep_1 WHERE telepulesnev='${telepules}'`;
     const coordinates = await UseQuery(getCoordinatesSql);
-    const sql = `
-  SELECT telepulesnev, ROUND((6371 * acos(cos(radians(${coordinates[0].geoLat})) * cos(radians(geoLat)) * cos(radians(geoLong) - radians(${coordinates[0].geoLong})) + sin(radians(${coordinates[0].geoLat})) * sin(radians(geoLat)))), (2)), id 
-  AS distance
-  FROM telep_1
-  GROUP BY telepulesnev
-  HAVING distance < '${km}'
-  ORDER BY distance;`;
-    const nearTelepulesek = await UseQuery(sql);
+    const sssql = `LEFT JOIN (SELECT (6371 * acos(cos(radians(${coordinates[0].geoLat})) * cos(radians(geoLat)) * cos(radians(geoLong) - radians(${coordinates[0].geoLong})) + sin(radians(${
+        coordinates[0].geoLat
+    })) * sin(radians(geoLat)))) AS distance, telepulesnev FROM telep_1 GROUP BY telepulesnev HAVING distance <= ${km ? km : 0}) AS distances ON distances.telepulesnev = telepules`;
 
-    return nearTelepulesek;
+    return sssql;
 };
 
 const createIngatlanokSql = `
@@ -334,7 +329,7 @@ export {
     hasRole,
     createIngatlanokSql,
     createIngatlanokTriggerSql,
-    getTelepulesekByKm,
+    getIngatlanokByKm,
     getKepekForXml,
     getJSONfromLongtext,
     getBooleanFromNumber,
