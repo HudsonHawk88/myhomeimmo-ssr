@@ -329,9 +329,12 @@ html body {
   background-color: rgb(237, 224, 122);
   max-width: 100%;
   padding: 20px 5%;
+  overflow-x: hidden;
 }
 .tartalom .adatkezeles__leiras {
   max-width: 100%;
+  word-break: break-word;
+  overflow-x: hidden;
 }
 .tartalom .row {
   max-width: 100%;

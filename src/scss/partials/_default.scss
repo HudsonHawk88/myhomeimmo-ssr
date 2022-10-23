@@ -403,9 +403,12 @@ html body {
         background-color: var(themes-public-bgcolor2);
         max-width: 100%;
         padding: 20px 5%;
+        overflow-x: hidden;
 
         &__leiras {
             max-width: 100%;
+            word-break: break-word;
+            overflow-x: hidden;
         }
     }
 
