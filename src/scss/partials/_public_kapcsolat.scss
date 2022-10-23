@@ -1,7 +1,10 @@
+@use '../variables/colors';
+@use '../functions/var' as *;
+
 .public_kapcsolat {
     height: 100%;
     padding: 20px 5%;
-    background-color: rgb(255, 238, 139);
+    background-color: var(themes-public-bgcolor2);
     margin: 0px;
     display: flex;
     flex-wrap: wrap;
@@ -17,7 +20,7 @@
         min-width: 100%;
         min-height: 60px;
         font-size: 1.2em;
-        background-color: #14ac89;
+        background-color: var(themes-public-alapadatok);
         color: white;
     }
 
@@ -63,6 +66,11 @@
 
         @media screen and (min-width: 1500px) {
             width: calc(50% - 5px);
+        }
+
+        .btn.btn-success {
+            background-color: var(themes-public-viewbutton);
+            color: var(themes-public-newfont);
         }
     }
 }

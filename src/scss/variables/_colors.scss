@@ -16,6 +16,8 @@ $colors: (
             navbgcolor: rgba(0, 0, 0, 0.9),
             navbarlogo: url('../images/logo2.png'),
             navbarlinkcolor: #ffffff,
+            alapadatok: rgba(235, 161, 0, 1),
+            ertekesitoadatok: rgba(120, 212, 223, 1),
             navlinkhoveractive: rgba(120, 212, 223, 1),
             navlinktextshadow: rgba(120, 212, 223, 1),
             boxshadowcolor: rgba(174, 255, 237, 0.514),
@@ -32,7 +34,7 @@ $colors: (
             footerdivbgcolor: rgba(0, 0, 0, 0.9),
             footerfontcolor: rgba(255, 255, 255, 1),
             new: #dd0000,
-            newfont: white,
+            newfont: black,
             viewbutton: rgba(147, 245, 98, 1)
         ),
         admin: (

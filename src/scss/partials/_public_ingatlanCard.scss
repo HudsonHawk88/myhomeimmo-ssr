@@ -17,8 +17,8 @@
         }
 
         .ingatlan_cim {
-            background-color: darkcyan;
-            color: white;
+            background-color: var(themes-public-alapadatok);
+            color: black;
             padding: 10px 5px;
             font-size: 1em;
 
@@ -91,8 +91,8 @@
 
         .alapadatok {
             font-size: 25px;
-            background-color: darkcyan;
-            color: white;
+            background-color: var(themes-public-alapadatok);
+            color: black;
             padding: 15px;
         }
 
@@ -109,7 +109,7 @@
     }
 
     .ertekesito_adatok {
-        background-color: rgb(255, 238, 139);
+        background-color: var(themes-public-ertekesitoadatok);
         display: flex;
         // align-items: center;
         text-align: center;
@@ -156,6 +156,15 @@
                 border-radius: 50%;
                 height: 150px;
                 width: 150px;
+            }
+        }
+
+        & .btn.btn-success {
+            background-color: var(themes-public-viewbutton);
+            color: var(themes-public-newfont);
+
+            & i {
+                color: var(themes-public-newfont);
             }
         }
 

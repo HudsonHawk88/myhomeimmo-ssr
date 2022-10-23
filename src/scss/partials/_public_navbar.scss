@@ -13,13 +13,13 @@
     border-radius: 0px;
 
     @media screen and (min-width: 1080px) {
-        box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor);
+        /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
         font-size: 1em;
         /*  border-radius: 10px; */
     }
 
     @media screen and (min-width: 992px) and (max-width: 1080px) {
-        box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor);
+        /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
         font-size: 1em;
         /*     border-radius: 10px; */
     }
@@ -95,7 +95,7 @@
         }
 
         #myart {
-            color: #ff9166 !important;
+            color: var(themes-public-alapadatok) !important;
         }
 
         @media screen and (min-width: 992px) {

@@ -14,7 +14,7 @@ const Ingatlanok = (props) => {
     const location = useLocation();
 
     const defaultTelepulesObj = {
-        telepulesnev: '',
+        telepulesnev: 'Zalaegerszeg',
         km: '0'
     };
 
@@ -136,10 +136,9 @@ const Ingatlanok = (props) => {
                 });
             });
             setKeresoObj(newObj);
-            console.log(newObj);
             listIngatlanok(newObj);
         } else {
-            setSelectedTelepules(null);
+            setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
         }
     }, [location]);
 

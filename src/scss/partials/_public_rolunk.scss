@@ -1,3 +1,6 @@
+@use '../variables/colors';
+@use '../functions/var' as *;
+
 .public_rolunk {
     display: flex;
     flex-wrap: wrap;
@@ -5,12 +8,12 @@
     // max-width: inherit;
     padding: 20px 2%;
     align-self: baseline;
-    background-color: rgb(255, 238, 139);
+    background-color: var(themes-public-bgcolor2);
     // background-color: rgb(235, 255, 250);
     margin: 0px;
 
     & a {
-        color: rgb(35, 155, 61);
+        color: black;
     }
 
     @media screen and (min-width: 950px) {

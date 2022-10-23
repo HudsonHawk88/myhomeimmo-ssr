@@ -188,7 +188,7 @@ html body {
   width: 100%;
   height: 100%;
   padding: 20px 5%;
-  background-color: rgb(255, 238, 139);
+  background-color: rgb(237, 224, 122);
   margin: 0px;
 }
 @media screen and (min-width: 950px) {
@@ -258,7 +258,7 @@ html body {
   width: 100%;
   height: 100%;
   padding: 20px;
-  background-color: rgb(255, 238, 139);
+  background-color: rgb(237, 224, 122);
   margin: 0px;
 }
 @media screen and (min-width: 950px) {
@@ -293,7 +293,7 @@ html body {
   width: 100%;
   height: 100%;
   padding: 20px;
-  background-color: rgb(255, 238, 139);
+  background-color: rgb(237, 224, 122);
   margin: 0px;
 }
 @media screen and (min-width: 950px) {
@@ -323,7 +323,7 @@ html body {
 }
 .tartalom .adatkezeles {
   display: flex;
-  background-color: #ffee8b;
+  background-color: rgb(237, 224, 122);
   margin: 0px auto;
   max-width: 100%;
   padding: 20px 5vw;
@@ -343,14 +343,14 @@ html body {
   padding: 0px !important;
 }
 .tartalom .reszletes_kereso {
-  background-color: #14ac89;
+  background-color: rgb(120, 212, 223);
   display: flex;
   flex-wrap: wrap;
   padding: 20px;
   max-width: 100%;
 }
 .tartalom .reszletes_kereso button {
-  background-color: rgba(255, 213, 13, 0.6);
+  background-color: rgb(147, 245, 98);
   color: black;
 }
 .tartalom .card {
@@ -557,7 +557,7 @@ html body {
 }
 .public-inner-content .card .btn.btn-info {
   background-color: rgb(147, 245, 98);
-  color: white;
+  color: black;
 }
 .public-inner-content .card:hover {
   box-shadow: 5px 5px black;
@@ -680,14 +680,14 @@ html body {
 }
 @media screen and (min-width: 1080px) {
   .public-navbar {
-    box-shadow: 0.25rem 0.25rem 4px 4px rgba(174, 255, 237, 0.514);
+    /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
     font-size: 1em;
     /*  border-radius: 10px; */
   }
 }
 @media screen and (min-width: 992px) and (max-width: 1080px) {
   .public-navbar {
-    box-shadow: 0.25rem 0.25rem 4px 4px rgba(174, 255, 237, 0.514);
+    /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
     font-size: 1em;
     /*     border-radius: 10px; */
   }
@@ -759,7 +759,7 @@ html body {
   }
 }
 .public-navbar__nav-item #myart {
-  color: #ff9166 !important;
+  color: rgb(235, 161, 0) !important;
 }
 @media screen and (min-width: 992px) {
   .public-navbar__nav-item {
@@ -875,6 +875,10 @@ html body {
   background-color: rgb(120, 212, 223);
   padding: 0px;
 }
+.undernav .accordion-body .btn.btn-success {
+  background-color: rgb(147, 245, 98);
+  color: black;
+}
 .undernav .accordion-button {
   background-color: rgba(174, 255, 237, 0.514);
   color: rgb(0, 0, 0);
@@ -975,8 +979,8 @@ html body {
   }
 }
 .ingatlan_card .ingatlan_adatok .ingatlan_cim {
-  background-color: darkcyan;
-  color: white;
+  background-color: rgb(235, 161, 0);
+  color: black;
   padding: 10px 5px;
   font-size: 1em;
 }
@@ -1027,8 +1031,8 @@ html body {
 }
 .ingatlan_card .ingatlan_adatok .alapadatok {
   font-size: 25px;
-  background-color: darkcyan;
-  color: white;
+  background-color: rgb(235, 161, 0);
+  color: black;
   padding: 15px;
 }
 .ingatlan_card .ingatlan_adatok .adatok .card-header {
@@ -1039,7 +1043,7 @@ html body {
   white-space: pre-line;
 }
 .ingatlan_card .ertekesito_adatok {
-  background-color: rgb(255, 238, 139);
+  background-color: rgb(120, 212, 223);
   display: flex;
   text-align: center;
   flex-direction: column;
@@ -1079,6 +1083,13 @@ html body {
   height: 150px;
   width: 150px;
 }
+.ingatlan_card .ertekesito_adatok .btn.btn-success {
+  background-color: rgb(147, 245, 98);
+  color: black;
+}
+.ingatlan_card .ertekesito_adatok .btn.btn-success i {
+  color: black;
+}
 @media screen and (min-width: 992px) {
   .ingatlan_card .ertekesito_adatok {
     width: 30%;
@@ -1091,11 +1102,11 @@ html body {
   width: 100%;
   padding: 20px 2%;
   align-self: baseline;
-  background-color: rgb(255, 238, 139);
+  background-color: rgb(237, 224, 122);
   margin: 0px;
 }
 .public_rolunk a {
-  color: rgb(35, 155, 61);
+  color: black;
 }
 @media screen and (min-width: 950px) {
   .public_rolunk {
@@ -1161,7 +1172,7 @@ html body {
 .public_kapcsolat {
   height: 100%;
   padding: 20px 5%;
-  background-color: rgb(255, 238, 139);
+  background-color: rgb(237, 224, 122);
   margin: 0px;
   display: flex;
   flex-wrap: wrap;
@@ -1178,7 +1189,7 @@ html body {
   min-width: 100%;
   min-height: 60px;
   font-size: 1.2em;
-  background-color: #14ac89;
+  background-color: rgb(235, 161, 0);
   color: white;
 }
 .public_kapcsolat .kapcsolat_alapadatok {
@@ -1221,6 +1232,10 @@ html body {
   .public_kapcsolat .kapcsolat_form {
     width: calc(50% - 5px);
   }
+}
+.public_kapcsolat .kapcsolat_form .btn.btn-success {
+  background-color: rgb(147, 245, 98);
+  color: black;
 }
 
 .reklam_container {
