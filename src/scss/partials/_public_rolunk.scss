@@ -3,10 +3,11 @@
 
 .public_rolunk {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     width: 100%;
     // max-width: inherit;
-    padding: 20px 2%;
+    /* padding: 20px 2%; */
     align-self: baseline;
     background-color: var(themes-public-bgcolor2);
     // background-color: rgb(235, 255, 250);
@@ -17,9 +18,19 @@
     }
 
     @media screen and (min-width: 950px) {
-        padding: 20px 5vw;
-        margin: 0px auto;
-        width: 80%;
+        margin: 20px 5%;
+        /* margin: 0px auto; */
+        width: 100%;
+    }
+
+    & .item {
+        display: block;
+        width: 100%;
+
+        @media screen and (min-width: 720px) {
+            display: flex;
+            flex-wrap: wrap;
+        }
     }
 
     &__item {
@@ -29,16 +40,20 @@
         margin: 10px;
         padding: 10px;
         cursor: pointer;
-        width: 100%;
-        height: minmax(fit-content, 150px);
+        width: unset;
+        /*     height: minmax(fit-content, 150px); */
 
-        @media screen and (min-width: 950px) {
+        /*   @media screen and (min-width: 950px) {
             width: calc(50% - 25px);
-        }
+        } */
 
-        @media screen and (max-width: 500px) {
+        /*     @media screen and (max-width: 500px) {
             padding: 10px;
             // width: calc(50% - 45px);
+        } */
+
+        @media screen and (min-width: 720px) {
+            min-width: calc(25% - 20px);
         }
 
         &:hover {
@@ -56,6 +71,8 @@
         align-items: center;
         justify-content: flex-start;
         max-height: 100%;
+        word-wrap: break-word;
+        word-break: break-all;
     }
 
     &__kep {
@@ -76,11 +93,11 @@
     }
 
     &__leiras {
-        padding: 20px 2%;
+        padding: 20px 10px;
         min-height: 100%;
 
         @media screen and (min-width: 950px) {
-            padding: 20px 5%;
+            padding: 20px 10px;
         }
     }
 }

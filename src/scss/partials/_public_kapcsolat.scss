@@ -3,14 +3,14 @@
 
 .public_kapcsolat {
     height: 100%;
-    padding: 20px 5%;
+    margin: 20px 5%;
     background-color: var(themes-public-bgcolor2);
-    margin: 0px;
+    /*     margin: 0px; */
     display: flex;
     flex-wrap: wrap;
 
     @media screen and (min-width: 950px) {
-        margin: 0px 15%;
+        margin: 20px 5%;
     }
 
     .kapcsolat_nev {

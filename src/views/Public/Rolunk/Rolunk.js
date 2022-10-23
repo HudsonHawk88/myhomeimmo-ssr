@@ -95,17 +95,17 @@ const Rolunk = (props) => {
                         __html: isHidden && isHidden.length !== 0 && isHidden[currentId].item.leiras
                     }}
                 />
-                <a href="#" hidden={isHidden && isHidden.length !== 0 && !isHidden[currentId].isHidden} onClick={() => toggleRolunk(currentId)}>
+                {/*     <a href="#" hidden={isHidden && isHidden.length !== 0 && !isHidden[currentId].isHidden} onClick={() => toggleRolunk(currentId)}>
                     Kevesebb...
-                </a>
+                </a> */}
             </React.Fragment>
         );
     };
 
     return (
         <div className="public_rolunk">
-            {renderRolunk()}
-            {renderLeiras()}
+            <div className="item">{renderRolunk()}</div>
+            <div className="leiras">{renderLeiras()}</div>
         </div>
     );
 };

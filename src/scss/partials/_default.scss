@@ -13,8 +13,8 @@ html body {
     max-width: 100vw; */
     padding: 0px;
     margin: 0px;
-    background-image: var(themes-public-bgcolor);
-    background-size: cover;
+    /*     background-image: var(themes-public-bgcolor); */
+    /*     background-size: cover; */
 }
 
 .public_full {
@@ -197,11 +197,11 @@ html body {
         width: 100%;
         height: 100vh;
         background-color: rgb(255, 238, 139);
-        padding: 20px 5%;
+        padding: 20px 0px;
         margin: 0px;
 
         @media screen and (min-width: 950px) {
-            margin: 0px 15%;
+            margin: 0px 5%;
         }
 
         & .job_title {
@@ -224,12 +224,12 @@ html body {
     .ingatlan_szolgaltatas {
         width: 100%;
         height: 100%;
-        padding: 20px 5%;
         background-color: var(themes-public-bgcolor2);
+        padding: 20px 0px;
         margin: 0px;
 
         @media screen and (min-width: 950px) {
-            margin: 0px 15%;
+            margin: 0px 5%;
         }
 
         img {
@@ -317,12 +317,12 @@ html body {
     .public_myart {
         width: 100%;
         height: 100%;
-        padding: 20px;
+        padding: 20px 0px;
         background-color: var(themes-public-bgcolor2);
         margin: 0px;
 
         @media screen and (min-width: 950px) {
-            margin: 0px 15%;
+            margin: 20px 5%;
         }
 
         .myart_galeriak {
@@ -362,12 +362,11 @@ html body {
     .penzugyi_szolgaltatas {
         width: 100%;
         height: 100%;
-        padding: 20px;
+        padding: 20px 0px;
         background-color: var(themes-public-bgcolor2);
-        margin: 0px;
 
         @media screen and (min-width: 950px) {
-            margin: 0px 15%;
+            margin: 0px 5%;
         }
 
         img {
@@ -398,13 +397,13 @@ html body {
     .adatkezeles {
         display: flex;
         background-color: var(themes-public-bgcolor2);
-        margin: 0px auto;
+        /*  margin: 0px auto; */
         max-width: 100%;
-        padding: 20px 5vw;
+        margin: 20px 5%;
         width: 100%;
 
         @media screen and (min-width: 950px) {
-            width: 80%;
+            width: 100%;
         }
 
         &__leiras {
