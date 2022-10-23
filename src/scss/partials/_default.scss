@@ -401,15 +401,8 @@ html body {
     .adatkezeles {
         display: flex;
         background-color: var(themes-public-bgcolor2);
-        /*  margin: 0px auto; */
         max-width: 100%;
-        padding: 20px 0px;
-        margin: 20px 5%;
-        width: 100%;
-
-        @media screen and (min-width: 950px) {
-            width: 100%;
-        }
+        padding: 20px 5%;
 
         &__leiras {
             max-width: 100%;

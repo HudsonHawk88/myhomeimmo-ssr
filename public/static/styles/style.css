@@ -327,16 +327,8 @@ html body {
 .tartalom .adatkezeles {
   display: flex;
   background-color: rgb(237, 224, 122);
-  /*  margin: 0px auto; */
   max-width: 100%;
-  padding: 20px 0px;
-  margin: 20px 5%;
-  width: 100%;
-}
-@media screen and (min-width: 950px) {
-  .tartalom .adatkezeles {
-    width: 100%;
-  }
+  padding: 20px 5%;
 }
 .tartalom .adatkezeles__leiras {
   max-width: 100%;
