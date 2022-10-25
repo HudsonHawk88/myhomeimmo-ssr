@@ -70,7 +70,9 @@ router.post('/keres', async (req, res) => {
                     filter === 'emelet' ||
                     filter === 'epitesmod' ||
                     filter === 'futes' ||
-                    filter === 'allapot'
+                    filter === 'allapot' ||
+                    filter === 'atipus' ||
+                    filter === 'rendeltetes'
                 ) {
                     if (filter === 'telek' || filter === 'alapterulet') {
                         where = where.concat(`${filter}>='${kereso[filter]}' AND `);
@@ -82,7 +84,17 @@ router.post('/keres', async (req, res) => {
                     if (filter === 'isHirdetheto' || filter === 'isKiemelt' || filter === 'isLift' || filter === 'isErkely' || filter === 'isUjEpitesu') {
                         where = where.concat(`${filter}='${0}' AND `);
                     }
-                    if (filter === 'statusz' || filter === 'tipus' || filter === 'szobaszam' || filter === 'emelet' || filter === 'epitesmod' || filter === 'futes' || filter === 'allapot') {
+                    if (
+                        filter === 'statusz' ||
+                        filter === 'tipus' ||
+                        filter === 'altipus' ||
+                        filter === 'rendeltetes' ||
+                        filter === 'szobaszam' ||
+                        filter === 'emelet' ||
+                        filter === 'epitesmod' ||
+                        filter === 'futes' ||
+                        filter === 'allapot'
+                    ) {
                         where = where.concat(`${filter}='${kereso[filter]}' AND `);
                     }
                 }
@@ -113,9 +125,9 @@ router.post('/keres', async (req, res) => {
         newWhere = newWhere.slice(0, resultNew - 1);
     }
 
-    let sql = `SELECT * FROM ingatlanok ${leftJoin !== '' ? leftJoin : ''} WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''}${newWhere !== '' ? 'AND ' + newWhere : ''};`;
+    let sql = `SELECT * FROM ingatlanok ${leftJoin !== '' ? leftJoin : ''} WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''}${newWhere !== '' ? ' AND ' + newWhere : ''};`;
 
-    /*     console.log(sql); */
+    console.log(sql);
     ingatlanok.query(sql, (err, result) => {
         if (!err) {
             let ressss = result.map((ing) => {

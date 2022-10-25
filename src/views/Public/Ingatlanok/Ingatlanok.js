@@ -3,6 +3,7 @@ import { Input, Label, Button } from 'reactstrap';
 import Select from 'react-select';
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
+import { RVForm, RVFormGroup, RVInput, RVInputGroup, RVFormFeedback, RVInputGroupText } from '@inftechsol/reactstrap-form-validation';
 
 import { handleInputChange } from '../../../commons/InputHandlers';
 import FooldalContent from '../Fooldal/FooldalContent';
@@ -19,10 +20,12 @@ const Ingatlanok = (props) => {
     };
 
     const [telepulesObj, setTelepulesObj] = useState(defaultTelepulesObj);
-    const [telepulesek, setTelepulesek] = useState([]);
+    const [ingatlanOptions, setIngatlanOptions] = useState([]);
 
     const defaultKeresoObj = {
         tipus: '',
+        altipus: '',
+        rendeltetes: '',
         statusz: '',
         referenciaSzam: '',
         ar: '',
@@ -47,6 +50,8 @@ const Ingatlanok = (props) => {
     const [futesOptions, setFutesOptions] = useState([]);
     const [epitesmodOptions, setEpitesmodOptions] = useState([]);
     const [allapotOptions, setAllapotOptions] = useState([]);
+    const [altipusOptions, setAltipusOptions] = useState([]);
+    const [rendeltesOptions, setRendeltetesOptions] = useState([]);
     const [ingatlanok, setIngatlanok] = useState([]);
     const [telepulesekOpts, setTelepulesekOpts] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -55,7 +60,15 @@ const Ingatlanok = (props) => {
         Services.getIngatlanOptions().then((res) => {
             if (!res.err) {
                 res.forEach((item) => {
-                    if (item.nev === 'tipus' || item.nev === 'statusz' || item.nev === 'futesmod' || item.nev === 'epitesmod' || item.nev === 'allapot') {
+                    if (
+                        item.nev === 'tipus' ||
+                        item.nev === 'altipus' ||
+                        item.nev === 'rendeltetes' ||
+                        item.nev === 'statusz' ||
+                        item.nev === 'futesmod' ||
+                        item.nev === 'epitesmod' ||
+                        item.nev === 'allapot'
+                    ) {
                         if (item.nev === 'tipus') {
                             setTipusOptions(item.options);
                         } else if (item.nev === 'statusz') {
@@ -66,9 +79,16 @@ const Ingatlanok = (props) => {
                             setEpitesmodOptions(item.options);
                         } else if (item.nev === 'allapot') {
                             setAllapotOptions(item.options);
+                        } else if (item.nev === 'rendeltetes') {
+                            setRendeltetesOptions(item.options);
                         }
                     }
                 });
+            }
+        });
+        Services.getAltipusOptions().then((res) => {
+            if (!res.err) {
+                setAltipusOptions(res);
             }
         });
     }, []);
@@ -84,8 +104,8 @@ const Ingatlanok = (props) => {
                     });
                 });
                 setTelepulesekOpts(telOpts);
-                setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
-                setKeresoObj({ ...keresoObj, telepules: { telepulesnev: 'Zalaegerszeg', km: '0' } });
+                /*                 setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
+                setKeresoObj({ ...keresoObj, telepules: { telepulesnev: 'Zalaegerszeg', km: '0' } }); */
             } else {
                 props.notification('error', res.msg);
             }
@@ -236,13 +256,38 @@ const Ingatlanok = (props) => {
         );
     };
 
+    const renderAltipusOptions = () => {
+        const altipus = altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus);
+        return (
+            altipus &&
+            altipus.options &&
+            altipus.options.map((item) => {
+                return (
+                    <option key={item.id} value={item.value}>
+                        {item.nev}
+                    </option>
+                );
+            })
+        );
+    };
+
+    useEffect(() => {
+        const altipus = altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus);
+        if (!altipus) {
+            setKeresoObj({
+                ...keresoObj,
+                altipus: ''
+            });
+        }
+    }, [keresoObj.tipus]);
+
     const renderKereso = () => {
         return (
             <div className="reszletes_kereso" id="reszletes_kereso">
                 <div className="row">
                     <h3>Összetett kereső:</h3>
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <Label>Ingatlan státusza:</Label>
                             <Input type="select" name="statusz" id="statusz" value={keresoObj.statusz} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
                                 <option key="" value="">
@@ -257,7 +302,7 @@ const Ingatlanok = (props) => {
                                 })}
                             </Input>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <Label>Ingatlan típusa:</Label>
                             <Input type="select" name="tipus" id="tipus" value={keresoObj.tipus} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
                                 <option key="" value="">
@@ -272,11 +317,53 @@ const Ingatlanok = (props) => {
                                 })}
                             </Input>
                         </div>
+                        <div className="col-md-4">
+                            <RVFormGroup>
+                                <Label>{'Altipus:'}</Label>
+                                <RVInput
+                                    type="select"
+                                    name="altipus"
+                                    id="altipus"
+                                    disabled={keresoObj.tipus === '' || !altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus)}
+                                    value={keresoObj.altipus}
+                                    onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}
+                                >
+                                    <option key="defaultRendeltetes" value="">
+                                        {altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus)
+                                            ? 'Kérjük válasszon altipust...'
+                                            : 'Ehhez a típushoz nem tartozik altípus...'}
+                                    </option>
+                                    {renderAltipusOptions()}
+                                </RVInput>
+                            </RVFormGroup>
+                        </div>
                     </div>
                     <div className="row g-3">
+                        {/*   <div className="col-md-3">
+                            <Label>Altipus:</Label>
+                            <Input type="text" name="altipus" id="altipus" value={keresoObj.altipus} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                        </div>
+                        <div className="col-md-3">
+                            <Label>Rendeltetés:</Label>
+                            <Input type="text" name="rendeltetes" id="rendeltetes" value={keresoObj.rendeltetes} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                        </div> */}
+
                         <div className="col-md-4">
-                            <Label>Irányítószám:</Label>
-                            <Input type="text" name="irszam" id="irszam" value={telepulesObj.irszam} onChange={(e) => handleInputChange(e, telepulesObj, setTelepulesObj)} />
+                            <RVFormGroup>
+                                <Label>{'Rendeltetés:'}</Label>
+                                <RVInput type="select" name="rendeltetes" id="rendeltetes" value={keresoObj.rendeltetes} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                    <option key="defaultRendeltetes" value="">
+                                        Kérjük válasszon rendeltetést...
+                                    </option>
+                                    {rendeltesOptions.map((item) => {
+                                        return (
+                                            <option key={item.id} value={item.value}>
+                                                {item.value}
+                                            </option>
+                                        );
+                                    })}
+                                </RVInput>
+                            </RVFormGroup>
                         </div>
                         <div className="col-md-4">
                             <Label>Település:</Label>
