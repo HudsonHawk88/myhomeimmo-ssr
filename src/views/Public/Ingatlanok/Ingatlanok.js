@@ -41,6 +41,7 @@ const Ingatlanok = (props) => {
         futes: '',
         allapot: '',
         isErkely: false,
+        isTetoter: false,
         isLift: false,
         isUjEpitesu: false
     };
@@ -412,7 +413,18 @@ const Ingatlanok = (props) => {
                     <div className="row g-3">
                         <div className="col-md-3">
                             <Label>Max. ár: (Ft)</Label>
-                            <Input type="text" id="ar" name="ar" value={arFormatter(keresoObj.ar)} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                            <Input
+                                type="text"
+                                id="ar"
+                                name="ar"
+                                value={arFormatter(keresoObj.ar)}
+                                onChange={(e) => {
+                                    setKeresoObj({
+                                        ...keresoObj,
+                                        ar: arFormatter(e.target.value)
+                                    });
+                                }}
+                            />
                         </div>
                         <div className="col-md-3">
                             <RVFormGroup>
@@ -432,12 +444,26 @@ const Ingatlanok = (props) => {
                             </RVFormGroup>
                         </div>
                         <div className="col-md-3">
-                            <Label>Min. alapterület: (m2)</Label>
-                            <Input type="text" id="alapterulet" name="alapterulet" value={keresoObj.alapterulet} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                            <RVFormGroup>
+                                <Label>{'Min. alapterület:'}</Label>
+                                <RVInputGroup>
+                                    <RVInput
+                                        pattern="[0-9]+"
+                                        name="alapterulet"
+                                        id="alapterulet"
+                                        invalid={false}
+                                        value={keresoObj.alapterulet}
+                                        onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}
+                                    />
+                                    <RVInputGroupText>
+                                        m <sup>2</sup>
+                                    </RVInputGroupText>
+                                </RVInputGroup>
+                            </RVFormGroup>
                         </div>
                         <div className="col-md-3">
-                            <Label>Szobaszám:</Label>
-                            <Input type="text" id="szobaszam" name="szobaszam" value={keresoObj.szobaszam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                            <Label>{'Szobaszam:'}</Label>
+                            <RVInput pattern="[0-9]+" name="szobaszam" id="szobaszam" invalid={false} value={keresoObj.szobaszam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                         </div>
                     </div>
                     <div className="row g-3">
@@ -446,12 +472,30 @@ const Ingatlanok = (props) => {
                             <Input type="text" id="referenciaSzam" name="referenciaSzam" value={keresoObj.referenciaSzam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                         </div>
                         <div className="col-md-4">
-                            <Label>Min. telekméret: (m2)</Label>
-                            <Input type="text" id="telek" name="telek" value={keresoObj.telek} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                            <RVFormGroup>
+                                <Label>{'Min. telekméret:'}</Label>
+                                <RVInputGroup>
+                                    <RVInput pattern="[0-9]+" name="telek" id="telek" invalid={false} value={keresoObj.telek} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                                    <RVInputGroupText>
+                                        m <sup>2</sup>
+                                    </RVInputGroupText>
+                                </RVInputGroup>
+                            </RVFormGroup>
                         </div>
                         <div className="col-md-4">
-                            <Label>Emelet:</Label>
-                            <Input type="text" id="emelet" name="emelet" value={keresoObj.emelet} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                            <Label>Emelet: </Label>
+                            <Input type="select" name="emelet" id="emelet" value={keresoObj.emelet} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                <option key="" value="">
+                                    Kérjük válasszon emeletet...
+                                </option>
+                                {emeletOptions.map((emelet) => {
+                                    return (
+                                        <option key={emelet.id} value={emelet.value}>
+                                            {emelet.nev}
+                                        </option>
+                                    );
+                                })}
+                            </Input>
                         </div>
                     </div>
                     <div className="row g-3">
@@ -502,17 +546,22 @@ const Ingatlanok = (props) => {
                         </div>
                     </div>
                     <div className="row g-3">
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <Label>Erkély</Label>
                             &nbsp;&nbsp;
                             <Input type="checkbox" id="isErkely" name="isErkely" checked={keresoObj.isErkely} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
+                            <Label>Tetőtér</Label>
+                            &nbsp;&nbsp;
+                            <Input type="checkbox" id="isTetoter" name="isTetoter" checked={keresoObj.isTetoter} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                        </div>
+                        <div className="col-md-3">
                             <Label>Lift</Label>
                             &nbsp;&nbsp;
                             <Input type="checkbox" id="isLift" name="isLift" checked={keresoObj.isLift} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <Label>Új építés</Label>
                             &nbsp;&nbsp;
                             <Input type="checkbox" id="isUjEpitesu" name="isUjEpitesu" checked={keresoObj.isUjEpitesu} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />

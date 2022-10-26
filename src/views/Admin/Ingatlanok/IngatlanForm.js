@@ -48,6 +48,7 @@ const IngatlanForm = (props) => {
         isHirdetheto: false,
         isKiemelt: false,
         isErkely: false,
+        isTetoter: false,
         isLift: false,
         isAktiv: false,
         isUjEpitesu: false
@@ -381,7 +382,12 @@ const IngatlanForm = (props) => {
 
     const isEmeletHidden = () => {
         let isHidden = true;
-        if (ingatlanObj.tipus === '1' || ingatlanObj.tipus === '4' || ingatlanObj.tipus === '12' || ingatlanObj.tipus === '5') {
+        if (
+            (ingatlanObj.tipus === '1' && !ingatlanObj.isTetoter) ||
+            (ingatlanObj.tipus === '4' && !ingatlanObj.isTetoter) ||
+            (ingatlanObj.tipus === '12' && !ingatlanObj.isTetoter) ||
+            (ingatlanObj.tipus === '5' && !ingatlanObj.isTetoter)
+        ) {
             isHidden = false;
         }
 
@@ -416,7 +422,7 @@ const IngatlanForm = (props) => {
 
     const isRendeltetesHidden = () => {
         let isHidden = true;
-        if (ingatlanObj.tipus === '2' || ingatlanObj.tipus === '3') {
+        if (ingatlanObj.tipus === '1' || ingatlanObj.tipus === '2' || ingatlanObj.tipus === '3') {
             isHidden = false;
         }
 
@@ -801,7 +807,18 @@ const IngatlanForm = (props) => {
                     <div className="col-md-4">
                         <RVFormGroup>
                             <Label>{isRequired('Ár:', true)}</Label>
-                            <RVInput required name="ar" id="ar" value={arFormatter(ingatlanObj.ar)} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
+                            <RVInput
+                                required
+                                name="ar"
+                                id="ar"
+                                value={arFormatter(ingatlanObj.ar)}
+                                onChange={(e) => {
+                                    setIngatlanObj({
+                                        ...ingatlanObj,
+                                        ar: arFormatter(e.target.value)
+                                    });
+                                }}
+                            />
                             <RVFormFeedback />
                         </RVFormGroup>
                     </div>
@@ -854,21 +871,28 @@ const IngatlanForm = (props) => {
                             <RVInput type="checkbox" name="isErkely" id="isErkely" checked={ingatlanObj.isErkely} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <RVFormGroup>
                             <Label>Lift</Label>
                             &nbsp;&nbsp;
                             <RVInput type="checkbox" name="isLift" id="isLift" checked={ingatlanObj.isLift} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
+                        <RVFormGroup>
+                            <Label>Tetőtér</Label>
+                            &nbsp;&nbsp;
+                            <RVInput type="checkbox" name="isTetoter" id="isTetoter" checked={ingatlanObj.isTetoter} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
+                        </RVFormGroup>
+                    </div>
+                    <div className="col-md-3">
                         <RVFormGroup>
                             <Label>Új építés</Label>
                             &nbsp;&nbsp;
                             <RVInput type="checkbox" name="isUjEpitesu" id="isUjEpitesu" checked={ingatlanObj.isUjEpitesu} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <RVFormGroup>
                             <Label>Publikus</Label>
                             &nbsp;&nbsp;

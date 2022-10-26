@@ -49,20 +49,28 @@ function makeFormData(dataObj, kepKey, isMod) {
 
 function arFormatter(ar) {
     /*   var inputElement = document.getElementById(id); */
-    let newAr = ar + '';
-    newAr = newAr.replace(/\D/g, '');
-    newAr = newAr.replace(' ', '').split('').reverse().join(''); // reverse
-    if (newAr.length > 0) {
-        var newValue = '';
-        for (var i = 0; i < newAr.length; i++) {
-            if (i % 3 === 0 && i > 0) {
-                newValue += ' ';
+    let a = ar + '';
+    const regexp = new RegExp('[0-9 ]+');
+    console.log(a.length > 0 && a[a.length - 1].match(regexp));
+    if (a.length > 0 && a[a.length - 1].match(regexp)) {
+        let newAr = a;
+        newAr = newAr.replace(/\D/g, '');
+        newAr = newAr.replace(' ', '').split('').reverse().join(''); // reverse
+        if (newAr.length > 0) {
+            var newValue = '';
+            for (var i = 0; i < newAr.length; i++) {
+                if (i % 3 === 0 && i > 0) {
+                    newValue += ' ';
+                }
+                newValue += newAr[i];
             }
-            newValue += newAr[i];
+            newValue = newValue.split('').reverse().join('');
+            return newValue;
         }
-        newValue = newValue.split('').reverse().join('');
-        return newValue;
+    } else {
+        a = a.slice(0, -1);
     }
+    return a;
 }
 
 export { hasRole, makeFormData, arFormatter };

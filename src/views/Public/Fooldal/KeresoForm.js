@@ -238,12 +238,34 @@ const KeresoForm = (props) => {
             <div className="row g-2">
                 <div className="col-lg-6 col-md-6">
                     <Label>Ár:</Label>
-                    <Input type="text" name="ar" id="ar" value={arFormatter(keresoObj.ar)} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                    <RVInput
+                        pattern="[0-9 ]+"
+                        invalid={false}
+                        name="ar"
+                        id="ar"
+                        value={keresoObj.ar}
+                        onChange={(e) => {
+                            setKeresoObj({
+                                ...keresoObj,
+                                ar: arFormatter(e.target.value)
+                            });
+                            /* handleInputChange(e, keresoObj, setKeresoObj);
+                            arFormatter(e.target.value); */
+                        }}
+                    />
                 </div>
                 <div className="col-lg-6 col-md-6">
                     <RVFormGroup>
                         <Label>{'Pénznem:'}</Label>
-                        <RVInput type="select" name="penznem" id="penznem" value={keresoObj.penznem} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                        <RVInput
+                            type="select"
+                            name="penznem"
+                            id="penznem"
+                            value={keresoObj.penznem}
+                            onChange={(e) => {
+                                handleInputChange(e, keresoObj, setKeresoObj);
+                            }}
+                        >
                             {/*  <option key="defaultPénznem" value="">
                                         {'Kérjük válasszon pénznemet...'}
                                     </option> */}
@@ -259,7 +281,7 @@ const KeresoForm = (props) => {
                 </div>
                 <div className="col-lg-6 col-md-6">
                     <RVFormGroup>
-                        <Label>{'Alapterület:'}</Label>
+                        <Label>{'Min. alapterület:'}</Label>
                         <RVInputGroup>
                             <RVInput
                                 pattern="[0-9]+"

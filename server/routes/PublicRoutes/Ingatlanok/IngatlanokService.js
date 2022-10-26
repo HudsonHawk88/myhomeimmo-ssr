@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
         const id = req.query.id;
         const sql = id
             ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1' ORDER BY rogzitIdo DESC;`
-            : `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok WHERE isAktiv='1' ORDER BY rogzitIdo DESC;`;
+            : `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, rogzitIdo FROM ingatlanok WHERE isAktiv='1' ORDER BY rogzitIdo DESC;`;
 
         let result = await UseQuery(sql);
         let ress = result.map((ing) => {
@@ -63,6 +63,7 @@ router.post('/keres', async (req, res) => {
                     filter === 'isKiemelt' ||
                     filter === 'isLift' ||
                     filter === 'isErkely' ||
+                    filter === 'isTetoter' ||
                     filter !== 'irszam' ||
                     filter === 'statusz' ||
                     filter === 'tipus' ||
@@ -81,8 +82,8 @@ router.post('/keres', async (req, res) => {
                         const ar = kereso[filter].replace(/ /g, '');
                         where = where.concat(`REPLACE(${filter}, ' ', '') <= ${ar} AND `);
                     }
-                    if (filter === 'isHirdetheto' || filter === 'isKiemelt' || filter === 'isLift' || filter === 'isErkely' || filter === 'isUjEpitesu') {
-                        where = where.concat(`${filter}='${0}' AND `);
+                    if (filter === 'isHirdetheto' || filter === 'isKiemelt' || filter === 'isLift' || filter === 'isErkely' || filter === 'isUjEpitesu' || filter === 'isTetoter') {
+                        where = where.concat(`${filter}='${Number(kereso[filter])}' AND `);
                     }
                     if (
                         filter === 'statusz' ||

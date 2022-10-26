@@ -36,6 +36,7 @@ const Ingatlan = (props) => {
         isErkely: false,
         isHirdetheto: false,
         isKiemelt: false,
+        isTetoter: false,
         isLift: false,
         isUjEpitesu: false,
         kaucio: '',
@@ -433,6 +434,20 @@ const Ingatlan = (props) => {
                                         <React.Fragment>
                                             <strong>{`Település: `}</strong>
                                             {ingatlanObj.telepules}
+                                        </React.Fragment>
+                                    </div>
+                                    <div className="col-md-6" hidden={getNemUresFields(ingatlanObj.rendeltetes)}>
+                                        <React.Fragment>
+                                            <strong>{`Rendeltetés: `}</strong>
+                                            {ingatlanObj.rendeltetes}
+                                        </React.Fragment>
+                                    </div>
+                                    <div className="col-md-12" />
+                                    <br />
+                                    <div className="col-md-6" hidden={!ingatlanObj.isTetoter}>
+                                        <React.Fragment>
+                                            <strong>{`Tetőtéri: `}</strong>
+                                            {ingatlanObj.isTetoter ? 'Igen' : 'Nem'}
                                         </React.Fragment>
                                     </div>
                                     <div className="col-md-6" hidden={ingatlanObj.tipus !== 1}>

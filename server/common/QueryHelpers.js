@@ -72,7 +72,17 @@ const getJSONfromLongtext = (object, direction = 'toBool') => {
     const keys = Object.keys(object);
     let newObj = {};
     keys.forEach((key) => {
-        if (key === 'isHirdetheto' || key === 'isKiemelt' || key === 'isErkely' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu' || key === 'isErtekesito' || key === 'isActive') {
+        if (
+            key === 'isHirdetheto' ||
+            key === 'isKiemelt' ||
+            key === 'isErkely' ||
+            key === 'isLift' ||
+            key === 'isAktiv' ||
+            key === 'isUjEpitesu' ||
+            key === 'isErtekesito' ||
+            key === 'isActive' ||
+            key === 'isTetoter'
+        ) {
             if (direction) {
                 if (direction === 'toBool') {
                     if (object[key] === 0 || object[key] === '0') {

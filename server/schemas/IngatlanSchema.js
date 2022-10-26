@@ -12,7 +12,7 @@ const addIngatlan = async (req, res) => {
     /* felvitelObj.hirdeto = JSON.parse(felvitelObj.hirdeto); */
     felvitelObj.telepules = felvitelObj.helyseg.telepules.telepulesnev;
     let id = await getId(req.headers.id, 'ingatlanok');
-    const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, hirdeto) VALUES ('${id}', '${
+    const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, hirdeto) VALUES ('${id}', '${
         felvitelObj.office_id
     }', '${felvitelObj.cim}', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
         felvitelObj.kaucio
@@ -22,7 +22,7 @@ const addIngatlan = async (req, res) => {
         felvitelObj.szobaszam
     }', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.isHirdetheto}', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${
         felvitelObj.isLift
-    }', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${JSON.stringify(felvitelObj.hirdeto)}');`;
+    }', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.isTetoter}', '${JSON.stringify(felvitelObj.hirdeto)}');`;
 
     pool.query(sql, async (error) => {
         if (!error) {
@@ -63,13 +63,13 @@ const editIngatlan = async (req, res) => {
         modositoObj.telepules = modositoObj.helyseg.telepules.telepulesnev;
         let kepek = [];
         if (modositoObj.kepek) {
-            modositoObj.kepek = JSON.parse(JSON.stringify(modositoObj.kepek));
+            modositoObj.kepek = modositoObj.kepek;
             if (Array.isArray(modositoObj.kepek)) {
                 modositoObj.kepek.forEach((item) => {
                     kepek.push(JSON.parse(item));
                 });
             } else {
-                kepek.push(JSON.parse(modositoObj.kepek));
+                kepek.push(modositoObj.kepek);
             }
         }
         if (req.files) {
@@ -84,6 +84,7 @@ const editIngatlan = async (req, res) => {
         }
 
         kepek.forEach((kep, index) => {
+            console.log(kep, index);
             kep.isCover = index.toString() === '0' ? true : false;
         });
 
@@ -99,7 +100,9 @@ const editIngatlan = async (req, res) => {
             modositoObj.felszobaszam
         }', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${modositoObj.isKiemelt}', isErkely='${
             modositoObj.isErkely
-        }', isLift='${modositoObj.isLift}', isAktiv='${modositoObj.isAktiv}', isUjEpitesu='${modositoObj.isUjEpitesu}', hirdeto='${JSON.stringify(modositoObj.hirdeto)}' WHERE id='${id}';`;
+        }', isLift='${modositoObj.isLift}', isAktiv='${modositoObj.isAktiv}', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${modositoObj.isTetoter}' , hirdeto='${JSON.stringify(
+            modositoObj.hirdeto
+        )}' WHERE id='${id}';`;
         pool.query(sql, (err) => {
             if (!err) {
                 res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
