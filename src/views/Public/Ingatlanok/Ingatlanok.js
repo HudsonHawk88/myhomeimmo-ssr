@@ -114,6 +114,7 @@ const Ingatlanok = (props) => {
 
     const listIngatlanok = (kereso) => {
         setLoading(true);
+        /* let k = kereso ? kereso : keresoObj; */
         Services.keresesIngatlanok(kereso).then((res) => {
             if (!res.err) {
                 // console.log(res);
@@ -124,6 +125,7 @@ const Ingatlanok = (props) => {
     };
 
     useEffect(() => {
+        const newObj = defaultKeresoObj;
         if (location && location.search) {
             let kereso = location.search.substring(1);
             kereso = JSON.parse('{"' + decodeURI(kereso).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
@@ -133,7 +135,6 @@ const Ingatlanok = (props) => {
 
             const keresoObjKeys = Object.keys(keresoObj);
             const keresoKey = Object.keys(kereso);
-            const newObj = {};
             keresoObjKeys.forEach((key) => {
                 keresoKey.forEach((kkey) => {
                     if (key === kkey) {
@@ -141,8 +142,8 @@ const Ingatlanok = (props) => {
                             console.log(kereso[kkey]);
                             if (kereso[kkey].telepulesnev !== '') {
                                 setSelectedTelepules({ label: kereso[kkey].telepulesnev, value: kereso[kkey].telepulesnev });
-                                setTelepulesObj({ telepulesnev: kereso[kkey].telepulesnev, km: '0' });
-                                newObj[kkey] = { telepulesnev: kereso[kkey].telepulesnev, km: '0' };
+                                setTelepulesObj({ telepulesnev: kereso[kkey].telepulesnev, km: kereso[kkey].km });
+                                newObj.telepules = { telepulesnev: kereso[kkey].telepulesnev, km: kereso[kkey].km };
                             } else {
                                 setSelectedTelepules(null);
                                 setTelepulesObj(defaultTelepulesObj);
@@ -155,12 +156,12 @@ const Ingatlanok = (props) => {
                     }
                 });
             });
-            setKeresoObj(newObj);
-            listIngatlanok(newObj);
         } else {
             setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
         }
-    }, [location]);
+        setKeresoObj(newObj);
+        listIngatlanok(newObj);
+    }, [location.search]);
 
     useEffect(() => {
         getOptions();
@@ -210,9 +211,7 @@ const Ingatlanok = (props) => {
 
     const keres = () => {
         let newKereso = keresoObj;
-        /*  newKereso.telepules.km = telepulesObj.km; */
         newKereso.telepules = telepulesObj;
-        console.log(newKereso);
         listIngatlanok(newKereso);
     };
 
