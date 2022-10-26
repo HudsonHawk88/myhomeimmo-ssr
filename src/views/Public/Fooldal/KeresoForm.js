@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Label } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
+import { RVForm, RVFormGroup, RVInput, RVInputGroup, RVFormFeedback, RVInputGroupText } from '@inftechsol/reactstrap-form-validation';
 
 import { handleInputChange } from '../../../commons/InputHandlers';
+import { arFormatter } from '../../../commons/Lib.js';
 import Services from './Services';
 
 const KeresoForm = (props) => {
@@ -19,6 +21,7 @@ const KeresoForm = (props) => {
         statusz: '',
         referenciaSzam: '',
         ar: '',
+        penznem: 'Ft',
         alapterulet: '',
         szobaszam: '',
         telepules: defaultTelepulesObj
@@ -29,6 +32,7 @@ const KeresoForm = (props) => {
     const [telepulesekOpts, setTelepulesekOpts] = useState([]);
     const [tipusOptions, setTipusOptions] = useState([]);
     const [statuszOptions, setStatuszOptions] = useState([]);
+    const [penznemOptions, setPenznemOptions] = useState([]);
 
     const getTelepulesekOpts = useCallback(() => {
         Services.listTelepulesek().then((res) => {
@@ -53,11 +57,13 @@ const KeresoForm = (props) => {
         Services.getIngatlanOptions().then((res) => {
             if (!res.err) {
                 res.forEach((item) => {
-                    if (item.nev === 'tipus' || item.nev === 'statusz') {
+                    if (item.nev === 'tipus' || item.nev === 'statusz' || item.nev === 'penznem') {
                         if (item.nev === 'tipus') {
                             setTipusOptions(item.options);
-                        } else {
+                        } else if (item.nev === 'statusz') {
                             setStatuszOptions(item.options);
+                        } else if (item.nev === 'penznem') {
+                            setPenznemOptions(item.options);
                         }
                     }
                 });
@@ -167,6 +173,14 @@ const KeresoForm = (props) => {
         }
     };
 
+    const nullToString = (value) => {
+        let v = null;
+        if (value) {
+            v = value;
+        }
+        return v;
+    };
+
     return (
         <div className="row" style={{ padding: '20px' }}>
             <h4>Gyorskereső</h4>
@@ -222,17 +236,48 @@ const KeresoForm = (props) => {
                 </div>
             </div>
             <div className="row g-2">
-                <div className="col-lg-4 col-md-6">
+                <div className="col-lg-6 col-md-6">
                     <Label>Ár:</Label>
-                    <Input type="text" name="ar" id="ar" value={keresoObj.ar} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                    <Input type="text" name="ar" id="ar" value={arFormatter(keresoObj.ar)} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                 </div>
-                <div className="col-lg-4 col-md-6">
-                    <Label>Alapterület:</Label>
-                    <Input type="text" name="alapterulet" id="alapterulet" value={keresoObj.alapterulet} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                <div className="col-lg-6 col-md-6">
+                    <RVFormGroup>
+                        <Label>{'Pénznem:'}</Label>
+                        <RVInput type="select" name="penznem" id="penznem" value={keresoObj.penznem} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                            {/*  <option key="defaultPénznem" value="">
+                                        {'Kérjük válasszon pénznemet...'}
+                                    </option> */}
+                            {penznemOptions.map((item) => {
+                                return (
+                                    <option key={item.id} value={item.value}>
+                                        {item.nev}
+                                    </option>
+                                );
+                            })}
+                        </RVInput>
+                    </RVFormGroup>
                 </div>
-                <div className="col-lg-4 col-md-6">
-                    <Label>Szobaszám:</Label>
-                    <Input type="text" name="szobaszam" id="szobaszam" value={keresoObj.szobaszam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                <div className="col-lg-6 col-md-6">
+                    <RVFormGroup>
+                        <Label>{'Alapterület:'}</Label>
+                        <RVInputGroup>
+                            <RVInput
+                                pattern="[0-9]+"
+                                name="alapterulet"
+                                id="alapterulet"
+                                invalid={false}
+                                value={keresoObj.alapterulet}
+                                onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}
+                            />
+                            <RVInputGroupText>
+                                m <sup>2</sup>
+                            </RVInputGroupText>
+                        </RVInputGroup>
+                    </RVFormGroup>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                    <Label>{'Szobaszam:'}</Label>
+                    <RVInput pattern="[0-9]+" name="szobaszam" id="szobaszam" invalid={false} value={keresoObj.szobaszam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                 </div>
             </div>
             <div className="row g-2">

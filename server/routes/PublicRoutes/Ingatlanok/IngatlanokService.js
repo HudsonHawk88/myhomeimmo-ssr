@@ -75,7 +75,7 @@ router.post('/keres', async (req, res) => {
                     filter === 'rendeltetes'
                 ) {
                     if (filter === 'telek' || filter === 'alapterulet') {
-                        where = where.concat(`${filter}>='${kereso[filter]}' AND `);
+                        where = where.concat(`${filter}>=${kereso[filter]} AND `);
                     }
                     if (filter === 'ar') {
                         const ar = kereso[filter].replace(/ /g, '');
@@ -93,7 +93,8 @@ router.post('/keres', async (req, res) => {
                         filter === 'emelet' ||
                         filter === 'epitesmod' ||
                         filter === 'futes' ||
-                        filter === 'allapot'
+                        filter === 'allapot' ||
+                        filter === 'penznem'
                     ) {
                         where = where.concat(`${filter}='${kereso[filter]}' AND `);
                     }

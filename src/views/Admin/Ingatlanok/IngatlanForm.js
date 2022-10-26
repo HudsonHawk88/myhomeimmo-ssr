@@ -38,6 +38,9 @@ const IngatlanForm = (props) => {
         gaz: '',
         villany: '',
         szennyviz: '',
+        /* gazfogyaszt: null,
+        villanyfogyazt: null,
+        etanusitvany: '', */
         szobaszam: '',
         felszobaszam: '',
         epitesmod: '',
@@ -431,6 +434,23 @@ const IngatlanForm = (props) => {
             ingatlanObj.tipus === '11' ||
             ingatlanObj.tipus === '12' ||
             ingatlanObj.tipus === '13'
+        ) {
+            isHidden = false;
+        }
+
+        return isHidden;
+    };
+
+    const isEtanusitvanyHidden = () => {
+        let isHidden = true;
+        if (
+            ingatlanObj.tipus === '1' ||
+            ingatlanObj.tipus === '2' ||
+            ingatlanObj.tipus === '4' ||
+            ingatlanObj.tipus === '5' ||
+            ingatlanObj.tipus === '9' ||
+            ingatlanObj.tipus === '11' ||
+            ingatlanObj.tipus === '12'
         ) {
             isHidden = false;
         }
@@ -945,6 +965,46 @@ const IngatlanForm = (props) => {
                             {renderOptions('futesmod')}
                         </RVInput>
                     </div>
+                    {/*   <div className="col-md-12" />
+                    <div className="col-md-4 mt-2">
+                        <RVFormGroup>
+                            <Label>{isRequired('Gáz fogyasztás:', !isEtanusitvanyHidden())}</Label>
+                            <RVInputGroup>
+                                <RVInput pattern="[0-9]+" name="gazfogyaszt" id="gazfogyaszt" value={ingatlanObj.gazfogyaszt} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
+                                <RVInputGroupText>
+                                    m <sup>3</sup>
+                                </RVInputGroupText>
+                            </RVInputGroup>
+                            <RVFormFeedback />
+                        </RVFormGroup>
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <RVFormGroup>
+                            <Label>{isRequired('Villany fogyasztás:', !isEtanusitvanyHidden())}</Label>
+                            <RVInputGroup>
+                                <RVInput
+                                    pattern="[0-9]+"
+                                    name="villanyfogyaszt"
+                                    id="villanyfogyaszt"
+                                    value={ingatlanObj.villanyfogyaszt}
+                                    onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)}
+                                />
+                                <RVInputGroupText>
+                                    m <sup>3</sup>
+                                </RVInputGroupText>
+                            </RVInputGroup>
+                            <RVFormFeedback />
+                        </RVFormGroup>
+                    </div>
+                    <div className="col-md-4 mt-2">
+                        <Label>{'Energiatanusítvány:'}</Label>
+                        <RVInput disabled type="select" name="etanusitvany" id="etanusitvany" value={ingatlanObj.etanusitvany} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)}>
+                            <option key="defaultEtanusitvany" value="">
+                                Kérjük irja be a fogyasztási adatokat...
+                            </option>
+                            {renderOptions('etanusitvany')}
+                        </RVInput>
+                    </div> */}
                 </div>
                 <div className="row" hidden={isTelekAdatokHidden()}>
                     <div className="col-md-12">

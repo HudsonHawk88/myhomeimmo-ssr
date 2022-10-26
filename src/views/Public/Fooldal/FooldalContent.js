@@ -264,7 +264,7 @@ const FooldalContent = (props) => {
                                 <strong>Ár: {arFormatter(ingat.ar) + ' ' + ingat.penznem}</strong>
                                 {ingat.kaucio && ingat.kaucio !== '' && (
                                     <>
-                                        <br /> {console.log(ingat.kaucio === 'undefined')}
+                                        <br />
                                         <strong>Kaució: {arFormatter(ingat.kaucio) + ' ' + ingat.penznem}</strong>
                                     </>
                                 )}

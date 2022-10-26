@@ -924,8 +924,8 @@ html body {
 .undernav .image-gallery .image-gallery-slide img,
 .undernav .image-gallery .image-gallery-slides img,
 .undernav .image-gallery .carousel_image img {
-    height: 400px;
-    width: 65%;
+    height: 500px;
+    width: 75%;
   }
 }
 .undernav .image-gallery .image-gallery-content .image-gallery-bullets-container,

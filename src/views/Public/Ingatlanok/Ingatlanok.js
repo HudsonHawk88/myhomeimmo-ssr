@@ -10,6 +10,7 @@ import FooldalContent from '../Fooldal/FooldalContent';
 import Loading from '../../../commons/Loading';
 
 import Services from './Services';
+import { arFormatter } from '../../../commons/Lib.js';
 
 const Ingatlanok = (props) => {
     const location = useLocation();
@@ -29,6 +30,7 @@ const Ingatlanok = (props) => {
         statusz: '',
         referenciaSzam: '',
         ar: '',
+        penznem: 'Ft',
         alapterulet: '',
         szobaszam: '',
         telepules: defaultTelepulesObj,
@@ -52,6 +54,8 @@ const Ingatlanok = (props) => {
     const [allapotOptions, setAllapotOptions] = useState([]);
     const [altipusOptions, setAltipusOptions] = useState([]);
     const [rendeltesOptions, setRendeltetesOptions] = useState([]);
+    const [penznemOptions, setPenznemOptions] = useState([]);
+    const [emeletOptions, setEmeletOptions] = useState([]);
     const [ingatlanok, setIngatlanok] = useState([]);
     const [telepulesekOpts, setTelepulesekOpts] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -67,7 +71,9 @@ const Ingatlanok = (props) => {
                         item.nev === 'statusz' ||
                         item.nev === 'futesmod' ||
                         item.nev === 'epitesmod' ||
-                        item.nev === 'allapot'
+                        item.nev === 'allapot' ||
+                        item.nev === 'penznem' ||
+                        item.nev === 'emelet'
                     ) {
                         if (item.nev === 'tipus') {
                             setTipusOptions(item.options);
@@ -81,6 +87,10 @@ const Ingatlanok = (props) => {
                             setAllapotOptions(item.options);
                         } else if (item.nev === 'rendeltetes') {
                             setRendeltetesOptions(item.options);
+                        } else if (item.nev === 'penznem') {
+                            setPenznemOptions(item.options);
+                        } else if (item.nev === 'emelet') {
+                            setEmeletOptions(item.options);
                         }
                     }
                 });
@@ -139,7 +149,6 @@ const Ingatlanok = (props) => {
                 keresoKey.forEach((kkey) => {
                     if (key === kkey) {
                         if (kkey === 'telepules') {
-                            console.log(kereso[kkey]);
                             if (kereso[kkey].telepulesnev !== '') {
                                 setSelectedTelepules({ label: kereso[kkey].telepulesnev, value: kereso[kkey].telepulesnev });
                                 setTelepulesObj({ telepulesnev: kereso[kkey].telepulesnev, km: kereso[kkey].km });
@@ -192,7 +201,10 @@ const Ingatlanok = (props) => {
                 },
                 irszam: ''
             });
-            setTelepulesObj(defaultTelepulesObj);
+            setTelepulesObj({
+                telepulesnev: '',
+                km: '0'
+            });
         }
     };
 
@@ -398,15 +410,32 @@ const Ingatlanok = (props) => {
                         </div>
                     </div>
                     <div className="row g-3">
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <Label>Max. ár: (Ft)</Label>
-                            <Input type="text" id="ar" name="ar" value={keresoObj.ar} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                            <Input type="text" id="ar" name="ar" value={arFormatter(keresoObj.ar)} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
+                            <RVFormGroup>
+                                <Label>{'Pénznem:'}</Label>
+                                <RVInput type="select" name="penznem" id="penznem" value={keresoObj.penznem} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                    {/*  <option key="defaultPénznem" value="">
+                                        {'Kérjük válasszon pénznemet...'}
+                                    </option> */}
+                                    {penznemOptions.map((item) => {
+                                        return (
+                                            <option key={item.id} value={item.value}>
+                                                {item.nev}
+                                            </option>
+                                        );
+                                    })}
+                                </RVInput>
+                            </RVFormGroup>
+                        </div>
+                        <div className="col-md-3">
                             <Label>Min. alapterület: (m2)</Label>
                             <Input type="text" id="alapterulet" name="alapterulet" value={keresoObj.alapterulet} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <Label>Szobaszám:</Label>
                             <Input type="text" id="szobaszam" name="szobaszam" value={keresoObj.szobaszam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
                         </div>
