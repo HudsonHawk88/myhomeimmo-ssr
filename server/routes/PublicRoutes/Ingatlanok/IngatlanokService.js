@@ -110,7 +110,7 @@ router.post('/keres', async (req, res) => {
             newWhere = `distance >= 0 ORDER BY distances.distance`;
         } else {
             if (kereso['telepules'].telepulesnev !== '' && leftJoin === '') {
-                newWhere = newWhere.concat(`telepules='${kereso['telepules'].telepulesnev}' AND `);
+                newWhere = newWhere.concat(` telepules='${kereso['telepules'].telepulesnev}' AND `);
             }
         }
     }
