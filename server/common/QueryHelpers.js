@@ -61,7 +61,6 @@ const getId = async (reqID, tableName) => {
 
 function verifyJson(input) {
     try {
-        console.log(JSON.parse(input));
         JSON.parse(input);
     } catch (e) {
         return false;
@@ -247,10 +246,8 @@ const isAdminUsersTableExists = async (adminusers) => {
 };
 
 const getIngatlanokByKm = async (telepules, km) => {
-    console.log(telepules);
     const getCoordinatesSql = `SELECT geoLong, geoLat FROM telep_1 WHERE telepulesnev='${telepules}'`;
     const coordinates = await UseQuery(getCoordinatesSql);
-    console.log(coordinates[0]);
     const sssql = `LEFT JOIN (SELECT (6371 * acos(cos(radians(${coordinates[0].geoLat})) * cos(radians(geoLat)) * cos(radians(geoLong) - radians(${coordinates[0].geoLong})) + sin(radians(${
         coordinates[0].geoLat
     })) * sin(radians(geoLat)))) AS distance, telepulesnev FROM telep_1 GROUP BY telepulesnev HAVING distance <= ${km ? km : 0}) AS distances ON distances.telepulesnev = telepules`;

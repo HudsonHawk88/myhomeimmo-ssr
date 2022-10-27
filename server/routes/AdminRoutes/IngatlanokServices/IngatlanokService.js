@@ -43,13 +43,10 @@ router.get('/', async (req, res) => {
                         if (!err) {
                             result.find((ing) => {
                                 const ingg = getJSONfromLongtext(ing, 'toBool');
-                                console.log(ingg);
                                 if ((ingg.hirdeto.feladoEmail === user.email && ingg.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
-                                    console.log(ingg.hirdeto.feladoEmail);
                                     resArr.push(ingg);
                                 }
                             });
-                            console.log(resArr);
                             if (resArr) {
                                 res.status(200).send(resArr);
                             } else {
