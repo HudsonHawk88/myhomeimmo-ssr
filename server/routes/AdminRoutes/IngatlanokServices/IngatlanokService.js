@@ -41,16 +41,13 @@ router.get('/', async (req, res) => {
                     ingatlanok.query(sql, (err, result) => {
                         if (!err) {
                             const ressss = result.find((ing) => {
-                                if ((ing.hirdeto.feladoEmail === user.email && ing.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
-                                    return getJSONfromLongtext(ing, 'toBool');
+                                const ingg = getJSONfromLongtext(ing, 'toBool');
+                                if ((ingg.hirdeto.feladoEmail === user.email && ingg.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+                                    return ingg;
                                 }
                             });
                             if (ressss) {
-                                if (!Array.isArray(ressss)) {
-                                    res.status(200).send([ressss]);
-                                } else {
-                                    res.status(200).send(ressss);
-                                }
+                                res.status(200).send([ressss]);
                             } else {
                                 res.status(401).send({ err: 'Nincs jogosultsága az adott művelethez!' });
                             }
@@ -175,7 +172,8 @@ router.delete('/', async (req, res) => {
             if (id) {
                 if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
                     const getIngatlanSql = `SELECT id, hirdeto FROM ingatlanok WHERE id='${id}';`;
-                    const ingatlan = await UseQuery(getIngatlanSql);
+                    let ingatlan = await UseQuery(getIngatlanSql);
+                    ingatlan = getJSONfromLongtext(ingatlan, 'toBool');
                     const sql = `DELETE FROM ingatlanok WHERE id='${id}';`;
                     if (
                         (ingatlan && ingatlan[0].hirdeto && ingatlan[0].hirdeto.feladoEmail === user.email && ingatlan[0].id === parseInt(id, 10)) ||
