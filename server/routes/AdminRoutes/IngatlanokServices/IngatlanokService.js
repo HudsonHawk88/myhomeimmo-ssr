@@ -42,8 +42,9 @@ router.get('/', async (req, res) => {
                         if (!err) {
                             const ressss = result.find((ing) => {
                                 const ingg = getJSONfromLongtext(ing, 'toBool');
+                                console.log(ingg);
                                 if ((ingg.hirdeto.feladoEmail === user.email && ingg.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
-                                    return ingg;
+                                    return getJSONfromLongtext(ing, 'toBool');
                                 }
                             });
                             if (ressss) {
@@ -63,7 +64,7 @@ router.get('/', async (req, res) => {
                             let ressss = result.filter((ing) => {
                                 const ingg = getJSONfromLongtext(ing, 'toBool');
                                 if (ingg.hirdeto.feladoEmail === user.email || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
-                                    return ingg;
+                                    return getJSONfromLongtext(ing, 'toBool');
                                 }
                             });
                             if (ressss && Array.isArray(ressss)) {
