@@ -36,19 +36,22 @@ router.get('/', async (req, res) => {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
+                let resArr = [];
                 if (id) {
                     const sql = `SELECT * FROM ingatlanok WHERE id='${id}';`;
                     ingatlanok.query(sql, (err, result) => {
                         if (!err) {
-                            const ressss = result.find((ing) => {
+                            result.find((ing) => {
                                 const ingg = getJSONfromLongtext(ing, 'toBool');
                                 console.log(ingg);
                                 if ((ingg.hirdeto.feladoEmail === user.email && ingg.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
-                                    return getJSONfromLongtext(ing, 'toBool');
+                                    console.log(ingg.hirdeto.feladoEmail);
+                                    resArr.push(ingg);
                                 }
                             });
-                            if (ressss) {
-                                res.status(200).send([ressss]);
+                            console.log(resArr);
+                            if (resArr) {
+                                res.status(200).send(resArr);
                             } else {
                                 res.status(401).send({ err: 'Nincs jogosultsága az adott művelethez!' });
                             }
@@ -68,7 +71,10 @@ router.get('/', async (req, res) => {
                                 }
                             });
                             if (ressss && Array.isArray(ressss)) {
-                                res.status(200).send(ressss);
+                                const resArr = ressss.map((r) => {
+                                    return getJSONfromLongtext(r);
+                                });
+                                res.status(200).send(resArr);
                             }
                         } else {
                             res.status(500).send({ err: err });
