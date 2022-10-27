@@ -61,6 +61,7 @@ const getId = async (reqID, tableName) => {
 
 function verifyJson(input) {
     try {
+        console.log(JSON.parse(input));
         JSON.parse(input);
     } catch (e) {
         return false;
