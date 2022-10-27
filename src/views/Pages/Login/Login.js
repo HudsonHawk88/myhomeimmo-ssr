@@ -27,7 +27,8 @@ function Login(props) {
                 if (res.ertekesito) {
                     setErtekesito(res.ertekesito);
                 }
-                history.push('/admin');
+                window.location.href = '/admin';
+                /*  history.push('/admin'); */
             } else {
                 addNotification('error', res.err);
             }

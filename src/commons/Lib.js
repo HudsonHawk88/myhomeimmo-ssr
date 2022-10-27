@@ -51,7 +51,6 @@ function arFormatter(ar) {
     /*   var inputElement = document.getElementById(id); */
     let a = ar + '';
     const regexp = new RegExp('[0-9 ]+');
-    console.log(a.length > 0 && a[a.length - 1].match(regexp));
     if (a.length > 0 && a[a.length - 1].match(regexp)) {
         let newAr = a;
         newAr = newAr.replace(/\D/g, '');

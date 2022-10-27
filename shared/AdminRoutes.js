@@ -10,7 +10,7 @@ import Kapcsolatok from '../src/views/Admin/Kapcsolatok/Kapcsolatok';
 import MyArtBase from '../src/views/Admin/MyArt/MyArtBase';
 
 const AdminRoutes = [
-    { path: '/admin', index: true, element: Fooldal },
+    { path: '/admin', element: Fooldal },
     { path: '/admin/ingatlanok', element: Ingatlanok },
     { path: '/admin/jogosultsagok', element: Jogosultsagok },
     { path: '/admin/felhasznalok', element: AdminUsers },

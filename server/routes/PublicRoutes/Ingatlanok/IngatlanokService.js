@@ -129,7 +129,7 @@ router.post('/keres', async (req, res) => {
 
     let sql = `SELECT * FROM ingatlanok ${leftJoin !== '' ? leftJoin : ''} WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''}${newWhere !== '' ? ' AND ' + newWhere : ''};`;
 
-    console.log(sql);
+    /*    console.log(sql); */
     ingatlanok.query(sql, (err, result) => {
         if (!err) {
             let ressss = result.map((ing) => {

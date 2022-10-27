@@ -1,5 +1,5 @@
 import { getFID } from 'web-vitals';
-import { pool, UseQuery, getIngatlanId, getJSONfromLongtext, getId } from '../common/QueryHelpers.js';
+import { pool, UseQuery, hasRole, getJSONfromLongtext, getId } from '../common/QueryHelpers.js';
 
 const addIngatlan = async (req, res) => {
     const felvitelObj = getJSONfromLongtext(req.body, 'toNumber');
@@ -55,61 +55,65 @@ const addIngatlan = async (req, res) => {
     });
 };
 
-const editIngatlan = async (req, res) => {
+const editIngatlan = async (req, res, user) => {
     const id = req.headers.id;
     if (id) {
         const modositoObj = getJSONfromLongtext(req.body, 'toNumber');
-        modositoObj.feladoAvatar = modositoObj.feladoAvatar ? modositoObj.feladoAvatar : '[]';
-        modositoObj.telepules = modositoObj.helyseg.telepules.telepulesnev;
-        let kepek = [];
-        if (modositoObj.kepek) {
-            modositoObj.kepek = modositoObj.kepek;
-            if (Array.isArray(modositoObj.kepek)) {
-                modositoObj.kepek.forEach((item) => {
-                    kepek.push(JSON.parse(item));
-                });
-            } else {
-                kepek.push(modositoObj.kepek);
+        if ((modositoObj.hirdeto.feladoEmail === user.email && modositoObj.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+            modositoObj.telepules = modositoObj.helyseg.telepules.telepulesnev;
+            let kepek = [];
+            if (modositoObj.kepek) {
+                modositoObj.kepek = modositoObj.kepek;
+                if (Array.isArray(modositoObj.kepek)) {
+                    modositoObj.kepek.forEach((item) => {
+                        kepek.push(JSON.parse(item));
+                    });
+                } else {
+                    kepek.push(modositoObj.kepek);
+                }
             }
-        }
-        if (req.files) {
-            req.files.map((kep, index) => {
-                kepek.push({
-                    filename: kep.filename,
-                    isCover: false,
-                    src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
-                    title: kep.filename
+            if (req.files) {
+                req.files.map((kep, index) => {
+                    kepek.push({
+                        filename: kep.filename,
+                        isCover: false,
+                        src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
+                        title: kep.filename
+                    });
                 });
+            }
+
+            kepek.forEach((kep, index) => {
+                kep.isCover = index.toString() === '0' ? true : false;
             });
+
+            const sql = `UPDATE ingatlanok SET office_id='${modositoObj.office_id}', cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(
+                modositoObj.helyseg
+            )}', kepek='${JSON.stringify(kepek)}', irsz='${modositoObj.helyseg.irszam}', telepules='${modositoObj.helyseg.telepules.telepulesnev}', ar='${modositoObj.ar}', kaucio='${
+                modositoObj.kaucio
+            }', penznem='${modositoObj.penznem}', statusz='${modositoObj.statusz}', tipus='${modositoObj.tipus}', altipus='${modositoObj.altipus}', rendeltetes='${
+                modositoObj.rendeltetes
+            }', allapot='${modositoObj.allapot}', emelet='${modositoObj.emelet}', alapterulet='${modositoObj.alapterulet}', telek='${modositoObj.telek}', telektipus='${
+                modositoObj.telektipus
+            }', beepithetoseg='${modositoObj.beepithetoseg}', viz='${modositoObj.viz}', gaz='${modositoObj.gaz}', villany='${modositoObj.villany}', szennyviz='${modositoObj.szennyviz}', szobaszam='${
+                modositoObj.szobaszam
+            }', felszobaszam='${modositoObj.felszobaszam}', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${
+                modositoObj.isKiemelt
+            }', isErkely='${modositoObj.isErkely}', isLift='${modositoObj.isLift}', isAktiv='${modositoObj.isAktiv}', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${
+                modositoObj.isTetoter
+            }' , hirdeto='${JSON.stringify(modositoObj.hirdeto)}' WHERE id='${id}';`;
+            pool.query(sql, (err) => {
+                if (!err) {
+                    res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
+                } else {
+                    res.status(500).send({ err: 'Ingatlan módosítása sikertelen!', msg: err });
+                }
+            });
+        } else {
+            res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
         }
 
-        kepek.forEach((kep, index) => {
-            console.log(kep, index);
-            kep.isCover = index.toString() === '0' ? true : false;
-        });
-
-        const sql = `UPDATE ingatlanok SET office_id='${modositoObj.office_id}', cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(
-            modositoObj.helyseg
-        )}', kepek='${JSON.stringify(kepek)}', irsz='${modositoObj.helyseg.irszam}', telepules='${modositoObj.helyseg.telepules.telepulesnev}', ar='${modositoObj.ar}', kaucio='${
-            modositoObj.kaucio
-        }', penznem='${modositoObj.penznem}', statusz='${modositoObj.statusz}', tipus='${modositoObj.tipus}', altipus='${modositoObj.altipus}', rendeltetes='${modositoObj.rendeltetes}', allapot='${
-            modositoObj.allapot
-        }', emelet='${modositoObj.emelet}', alapterulet='${modositoObj.alapterulet}', telek='${modositoObj.telek}', telektipus='${modositoObj.telektipus}', beepithetoseg='${
-            modositoObj.beepithetoseg
-        }', viz='${modositoObj.viz}', gaz='${modositoObj.gaz}', villany='${modositoObj.villany}', szennyviz='${modositoObj.szennyviz}', szobaszam='${modositoObj.szobaszam}', felszobaszam='${
-            modositoObj.felszobaszam
-        }', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${modositoObj.isKiemelt}', isErkely='${
-            modositoObj.isErkely
-        }', isLift='${modositoObj.isLift}', isAktiv='${modositoObj.isAktiv}', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${modositoObj.isTetoter}' , hirdeto='${JSON.stringify(
-            modositoObj.hirdeto
-        )}' WHERE id='${id}';`;
-        pool.query(sql, (err) => {
-            if (!err) {
-                res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
-            } else {
-                res.status(500).send({ err: 'Ingatlan módosítása sikertelen!', msg: err });
-            }
-        });
+        modositoObj.feladoAvatar = modositoObj.feladoAvatar ? modositoObj.feladoAvatar : '[]';
     } else {
         res.status(400).send({ err: 'Id megadása kötelező' });
     }

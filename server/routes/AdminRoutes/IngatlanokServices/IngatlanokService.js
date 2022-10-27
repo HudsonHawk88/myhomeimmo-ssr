@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId } from '../../../common/QueryHelpers.js';
+import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId, UseQuery } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync } from 'fs';
 import { addIngatlan, editIngatlan } from '../../../schemas/IngatlanSchema.js';
 
@@ -35,31 +35,49 @@ router.get('/', async (req, res) => {
         if (user === null) {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
-            if (id) {
-                const sql = `SELECT * FROM ingatlanok WHERE id='${id}';`;
-                ingatlanok.query(sql, (err, result) => {
-                    if (!err) {
-                        let ressss = result.map((ing) => {
-                            return getJSONfromLongtext(ing, 'toBool');
-                        });
-                        res.status(200).send(ressss);
-                    } else {
-                        res.status(500).send({ err: err });
-                    }
-                });
-            } else {
-                const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, rogzitIdo, hirdeto
+            if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
+                if (id) {
+                    const sql = `SELECT * FROM ingatlanok WHERE id='${id}';`;
+                    ingatlanok.query(sql, (err, result) => {
+                        if (!err) {
+                            const ressss = result.find((ing) => {
+                                if ((ing.hirdeto.feladoEmail === user.email && ing.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+                                    return getJSONfromLongtext(ing, 'toBool');
+                                }
+                            });
+                            if (ressss) {
+                                if (!Array.isArray(ressss)) {
+                                    res.status(200).send([ressss]);
+                                } else {
+                                    res.status(200).send(ressss);
+                                }
+                            } else {
+                                res.status(401).send({ err: 'Nincs jogosultsága az adott művelethez!' });
+                            }
+                        } else {
+                            res.status(500).send({ err: err });
+                        }
+                    });
+                } else {
+                    const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, rogzitIdo, hirdeto
                 FROM ingatlanok ORDER BY rogzitIdo DESC`;
-                ingatlanok.query(sql, (err, result) => {
-                    if (!err) {
-                        let ressss = result.map((ing) => {
-                            return getJSONfromLongtext(ing, 'toBool');
-                        });
-                        res.status(200).send(ressss);
-                    } else {
-                        res.status(500).send({ err: err });
-                    }
-                });
+                    ingatlanok.query(sql, (err, result) => {
+                        if (!err) {
+                            let ressss = result.filter((ing) => {
+                                if (ing.hirdeto.feladoEmail === user.email || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+                                    return getJSONfromLongtext(ing, 'toBool');
+                                }
+                            });
+                            if (ressss && Array.isArray(ressss)) {
+                                res.status(200).send(ressss);
+                            }
+                        } else {
+                            res.status(500).send({ err: err });
+                        }
+                    });
+                }
+            } else {
+                res.status(401).send({ err: 'Nincs jogosultsága az adott művelethez!' });
             }
         }
     } else {
@@ -134,7 +152,7 @@ router.put('/', upload.array('uj_kepek'), async (req, res) => {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
-                return editIngatlan(req, res);
+                return editIngatlan(req, res, user);
             } else {
                 res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
             }
@@ -154,18 +172,27 @@ router.delete('/', async (req, res) => {
             // TODO: hozzáadni a feltöltő regisztrált usert is a jogosultakhoz!!!
             const id = req.headers.id;
             if (id) {
-                if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+                if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
+                    const getIngatlanSql = `SELECT id, hirdeto FROM ingatlanok WHERE id='${id}';`;
+                    const ingatlan = await UseQuery(getIngatlanSql);
                     const sql = `DELETE FROM ingatlanok WHERE id='${id}';`;
+                    if (
+                        (ingatlan && ingatlan[0].hirdeto && ingatlan[0].hirdeto.feladoEmail === user.email && ingatlan[0].id === parseInt(id, 10)) ||
+                        hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])
+                    ) {
+                        ingatlanok.query(sql, (err) => {
+                            if (!err) {
+                                const dir = `${process.env.ingatlankepekdir}/${id}/`;
+                                rmSync(dir, { recursive: true, force: true });
+                                res.status(200).send({ msg: 'Ingatlan sikeresen törölve!' });
+                            } else {
+                                res.status(500).send({ err: 'Ingatlan törlése sikertelen!' });
+                            }
+                        });
+                    } else {
+                        res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
+                    }
                     // const sql = `DELETE FROM ingatlanok WHERE id='${id}' AND email='${user.email}';`;
-                    ingatlanok.query(sql, (err) => {
-                        if (!err) {
-                            const dir = `${process.env.ingatlankepekdir}/${id}/`;
-                            rmSync(dir, { recursive: true, force: true });
-                            res.status(200).send({ msg: 'Ingatlan sikeresen törölve!' });
-                        } else {
-                            res.status(500).send({ err: 'Ingatlan törlése sikertelen!' });
-                        }
-                    });
                 } else {
                     res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
                 }

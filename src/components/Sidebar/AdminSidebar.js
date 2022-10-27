@@ -33,13 +33,15 @@ const AdminSidebar = (props) => {
                                 &nbsp; Főoldal
                             </NavLink>
                         </NavItem>
-                        <NavItem className="admin-sidebar__navitem">
-                            <NavLink className="admin-sidebar__navlink nav-link" to="/admin/ingatlanok" history={history} id="ingatlanok">
-                                &nbsp;&nbsp;
-                                <i className="fas fa-home" />
-                                &nbsp; Ingatlanok
-                            </NavLink>
-                        </NavItem>
+                        {hasRole(user.roles, ['SZUPER_ADMIN', 'INGATLAN_ADMIN']) && (
+                            <NavItem className="admin-sidebar__navitem">
+                                <NavLink className="admin-sidebar__navlink nav-link" to="/admin/ingatlanok" history={history} id="ingatlanok">
+                                    &nbsp;&nbsp;
+                                    <i className="fas fa-home" />
+                                    &nbsp; Ingatlanok
+                                </NavLink>
+                            </NavItem>
+                        )}
                         {hasRole(user.roles, ['SZUPER_ADMIN']) && (
                             <React.Fragment>
                                 <NavItem className="admin-sidebar__navitem">
@@ -57,42 +59,54 @@ const AdminSidebar = (props) => {
                                 </NavItem>
                             </React.Fragment>
                         )}
-                        <NavItem className="admin-sidebar__navitem">
-                            <NavLink className="admin-sidebar__navlink nav-link" to="/admin/ingatlanszolg" history={history} id="Ingatlan Szolgáltatások">
-                                &nbsp;&nbsp;<i className="fas fa-info-circle"></i>
-                                &nbsp;Ingatlan szolgáltatások
-                            </NavLink>
-                        </NavItem>
-                        <NavItem className="admin-sidebar__navitem">
-                            <NavLink className="admin-sidebar__navlink nav-link" to="/admin/penzugyiszolg" history={history} id="Pénzügyi szolgáltatások">
-                                &nbsp;&nbsp;<i className="fas fa-piggy-bank"></i>
-                                &nbsp;Pénzügyi szolgáltatások
-                            </NavLink>
-                        </NavItem>
-                        <NavItem className="admin-sidebar__navitem">
-                            <NavLink className="admin-sidebar__navlink nav-link" to="/admin/adatkezeles" history={history} id="Adatkezelés">
-                                &nbsp;&nbsp;<i className="fas fa-shield-alt"></i>
-                                &nbsp;Adatkezelés
-                            </NavLink>
-                        </NavItem>
-                        <NavItem className="admin-sidebar__navitem">
-                            <NavLink className="admin-sidebar__navlink nav-link" to="/admin/rolunk" history={history} id="Rolunk">
-                                &nbsp;&nbsp;<i className="fas fa-shield-alt"></i>
-                                &nbsp;Rólunk
-                            </NavLink>
-                        </NavItem>
-                        <NavItem className="admin-sidebar__navitem">
-                            <NavLink className="admin-sidebar__navlink nav-link" to="/admin/kapcsolat" history={history} id="kapcsolat">
-                                &nbsp;&nbsp;<i className="fas fa-phone-alt"></i>
-                                &nbsp;Kapcsolat
-                            </NavLink>
-                        </NavItem>
-                        <NavItem className="admin-sidebar__navitem">
-                            <NavLink className="admin-sidebar__navlink nav-link" to="/admin/myArt" history={history} id="myArt">
-                                &nbsp;&nbsp;<i className="fas fa-phone-alt"></i>
-                                &nbsp;MyArt
-                            </NavLink>
-                        </NavItem>
+                        {hasRole(user.roles, ['SZUPER_ADMIN', 'INGATLAN_SZOLG']) && (
+                            <NavItem className="admin-sidebar__navitem">
+                                <NavLink className="admin-sidebar__navlink nav-link" to="/admin/ingatlanszolg" history={history} id="Ingatlan Szolgáltatások">
+                                    &nbsp;&nbsp;<i className="fas fa-info-circle"></i>
+                                    &nbsp;Ingatlan szolgáltatások
+                                </NavLink>
+                            </NavItem>
+                        )}
+                        {hasRole(user.roles, ['SZUPER_ADMIN', 'PENZUGY_SZOLG']) && (
+                            <NavItem className="admin-sidebar__navitem">
+                                <NavLink className="admin-sidebar__navlink nav-link" to="/admin/penzugyiszolg" history={history} id="Pénzügyi szolgáltatások">
+                                    &nbsp;&nbsp;<i className="fas fa-piggy-bank"></i>
+                                    &nbsp;Pénzügyi szolgáltatások
+                                </NavLink>
+                            </NavItem>
+                        )}
+                        {hasRole(user.roles, ['SZUPER_ADMIN', 'GDPR']) && (
+                            <NavItem className="admin-sidebar__navitem">
+                                <NavLink className="admin-sidebar__navlink nav-link" to="/admin/adatkezeles" history={history} id="Adatkezelés">
+                                    &nbsp;&nbsp;<i className="fas fa-shield-alt"></i>
+                                    &nbsp;Adatkezelés
+                                </NavLink>
+                            </NavItem>
+                        )}
+                        {hasRole(user.roles, ['SZUPER_ADMIN', 'ROLUNK_SZERK']) && (
+                            <NavItem className="admin-sidebar__navitem">
+                                <NavLink className="admin-sidebar__navlink nav-link" to="/admin/rolunk" history={history} id="Rolunk">
+                                    &nbsp;&nbsp;<i className="fas fa-shield-alt"></i>
+                                    &nbsp;Rólunk
+                                </NavLink>
+                            </NavItem>
+                        )}
+                        {hasRole(user.roles, ['SZUPER_ADMIN', 'KAPCS_SZERK']) && (
+                            <NavItem className="admin-sidebar__navitem">
+                                <NavLink className="admin-sidebar__navlink nav-link" to="/admin/kapcsolat" history={history} id="kapcsolat">
+                                    &nbsp;&nbsp;<i className="fas fa-phone-alt"></i>
+                                    &nbsp;Kapcsolat
+                                </NavLink>
+                            </NavItem>
+                        )}
+                        {hasRole(user.roles, ['SZUPER_ADMIN', 'MYART']) && (
+                            <NavItem className="admin-sidebar__navitem">
+                                <NavLink className="admin-sidebar__navlink nav-link" to="/admin/myArt" history={history} id="myArt">
+                                    &nbsp;&nbsp;<i className="fas fa-phone-alt"></i>
+                                    &nbsp;MyArt
+                                </NavLink>
+                            </NavItem>
+                        )}
                     </Nav>
                 </Collapse>
             </Navbar>

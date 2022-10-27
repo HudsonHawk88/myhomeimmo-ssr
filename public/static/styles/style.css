@@ -1366,7 +1366,7 @@ html body {
 
 .admin-navbar {
   min-height: 80px;
-  padding: 0px;
+  padding: 0px !important;
 }
 .admin-navbar__collapse {
   display: flex !important;
@@ -1380,6 +1380,8 @@ html body {
   content: url("../images/logo2.png");
   height: 80px;
   width: 300px;
+  padding: 5px;
+  background-color: #222222;
 }
 @media screen and (min-width: 992px) {
   .admin-navbar #logo {

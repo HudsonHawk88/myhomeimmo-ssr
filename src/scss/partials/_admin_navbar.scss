@@ -3,7 +3,7 @@
 
 .admin-navbar {
     min-height: 80px;
-    padding: 0px;
+    padding: 0px !important;
 
     &__collapse {
         display: flex !important;
@@ -18,6 +18,8 @@
         content: var(themes-admin-navbarlogo);
         height: 80px;
         width: 300px;
+        padding: 5px;
+        background-color: var(themes-admin-sidebarbg);
 
         @media screen and (min-width: 992px) {
             display: flex;
