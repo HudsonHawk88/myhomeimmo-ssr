@@ -64,7 +64,7 @@ router.get('/', async (req, res) => {
                     ingatlanok.query(sql, (err, result) => {
                         if (!err) {
                             let ressss = result.filter((ing) => {
-                                if (ing.hirdeto.feladoEmail === user.email || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+                                if (ing.hirdeto.feladoEmail === user.email || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
                                     return getJSONfromLongtext(ing, 'toBool');
                                 }
                             });
