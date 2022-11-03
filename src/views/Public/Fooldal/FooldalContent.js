@@ -19,17 +19,16 @@ const FooldalContent = (props) => {
         navigate(`/ingatlan?id=${id}`, { replace: true, state: { id: id } });
     };
 
-    const scrollToElement = (id) => {
+    /*     const scrollToElement = (id) => {
         var element = document.getElementById(id);
         if (element) {
             element.scrollIntoView();
         }
-    };
+    }; */
 
     /* console.log(props) */
 
-    useEffect(() => {
-        /*     console.log(props) */
+    /*     useEffect(() => {
         if (data) {
             setIngatlanLista(data);
             if (location.pathname === '/') {
@@ -42,7 +41,7 @@ const FooldalContent = (props) => {
         return () => {
             setIngatlanLista({});
         };
-    }, [data, location.pathname]);
+    }, [data, location.pathname]); */
 
     const isNew = (isUjEpitesu) => {
         if (isUjEpitesu) {

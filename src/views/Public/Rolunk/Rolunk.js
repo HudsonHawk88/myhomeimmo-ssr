@@ -7,14 +7,15 @@ const Rolunk = (props) => {
     const [currentId, setCurrentId] = useState(1);
 
     const getDefaultIsHidden = (items) => {
-        let newArray = [];
-        items.forEach((item, index) => {
-            newArray.push({
-                isHidden: index === 0 ? true : false,
-                item: item
-            });
+        let newArray = [null];
+        items.forEach((item) => {
+            if (item)
+                newArray.push({
+                    isHidden: item.id === 1 ? true : false,
+                    item: item
+                });
         });
-        setCurrentId(0);
+        setCurrentId(1);
         setIsHidden(newArray);
     };
 
@@ -33,21 +34,35 @@ const Rolunk = (props) => {
 
     useEffect(() => {
         init();
-        document.getElementById(currentId.toString()).scrollIntoView();
-    }, [currentId]);
+        setTimeout(() => {
+            scrollToElement('leiras');
+        }, 100);
+    }, []);
 
-    const toggleRolunk = (id) => {
+    const scrollToElement = (id) => {
+        var element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView(true, { behavior: 'smooth' });
+        }
+    };
+
+    const toggleRolunk = (id, isHidden, e) => {
         let items = isHidden;
         setCurrentId(id);
-        items.forEach((el) => {
-            if (el.item.id - 1 === id) {
-                el.isHidden = !el.isHidden;
-            } else {
-                el.isHidden = false;
+        const n = items.map((el) => {
+            if (el) {
+                if (el.item.id === id) {
+                    el.isHidden = !el.isHidden;
+                } else {
+                    el.isHidden = false;
+                }
             }
+            return el;
         });
-        setIsHidden(items);
-        console.log(id);
+        setIsHidden(n);
+        setTimeout(() => {
+            scrollToElement('leiras');
+        }, 100);
     };
 
     const renderRolunk = () => {
@@ -55,10 +70,10 @@ const Rolunk = (props) => {
         return (
             aboutUs &&
             aboutUs.length !== 0 &&
-            aboutUs.map((item, index) => {
+            aboutUs.map((item) => {
                 let kep = item.kep[0];
                 return (
-                    <div className={`public_rolunk__item ${isHidden && isHidden.length !== 0 && isHidden[index].isHidden ? 'active' : ''}`} key={index + 'item'}>
+                    <div className={`public_rolunk__item ${isHidden && isHidden.length !== 0 && isHidden[item.id].isHidden ? 'active' : ''}`} key={item.id + 'item'}>
                         <div className="public_rolunk__kep">
                             <div>
                                 <img src={kep.src} alt={item.nev} />
@@ -75,9 +90,14 @@ const Rolunk = (props) => {
                                 <br />
                                 {item.telefon}
                                 <br />
-                                <a href="#" hidden={isHidden && isHidden.length !== 0 && isHidden[index].isHidden} onClick={() => toggleRolunk(index)}>
+                                <button
+                                    hidden={isHidden && isHidden.length !== 0 && isHidden[item.id].isHidden}
+                                    onClick={(e) => {
+                                        toggleRolunk(item.id, isHidden, e);
+                                    }}
+                                >
                                     Több...
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -107,7 +127,9 @@ const Rolunk = (props) => {
     return (
         <div className="public_rolunk">
             <div className="item">{renderRolunk()}</div>
-            <div className="leiras">{renderLeiras()}</div>
+            <div className="leiras" id="leiras">
+                {renderLeiras()}
+            </div>
         </div>
     );
 };
