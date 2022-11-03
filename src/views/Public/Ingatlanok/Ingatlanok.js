@@ -216,11 +216,11 @@ const Ingatlanok = (props) => {
         }
     };
 
-    /*     useEffect(() => {
+    useEffect(() => {
         if (loading) {
             scrollToElement('root');
         }
-    }, [loading]); */
+    }, [loading]);
 
     const keres = () => {
         let newKereso = keresoObj;
