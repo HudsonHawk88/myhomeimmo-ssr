@@ -41,6 +41,10 @@
         padding: 10px;
         cursor: pointer;
         width: unset;
+        min-height: 300px;
+        max-height: 300px;
+        /*         max-width: 100%; */
+        font-size: smaller;
         /*     height: minmax(fit-content, 150px); */
 
         /*   @media screen and (min-width: 950px) {
@@ -52,7 +56,16 @@
             // width: calc(50% - 45px);
         } */
 
-        @media screen and (min-width: 720px) {
+        @media screen and (min-width: 720px) and (max-width: 1200px) {
+            min-height: none;
+            max-height: none;
+            min-width: calc(50% - 20px);
+            max-width: calc(50% - 20px);
+        }
+
+        @media screen and (min-width: 1200px) {
+            min-height: none;
+            max-height: none;
             min-width: calc(25% - 20px);
             max-width: calc(25% - 20px);
         }
@@ -72,6 +85,7 @@
         align-items: center;
         justify-content: flex-start;
         max-height: 100%;
+        min-width: 100%;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }
