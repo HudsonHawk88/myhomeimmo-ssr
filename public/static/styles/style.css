@@ -1132,7 +1132,7 @@ html body {
   margin: 10px;
   padding: 10px;
   cursor: pointer;
-  width: unset;
+  width: calc(100% - 20px);
   min-height: 300px;
   max-height: 300px;
   /*         max-width: 100%; */
@@ -1150,6 +1150,7 @@ html body {
   .public_rolunk__item {
     min-height: none;
     max-height: none;
+    font-size: larger;
     min-width: calc(50% - 20px);
     max-width: calc(50% - 20px);
   }
@@ -1158,6 +1159,7 @@ html body {
   .public_rolunk__item {
     min-height: none;
     max-height: none;
+    font-size: larger;
     min-width: calc(25% - 20px);
     max-width: calc(25% - 20px);
   }
