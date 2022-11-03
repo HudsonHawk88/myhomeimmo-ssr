@@ -1145,6 +1145,7 @@ html body {
 @media screen and (min-width: 720px) {
   .public_rolunk__item {
     min-width: calc(25% - 20px);
+    max-width: calc(25% - 20px);
   }
 }
 .public_rolunk__item:hover {
@@ -1160,7 +1161,7 @@ html body {
   justify-content: flex-start;
   max-height: 100%;
   word-wrap: break-word;
-  word-break: break-all;
+  overflow-wrap: break-word;
 }
 .public_rolunk__kep {
   text-align: right;

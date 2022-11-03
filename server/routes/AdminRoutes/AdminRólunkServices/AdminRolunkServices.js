@@ -190,7 +190,7 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
                         if (req.files) {
                             req.files.map((kep) => {
                                 kepek.push({
-                                    src: `${process.env.kapcsolatUrl}/${id}/${kep.filename}`,
+                                    src: `${process.env.rolunkUrl}/${id}/${kep.filename}`,
                                     title: kep.filename,
                                     filename: kep.filename
                                 });
