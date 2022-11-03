@@ -33,7 +33,8 @@ const Rolunk = (props) => {
 
     useEffect(() => {
         init();
-    }, []);
+        document.getElementById(currentId.toString()).scrollIntoView();
+    }, [currentId]);
 
     const toggleRolunk = (id) => {
         let items = isHidden;
@@ -46,6 +47,7 @@ const Rolunk = (props) => {
             }
         });
         setIsHidden(items);
+        console.log(id);
     };
 
     const renderRolunk = () => {
