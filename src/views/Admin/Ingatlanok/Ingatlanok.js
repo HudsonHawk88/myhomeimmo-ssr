@@ -3,6 +3,7 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
 import Services from './Services';
 import IngatlanForm from './IngatlanForm';
+import { hasRole } from '../../../commons/Lib';
 
 const Ingatlanok = (props) => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -139,12 +140,17 @@ const Ingatlanok = (props) => {
                 >
                     <i className="fa fa-facebook-square" />
                 </Button>
-                <Button key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
-                    <i className="fas fa-pencil-alt" />
-                </Button>
-                <Button key={row.id + 3} color="link" onClick={() => handleDeleteClick(row.id)}>
-                    <i className="fas fa-trash" />
-                </Button>
+                {((hasRole(props.user.roles, ['INGATLAN_ADMIN']) && props.user.roles.find((role) => role.value === 'INGATLAN_OSSZ_LEK') === undefined) ||
+                    props.user.email === row.hirdeto.feladoEmail) && (
+                    <>
+                        <Button key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
+                            <i className="fas fa-pencil-alt" />
+                        </Button>
+                        <Button key={row.id + 3} color="link" onClick={() => handleDeleteClick(row.id)}>
+                            <i className="fas fa-trash" />
+                        </Button>
+                    </>
+                )}
             </React.Fragment>
         );
     };

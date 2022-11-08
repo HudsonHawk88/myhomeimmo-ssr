@@ -63,7 +63,7 @@ router.get('/', async (req, res) => {
                         if (!err) {
                             let ressss = result.filter((ing) => {
                                 const ingg = getJSONfromLongtext(ing, 'toBool');
-                                if (ingg.hirdeto.feladoEmail === user.email || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+                                if (ingg.hirdeto.feladoEmail === user.email || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_OSSZ_LEK'])) {
                                     return getJSONfromLongtext(ing, 'toBool');
                                 }
                             });

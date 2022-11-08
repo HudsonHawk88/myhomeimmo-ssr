@@ -200,7 +200,6 @@ const getNumberFromBoolean = (value) => {
 const validateToken = async (token, secret) => {
     try {
         const result = jwt.verify(token, secret);
-
         return {
             name: result.name,
             roles: result.roles,
