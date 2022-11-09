@@ -222,6 +222,55 @@ router.get('/ingatlanokapi', (req, res, next) => {
     });
 });
 
+router.get('/javitas', async (req, res) => {
+    const isExist = await isTableExists('ingatlanok');
+    if (isExist) {
+        const id = req.query.id;
+        const sql = id
+            ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1'`
+            : `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, rogzitIdo FROM ingatlanok;`;
+
+        let result = await UseQuery(sql);
+        let ress = [];
+        ress = result.map((ing) => {
+            ing = getJSONfromLongtext(ing, 'toBool');
+            ing.kepek.map((item) => {
+                item.src = `http://inftechsol.hu:8460/static/images/ingatlanok/${ing.id}/${item.filename}`;
+                return item;
+            });
+            return ing;
+        });
+
+        /*  const hird = {
+            feladoNev: 'Berki Mónika',
+            feladoEmail: 'berkimonika@myhomezala.hu',
+            feladoAvatar: [
+                {
+                    src: 'https://myhomezala.hu/static/images/avatars/7/berkimonika2.png',
+                    title: 'berkimonika.png'
+                }
+            ],
+            feladoTelefon: '+36 20 461 9075'
+        }; */
+
+        ress.forEach((elem) => {
+            /*     if (elem.hirdeto.feladoNev === 'Berki Mónika') { */
+            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}' WHERE id='${elem.id}';`;
+            ingatlanok.query(sql, (errrrr) => {
+                if (!errrrr) {
+                    console.log('JÓ');
+                } else {
+                    console.log('ROSSZ');
+                }
+            });
+            /*     } */
+        });
+        res.send({ msg: 'HELLO' });
+    } else {
+        res.send([]);
+    }
+});
+
 // INGATLANOK END
 
 export default router;
