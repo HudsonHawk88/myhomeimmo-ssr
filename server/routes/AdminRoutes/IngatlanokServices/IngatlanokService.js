@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import SharpMulter from 'sharp-multer';
 import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId, UseQuery } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync } from 'fs';
 import { addIngatlan, editIngatlan } from '../../../schemas/IngatlanSchema.js';
@@ -9,7 +10,7 @@ const ingatlanok = pool;
 
 //TODO: Egyéb (nem publikus) dokumentumok, képek feltöltését megvalósítani!!!
 
-const storage = multer.diskStorage({
+const storage = SharpMulter({
     destination: async function (req, file, cb) {
         let id = await getId(req.headers.id, 'ingatlanok');
         const dir = `${process.env.ingatlankepekdir}/${id}/`;
@@ -19,8 +20,13 @@ const storage = multer.diskStorage({
         }
         cb(null, dir);
     },
+    imageOptions: {
+        fileFormat: 'webp',
+        quality: 80
+    },
     filename: function (req, file, cb) {
-        cb(null, file.originalname); //Appending .jpg
+        const ref = `${file.originalname}.webp`;
+        cb(null, ref); //Appending .jpg
     }
 });
 const upload = multer({ storage: storage });
