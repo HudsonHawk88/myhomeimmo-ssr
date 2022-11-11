@@ -19,7 +19,7 @@ module.exports = {
             if (pathData.chunk.id.toString().includes('react-data-table')) {
                 name = '/js/react-data-table.js';
             } else {
-                name = pathData.chunk.name === 'main' ? '[name].js' : '/static/scripts/[name].js';
+                name = '/static/scripts/[name].js';
             }
             return name;
         },
@@ -28,7 +28,7 @@ module.exports = {
             if (pathData.chunk.id === 'vendors-node_modules_organw_wysiwyg-editor_dist_index_js') {
                 name = '/js/wysiwyg.js';
             } else {
-                name = pathData.chunk.name === 'main' ? '[name].js' : '/static/scripts/[name].js';
+                name = '/static/scripts/[name].js';
             }
             return name;
         }
