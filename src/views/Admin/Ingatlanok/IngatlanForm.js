@@ -269,7 +269,7 @@ const IngatlanForm = (props) => {
             });
         }, []);
 
-        const { getRootProps, getInputProps } = useDropzone({ onDrop });
+        const { getRootProps, getInputProps } = useDropzone({ accept: 'image/*', onDrop });
 
         return (
             <React.Fragment>

@@ -144,9 +144,16 @@ const Ingatlan = (props) => {
 
         if (ingatlanObj && ingatlanObj.kepek) {
             ingatlanObj.kepek.forEach((kep) => {
+                let extIndex = kep.src.lastIndexOf('.');
+                let extension = kep.src.substring(extIndex);
+                let fname = kep.src.substring(0, extIndex);
+                let icon = '';
+                if (kep && kep.src) {
+                    icon = fname + '_icon' + extension;
+                }
                 items.push({
                     original: kep.src,
-                    thumbnail: kep.src,
+                    thumbnail: icon !== '' ? icon : kep.src,
                     originalHeight: '400px',
                     // originalWidth: '100%',
                     // thumbnailHeight: '300px',
@@ -375,14 +382,13 @@ const Ingatlan = (props) => {
                 <div className="ingatlan_adatok">
                     <div className="ingatlan_cim">{ingatlanObj.cim}</div>
                     <div className="galeria">
-                        <Gallery showPlayButton={false} useBrowserFullscreen={true} thumbnailPosition="bottom" items={getKepek()} />
+                        <Gallery showPlayButton={false} lazyLoad useBrowserFullscreen={true} thumbnailPosition="bottom" items={getKepek()} />
                     </div>
                     <div className="alapadatok">
                         <strong>Ár: {arFormatter(ingatlanObj.ar) + ' ' + ingatlanObj.penznem}</strong>&nbsp;&nbsp;
                         {ingatlanObj.kaucio && ingatlanObj.kaucio !== '' && (
                             <>
                                 {' '}
-                                {console.log(ingatlanObj.kaucio === 'undefined')}
                                 <strong>Kaució: {arFormatter(ingatlanObj.kaucio) + ' ' + ingatlanObj.penznem}</strong>
                             </>
                         )}

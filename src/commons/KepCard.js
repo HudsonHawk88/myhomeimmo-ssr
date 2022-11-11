@@ -48,11 +48,24 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
             float: 'left'
         };
 
+        const getSrc = () => {
+            let extIndex = src.lastIndexOf('.');
+            let extension = src.substring(extIndex);
+            let fname = src.substring(0, extIndex);
+            const isIcon = src.includes('__icon');
+            let icon = src;
+            if (isIcon) {
+                icon = fname + '_icon' + extension;
+            }
+
+            return icon;
+        };
+
         return (
             <Card style={cardStyle} className={nev} key={id}>
                 <CardTitle>{nev}</CardTitle>
                 <CardBody>
-                    <img style={imageStyle} src={src || preview} alt={nev} />
+                    <img style={imageStyle} src={getSrc() || preview} alt={nev} />
                 </CardBody>
                 <CardFooter style={{ textAlign: 'center' }}>
                     <Button hidden={!isCover} outline={isCover ? false : true} color="primary">

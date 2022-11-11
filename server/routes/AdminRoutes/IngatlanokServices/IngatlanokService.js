@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import sharp from 'sharp';
 import SharpMulter from 'sharp-multer';
 import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId, UseQuery } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync } from 'fs';
@@ -10,29 +11,43 @@ const ingatlanok = pool;
 
 //TODO: Egyéb (nem publikus) dokumentumok, képek feltöltését megvalósítani!!!
 
-const storage = SharpMulter({
+const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         let id = await getId(req.headers.id, 'ingatlanok');
-        const dir = `${process.env.ingatlankepekdir}/${id}/`;
+        const dir = `${process.env.ingatlankepekdir}/${id}`;
         let exist = existsSync(dir);
+
         if (!exist) {
             mkdirSync(dir);
         }
+        /*  console.log(req.file); */
+        /*  const fname = file.filename.split('.').slice(0, -1).join('.'); */
+        /*     sharp(file).resize(250, 200).toFile(`${process.env.ingatlankepekdir}/${id}/${fname}_icon.jpg`);
+        sharp(file).jpeg({ quality: 80 }).resize(2500, 1500).toFile(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`); */
         cb(null, dir);
     },
     /*  imageOptions: {
         fileFormat: 'webp',
         quality: 80
     }, */
-    imageOptions: {
+    /* imageOptions: {
         fileFormat: 'jpg',
-        quality: 60
-    },
+        quality: 60,
+        resize: {
+            width: 2500,
+            height: 1500,
+            resizeMode: 'inside'
+        }
+    } */
     filename: function (req, file, cb) {
-        const ref = `${file.originalname}.webp`;
+        let extIndex = file.originalname.lastIndexOf('.');
+        let fname = file.originalname.substring(0, extIndex);
+        const ref = `${fname}.jpg`;
+
         cb(null, ref); //Appending .jpg
     }
 });
+
 const upload = multer({ storage: storage });
 
 // INGATLANOK START
@@ -135,6 +150,7 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                         if (!errr) {
                             ingatlanok.query(createIngatlanokTriggerSql, async (eee) => {
                                 if (!eee) {
+                                    /*  uploadIco.array('kepek'); */
                                     return addIngatlan(req, res);
                                 } else {
                                     console.log('NOK');

@@ -1,8 +1,10 @@
-import { getFID } from 'web-vitals';
+import fs from 'fs';
+import sharp from 'sharp';
 import { pool, UseQuery, hasRole, getJSONfromLongtext, getId } from '../common/QueryHelpers.js';
 
 const addIngatlan = async (req, res) => {
     const felvitelObj = getJSONfromLongtext(req.body, 'toNumber');
+    console.log(req.file);
     /*     felvitelObj.isKiemelt = getNumberFromBoolean(felvitelObj.isKiemelt);
     felvitelObj.isErkely = getNumberFromBoolean(felvitelObj.isErkely);
     felvitelObj.isLift = getNumberFromBoolean(felvitelObj.isLift);
@@ -28,13 +30,34 @@ const addIngatlan = async (req, res) => {
         if (!error) {
             let kepek = [];
             if (req.files) {
-                req.files.map((kep, index) => {
+                req.files.forEach((kep, index) => {
                     kepek.push({
                         filename: kep.filename,
                         isCover: index.toString() === '0' ? true : false,
                         src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
                         title: kep.filename
                     });
+                    let extIndex = kep.filename.lastIndexOf('.');
+                    let fname = kep.filename.substring(0, extIndex);
+                    sharp(kep.path)
+                        .jpeg({ quality: 80 })
+                        .resize({ width: 2500, height: 1500, fit: 'inside' })
+                        .toBuffer((err, buff) => {
+                            if (!err) {
+                                fs.writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`, buff);
+                            } else {
+                                console.log(err);
+                            }
+                        });
+                    sharp(kep.path)
+                        .resize({ width: 250, height: 200, fit: 'inside' })
+                        .toBuffer((err, buff) => {
+                            if (!err) {
+                                fs.writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}_icon.jpg`, buff);
+                            } else {
+                                console.log(err);
+                            }
+                        });
                 });
             }
 

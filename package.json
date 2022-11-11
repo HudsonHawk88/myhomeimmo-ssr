@@ -70,6 +70,7 @@
         "bootstrap": "5.1.3",
         "concurrently": "7.3.0",
         "esbuild": "0.15.6",
+        "get-stream": "^6.0.1",
         "html-webpack-plugin": "^5.5.0",
         "jest-worker": "29.0.2",
         "mini-css-extract-plugin": "2.6.0",
@@ -86,8 +87,8 @@
     "scripts": {
         "test": "react scripts test",
         "copyfiles": "cp -r build/public/static/images public/static/ && rm -rf build && mkdir build && cp -r public build && cp ./server/server.config.js ./build && prettier --write src/",
-        "webpack:client": "webpack --env development --config webpack.client.js --watch",
-        "webpack:server": "webpack --env development --config webpack.server.js --watch",
+        "webpack:client": "webpack --env development --mode development --config webpack.client.js --watch",
+        "webpack:server": "webpack --env development --mode development --config webpack.server.js --watch",
         "webpack:run": "nodemon --watch build --exec node build/bundle.js",
         "build:client": "npm run copyfiles && webpack --mode production --env production --config webpack.client.js",
         "build:server": "webpack --env production --mode production --config webpack.server.js",
