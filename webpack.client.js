@@ -1,5 +1,6 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 const target = isProduction ? 'web' : 'browserslist';
 require('dotenv').config();
@@ -10,10 +11,34 @@ module.exports = {
     mode: isProduction ? 'production' : 'development',
     entry: './src/index.js',
     output: {
-        path: path.resolve(__dirname, 'build/public/static'),
-        filename: 'client_bundle.js'
+        path: path.resolve(__dirname, 'build/public'),
+        /*      filename: '[name].js' */
+
+        filename: (pathData) => {
+            let name = '';
+            if (pathData.chunk.id.toString().includes('react-data-table')) {
+                name = '/js/react-data-table.js';
+            } else {
+                name = pathData.chunk.name === 'main' ? '[name].js' : '/static/scripts/[name].js';
+            }
+            return name;
+        },
+        chunkFilename: (pathData) => {
+            let name = '';
+            if (pathData.chunk.id === 'vendors-node_modules_organw_wysiwyg-editor_dist_index_js') {
+                name = '/js/wysiwyg.js';
+            } else {
+                name = pathData.chunk.name === 'main' ? '[name].js' : '/static/scripts/[name].js';
+            }
+            return name;
+        }
         /* publicPath: '/build/public' */
         /* publicPath: '/' */
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all'
+        }
     },
     plugins: [
         new ProvidePlugin({
@@ -26,6 +51,10 @@ module.exports = {
             reachaptchaApiKey: process.env.REACT_APP_recaptchakey,
             reachaptchaSecretKey: process.env.REACT_APP_recaptchasecret,
             shareUrl: process.env.REACT_APP_url
+        }),
+        new HtmlWebpackPlugin({
+            template: './public/index.html',
+            inject: true
         })
         /*         new LoadablePlugin() */
     ],
@@ -75,7 +104,12 @@ module.exports = {
         }  */
     },
     ignoreWarnings: [(warning) => true],
-    target: target,
+    target: 'web', // in order too ignore built-in modules like path, fs, etc.
+    /*     externals: [
+        webpackNodeExternals({
+            allowlist: ['react', 'react-dom', 'react-router-dom']
+        })
+    ],  */ // in order to ignore all modules in node_modules folder
     module: {
         rules: [
             {

@@ -20,9 +20,13 @@ const storage = SharpMulter({
         }
         cb(null, dir);
     },
-    imageOptions: {
+    /*  imageOptions: {
         fileFormat: 'webp',
         quality: 80
+    }, */
+    imageOptions: {
+        fileFormat: 'jpg',
+        quality: 60
     },
     filename: function (req, file, cb) {
         const ref = `${file.originalname}.webp`;

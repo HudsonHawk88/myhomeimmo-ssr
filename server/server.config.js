@@ -1,9 +1,11 @@
+const path = require('path');
+
 module.exports = {
     max_memory_restart: '2048M',
     apps: [
         {
             name: 'myhome',
-            script: './bundle.js',
+            script: path.resolve(__dirname, 'bundle.js'),
             instances: 'max',
             exec_mode: 'cluster'
         }
