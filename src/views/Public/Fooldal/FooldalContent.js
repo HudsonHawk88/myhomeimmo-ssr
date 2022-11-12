@@ -231,10 +231,14 @@ const FooldalContent = (props) => {
                                 {ingat.kepek && ingat.kepek.length !== 0 ? (
                                     keplista.map((kep) => {
                                         if (kep.isCover) {
+                                            let extIndex = kep.src.lastIndexOf('.');
+                                            let extension = kep.src.substring(extIndex);
+                                            let fname = kep.src.substring(0, extIndex);
+                                            let icon = fname + '_icon' + extension;
                                             return (
                                                 <img
-                                                    key="kep.src"
-                                                    src={kep.src}
+                                                    key={kep.title}
+                                                    src={icon}
                                                     alt={kep.title}
                                                     // style={imageStyle}
                                                 />

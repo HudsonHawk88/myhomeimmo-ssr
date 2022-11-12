@@ -147,13 +147,10 @@ const Ingatlan = (props) => {
                 let extIndex = kep.src.lastIndexOf('.');
                 let extension = kep.src.substring(extIndex);
                 let fname = kep.src.substring(0, extIndex);
-                let icon = '';
-                if (kep && kep.src) {
-                    icon = fname + '_icon' + extension;
-                }
+                let icon = fname + '_icon' + extension;
                 items.push({
                     original: kep.src,
-                    thumbnail: icon !== '' ? icon : kep.src,
+                    thumbnail: icon,
                     originalHeight: '400px',
                     // originalWidth: '100%',
                     // thumbnailHeight: '300px',
