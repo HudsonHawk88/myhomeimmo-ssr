@@ -235,8 +235,8 @@ router.get('/javitas', async (req, res) => {
         ress = result.map((ing) => {
             ing = getJSONfromLongtext(ing, 'toBool');
             ing.kepek.map((item) => {
-                let extIndex = file.originalname.lastIndexOf('.');
-                let fname = file.originalname.substring(0, extIndex);
+                let extIndex = item.filename.lastIndexOf('.');
+                let fname = item.filename.substring(0, extIndex);
                 const ref = `${fname}.jpg`;
 
                 item.src = `http://inftechsol.hu:8460/static/images/ingatlanok/${ing.id}/${ref}`;
