@@ -238,8 +238,7 @@ router.get('/javitas', async (req, res) => {
                 let extIndex = item.filename.lastIndexOf('.');
                 let fname = item.filename.substring(0, extIndex);
                 const ref = `${fname}.jpg`;
-
-                item.src = `http://inftechsol.hu:8460/static/images/ingatlanok/${ing.id}/${ref}`;
+                item.src = `${process.env.ingatlankepekUrl}/${ing.id}/${ref}`;
                 return item;
             });
             return ing;
