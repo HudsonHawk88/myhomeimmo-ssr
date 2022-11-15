@@ -122,8 +122,7 @@ module.exports = {
                         options: {
                             presets: ['@babel/preset-react', '@babel/preset-env']
                         }
-                    },
-                    'source-map-loader'
+                    }
                 ]
             },
             {
