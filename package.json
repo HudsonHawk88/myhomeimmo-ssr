@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@babel/register": "7.17.7",
         "@inftechsol/react-data-table": "^0.6.9",
         "@inftechsol/reactstrap-form-validation": "^0.2.5",
         "@loadable/component": "5.15.2",
@@ -63,7 +64,6 @@
         "@babel/core": "7.17.8",
         "@babel/preset-env": "7.16.11",
         "@babel/preset-react": "7.16.7",
-        "@babel/register": "7.17.7",
         "@babel/runtime": "7.16.3",
         "@loadable/babel-plugin": "5.13.2",
         "@loadable/webpack-plugin": "5.15.2",
