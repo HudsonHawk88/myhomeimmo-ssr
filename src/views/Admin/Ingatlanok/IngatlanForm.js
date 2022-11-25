@@ -247,11 +247,16 @@ const IngatlanForm = (props) => {
         }
     }, [user, ertekesito, formType]);
 
+    const getImageId = (acceptedFiles) => {
+        let firstId = 1;
+    };
+
     const MyDropzone = () => {
         const onDrop = useCallback((acceptedFiles) => {
-            const kepek = acceptedFiles.map((file) => {
+            const kepek = acceptedFiles.map((file, index) => {
                 // Do whatever you want with the file contents
                 let obj = {
+                    id: index,
                     filename: file.name,
                     title: file.name,
                     isCover: false,

@@ -45,11 +45,15 @@ const addIngatlan = async (req, res) => {
                         .toBuffer((err, buff) => {
                             if (!err) {
                                 fs.writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`, buff);
+                                // TODO: megnézni, hogy jó-e a javítás...
+                                sharp(buff)
+                                    .toFile(`${process.env.ingatlankepekdir}/${id}/${fname}_icon.jpg`)
+                                    .catch((err) => console.log(err));
                             } else {
                                 console.log(err);
                             }
                         });
-                    sharp(kep.path)
+                    /* sharp(kep.path)
                         .resize({ width: 250, height: 200, fit: 'inside' })
                         .toBuffer((err, buff) => {
                             if (!err) {
@@ -57,7 +61,7 @@ const addIngatlan = async (req, res) => {
                             } else {
                                 console.log(err);
                             }
-                        });
+                        }); */
                 });
             }
 
