@@ -241,10 +241,19 @@ router.get('/javitas', async (req, res) => {
                 item.src = `${process.env.ingatlankepekUrl}/${ing.id}/${ref}`;
                 return item;
             });
+
+            let newHird = ing.hirdeto;
+            newHird.feladoAvatar.map((avatar) => {
+                let newSrc = avatar.src.replace('http://inftechsol.hu:8460', 'http://teszt.myhomezala.hu');
+                avatar.src = newSrc;
+            });
+
+            ing.hirdeto = newHird;
+
             return ing;
         });
 
-        /*  const hird = {
+        /* const hird = {
             feladoNev: 'Berki Mónika',
             feladoEmail: 'berkimonika@myhomezala.hu',
             feladoAvatar: [
@@ -258,7 +267,7 @@ router.get('/javitas', async (req, res) => {
 
         ress.forEach((elem) => {
             /*     if (elem.hirdeto.feladoNev === 'Berki Mónika') { */
-            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}' WHERE id='${elem.id}';`;
+            const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}', hirdeto='${JSON.stringify(elem.hirdeto)}' WHERE id='${elem.id}';`;
             ingatlanok.query(sql, (errrrr) => {
                 if (!errrrr) {
                     console.log('JÓ');
