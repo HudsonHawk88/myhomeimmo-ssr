@@ -1,11 +1,15 @@
 {
     "mailconf": {
+        "pool": true,
         "host": "mail.myhomezala.hu",
         "port": 465,
         "secure": true,
         "auth": {
             "user": "info@myhomezala.hu",
-            "pass": "LegjobbaK03"
+            "pass": "LegjobbaK00"
+        },
+        "tls": {
+            "rejectUnauthorized": false
         }
     }
 }
