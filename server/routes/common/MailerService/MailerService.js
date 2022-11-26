@@ -32,8 +32,8 @@ router.post('/', (req, res) => {
 });
 
 router.post('/ingatlanerd', (req, res) => {
-    const emailObj = JSON.parse(JSON.stringify(req.body));
-
+    const emailObj = req.body;
+    console.log(emailObj, emailObj.nev);
     transporter.sendMail(
         {
             from: `"${emailObj.nev}" <${emailObj.email}>`, // sender address
