@@ -2,7 +2,7 @@
     "mailconf": {
         "host": "mail.myhomezala.hu",
         "port": 465,
-        "secure": true,
+        "secure": false,
         "auth": {
             "user": "info@myhomezala.hu",
             "pass": "LegjobbaK00"
