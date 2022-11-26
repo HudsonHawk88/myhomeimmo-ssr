@@ -36,8 +36,12 @@ router.post('/ingatlanerd', (req, res) => {
     console.log(emailObj, emailObj.nev);
     transporter.sendMail(
         {
-            from: `"${emailObj.nev}" <${emailObj.email}>`, // sender address
+            from: `${emailObj.email}`, // sender address
             to: `${emailObj.toEmail}`, // list of receivers
+            envelope: {
+                from: `"${emailObj.nev}" <${emailObj.email}>`, // used as MAIL FROM: address for SMTP
+                to: `${emailObj.toEmail}` // used as RCPT TO: address for SMTP
+            },
             subject: `Érdeklődés a ${emailObj.refId} referenciaszámú ingatlanról`, // Subject line
             html: `<b>Kedves Berki Mónika!</b><br><br>
     Az én nevem: ${emailObj.nev}.<br>
