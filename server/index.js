@@ -144,7 +144,7 @@ app.use(['/api/contactmail'], mailerService);
 // OPTIONS
 app.use(['/api/options'], OptionServices);
 // RECAPTCHA
-app.use(['recaptcha'], RecaptchaServices);
+app.use(['/api/recaptcha'], RecaptchaServices);
 
 /* app.use('*', actionIndex); */
 app.get('*', actionIndex);
