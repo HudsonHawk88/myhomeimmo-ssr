@@ -48,7 +48,7 @@ router.post('/ingatlanerd', (req, res) => {
         from: `${emailObj.nev} <${emailObj.email}>`, // sender address
         to: `${emailObj.toEmail}`, // list of receivers
         subject: `Érdeklődés a ${emailObj.refId} referenciaszámú ingatlanról`, // Subject line
-        html: `<b>Kedves Berki Mónika!</b><br><br>Az én nevem: ${emailObj.nev}.<br>Telefonszámom: ${emailObj.telefon}.<br><br>Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>${emailObj.uzenet}<br><br>Tisztelettel:<br>${emailObj.nev}<br>` // html body
+        html: `<b>Kedves ${emailObj.feladoNev}!</b><br><br>Az én nevem: ${emailObj.nev}.<br>Telefonszámom: ${emailObj.telefon}.<br><br>Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>${emailObj.uzenet}<br><br>Tisztelettel:<br>${emailObj.nev}<br>` // html body
     };
     console.log(message);
     transporter.sendMail(message, (err, info) => {

@@ -299,6 +299,7 @@ const Ingatlan = (props) => {
         let kuldObj = emailObj;
         console.log(ingatlanObj.hirdeto);
         kuldObj.toEmail = ingatlanObj.hirdeto.feladoEmail;
+        kuldObj.feladoNev = ingatlanObj.hirdeto.feladoNev;
         // kuldObj.toEmail = 'info@inftechsol.hu';
         kuldObj.refId = ingatlanObj.refid;
 
