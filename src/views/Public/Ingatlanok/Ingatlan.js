@@ -302,14 +302,8 @@ const Ingatlan = (props) => {
         kuldObj.refId = ingatlanObj.refid;
 
         const token = await recaptchaRef.current.executeAsync();
-        const secret = process.env.reachaptchaSecretKey;
 
-        const rechaptchaObj = {
-            secret: secret,
-            response: token
-        };
-
-        Services.checkRechaptcha(rechaptchaObj).then((res) => {
+        Services.checkRechaptcha(token).then((res) => {
             if (res.success) {
                 Services.sendErdeklodes(kuldObj).then((res) => {
                     if (!res.err) {

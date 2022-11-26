@@ -200,13 +200,13 @@ export default class Services {
 
     // RECHAPTCHA START
 
-    static checkRechaptcha = (keys) => {
+    static checkRechaptcha = (token) => {
         let result = Microservices.fetchApi(rechaptchaUrl, {
             method: 'POST',
             mode: 'cors',
             // cache: "no-cache",
             headers: {
-                response: keys.response
+                response: token
             }
         });
         return result;
