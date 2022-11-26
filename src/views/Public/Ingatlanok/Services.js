@@ -5,7 +5,7 @@ const ingatlanUrl = location.origin + '/api/ingatlan';
 const keresIngatlanokUrl = location.origin + '/api/ingatlan/keres';
 const telepulesekUrl = location.origin + '/api/telepulesek';
 const emailUrl = location.origin + '/api/contactmail/ingatlanerd';
-const rechaptchaUrl = 'https://www.google.com/recaptcha/siteverify?';
+const rechaptchaUrl = 'https://www.google.com/recaptcha/api/siteverify?';
 const optionsUrl = location.origin + '/api/options';
 
 export default class Services {
