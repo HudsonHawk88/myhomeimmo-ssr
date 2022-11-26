@@ -297,7 +297,7 @@ const Ingatlan = (props) => {
     const sendMail = async (e) => {
         e.preventDefault();
         let kuldObj = emailObj;
-        kuldObj.toEmail = ingatlanObj.rogzitoEmail;
+        kuldObj.toEmail = ingatlanObj.hirdeto.feladoEmail;
         // kuldObj.toEmail = 'info@inftechsol.hu';
         kuldObj.refId = ingatlanObj.refid;
 
