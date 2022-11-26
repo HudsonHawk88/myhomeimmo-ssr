@@ -43,22 +43,21 @@ router.post('/ingatlanerd', (req, res) => {
             console.log('Server is ready to take our messages');
         }
     });
-    transporter.sendMail(
-        {
-            from: `${emailObj.nev} <${emailObj.email}>`, // sender address
-            to: `${emailObj.toEmail}`, // list of receivers
-            subject: `Érdeklődés a ${emailObj.refId} referenciaszámú ingatlanról`, // Subject line
-            html: `<b>Kedves Berki Mónika!</b><br><br>Az én nevem: ${emailObj.nev}.<br>Telefonszámom: ${emailObj.telefon}.<br><br>
-            Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>${emailObj.uzenet}<br><br>Tisztelettel:<br>${emailObj.nev}<br>` // html body
-        },
-        (err, info) => {
-            if (!err) {
-                res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
-            } else {
-                res.status(500).send({ error: err, info: info, err: 'Email küldése sikertelen!' });
-            }
+
+    const message = {
+        from: `${emailObj.nev} <${emailObj.email}>`, // sender address
+        to: `${emailObj.toEmail}`, // list of receivers
+        subject: `Érdeklődés a ${emailObj.refId} referenciaszámú ingatlanról`, // Subject line
+        html: `<b>Kedves Berki Mónika!</b><br><br>Az én nevem: ${emailObj.nev}.<br>Telefonszámom: ${emailObj.telefon}.<br><br>Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>${emailObj.uzenet}<br><br>Tisztelettel:<br>${emailObj.nev}<br>` // html body
+    };
+    console.log(message);
+    transporter.sendMail(message, (err, info) => {
+        if (!err) {
+            res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
+        } else {
+            res.status(500).send({ error: err, info: info, err: 'Email küldése sikertelen!' });
         }
-    );
+    });
 });
 
 router.post('/jobApply', (req, res) => {
