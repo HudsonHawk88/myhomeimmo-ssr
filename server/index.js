@@ -32,7 +32,8 @@ import publicMyArt from './routes/PublicRoutes/MyArt/publicMyArtServices.js';
 import orszagokService from './routes/common/OrszagokService/OrszagokService.js';
 import telepulesekService from './routes/common/TelepulesekService/TelepulesekService.js';
 import mailerService from './routes/common/MailerService/MailerService.js';
-import OptionServices from './routes/common/OptionsService/OptionsServices';
+import OptionServices from './routes/common/OptionsService/OptionsServices.js';
+import RecaptchaServices from './routes/common/Recaptcha/RecaptchaService.js';
 import serverRender from './common/serverRender';
 //const server = https.createServer(
 //  {
@@ -142,6 +143,8 @@ app.use(['/api/telepulesek'], telepulesekService);
 app.use(['/api/contactmail'], mailerService);
 // OPTIONS
 app.use(['/api/options'], OptionServices);
+// RECAPTCHA
+app.use(['recaptcha'], RecaptchaServices);
 
 /* app.use('*', actionIndex); */
 app.get('*', actionIndex);

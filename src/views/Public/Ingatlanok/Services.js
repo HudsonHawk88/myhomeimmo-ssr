@@ -5,7 +5,8 @@ const ingatlanUrl = location.origin + '/api/ingatlan';
 const keresIngatlanokUrl = location.origin + '/api/ingatlan/keres';
 const telepulesekUrl = location.origin + '/api/telepulesek';
 const emailUrl = location.origin + '/api/contactmail/ingatlanerd';
-const rechaptchaUrl = 'https://www.google.com/recaptcha/api/siteverify?';
+const rechaptchaUrl = location.origin + '/api/recaptcha';
+/* const rechaptchaUrl = 'https://www.google.com/recaptcha/api/siteverify?'; */
 const optionsUrl = location.origin + '/api/options';
 
 export default class Services {
@@ -205,7 +206,7 @@ export default class Services {
             mode: 'cors',
             // cache: "no-cache",
             headers: {
-                'Access-Control-Allow-Origin': '*'
+                response: keys.response
             }
         });
         return result;
