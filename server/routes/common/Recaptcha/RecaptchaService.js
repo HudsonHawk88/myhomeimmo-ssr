@@ -11,8 +11,8 @@ router.post('/', (req, res) => {
 
     fetch(url, {
         method: 'POST'
-    }).then((value) => {
-        console.log(value);
+    }).then((response) => {
+        console.log(response.body);
         if (value.success) {
             res.status(200).send({ success: true });
         } else {
