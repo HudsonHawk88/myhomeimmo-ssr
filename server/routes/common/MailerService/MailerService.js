@@ -36,7 +36,7 @@ router.post('/ingatlanerd', (req, res) => {
 
     transporter.sendMail(
         {
-            from: `${emailObj.nev} <${emailObj.email}>`, // sender address
+            from: `"${emailObj.nev}" <${emailObj.email}>`, // sender address
             to: `${emailObj.toEmail}`, // list of receivers
             subject: `Érdeklődés a ${emailObj.refId} referenciaszámú ingatlanról`, // Subject line
             html: `<b>Kedves Berki Mónika!</b><br><br>
