@@ -6,7 +6,7 @@
         "secure": true,
         "auth": {
             "user": "info@myhomezala.hu",
-            "pass": "LegjobbaK01"
+            "pass": "LegjobbaK03"
         },
         "tls": {
             "rejectUnauthorized": false
