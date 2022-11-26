@@ -45,26 +45,17 @@ router.post('/ingatlanerd', (req, res) => {
     });
     transporter.sendMail(
         {
-            from: `${emailObj.email}`, // sender address
+            from: `${emailObj.nev} <${emailObj.email}>`, // sender address
             to: `${emailObj.toEmail}`, // list of receivers
-            envelope: {
-                from: `"${emailObj.nev}" <${emailObj.email}>`, // used as MAIL FROM: address for SMTP
-                to: `${emailObj.toEmail}` // used as RCPT TO: address for SMTP
-            },
             subject: `Érdeklődés a ${emailObj.refId} referenciaszámú ingatlanról`, // Subject line
-            html: `<b>Kedves Berki Mónika!</b><br><br>
-            Az én nevem: ${emailObj.nev}.<br>
-            Telefonszámom: ${emailObj.telefon}.<br><br>
-            Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>
-            ${emailObj.uzenet}<br><br>
-            Tisztelettel:<br>
-            ${emailObj.nev}<br>` // html body
+            html: `<b>Kedves Berki Mónika!</b><br><br>Az én nevem: ${emailObj.nev}.<br>Telefonszámom: ${emailObj.telefon}.<br><br>
+            Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>${emailObj.uzenet}<br><br>Tisztelettel:<br>${emailObj.nev}<br>` // html body
         },
-        (err) => {
+        (err, info) => {
             if (!err) {
                 res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
             } else {
-                res.status(500).send({ error: err, err: 'Email küldése sikertelen!' });
+                res.status(500).send({ error: err, info: info, err: 'Email küldése sikertelen!' });
             }
         }
     );
