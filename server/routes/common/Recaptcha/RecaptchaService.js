@@ -13,7 +13,7 @@ router.post('/', (req, res) => {
         method: 'POST'
     }).then((response) => {
         console.log(response.body);
-        if (value.success) {
+        if (response.body.success) {
             res.status(200).send({ success: true });
         } else {
             res.status(500).send({ success: false });
