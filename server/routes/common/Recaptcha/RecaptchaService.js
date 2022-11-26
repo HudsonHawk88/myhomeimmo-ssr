@@ -6,8 +6,7 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
     const { response } = req.headers;
-    const secret = process.env.reachaptchaSecretKey;
-    console.log(response, secret);
+    const secret = process.env.REACT_APP_recaptchasecret;
     const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${response}`;
 
     fetch(url, {
