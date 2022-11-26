@@ -201,12 +201,12 @@ export default class Services {
 
     static checkRechaptcha = (keys) => {
         let result = Microservices.fetchApi(rechaptchaUrl + new URLSearchParams(keys), {
-            method: 'POST'
-            // mode: "cors",
+            method: 'POST',
+            mode: 'cors',
             // cache: "no-cache",
-            // headers: {
-            //   "Content-Type": "application/json"
-            // },
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            }
         });
         return result;
     };
