@@ -8,6 +8,14 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
     const emailObj = JSON.parse(JSON.stringify(req.body));
+    // verify connection configuration
+    transporter.verify(function (error, success) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Server is ready to take our messages');
+        }
+    });
     transporter.sendMail(
         {
             from: `${emailObj.nev} <${emailObj.email}>`, // sender address
@@ -44,13 +52,12 @@ router.post('/ingatlanerd', (req, res) => {
             },
             subject: `Érdeklődés a ${emailObj.refId} referenciaszámú ingatlanról`, // Subject line
             html: `<b>Kedves Berki Mónika!</b><br><br>
-    Az én nevem: ${emailObj.nev}.<br>
-    Telefonszámom: ${emailObj.telefon}.<br><br>
-    Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>
-    ${emailObj.uzenet}<br><br>
-    Tisztelettel:<br>
-    ${emailObj.nev}<br>
-    ` // html body
+            Az én nevem: ${emailObj.nev}.<br>
+            Telefonszámom: ${emailObj.telefon}.<br><br>
+            Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>
+            ${emailObj.uzenet}<br><br>
+            Tisztelettel:<br>
+            ${emailObj.nev}<br>` // html body
         },
         (err) => {
             if (!err) {
