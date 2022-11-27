@@ -311,6 +311,7 @@ const Ingatlan = (props) => {
                     if (!res.err) {
                         addNotification('success', res.msg);
                         setEmailObj(defaultEmailObj);
+                        setElfogadAdatkezeles(false);
                     } else {
                         addNotification('error', res.err);
                     }
