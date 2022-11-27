@@ -12,15 +12,14 @@ router.post('/', (req, res) => {
     transporter.sendMail(
         {
             from: `${emailObj.nev} <${emailObj.email}>`, // sender address
-            to: 'berkimonika@myhomezala.hu', // list of receivers
+            to: process.env.foEmail, // list of receivers
             subject: `${emailObj.statusz + ' ingatlan'}`, // Subject line
             html: `<b>Kedves Berki Mónika!</b><br><br>
             Az én nevem: ${emailObj.nev}.<br>
             Telefonszámom: ${emailObj.telefon}.<br><br>
             ${emailObj.statusz} ingatlanom van! Kérem vegye fel velem a kapcsolatot!<br><br>
             Tisztelettel:<br>
-            ${emailObj.nev}<br>
-            ` // html body
+            ${emailObj.nev}<br>` // html body
         },
         (err) => {
             if (!err) {
@@ -34,21 +33,17 @@ router.post('/', (req, res) => {
 
 router.post('/ingatlanerd', (req, res) => {
     const emailObj = req.body;
-    console.log(emailObj, emailObj.nev);
-    // verify connection configuration
-    transporter.verify(function (error, success) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Server is ready to take our messages');
-        }
-    });
 
     const message = {
         from: `${emailObj.nev} <${emailObj.email}>`, // sender address
         to: `${emailObj.toEmail}`, // list of receivers
         subject: `Érdeklődés a ${emailObj.refId} referenciaszámú ingatlanról`, // Subject line
-        html: `<b>Kedves ${emailObj.feladoNev}!</b><br><br>Az én nevem: ${emailObj.nev}.<br>Telefonszámom: ${emailObj.telefon}.<br><br>Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>${emailObj.uzenet}<br><br>Tisztelettel:<br>${emailObj.nev}<br>` // html body
+        html: `<b>Kedves ${emailObj.feladoNev}!</b><br><br>
+        Az én nevem: ${emailObj.nev}.<br>
+        Telefonszámom: ${emailObj.telefon}.<br><br>
+        Az alábbi kérdésem lenne az ingatlannal kapcsolatban:<br><br>
+        ${emailObj.uzenet}<br><br>
+        Tisztelettel:<br>${emailObj.nev}<br>` // html body
     };
     console.log(message);
     transporter.sendMail(message, (err, info) => {
@@ -66,17 +61,15 @@ router.post('/jobApply', (req, res) => {
         transporter.sendMail(
             {
                 from: `${emailObj.nev} <${emailObj.email}>`, // sender address
-                // to: "berkimonika@myhomezala.hu", // list of receivers
-                to: 'szaboivett22@gmail.com', // list of receivers
+                to: process.env.foEmail, // list of receivers
                 subject: `Jelentkezés állásra`, // Subject line
                 attachments: [{ filename: emailObj.oneletrajz.filename, content: emailObj.oneletrajz.data.split('base64,')[1], encoding: 'base64' }],
-                html: `<b>Kedves Berki Mónika!</b><br><br>
-      Az én nevem: ${emailObj.nev}.<br>
-      Telefonszámom: ${emailObj.telefon}.<br><br>
-      Ezúton jelentkeznék az Ön által meghirdetett állásra. Önéletrajzomat csatoltam.<br><br>
-      Tisztelettel:<br>
-      ${emailObj.nev}<br>
-      ` // html body
+                html: `<b>Kedves ${process.env.foNev}!</b><br><br>
+                Az én nevem: ${emailObj.nev}.<br>
+                Telefonszámom: ${emailObj.telefon}.<br><br>
+                Ezúton jelentkeznék az Ön által meghirdetett állásra. Önéletrajzomat csatoltam.<br><br>
+                Tisztelettel:<br>
+                ${emailObj.nev}<br>` // html body
             },
             (err) => {
                 if (!err) {
@@ -90,15 +83,14 @@ router.post('/jobApply', (req, res) => {
         transporter.sendMail(
             {
                 from: `${emailObj.nev} <${emailObj.email}>`, // sender address
-                to: 'berkimonika@myhomezala.hu', // list of receivers
+                to: process.env.foEmail, // list of receivers
                 subject: `Jelentkezés állásra`, // Subject line
-                html: `<b>Kedves Berki Mónika!</b><br><br>
-      Az én nevem: ${emailObj.nev}.<br>
-      Telefonszámom: ${emailObj.telefon}.<br><br>
-      Ezúton jelentkeznék az Ön által meghirdetett állásra. Önéletrajzomat nem csatoltam.<br><br>
-      Tisztelettel:<br>
-      ${emailObj.nev}<br>
-      ` // html body
+                html: `<b>Kedves ${process.env.foNev}!</b><br><br>
+                Az én nevem: ${emailObj.nev}.<br>
+                Telefonszámom: ${emailObj.telefon}.<br><br>
+                Ezúton jelentkeznék az Ön által meghirdetett állásra. Önéletrajzomat nem csatoltam.<br><br>
+                Tisztelettel:<br>
+                ${emailObj.nev}<br>` // html body
             },
             (err) => {
                 if (!err) {
@@ -116,17 +108,15 @@ router.post('/sendfromcontact', (req, res) => {
     transporter.sendMail(
         {
             from: `${emailObj.nev} <${emailObj.email}>`, // sender address
-            to: `${emailObj.toEmail}`, // list of receivers
-            // to: `${emailObj.toEmail}`, // list of receivers
+            to: process.env.foEmail, // list of receivers
             subject: `Érdeklődés`, // Subject line
-            html: `<b>Kedves Berki Mónika!</b><br><br>
-    Az én nevem: ${emailObj.nev}.<br>
-    Telefonszámom: ${emailObj.telefon}.<br><br>
-    A megkeresésem oka: ${emailObj.ok}:<br><br>
-    ${emailObj.uzenet}<br><br>
-    Tisztelettel:<br>
-    ${emailObj.nev}<br>
-    ` // html body
+            html: `<b>Kedves ${process.env.foNev}!</b><br><br>
+            Az én nevem: ${emailObj.nev}.<br>
+            Telefonszámom: ${emailObj.telefon}.<br><br>
+            A megkeresésem oka: ${emailObj.ok}:<br><br>
+            ${emailObj.uzenet}<br><br>
+            Tisztelettel:<br>
+            ${emailObj.nev}<br>` // html body
         },
         (err) => {
             if (!err) {
