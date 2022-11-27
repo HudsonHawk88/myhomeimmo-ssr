@@ -2,7 +2,7 @@ import { Microservices } from '../../../../shared/MicroServices';
 const location = typeof window !== 'undefined' ? window.location : {};
 const kapcsolatUrl = location.origin + '/api/kapcsolat';
 const sendEmailUrl = location.origin + '/api/contactmail/sendfromcontact';
-const rechaptchaUrl = 'https://www.google.com/recaptcha/siteverify?';
+const rechaptchaUrl = location.origin + '/api/recaptcha';
 
 export default class Services {
     // KAPCSOLAT START
@@ -39,14 +39,14 @@ export default class Services {
 
     // RECHAPTCHA START
 
-    static checkRechaptcha = (keys) => {
-        let result = Microservices.fetchApi(rechaptchaUrl + new URLSearchParams(keys), {
-            method: 'POST'
-            // mode: "cors",
+    static checkRechaptcha = (token) => {
+        let result = Microservices.fetchApi(rechaptchaUrl, {
+            method: 'POST',
+            mode: 'cors',
             // cache: "no-cache",
-            // headers: {
-            //   "Content-Type": "application/json"
-            // },
+            headers: {
+                response: token
+            }
         });
         return result;
     };
