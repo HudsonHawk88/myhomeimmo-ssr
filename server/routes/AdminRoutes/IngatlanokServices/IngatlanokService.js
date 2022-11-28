@@ -123,8 +123,14 @@ router.post('/deleteimage', async (req, res) => {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
-                const image = `${process.env.ingatlankepekdir}/${ingatlanId}/${filename}`;
+                let extIndex = filename.lastIndexOf('.');
+                let fname = filename.substring(0, extIndex);
+                const image = `${process.env.ingatlankepekdir}/${ingatlanId}/${fname}.jpg`;
+                const imageIcon = `${process.env.ingatlankepekdir}/${ingatlanId}/${fname}_icon.jpg`;
                 rmSync(image, {
+                    force: true
+                });
+                rmSync(imageIcon, {
                     force: true
                 });
                 res.status(200).send({ err: null, msg: 'Kép sikeresen törölve!' });
