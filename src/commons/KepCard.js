@@ -2,6 +2,7 @@ import React from 'react';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import SortableItem from './SortableItem.js';
+import Services from '../views/Admin/Ingatlanok/Services.js';
 
 const KepCard = ({ list, property, setList, services, ...rest }) => {
     const { addNotification } = rest;
@@ -36,6 +37,23 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
         }
     };
 
+    const deleteImage = (filename) => {
+        console.log(filename);
+        let kepek = list[property];
+        let filtered = kepek.filter((kep) => kep.filename !== filename);
+        setList({
+            ...list,
+            [property]: filtered
+        });
+        Services.deleteImage(filename, list['id']).then((res) => {
+            if (!res.err) {
+                addNotification('success', res.msg);
+            } else {
+                addNotification('error', res.err);
+            }
+        });
+    };
+
     const renderImages = () => {
         const divStyle = {
             display: 'grid',
@@ -50,7 +68,7 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
                 <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext useDragOverlay={true} items={lll}>
                         {lll.map((item) => {
-                            return <SortableItem list={list} setList={setList} property={property} key={item.filename} addNotification={addNotification} item={item} />;
+                            return <SortableItem deleteImage={deleteImage} key={item.filename} addNotification={addNotification} item={item} />;
                         })}
                     </SortableContext>
                 </DndContext>

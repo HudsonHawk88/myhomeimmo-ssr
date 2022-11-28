@@ -2,11 +2,10 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
-import Services from '../views/Admin/Ingatlanok/Services';
 
 const SortableItem = ({ item, addNotification, ...rest }) => {
     const { id, src, preview, filename, nev, isCover } = item;
-    const { list, setList, property } = rest;
+    const { deleteImage } = rest;
     const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id: id });
 
     const style = {
@@ -29,23 +28,6 @@ const SortableItem = ({ item, addNotification, ...rest }) => {
         }
 
         return icon;
-    };
-
-    const deleteImage = (filename) => {
-        console.log(filename);
-        let kepek = list[property];
-        let filtered = kepek.filter((kep) => kep.filename !== filename);
-        setList({
-            ...list,
-            [property]: filtered
-        });
-        Services.deleteImage(filename, list['id']).then((res) => {
-            if (!res.err) {
-                addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
-            }
-        });
     };
 
     return (
