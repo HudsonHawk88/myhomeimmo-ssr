@@ -3,10 +3,10 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
 
-const SortableItem = ({ item, addNotification, ...rest }) => {
-    const { id, src, preview, filename, nev, isCover } = item;
-    const { deleteImage } = rest;
-    const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id: id });
+const SortableItem = ({ id, ...props }) => {
+    const { deleteImage, item } = props;
+    const { src, preview, filename, nev, isCover } = item;
+    const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -31,7 +31,7 @@ const SortableItem = ({ item, addNotification, ...rest }) => {
     };
 
     return (
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        <div id={id} ref={setNodeRef} style={style} {...attributes} {...listeners}>
             <Card className={nev}>
                 <CardTitle>{nev}</CardTitle>
                 <CardBody>

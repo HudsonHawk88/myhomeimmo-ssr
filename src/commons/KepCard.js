@@ -1,17 +1,19 @@
 import React from 'react';
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import { SortableContext } from '@dnd-kit/sortable';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import SortableItem from './SortableItem.js';
-import Services from '../views/Admin/Ingatlanok/Services.js';
 
 const KepCard = ({ list, property, setList, services, ...rest }) => {
     const { addNotification } = rest;
     const lll = list.kepek || [];
+    const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 2 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
 
     const reorder = (list, startIndex, endIndex) => {
-        const result = Array.from(list);
+        let result = Array.from(list);
         const [removed] = result.splice(startIndex, 1);
+        console.log(removed);
         result.splice(endIndex, 0, removed);
+        console.log(result);
         result.forEach((kep, index) => {
             if (index === 0) {
                 kep.isCover = true;
@@ -30,6 +32,7 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
 
         if (active.id !== over.id) {
             const newArray = reorder(lll, active.id, over.id);
+            console.log(newArray);
             setList({
                 ...list,
                 [property]: newArray
@@ -38,14 +41,13 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
     };
 
     const deleteImage = (filename) => {
-        console.log(filename);
         let kepek = list[property];
         let filtered = kepek.filter((kep) => kep.filename !== filename);
         setList({
             ...list,
             [property]: filtered
         });
-        Services.deleteImage(filename, list['id']).then((res) => {
+        services.deleteImage(filename, list['id']).then((res) => {
             if (!res.err) {
                 addNotification('success', res.msg);
             } else {
@@ -64,15 +66,15 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
         };
 
         return (
-            <div style={divStyle}>
-                <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <div style={divStyle}>
                     <SortableContext useDragOverlay={true} items={lll}>
-                        {lll.map((item) => {
-                            return <SortableItem deleteImage={deleteImage} key={item.filename} addNotification={addNotification} item={item} />;
+                        {lll.map((item, index) => {
+                            return <SortableItem deleteImage={deleteImage} key={item.filename} item={item} id={index} />;
                         })}
                     </SortableContext>
-                </DndContext>
-            </div>
+                </div>
+            </DndContext>
         );
     };
 
