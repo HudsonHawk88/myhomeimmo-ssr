@@ -50,7 +50,7 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
                 <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext useDragOverlay={true} items={lll}>
                         {lll.map((item) => {
-                            return <SortableItem key={item.filename} addNotification={addNotification} item={item} />;
+                            return <SortableItem list={list} setList={setList} property={property} key={item.filename} addNotification={addNotification} item={item} />;
                         })}
                     </SortableContext>
                 </DndContext>
