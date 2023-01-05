@@ -98,7 +98,8 @@
         "prod": "pm2 start build/server.config.js",
         "stop:prod": "pm2 stop myhome & pm2 delete myhome",
         "make-dev": "concurrently -n frontend,server,node \"npm run webpack:client\" \"npm run webpack:server\" \"npm run webpack:run\"",
-        "dev": "npm run webpack:run"
+        "dev": "npm run webpack:run",
+        "log": "pm2 logs"
     },
     "eslintConfig": {
         "extends": [

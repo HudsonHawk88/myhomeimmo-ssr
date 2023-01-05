@@ -47,6 +47,7 @@ const addIngatlan = async (req, res) => {
                                 fs.writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`, buff);
                                 // TODO: megnézni, hogy jó-e a javítás...
                                 sharp(buff)
+                                    .resize({ width: 250, height: 200, fit: 'inside' })
                                     .toFile(`${process.env.ingatlankepekdir}/${id}/${fname}_icon.jpg`)
                                     .catch((err) => console.log(err));
                             } else {
@@ -107,6 +108,24 @@ const editIngatlan = async (req, res, user) => {
                         src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
                         title: kep.filename
                     });
+
+                    let extIndex = kep.filename.lastIndexOf('.');
+                    let fname = kep.filename.substring(0, extIndex);
+                    sharp(kep.path)
+                        .jpeg({ quality: 80 })
+                        .resize({ width: 2500, height: 1500, fit: 'inside' })
+                        .toBuffer((err, buff) => {
+                            if (!err) {
+                                fs.writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`, buff);
+                                // TODO: megnézni, hogy jó-e a javítás...
+                                sharp(buff)
+                                    .resize({ width: 250, height: 200, fit: 'inside' })
+                                    .toFile(`${process.env.ingatlankepekdir}/${id}/${fname}_icon.jpg`)
+                                    .catch((err) => console.log(err));
+                            } else {
+                                console.log(err);
+                            }
+                        });
                 });
             }
 
