@@ -251,16 +251,11 @@ router.post('/jovahagyas', async (req, res) => {
         if (user === null) {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
-            console.log(JSON.parse(JSON.stringify(user.roles)));
             if (!hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
                 const { ingatlanId } = req.body;
-                console.log(ingatlanId)
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
-                console.log(typeof process.env.foEmail);
-                console.log(process.env.foEmail)
-                transporter.sendMail(
-                {
+                const mail = {
                     from: `${teljesNev} <${user.email}>`, // sender address
                     to: process.env.foEmail, // list of receivers
                     subject: `${teljesNev} - új ingatlan`, // Subject line
@@ -268,7 +263,10 @@ router.post('/jovahagyas', async (req, res) => {
                     ${teljesNev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingatlanId}<br>
                     Tisztelettel:<br>
                     ${teljesNev}<br>` // html body
-                },
+                }
+                console.log(typeof process.env.foEmail);
+                console.log(process.env.foEmail)
+                transporter.sendMail(mail,
                 (err) => {
                     if (!err) {
                         res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
