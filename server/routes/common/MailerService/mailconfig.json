@@ -8,7 +8,8 @@
             "pass": "LegjobbaK00"
         },
         "tls": {
-            "rejectUnauthorized": false
+            "rejectUnauthorized": false,
+            "ignoreTLS": true
         },
         "logger": true,
         "transactionLog": true
