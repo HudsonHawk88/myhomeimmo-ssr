@@ -520,13 +520,14 @@ const IngatlanForm = (props) => {
                     listIngatlanok();
                     addNotification('success', res.msg);
                     
-                    if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
+                   // TODO: Email küldés nem megy localhost tls miatt!!!! (MYHOME-17) 
+                   /*  if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
                         Services.jovahagyasraKuldes(res.ingatlanId).then((err) => {
                             if (err) {
                                 addNotification('error', 'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" ')
                             }
                         })
-                    }
+                    } */
                 } else {
                     addNotification('error', res.err);
                 }
@@ -905,7 +906,9 @@ const IngatlanForm = (props) => {
                             <RVInput type="checkbox" name="isUjEpitesu" id="isUjEpitesu" checked={ingatlanObj.isUjEpitesu} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-3" hidden={!hasRole(user.roles, ['SZUPER_ADMIN'])}>
+                    {/* TODO: Email küldés nem megy localhost tls miatt VISSZATENNI A COMMENTELT RÉSZT!!!! (MYHOME-17) */} 
+                    {/* <div className="col-md-3" hidden={!hasRole(user.roles, ['SZUPER_ADMIN'])}> */}
+                    <div className="col-md-3">
                         <RVFormGroup>
                             <Label>Publikus</Label>
                             &nbsp;&nbsp;

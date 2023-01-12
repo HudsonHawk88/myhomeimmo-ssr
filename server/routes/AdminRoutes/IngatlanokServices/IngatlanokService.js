@@ -264,6 +264,7 @@ router.post('/jovahagyas', async (req, res) => {
                     Tisztelettel:<br>
                     ${teljesNev}<br>` // html body
                 }
+                console.log(transporter);
                 transporter.sendMail(mail,
                 (err) => {
                     if (!err) {
