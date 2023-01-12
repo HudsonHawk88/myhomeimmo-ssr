@@ -9,7 +9,7 @@ import KepCard from '../../../commons/KepCard.js';
 import Services from './Services.js';
 
 const IngatlanForm = (props) => {
-    const { user, listIngatlanok, currentId, formType, ertekesito, toggleModal, nevFormatter, telefonFormatter, addNotification } = props;
+    const { hasRole, user, listIngatlanok, currentId, formType, ertekesito, toggleModal, nevFormatter, telefonFormatter, addNotification } = props;
 
     const defaultTelepulesObj = {
         telepulesnev: '',
@@ -514,11 +514,18 @@ const IngatlanForm = (props) => {
                 }
             } */
             datas = makeFormData(kuldObj, 'kepek', false);
-            Services.addEIngatlan(datas).then((res) => {
+            Services.addIngatlan(datas).then((res) => {
                 if (!res.err) {
                     toggleModal();
                     listIngatlanok();
                     addNotification('success', res.msg);
+                    if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
+                        Services.jovahagyasraKuldes(res.ingatlanId).then((err) => {
+                            if (err) {
+                                addNotification('error', 'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" ')
+                            }
+                        })
+                    }
                 } else {
                     addNotification('error', res.err);
                 }
@@ -897,7 +904,7 @@ const IngatlanForm = (props) => {
                             <RVInput type="checkbox" name="isUjEpitesu" id="isUjEpitesu" checked={ingatlanObj.isUjEpitesu} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-3" hidden={!hasRole(user.roles, ['SZUPER_ADMIN'])}>
                         <RVFormGroup>
                             <Label>Publikus</Label>
                             &nbsp;&nbsp;

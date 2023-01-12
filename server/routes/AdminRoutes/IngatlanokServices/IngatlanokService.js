@@ -5,9 +5,11 @@ import SharpMulter from 'sharp-multer';
 import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId, UseQuery } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync } from 'fs';
 import { addIngatlan, editIngatlan } from '../../../schemas/IngatlanSchema.js';
+import mailconf from '../../common/MailerService/mailconfig.json';
 
 const router = express.Router();
 const ingatlanok = pool;
+const transporter = nodemailer.createTransport(mailconf);
 
 //TODO: Egyéb (nem publikus) dokumentumok, képek feltöltését megvalósítani!!!
 
@@ -233,6 +235,45 @@ router.delete('/', async (req, res) => {
                 }
             } else {
                 res.status(400).send({ err: 'Id megadása kötelező' });
+            }
+        }
+    } else {
+        res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
+    }
+});
+
+// INGATLAN JOVAHAGYASA
+
+router.post('/jovahagyas', async (req, res) => {
+    const token = req.cookies.JWT_TOKEN;
+
+    if (token) {
+        const user = await validateToken(token, jwtparams.secret);
+        if (user === null) {
+            res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
+        } else {
+            if (user.roles && !hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
+                const { ingatlanId } = req.body;
+                transporter.sendMail(
+                {
+                    from: `${user.nev} <${user.email}>`, // sender address
+                    to: process.env.foEmail, // list of receivers
+                    subject: `${user.nev} - új ingatlan`, // Subject line
+                    html: `<b>Kedves Berki Mónika!</b><br><br>
+                    ${emailObj.nev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingatlanId}<br>
+                    Tisztelettel:<br>
+                    ${emailObj.nev}<br>` // html body
+                },
+                (err) => {
+                    if (!err) {
+                        res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
+                    } else {
+                        res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
+                    }
+                }
+            );
+            } else {
+                res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
             }
         }
     } else {

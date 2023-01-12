@@ -2,6 +2,7 @@ import { Microservices } from '../../../../shared/MicroServices';
 const location = __isBrowser__ ? window.location : {};
 const ingatlanokUrl = location.origin + '/api/ingatlan';
 const ingatlanokAdminUrl = location.origin + '/api/admin/ingatlanok';
+const ingatlanJovahagyasAdminUrl = location.origin + '/api/admin/ingatlanok/jovahagyas';
 const orszagokUrl = location.origin + '/api/orszagok';
 const telepulesekUrl = location.origin + '/api/telepulesek';
 const generateXmlUrl = location.origin + '/api/ingatlan/ingatlanokapi';
@@ -39,7 +40,7 @@ export default class Services {
         return result;
     };
 
-    static addEIngatlan = (data) => {
+    static addIngatlan = (data) => {
         // console.log(data);
         let result = Microservices.fetchApi(ingatlanokAdminUrl, {
             method: 'POST',
@@ -80,6 +81,19 @@ export default class Services {
                 'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
                 id: id
             }
+        });
+        return result;
+    };
+
+    static jovahagyasraKuldes = (ingatlanId) => {
+        let result = Microservices.fetchApi(ingatlanJovahagyasAdminUrl, {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+            },
+            body: { ingatlanId: ingatlanId }
         });
         return result;
     };

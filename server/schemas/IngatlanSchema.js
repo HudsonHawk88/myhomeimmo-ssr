@@ -70,7 +70,7 @@ const addIngatlan = async (req, res) => {
 
             const images = await UseQuery(updateImagesSql);
             if (images) {
-                res.status(200).send({ msg: 'Ingatlan sikeresen hozzáadva!' });
+                res.status(200).send({ msg: 'Ingatlan sikeresen hozzáadva!', ingatlanId: id });
             } else {
                 res.status(500).send({ err: 'ingatlan képek feltöltése sikertelen!' });
             }
