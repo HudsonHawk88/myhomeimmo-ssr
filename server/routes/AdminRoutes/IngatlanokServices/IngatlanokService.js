@@ -251,14 +251,14 @@ router.post('/jovahagyas', async (req, res) => {
         if (user === null) {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
-            console.log(typeof user.roles);
+            console.log(JSON.parse(JSON.stringify(user.roles)));
             if (!hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
                 const { ingatlanId } = req.body;
+                console.log(ingatlanId)
                 let nev = JSON.parse(user.nev);
-                console.log(typeof user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
-                console.log(typeof teljesNev);
-                console.log(typeof user.email);
+                console.log(typeof process.env.foEmail);
+                console.log(process.env.foEmail)
                 transporter.sendMail(
                 {
                     from: `${teljesNev} <${user.email}>`, // sender address
