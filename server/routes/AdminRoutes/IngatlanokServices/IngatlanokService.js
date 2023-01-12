@@ -260,7 +260,7 @@ router.post('/jovahagyas', async (req, res) => {
                     to: `${process.env.foEmail}`, // list of receivers
                     subject: `${teljesNev} - új ingatlan`, // Subject line
                     html: `<b>Kedves Berki Mónika!</b><br><br>
-                    ${teljesNev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingatlanId}<br>
+                    ${teljesNev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingatlanId ? ingatlanId : 'Nincs id, valami hiba van...'}<br>
                     Tisztelettel:<br>
                     ${teljesNev}<br>` // html body
                 }
@@ -269,7 +269,7 @@ router.post('/jovahagyas', async (req, res) => {
                     if (!err) {
                         res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
                     } else {
-                        res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
+                        res.status(500).send({ msg: 'Email küldése sikertelen!' });
                     }
                 }
             );
