@@ -2,14 +2,15 @@
     "mailconf": {
         "pool": true,
         "host": "139.28.140.244",
-        "port": 587,
-        "secure": false,
+        "port": 465,
+        "secure": true,
         "auth": {
             "user": "info@myhomezala.hu",
             "pass": "LegjobbaK00"
         },
         "tls": {
-            "rejectUnauthorized": false
+            "rejectUnauthorized": false,
+            "servername": "mail.myhomezala.hu"
         },
         "logger": true,
         "transactionLog": true
