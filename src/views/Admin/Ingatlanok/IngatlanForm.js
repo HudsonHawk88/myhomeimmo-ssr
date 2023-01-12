@@ -519,6 +519,7 @@ const IngatlanForm = (props) => {
                     toggleModal();
                     listIngatlanok();
                     addNotification('success', res.msg);
+                    console.log(user.roles, typeof user.roles);
                     if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
                         Services.jovahagyasraKuldes(res.ingatlanId).then((err) => {
                             if (err) {
