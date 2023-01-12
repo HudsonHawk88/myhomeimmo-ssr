@@ -269,6 +269,7 @@ router.post('/jovahagyas', async (req, res) => {
                     if (!err) {
                         res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
                     } else {
+                        console.log(mailconf);
                         console.log(err);
                         res.status(500).send({ msg: 'Email küldése sikertelen!' });
                     }
