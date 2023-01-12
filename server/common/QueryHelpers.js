@@ -204,7 +204,8 @@ const validateToken = async (token, secret) => {
             name: result.name,
             roles: result.roles,
             email: result.email,
-            avatar: result.avatar
+            avatar: result.avatar,
+            isErtekesito: Boolean(result.isErtekesito)
         };
     } catch (ex) {
         return null;

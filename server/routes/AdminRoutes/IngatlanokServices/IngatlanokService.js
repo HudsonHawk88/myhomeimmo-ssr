@@ -246,7 +246,6 @@ router.delete('/', async (req, res) => {
 
 router.post('/jovahagyas', async (req, res) => {
     const token = req.cookies.JWT_TOKEN;
-
     if (token) {
         const user = await validateToken(token, jwtparams.secret);
         if (user === null) {
@@ -254,16 +253,18 @@ router.post('/jovahagyas', async (req, res) => {
         } else {
             if (!hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
                 const { ingatlanId } = req.body;
-                const nev = user.nev.titulus && user.nev.titulus + ' ' + user.nev.vezeteknev + ' ' + user.nev.keresztnev;
+                let nev = user.name;
+                const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
+                console.log(teljesNev);
                 transporter.sendMail(
                 {
-                    from: `${nev} <${user.email}>`, // sender address
+                    from: `${teljesNev} <${user.email}>`, // sender address
                     to: process.env.foEmail, // list of receivers
-                    subject: `${nev} - új ingatlan`, // Subject line
+                    subject: `${teljesNev} - új ingatlan`, // Subject line
                     html: `<b>Kedves Berki Mónika!</b><br><br>
-                    ${emailObj.nev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingatlanId}<br>
+                    ${teljesNev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingatlanId}<br>
                     Tisztelettel:<br>
-                    ${nev}<br>` // html body
+                    ${teljesNev}<br>` // html body
                 },
                 (err) => {
                     if (!err) {
