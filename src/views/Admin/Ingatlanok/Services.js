@@ -91,9 +91,9 @@ export default class Services {
             mode: 'cors',
             cache: 'no-cache',
             headers: {
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            },
-            body: JSON.stringify({ ingatlanId: ingatlanId })
+                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                ingatlanId: ingatlanId
+            }
         });
         return result;
     };
