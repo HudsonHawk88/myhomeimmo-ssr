@@ -252,7 +252,7 @@ router.post('/jovahagyas', async (req, res) => {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
             if (!hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
-                const { ingatlanId } = req.headers;
+                const ingatlanId = req.headers.ingatlanId;
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                 const mail = {
