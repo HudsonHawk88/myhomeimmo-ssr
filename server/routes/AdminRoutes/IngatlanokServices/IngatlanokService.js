@@ -252,17 +252,18 @@ router.post('/jovahagyas', async (req, res) => {
         if (user === null) {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
-            if (user.roles && !hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
+            if (!hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
                 const { ingatlanId } = req.body;
+                const nev = user.nev.titulus && user.nev.titulus + ' ' + user.nev.vezeteknev + ' ' + user.nev.keresztnev;
                 transporter.sendMail(
                 {
-                    from: `${user.nev} <${user.email}>`, // sender address
+                    from: `${nev} <${user.email}>`, // sender address
                     to: process.env.foEmail, // list of receivers
-                    subject: `${user.nev} - új ingatlan`, // Subject line
+                    subject: `${nev} - új ingatlan`, // Subject line
                     html: `<b>Kedves Berki Mónika!</b><br><br>
                     ${emailObj.nev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingatlanId}<br>
                     Tisztelettel:<br>
-                    ${emailObj.nev}<br>` // html body
+                    ${nev}<br>` // html body
                 },
                 (err) => {
                     if (!err) {

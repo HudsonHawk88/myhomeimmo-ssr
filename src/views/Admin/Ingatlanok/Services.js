@@ -93,7 +93,7 @@ export default class Services {
             headers: {
                 'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
             },
-            body: { ingatlanId: ingatlanId }
+            body: JSON.stringify({ ingatlanId: ingatlanId })
         });
         return result;
     };
