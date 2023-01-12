@@ -1,7 +1,7 @@
 {
     "mailconf": {
         "pool": true,
-        "host": "mail.myhomezala.hu",
+        "host": "139.28.140.244",
         "port": 587,
         "secure": false,
         "auth": {
