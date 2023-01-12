@@ -255,7 +255,13 @@ router.post('/jovahagyas', async (req, res) => {
                 const { ingatlanId } = req.body;
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
-                console.log(teljesNev);
+                transporter.verify(function (error, success) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log("Server is ready to take our messages");
+                }
+                });
                 transporter.sendMail(
                 {
                     from: `${teljesNev} <${user.email}>`, // sender address
@@ -269,6 +275,7 @@ router.post('/jovahagyas', async (req, res) => {
                 (err) => {
                     if (!err) {
                         res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
+                        transporter.close();
                     } else {
                         res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
                     }
