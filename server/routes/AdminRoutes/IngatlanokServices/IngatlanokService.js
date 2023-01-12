@@ -1,9 +1,9 @@
 import express from 'express';
 import multer from 'multer';
-import sharp from 'sharp';
-import SharpMulter from 'sharp-multer';
 import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId, UseQuery } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync } from 'fs';
+import nodemailer from 'nodemailer';
+
 import { addIngatlan, editIngatlan } from '../../../schemas/IngatlanSchema.js';
 import mailconf from '../../common/MailerService/mailconfig.json';
 
