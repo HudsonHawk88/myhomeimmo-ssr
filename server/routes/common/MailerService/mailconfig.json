@@ -1,11 +1,11 @@
 {
     "mailconf": {
-        "host": "smtp.inftechsol.hu",
+        "host": "cl5.mikrovps.hu",
         "port": 465,
         "secure": true,
         "auth": {
-            "user": "info@inftechsol.hu",
-            "pass": "CoronamVitae88"
+            "user": "info@myhomezala.hu",
+            "pass": "LegjobbaK00"
         },
         "tls": {
             "rejectUnauthorized": false
