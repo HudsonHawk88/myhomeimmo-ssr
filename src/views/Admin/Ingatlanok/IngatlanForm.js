@@ -585,7 +585,6 @@ const IngatlanForm = (props) => {
                     </div>
                     <hr />
                     <div className="col-md-3">
-                        <Button type='button' onClick={() => sendMail(100)}>Send mail</Button>
                         <RVFormGroup>
                             <Label>{'Iroda: *'}</Label>
                             <RVInput
@@ -1170,6 +1169,7 @@ const IngatlanForm = (props) => {
                 </div>
             </ModalBody>
             <ModalFooter>
+                <Button type='button' hidden onClick={() => sendMail(100)}>Send mail</Button>
                 <Button type="submit" color="primary">
                     Mentés
                 </Button>
