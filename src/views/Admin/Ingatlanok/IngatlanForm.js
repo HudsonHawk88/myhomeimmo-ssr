@@ -469,6 +469,15 @@ const IngatlanForm = (props) => {
         return isHidden;
     };
 
+    const sendMail = (ingatlanId) => {
+        if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
+            Services.jovahagyasraKuldes(ingatlanId).then((err) => {
+                if (err) {
+                    addNotification('error', 'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" ')
+                }
+        })}
+    }
+
     const onSubmit = (e) => {
         /*    e.preventDefault(); */
         let kuldObj = ingatlanObj;
@@ -576,6 +585,7 @@ const IngatlanForm = (props) => {
                     </div>
                     <hr />
                     <div className="col-md-3">
+                        <Button type='button' onClick={() => sendMail(100)}>Send mail</Button>
                         <RVFormGroup>
                             <Label>{'Iroda: *'}</Label>
                             <RVInput

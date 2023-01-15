@@ -1,16 +1,14 @@
 {
     "mailconf": {
-        "pool": true,
-        "host": "139.28.140.244",
+        "host": "smtp.inftechsol.hu",
         "port": 465,
         "secure": true,
         "auth": {
-            "user": "info@myhomezala.hu",
-            "pass": "LegjobbaK00"
+            "user": "info@inftechsol.hu",
+            "pass": "CoronamVitae88"
         },
         "tls": {
-            "rejectUnauthorized": false,
-            "servername": "mail.myhomezala.hu"
+            "rejectUnauthorized": false
         },
         "logger": true,
         "transactionLog": true

@@ -265,13 +265,18 @@ router.post('/jovahagyas', async (req, res) => {
                     ${teljesNev}<br>` // html body
                 }
                 console.log(transporter);
+                nodemailer.createTransport(mailconf).sendMail(mail, (errrr, ressss) => {
+                    if (errrr) {
+                        console.log(errrr);
+                    }
+                })
                 transporter.sendMail(mail,
                 (err) => {
                     if (!err) {
                         res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
                     } else {
-                        console.log(mailconf);
-                        console.log(err);
+                        /* console.log(mailconf);
+                        console.log(err); */
                         res.status(500).send({ msg: 'Email küldése sikertelen!' });
                     }
                 }
