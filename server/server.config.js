@@ -6,7 +6,6 @@ module.exports = {
         {
             name: 'myhome',
             script: path.resolve(__dirname, 'bundle.js'),
-            node_args: 'NODE_TLS_REJECT_UNAUTHORIZED=0',
             instances: 'max',
             exec_mode: 'cluster'
         }
