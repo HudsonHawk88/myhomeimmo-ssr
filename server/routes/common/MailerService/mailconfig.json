@@ -1,14 +1,15 @@
 {
     "mailconf": {
         "host": "cl5.mikrovps.hu",
-        "port": 465,
-        "secure": true,
+        "port": 587,
+        "secure": false,
         "auth": {
             "user": "info@myhomezala.hu",
             "pass": "LegjobbaK00"
         },
         "tls": {
-            "rejectUnauthorized": false
+            "rejectUnauthorized": false,
+            "ignoreTLS": true
         },
         "logger": true,
         "transactionLog": true
