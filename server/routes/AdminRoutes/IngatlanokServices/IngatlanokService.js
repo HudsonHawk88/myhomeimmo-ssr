@@ -10,7 +10,7 @@ import mailconf from '../../common/MailerService/mailconfig.json';
 const router = express.Router();
 const ingatlanok = pool;
 let poolConfig = "smtps://username:password@smtp.example.com/?pool=true";
-const transporter = nodemailer.createTransport(poolConfig);
+const transporter = nodemailer.createTransport(mailconf);
 
 //TODO: Egyéb (nem publikus) dokumentumok, képek feltöltését megvalósítani!!!
 
