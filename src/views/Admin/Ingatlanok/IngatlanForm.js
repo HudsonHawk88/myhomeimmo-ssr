@@ -472,9 +472,11 @@ const IngatlanForm = (props) => {
 
     const sendMail = (ingatlanId) => {
         if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
-            Services.jovahagyasraKuldes(ingatlanId).then((err) => {
-                if (err) {
+            Services.jovahagyasraKuldes(ingatlanId).then((res) => {
+                if (!res.err) {
                     addNotification('error', 'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" ')
+                } else {
+                    addNotification('success', res.msg)
                 }
         })}
     }

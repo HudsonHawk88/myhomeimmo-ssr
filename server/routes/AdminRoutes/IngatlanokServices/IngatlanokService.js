@@ -273,7 +273,7 @@ router.post('/jovahagyas', async (req, res) => {
                     } else {
                         /* console.log(mailconf);
                         console.log(err); */
-                        res.status(500).send({ msg: 'Email küldése sikertelen!' });
+                        res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
                     }
                 }
             );
