@@ -69,7 +69,7 @@ const docHeight = () => {
 
 const printPDF = async (html, format, isLandscape) => {
     
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: ['-no-sandbox'] });
     const page = await browser.newPage();
     /* let n = html.concat(html.concat(html))
     n = n.concat(html); */
