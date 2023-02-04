@@ -483,9 +483,9 @@ router.post('/infoPDF', async (req, res) => {
                 let telszam = JSON.parse(user.telefon);
                 telszam = `${telszam.orszaghivo}-${telszam.korzet}/${telszam.telszam}`; 
                 const email = user.email;
-                ingatlan = getJSONfromLongtext(ingatlan, 'toBool')
-                console.log(ingatlan);
-                console.log(ingatlan[0]);
+                ingatlan = getJSONfromLongtext(ingatlan, 'toBool');
+                console.log(typeof ingatlan[0].kepek);
+                console.log(ingatlan[0].kepek);
 
                 // INGATLANADATOK
               /*   const elsokepek = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.filter((kep, index) => index < 4); */
