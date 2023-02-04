@@ -121,12 +121,12 @@ const Ingatlanok = (props) => {
             if (res) {
                /*  const url = window.URL.createObjectURL(new Blob([new Uint8Array(res.data.data).buffer])); */
                 const url = window.URL.createObjectURL(new Blob([new Uint8Array(res.data.data).buffer], { type: 'application/pdf' }));
-                window.open(url, '_blank');
-                /* const link = document.createElement('a');
+              /*   window.open(url, '_blank'); */
+                const link = document.createElement('a');
                 link.href = url;
                 link.setAttribute('download', 'Információs lap.pdf');
                 document.body.appendChild(link);
-                link.click(); */
+                link.click();
             }
         })
     }
