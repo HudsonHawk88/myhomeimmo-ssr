@@ -470,7 +470,7 @@ router.post('/infoPDF', async (req, res) => {
                 const cegadatSql = `SELECT nev, cim, telefon FROM kapcsolat WHERE id='1';`;
                 const tipusOptionsSql = `SELECT * FROM ingatlan_options;`;
                 const altipusOptionsSql = `SELECT * FROM ingatlan_subtypes;`;
-                const ingatlan = await UseQuery(ingatlanSql);
+                let ingatlan = await UseQuery(ingatlanSql);
                 const cegadatok = await UseQuery(cegadatSql);
                 let tipusOptions = await UseQuery(tipusOptionsSql);
                 let altipusOptions = await UseQuery(altipusOptionsSql);
@@ -483,6 +483,7 @@ router.post('/infoPDF', async (req, res) => {
                 let telszam = JSON.parse(user.telefon);
                 telszam = `${telszam.orszaghivo}-${telszam.korzet}/${telszam.telszam}`; 
                 const email = user.email;
+                ingatlan = getJSONfromLongtext(ingatlan, 'toBool')
                 console.log(ingatlan);
                 console.log(ingatlan[0]);
 
