@@ -394,65 +394,7 @@ const renderParameterek = (ingatlan, tipusOpts, altipusOpts) => {
     </tr>
     </table>
     `;
-    const p = `<div class="row">
-        <div class="col-md-6" ${getNemUresFields(ingatlan.statusz) ? 'hidden' : ''}>
-            <strong>Ingatlan státusza: </strong>
-            ${ingatlan.statusz}
-        </div>
-        <div class="col-md-6" ${getNemUresFields(ingatlan.epitesmod) ? 'hidden' : ''}>
-            <strong>Építés módja: </strong>
-            ${ingatlan.epitesmod}
-        </div>
-        <div class="col-md-12" />
-        <br />
-        <div class="col-md-6" ${getNemUresFields(ingatlan.tipus) ? 'hidden' : ''}>
-            <strong>Ingatlan típusa: </strong>
-            ${tipusFormatter(tipusOpts.options, ingatlan.tipus)}
-        </div>
-        <div class="col-md-6" ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}>
-            <strong>Ingatlan altípusa: </strong>
-            ${altipusFormatter(altipusOpts.options, ingatlan.tipus, ingatlan.altipus)}
-        </div>
-        <div class="col-md-12" />
-        <br />
-        <div class="col-md-6" ${getNemUresFields(ingatlan.telepules) ? 'hidden' : ''}>
-            <strong>Település: </strong>
-            ${ingatlan.telepules}
-        </div>
-        <div class="col-md-6" ${getNemUresFields(ingatlan.rendeltetes) ? 'hidden' : ''}>
-            <strong>Rendeltetés: </strong>
-            ${ingatlan.rendeltetes}
-        </div>
-        <div class="col-md-12" />
-        <br />
-        <div class="col-md-6" ${!ingatlan.isTetoter ? 'hidden' : ''}>
-            <strong>Tetőtéri: </strong>
-            ${ingatlan.isTetoter ? 'Igen' : 'Nem'}
-        </div>
-        <div class="col-md-6" ${ingatlan.tipus !== 1 ? 'hidden' : ''}>
-            <strong>Erkély: </strong>
-            ${ingatlan.isErkely ? 'Van' : 'Nincs'}
-        </div>
-        <div class="col-md-12" />
-        <br />
-        <div class="col-md-6" ${getNemUresFields(ingatlan.futes) ? 'hidden' : ''}>
-            <strong>Fűtés típusa: </strong>
-            ${ingatlan.futes}
-        </div>
-        <div class="col-md-6" ${getNemUresFields(ingatlan.alapterulet) ? 'hidden' : ''}>
-            <strong>Alapterület: </strong>
-            ${ingatlan.alapterulet} m
-            <sup>2</sup>
-        </div>
-        <div class="col-md-12" />
-        <br />
-        <div class="col-md-6" ${isTelekAdatokHidden(ingatlan) ? 'hidden' : ''}">
-            <strong>Telek mérete: </strong>
-            ${ingatlan.telek ? ingatlan.telek : '0'} m
-            <sup>2</sup>
-        </div>
-        </div>`;
-
+    
     return newP;
 } 
 
