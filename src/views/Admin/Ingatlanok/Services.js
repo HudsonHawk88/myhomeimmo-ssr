@@ -3,6 +3,7 @@ const location = __isBrowser__ ? window.location : {};
 const ingatlanokUrl = location.origin + '/api/ingatlan';
 const ingatlanokAdminUrl = location.origin + '/api/admin/ingatlanok';
 const ingatlanJovahagyasAdminUrl = location.origin + '/api/admin/ingatlanok/jovahagyas';
+const infoPDFUrl = location.origin + '/api/admin/ingatlanok/infoPDF';
 const orszagokUrl = location.origin + '/api/orszagok';
 const telepulesekUrl = location.origin + '/api/telepulesek';
 const generateXmlUrl = location.origin + '/api/ingatlan/ingatlanokapi';
@@ -97,6 +98,20 @@ export default class Services {
         });
         return result;
     };
+
+    static printPDF = (ingatlanId) => {
+        let result = Microservices.fetchApi(infoPDFUrl, {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+              /*   'Content-Type': 'application/pdf', */
+                ingatlanId: ingatlanId
+            }
+        });
+        return result;
+    }
 
     // INGATLANOK END
 

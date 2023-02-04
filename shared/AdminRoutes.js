@@ -2,6 +2,7 @@ import Fooldal from '../src/views/Admin/Fooldal/Fooldal';
 import Ingatlanok from '../src/views/Admin/Ingatlanok/Ingatlanok';
 import Jogosultsagok from '../src/views/Admin/Jogosultsagok/Jogosultsagok';
 import AdminUsers from '../src/views/Admin/Adminusers/AdminUsers';
+import Vevok from '../src/views/Admin/Vevok/Vevok';
 import IngatlanSzolgaltatasok from '../src/views/Admin/IngatlanSzolgaltatasok/IngatlanSzolgaltasok';
 import PenzugyiSzolgaltatasok from '../src/views/Admin/PenzugyiSzolgaltatasok/PenzugyiSzolgaltatasok';
 import Gdpr from '../src/views/Admin/GDPR/Gdpr';
@@ -14,6 +15,7 @@ const AdminRoutes = [
     { path: '/admin/ingatlanok', element: Ingatlanok },
     { path: '/admin/jogosultsagok', element: Jogosultsagok },
     { path: '/admin/felhasznalok', element: AdminUsers },
+    { path: '/admin/vevok', element: Vevok },
     { path: '/admin/ingatlanszolg', element: IngatlanSzolgaltatasok },
     { path: '/admin/penzugyiszolg', element: PenzugyiSzolgaltatasok },
     { path: '/admin/adatkezeles', element: Gdpr },

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
+
 import Services from './Services';
 import IngatlanForm from './IngatlanForm';
 import { hasRole } from '../../../commons/Lib';
@@ -14,6 +15,7 @@ const Ingatlanok = (props) => {
     const [altipusOptions, setAltipusOptions] = useState([]);
     const [tipusFilterOptions, setTipusFilterOptions] = useState([]);
     const [formType, setFormType] = useState('FEL'); // ['FEL', 'MOD', 'DEL']
+
     const { addNotification } = props;
 
     const generateXml = () => {
@@ -114,6 +116,21 @@ const Ingatlanok = (props) => {
         setCurrentId(id);
     };
 
+    const printAjanloPDF = (id) => {
+        Services.printPDF(id).then((res) => {
+            if (res) {
+               /*  const url = window.URL.createObjectURL(new Blob([new Uint8Array(res.data.data).buffer])); */
+                const url = window.URL.createObjectURL(new Blob([new Uint8Array(res.data.data).buffer], { type: 'application/pdf' }));
+                window.open(url, '_blank');
+                /* const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'Információs lap.pdf');
+                document.body.appendChild(link);
+                link.click(); */
+            }
+        })
+    }
+
     const openFacebookShare = (url, title, w, h) => {
         if (__isBrowser__) {
             var left = screen.width / 2 - w / 2;
@@ -151,6 +168,11 @@ const Ingatlanok = (props) => {
                         </Button>
                     </>
                 )}
+                {hasRole(props.user.roles, ['INGATLAN_ADMIN']) && (
+                    <Button key={row.id + 2} color="link" onClick={() => printAjanloPDF(row.id)}>
+                        <i className="fas fa-file-pdf" />
+                    </Button>
+                )}
             </React.Fragment>
         );
     };
@@ -181,6 +203,13 @@ const Ingatlanok = (props) => {
  */
     const renderTable = () => {
         const columns = [
+            {
+                dataField: 'id',
+                text: 'ID',
+                filter: true,
+                filterType: 'textFilter',
+                filterDefaultValue: 'Keresés...'
+            },
             {
                 dataField: 'refid',
                 text: 'Ref ID',

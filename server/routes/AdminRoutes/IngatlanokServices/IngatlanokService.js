@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId, UseQuery } from '../../../common/QueryHelpers.js';
+import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId, UseQuery, printPDF } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync } from 'fs';
 import nodemailer from 'nodemailer';
 
@@ -265,7 +265,6 @@ router.post('/jovahagyas', async (req, res) => {
                     Tisztelettel:<br>
                     ${teljesNev}<br>` // html body
                 }
-                console.log(transporter);
                 nodemailer.createTransport(mailconf).sendMail(mail, (errrr, ressss) => {
                     if (errrr) {
                         console.log(errrr);
@@ -285,6 +284,262 @@ router.post('/jovahagyas', async (req, res) => {
             } else {
                 res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
             }
+        }
+    } else {
+        res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
+    }
+});
+
+const renderKepek = (kepek) => {
+    let str = '';
+
+    kepek.forEach((kep, index) => {
+        if (index < 3) {
+            str = str.concat(`<img class="ingkepek" src="${kep.src}" alt="${kep.filename}" />`);
+        }
+    });
+
+    return str;
+}
+
+const getNemUresFields = (ertek) => {
+    let hidden = false;
+    if (ertek === '' || ertek === 0) {
+        hidden = true;
+    }
+    return hidden;
+};
+
+const isTelekAdatokHidden = (ingatlan) => {
+    let isHidden = true;
+    if (ingatlan) {
+        if (ingatlan.tipus === 2 || ingatlan.tipus === 3 || ingatlan.tipus === 6 || ingatlan.tipus === 13 || ingatlan.tipus === 10) {
+            isHidden = false;
+        }
+    }
+
+    return isHidden;
+};
+
+const tipusFormatter = (ingatlanOptions, type) => {
+    let tipus = ``;
+    console.log(ingatlanOptions, typeof type)
+    ingatlanOptions.forEach((option) => {
+        console.log(option)
+            console.log(option.value + '' === type + '')
+            if (option.value + '' === type + '') {
+                tipus = option.nev;
+            }
+    });
+    return tipus;
+};
+
+const altipusFormatter = (altipusOptions, tipus, subtype) => {
+    let altipus = ``;
+    altipusOptions.forEach((option) => {
+        const tipus_id = option.tipus_id + '';
+        if (tipus_id + '' === tipus) {
+            if (option.value === subtype || parseInt(option.value, 10) === subtype) {
+                altipus = option.nev;
+            }
+        }
+    });
+    return altipus;
+};
+
+const renderParameterek = (ingatlan, tipusOpts, altipusOpts) => {
+    const newP = `
+    <table class="partabla">
+    <tr>
+    <td ${getNemUresFields(ingatlan.statusz) ? 'hidden' : ''}><strong>Ingatlan státusza: </strong></td>
+    <td ${getNemUresFields(ingatlan.statusz) ? 'hidden' : ''}>${ingatlan.statusz}</td>
+    <td ${getNemUresFields(ingatlan.epitesmod) ? 'hidden' : ''}><strong>Építés módja: </strong></td>
+    <td ${getNemUresFields(ingatlan.epitesmod) ? 'hidden' : ''}>${ingatlan.epitesmod}</td>
+    <td ${getNemUresFields(ingatlan.tipus) ? 'hidden' : ''}><strong>Ingatlan típusa: </strong></td>
+    <td ${getNemUresFields(ingatlan.tipus) ? 'hidden' : ''}>${tipusFormatter(tipusOpts.options, ingatlan.tipus)}</td>
+    <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}><strong>Ingatlan altípusa: </strong></td>
+    <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}>${altipusFormatter(altipusOpts.options, ingatlan.tipus, ingatlan.altipus)}</td>
+    </tr>
+    <tr>
+    <td ${getNemUresFields(ingatlan.telepules) ? 'hidden' : ''}><strong>Település: </strong></td>
+    <td ${getNemUresFields(ingatlan.telepules) ? 'hidden' : ''}>${ingatlan.telepules}</td>
+    <td ${getNemUresFields(ingatlan.rendeltetes) ? 'hidden' : ''}><strong>Rendeltetés: </strong></td>
+    <td ${getNemUresFields(ingatlan.rendeltetes) ? 'hidden' : ''}>${ingatlan.rendeltetes}</td>
+    <td ${!ingatlan.isTetoter ? 'hidden' : ''}><strong>Tetőtéri: </strong></td>
+    <td ${!ingatlan.isTetoter ? 'hidden' : ''}>${ingatlan.isTetoter ? 'Igen' : 'Nem'}</td>
+    <td ${getNemUresFields(ingatlan.futes) ? 'hidden' : ''}><strong>Fűtés típusa: </strong></td>
+    <td ${getNemUresFields(ingatlan.futes) ? 'hidden' : ''}>${ingatlan.futes}</td>
+    </tr>
+    <tr>
+    <td ${getNemUresFields(ingatlan.alapterulet) ? 'hidden' : ''}><strong>Alapterület: </strong></td>
+    <td ${getNemUresFields(ingatlan.alapterulet) ? 'hidden' : ''}>${ingatlan.alapterulet} m<sup>2</sup></td>
+    <td ${isTelekAdatokHidden(ingatlan) ? 'hidden' : ''}><strong>Telek mérete: </strong>/td>
+    <td ${isTelekAdatokHidden(ingatlan) ? 'hidden' : ''}>${ingatlan.telek ? ingatlan.telek : '0'} m<sup>2</sup></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    </table>
+    `;
+    const p = `<div class="row">
+        <div class="col-md-6" ${getNemUresFields(ingatlan.statusz) ? 'hidden' : ''}>
+            <strong>Ingatlan státusza: </strong>
+            ${ingatlan.statusz}
+        </div>
+        <div class="col-md-6" ${getNemUresFields(ingatlan.epitesmod) ? 'hidden' : ''}>
+            <strong>Építés módja: </strong>
+            ${ingatlan.epitesmod}
+        </div>
+        <div class="col-md-12" />
+        <br />
+        <div class="col-md-6" ${getNemUresFields(ingatlan.tipus) ? 'hidden' : ''}>
+            <strong>Ingatlan típusa: </strong>
+            ${tipusFormatter(tipusOpts.options, ingatlan.tipus)}
+        </div>
+        <div class="col-md-6" ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}>
+            <strong>Ingatlan altípusa: </strong>
+            ${altipusFormatter(altipusOpts.options, ingatlan.tipus, ingatlan.altipus)}
+        </div>
+        <div class="col-md-12" />
+        <br />
+        <div class="col-md-6" ${getNemUresFields(ingatlan.telepules) ? 'hidden' : ''}>
+            <strong>Település: </strong>
+            ${ingatlan.telepules}
+        </div>
+        <div class="col-md-6" ${getNemUresFields(ingatlan.rendeltetes) ? 'hidden' : ''}>
+            <strong>Rendeltetés: </strong>
+            ${ingatlan.rendeltetes}
+        </div>
+        <div class="col-md-12" />
+        <br />
+        <div class="col-md-6" ${!ingatlan.isTetoter ? 'hidden' : ''}>
+            <strong>Tetőtéri: </strong>
+            ${ingatlan.isTetoter ? 'Igen' : 'Nem'}
+        </div>
+        <div class="col-md-6" ${ingatlan.tipus !== 1 ? 'hidden' : ''}>
+            <strong>Erkély: </strong>
+            ${ingatlan.isErkely ? 'Van' : 'Nincs'}
+        </div>
+        <div class="col-md-12" />
+        <br />
+        <div class="col-md-6" ${getNemUresFields(ingatlan.futes) ? 'hidden' : ''}>
+            <strong>Fűtés típusa: </strong>
+            ${ingatlan.futes}
+        </div>
+        <div class="col-md-6" ${getNemUresFields(ingatlan.alapterulet) ? 'hidden' : ''}>
+            <strong>Alapterület: </strong>
+            ${ingatlan.alapterulet} m
+            <sup>2</sup>
+        </div>
+        <div class="col-md-12" />
+        <br />
+        <div class="col-md-6" ${isTelekAdatokHidden(ingatlan) ? 'hidden' : ''}">
+            <strong>Telek mérete: </strong>
+            ${ingatlan.telek ? ingatlan.telek : '0'} m
+            <sup>2</sup>
+        </div>
+        </div>`;
+
+    return newP;
+} 
+
+// INGATLAN PDF AJANLO GENEÁLÁS
+
+router.post('/infoPDF', async (req, res) => {
+    const token = req.cookies.JWT_TOKEN;
+    if (token) {
+        const user = await validateToken(token, jwtparams.secret);
+        if (user === null) {
+            res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
+        } else {
+                const ingatlanId = req.headers.ingatlanid;
+                const ingatlanSql = `SELECT * FROM ingatlanok WHERE id='${ingatlanId}';`;
+                const cegadatSql = `SELECT nev, cim, telefon FROM kapcsolat WHERE id='1';`;
+                const tipusOptionsSql = `SELECT * FROM ingatlan_options;`;
+                const altipusOptionsSql = `SELECT * FROM ingatlan_subtypes;`;
+                const ingatlan = await UseQuery(ingatlanSql);
+                const cegadatok = await UseQuery(cegadatSql);
+                let tipusOptions = await UseQuery(tipusOptionsSql);
+                let altipusOptions = await UseQuery(altipusOptionsSql);
+                const tipusOpts = tipusOptions[0];
+                const altipusOpts = altipusOptions[0];
+
+                // USER ADATOK
+                let nev = JSON.parse(user.nev);
+                const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
+                let telszam = JSON.parse(user.telefon);
+                telszam = `${telszam.orszaghivo}-${telszam.korzet}/${telszam.telszam}`; 
+                const email = user.email;
+
+                // INGATLANADATOK
+                const elsokepek = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.filter((kep, index) => index < 4);
+                const alaprajz = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.map((kep) => kep.filename.includes('alaprajz'));
+
+                const html = `
+                    <html>
+                        <style> 
+                            html { -webkit-print-color-adjust: exact; margin: 0; padding: 0; } 
+                            @media print { .break { break-after: always } } } 
+                            * { font-family: Arial, Helvetica, sans-serif }
+                            .pdftartalom { min-height: calc(100% - 90px); max-height: calc(100% - 20px); padding: 25px 20px; margin: 15px; border: 2px blue solid; break-after: always; position: relative; top: 20px; }  
+                            p { color: blue; } 
+                            .pdftartalom ~ .pdftartalom { top: 10px;  break-after: always }
+                            .break { break-after: always }
+                            .pdfcim { color: blue; padding: 0; margin: 0 } 
+                            .pdfnevjegy { float: right; padding: 10px 20px; border: 2px blue solid; font-size: 17 } 
+                            .nevcim { font-size: 16 } 
+                            .cegadatok { font-size: 13 } 
+                            hr { border-color: blue 3px solid; } 
+                            .pdfnormaldiv { clear: both; padding: 10px 0px; position: relative; } 
+                            .ingatlancim { margin: 20px 0px 0px 0px; font-weight: bold; position: relative; } 
+                            .ingkepekdiv { display: flex; max-width: 100%; position: relative; } 
+                            .ingkepek { max-width: 33%; height: 150px; margin: 10px; position: relative; } 
+                            .leiraspdf { font-size: 12; position: relative; } 
+                            .partabla { font-size: 12; } 
+                            tr:nth-child(even) { background-color: #33333; } 
+                            td { padding: 10px }
+                        </style>
+                        <div class="pdftartalom">
+                            <h2 class="pdfcim" style="text-align: center; color= blue">Információs lap</h2>
+                            <div class="pdfnevjegy">
+                                <p align='right' class="nevcim"><strong>Név: ${teljesNev}</strong><br />Mobil: ${telszam}</p>
+                                <p align="left" class="cegadatok">${cegadatok[0].nev}<br />${cegadatok[0].cim}<br />Tel.: ${cegadatok[0].telefon}<br />E-mail: ${email}</p>
+                            </div>
+                            <div class="pdfnormaldiv">
+                                <p class="ingatlancim" align="left">${ingatlan[0].cim}</p>
+                                <hr>
+                                <p align="left" style="padding-top: 10px">Ár: <strong>${ingatlan[0].ar} ${ingatlan[0].penznem} </strong> Referencia szám: <strong>${ingatlan[0].refid}</strong></p>
+                                <div class="ingkepekdiv">${renderKepek(ingatlan[0].kepek)}</div>
+                                <h3 class="alcimpdf"><strong>Általános leírás:</strong></h3>
+                                <hr>
+                                <p align="left" class="leiraspdf">
+                                    ${ingatlan[0].leiras}
+                                </p>
+                                <h3 class="alcimpdf"><strong>Paraméterek:</strong></h3>
+                                <hr>
+                                ${renderParameterek(ingatlan[0], tipusOpts, altipusOpts)}
+                            </div>
+                        </div>
+                       <div class="break" /> 
+                    </html>`;
+                const pdf = await printPDF(html, 'A4', false);
+
+                if(ingatlan && tipusOpts && altipusOpts && html) {
+                    res.status(200).send({ msg:"HELLO PDF!", data: pdf});
+                }
+
+  
         }
     } else {
         res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });

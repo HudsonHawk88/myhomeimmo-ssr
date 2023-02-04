@@ -15,6 +15,7 @@ import adminAuthService from './routes/AdminRoutes/AdminAuthServices/AdminAuthSe
 //const publicusersServices = from ('./routes/PublicRoutes/UserServices/UserService');
 import adminusersServices from './routes/AdminRoutes/AdminUsersServices/AdminUsersServices.js';
 import adminrolesServices from './routes/AdminRoutes/AdminRoles/AdminRoles.js';
+import adminvevokServices from './routes/AdminRoutes/AdminVevokServices/AdminVevokServices.js';
 import ingatlanokServices from './routes/PublicRoutes/Ingatlanok/IngatlanokService.js';
 import adminIngatlanSzolg from './routes/AdminRoutes/AdminIngatlanSzolgaltatasokService/AdminIngatlanSzolgaltatasokService.js';
 import adminPenzugySzolg from './routes/AdminRoutes/AdminPenzugyiSzolgaltatasokService/AdminPenzugyiSzolgaltatasokService.js';
@@ -115,6 +116,8 @@ app.use(['/api/admin'], adminAuthService);
 app.use(['/api/admin/roles'], adminrolesServices);
 // ADMINUSERS
 app.use(['/api/admin/users'], adminusersServices);
+// ADMINVEVOK
+app.use(['/api/admin/vevok'], adminvevokServices);
 // INGATLANOK
 app.use(['/api/ingatlan'], ingatlanokServices);
 app.use(['/api/admin/ingatlanok'], adminIngatlanokService);

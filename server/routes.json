@@ -12,6 +12,7 @@
         "/api/users",
         "/api/admin/roles",
         "/api/admin/users",
+        "/api/admin/vevok",
         "/api/ingatlan",
         "/api/ingatlanok",
         "/api/ingatlanok/keres",

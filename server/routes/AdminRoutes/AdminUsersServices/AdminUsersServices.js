@@ -186,7 +186,7 @@ router.put('/', upload.array('uj_avatar'), async (req, res) => {
                 if (user.email === modositoObj.email || (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']))) {
                     if (id) {
                         // modositoObj = JSON.parse(JSON.stringify(modositoObj));
-                        modositoObj.isErtekesito = modositoObj.isErtekesito === 'true' ? 0 : 1;
+                        modositoObj.isErtekesito = getNumberFromBoolean(modositoObj.isErtekesito);
                         const isPasswordChanged = modositoObj.password ? true : false;
                         let hash = undefined;
                         if (isPasswordChanged) {
