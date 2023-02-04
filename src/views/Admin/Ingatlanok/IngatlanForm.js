@@ -916,8 +916,8 @@ const IngatlanForm = (props) => {
                         </RVFormGroup>
                     </div>
                     {/* TODO: Email küldés nem megy localhost tls miatt VISSZATENNI A COMMENTELT RÉSZT!!!! (MYHOME-17) */} 
-                    {/* <div className="col-md-3" hidden={!hasRole(user.roles, ['SZUPER_ADMIN'])}> */}
-                    <div className="col-md-3">
+                    <div className="col-md-3" hidden={!hasRole(user.roles, ['SZUPER_ADMIN'])}>
+                    {/*     <div className="col-md-3"> */}
                         <RVFormGroup>
                             <Label>Publikus</Label>
                             &nbsp;&nbsp;
