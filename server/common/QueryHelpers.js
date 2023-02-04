@@ -73,7 +73,7 @@ const printPDF = async (html, format, isLandscape) => {
     const page = await browser.newPage();
     /* let n = html.concat(html.concat(html))
     n = n.concat(html); */
-    await page.setContent(html, { "waitUntil" : "networkidle0" });
+    await page.setContent(html, { "waitUntil" : "networkidle0", "timeout": 0 });
     await page.emulateMediaType('screen')
 /*     const totalPage = await page.$('html');
     const boundingBox = await totalPage.boundingBox(); */
