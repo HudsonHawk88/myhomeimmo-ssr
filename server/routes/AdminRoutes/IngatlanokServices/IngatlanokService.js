@@ -485,8 +485,10 @@ router.post('/infoPDF', async (req, res) => {
                 const email = user.email;
                 ingatlan = getJSONfromLongtext(ingatlan[0], 'toBool');
                 cegadatok = getJSONfromLongtext(cegadatok[0], 'toBool');
-                tipusOptions = getJSONfromLongtext(tipusOpts, 'toBool');
-                altipusOpts = getJSONfromLongtext(altipusOpts, 'toBool');
+                console.log(tipusOptions);
+                console.log(altipusOptions);
+            /*     tipusOptions = getJSONfromLongtext(tipusOpts, 'toBool');
+                altipusOpts = getJSONfromLongtext(altipusOpts, 'toBool'); */
                 console.log(typeof ingatlan.kepek);
                 console.log(ingatlan.kepek);
 
