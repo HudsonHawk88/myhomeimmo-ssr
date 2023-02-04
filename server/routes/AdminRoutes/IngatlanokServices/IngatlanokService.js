@@ -484,8 +484,8 @@ router.post('/infoPDF', async (req, res) => {
                 telszam = `${telszam.orszaghivo}-${telszam.korzet}/${telszam.telszam}`; 
                 const email = user.email;
                 ingatlan = getJSONfromLongtext(ingatlan[0], 'toBool');
-                console.log(typeof ingatlan[0].kepek);
-                console.log(ingatlan[0].kepek);
+                console.log(typeof ingatlan.kepek);
+                console.log(ingatlan.kepek);
 
                 // INGATLANADATOK
               /*   const elsokepek = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.filter((kep, index) => index < 4); */
@@ -525,7 +525,7 @@ router.post('/infoPDF', async (req, res) => {
                                 <p class="ingatlancim" align="left">${ingatlan[0].cim}</p>
                                 <hr>
                                 <p align="left" style="padding-top: 10px">Ár: <strong>${ingatlan[0].ar} ${ingatlan[0].penznem} </strong> Referencia szám: <strong>${ingatlan[0].refid}</strong></p>
-                                <div class="ingkepekdiv">${await renderKepek(ingatlan[0].kepek)}</div>
+                                <div class="ingkepekdiv">${await renderKepek(ingatlan.kepek)}</div>
                                 <h3 class="alcimpdf"><strong>Általános leírás:</strong></h3>
                                 <hr>
                                 <p align="left" class="leiraspdf">
