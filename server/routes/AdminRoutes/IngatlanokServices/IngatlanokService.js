@@ -216,7 +216,7 @@ router.delete('/', async (req, res) => {
                     const sql = `DELETE FROM ingatlanok WHERE id='${id}';`;
                     if (
                         (ingatlan && ingatlan[0].hirdeto && ingatlan[0].hirdeto.feladoEmail === user.email && ingatlan[0].id === parseInt(id, 10)) ||
-                        hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])
+                        hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])
                     ) {
                         ingatlanok.query(sql, (err) => {
                             if (!err) {
