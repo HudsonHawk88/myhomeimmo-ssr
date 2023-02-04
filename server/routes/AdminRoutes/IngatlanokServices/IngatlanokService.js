@@ -358,9 +358,9 @@ const renderParameterek = (ingatlan, tipusOpts, altipusOpts) => {
     <td ${getNemUresFields(ingatlan.epitesmod) ? 'hidden' : ''}><strong>Építés módja: </strong></td>
     <td ${getNemUresFields(ingatlan.epitesmod) ? 'hidden' : ''}>${ingatlan.epitesmod}</td>
     <td ${getNemUresFields(ingatlan.tipus) ? 'hidden' : ''}><strong>Ingatlan típusa: </strong></td>
-    <td ${getNemUresFields(ingatlan.tipus) ? 'hidden' : ''}>${tipusFormatter(tipusOpts.options, ingatlan.tipus)}</td>
+    <td ${getNemUresFields(ingatlan.tipus) ? 'hidden' : ''}>${tipusFormatter(JSON.parse(tipusOpts.options), ingatlan.tipus)}</td>
     <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}><strong>Ingatlan altípusa: </strong></td>
-    <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}>${altipusFormatter(altipusOpts.options, ingatlan.tipus, ingatlan.altipus)}</td>
+    <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}>${altipusFormatter(JSON.parse(altipusOpts.options), ingatlan.tipus, ingatlan.altipus)}</td>
     </tr>
     <tr>
     <td ${getNemUresFields(ingatlan.telepules) ? 'hidden' : ''}><strong>Település: </strong></td>
