@@ -290,15 +290,15 @@ router.post('/jovahagyas', async (req, res) => {
     }
 });
 
-const renderKepek = (kepek) => {
+const renderKepek = async (kepek) => {
     let str = '';
     if (kepek && kepek.length > 0) {
         console.log(kepek);
-          kepek.forEach((kep, index) => {
-        if (index < 3) {
-            str = str.concat(`<img class="ingkepek" src="${kep.src}" alt="${kep.filename}" />`);
-        }
-    });
+        kepek.forEach((kep, index) => {
+            if (index < 3) {
+                str = str.concat(`<img class="ingkepek" src="${kep.src}" alt="${kep.filename}" />`);
+            }
+        });
     }
 
     return str;
@@ -524,7 +524,7 @@ router.post('/infoPDF', async (req, res) => {
                                 <p class="ingatlancim" align="left">${ingatlan[0].cim}</p>
                                 <hr>
                                 <p align="left" style="padding-top: 10px">Ár: <strong>${ingatlan[0].ar} ${ingatlan[0].penznem} </strong> Referencia szám: <strong>${ingatlan[0].refid}</strong></p>
-                                <div class="ingkepekdiv">${renderKepek(ingatlan[0].kepek)}</div>
+                                <div class="ingkepekdiv">${await renderKepek(ingatlan[0].kepek)}</div>
                                 <h3 class="alcimpdf"><strong>Általános leírás:</strong></h3>
                                 <hr>
                                 <p align="left" class="leiraspdf">
