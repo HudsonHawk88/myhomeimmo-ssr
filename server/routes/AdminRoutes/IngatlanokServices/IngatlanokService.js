@@ -292,12 +292,13 @@ router.post('/jovahagyas', async (req, res) => {
 
 const renderKepek = (kepek) => {
     let str = '';
-
-    kepek.forEach((kep, index) => {
+    if (kepek && kepek.length > 0) {
+          kepek.forEach((kep, index) => {
         if (index < 3) {
             str = str.concat(`<img class="ingkepek" src="${kep.src}" alt="${kep.filename}" />`);
         }
     });
+    }
 
     return str;
 }
