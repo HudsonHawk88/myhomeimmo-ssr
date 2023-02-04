@@ -290,7 +290,7 @@ router.post('/jovahagyas', async (req, res) => {
     }
 });
 
-const renderKepek = async (kepek) => {
+const renderKepek = (kepek) => {
     let str = '';
     if (kepek && kepek.length > 0) {
         console.log(kepek);
@@ -471,7 +471,7 @@ router.post('/infoPDF', async (req, res) => {
                 const tipusOptionsSql = `SELECT * FROM ingatlan_options;`;
                 const altipusOptionsSql = `SELECT * FROM ingatlan_subtypes;`;
                 let ingatlan = await UseQuery(ingatlanSql);
-                const cegadatok = await UseQuery(cegadatSql);
+                let cegadatok = await UseQuery(cegadatSql);
                 let tipusOptions = await UseQuery(tipusOptionsSql);
                 let altipusOptions = await UseQuery(altipusOptionsSql);
                 const tipusOpts = tipusOptions[0];
@@ -484,6 +484,9 @@ router.post('/infoPDF', async (req, res) => {
                 telszam = `${telszam.orszaghivo}-${telszam.korzet}/${telszam.telszam}`; 
                 const email = user.email;
                 ingatlan = getJSONfromLongtext(ingatlan[0], 'toBool');
+                cegadatok = getJSONfromLongtext(cegadatok[0], 'toBool');
+                tipusOptions = getJSONfromLongtext(tipusOpts, 'toBool');
+                altipusOpts = getJSONfromLongtext(altipusOpts, 'toBool');
                 console.log(typeof ingatlan.kepek);
                 console.log(ingatlan.kepek);
 
@@ -519,21 +522,21 @@ router.post('/infoPDF', async (req, res) => {
                             <h2 class="pdfcim" style="text-align: center; color= blue">Információs lap</h2>
                             <div class="pdfnevjegy">
                                 <p align='right' class="nevcim"><strong>Név: ${teljesNev}</strong><br />Mobil: ${telszam}</p>
-                                <p align="left" class="cegadatok">${cegadatok[0].nev}<br />${cegadatok[0].cim}<br />Tel.: ${cegadatok[0].telefon}<br />E-mail: ${email}</p>
+                                <p align="left" class="cegadatok">${cegadatok.nev}<br />${cegadatok[0].cim}<br />Tel.: ${cegadatok.telefon}<br />E-mail: ${email}</p>
                             </div>
                             <div class="pdfnormaldiv">
-                                <p class="ingatlancim" align="left">${ingatlan[0].cim}</p>
+                                <p class="ingatlancim" align="left">${ingatlan.cim}</p>
                                 <hr>
-                                <p align="left" style="padding-top: 10px">Ár: <strong>${ingatlan[0].ar} ${ingatlan[0].penznem} </strong> Referencia szám: <strong>${ingatlan[0].refid}</strong></p>
-                                <div class="ingkepekdiv">${await renderKepek(ingatlan.kepek)}</div>
+                                <p align="left" style="padding-top: 10px">Ár: <strong>${ingatlan.ar} ${ingatlan.penznem} </strong> Referencia szám: <strong>${ingatlan.refid}</strong></p>
+                                <div class="ingkepekdiv">${renderKepek(ingatlan.kepek)}</div>
                                 <h3 class="alcimpdf"><strong>Általános leírás:</strong></h3>
                                 <hr>
                                 <p align="left" class="leiraspdf">
-                                    ${ingatlan[0].leiras}
+                                    ${ingatlan.leiras}
                                 </p>
                                 <h3 class="alcimpdf"><strong>Paraméterek:</strong></h3>
                                 <hr>
-                                ${renderParameterek(ingatlan[0], tipusOpts, altipusOpts)}
+                                ${renderParameterek(ingatlan, tipusOpts, altipusOpts)}
                             </div>
                         </div>
                        <div class="break" /> 
