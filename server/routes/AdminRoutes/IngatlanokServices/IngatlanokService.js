@@ -474,8 +474,8 @@ router.post('/infoPDF', async (req, res) => {
                 let cegadatok = await UseQuery(cegadatSql);
                 let tipusOptions = await UseQuery(tipusOptionsSql);
                 let altipusOptions = await UseQuery(altipusOptionsSql);
-                const tipusOpts = tipusOptions[0];
-                const altipusOpts = altipusOptions[0];
+                let tipusOpts = tipusOptions[0];
+                let altipusOpts = altipusOptions[0];
 
                 // USER ADATOK
                 let nev = JSON.parse(user.nev);
