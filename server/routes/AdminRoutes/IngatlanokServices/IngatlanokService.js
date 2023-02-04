@@ -293,6 +293,7 @@ router.post('/jovahagyas', async (req, res) => {
 const renderKepek = (kepek) => {
     let str = '';
     if (kepek && kepek.length > 0) {
+        console.log(kepek);
           kepek.forEach((kep, index) => {
         if (index < 3) {
             str = str.concat(`<img class="ingkepek" src="${kep.src}" alt="${kep.filename}" />`);
@@ -482,6 +483,8 @@ router.post('/infoPDF', async (req, res) => {
                 let telszam = JSON.parse(user.telefon);
                 telszam = `${telszam.orszaghivo}-${telszam.korzet}/${telszam.telszam}`; 
                 const email = user.email;
+                console.log(ingatlan);
+                console.log(ingatlan[0]);
 
                 // INGATLANADATOK
               /*   const elsokepek = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.filter((kep, index) => index < 4); */
