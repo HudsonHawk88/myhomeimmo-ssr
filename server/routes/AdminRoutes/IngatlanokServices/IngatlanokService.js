@@ -522,7 +522,7 @@ router.post('/infoPDF', async (req, res) => {
                             <h2 class="pdfcim" style="text-align: center; color= blue">Információs lap</h2>
                             <div class="pdfnevjegy">
                                 <p align='right' class="nevcim"><strong>Név: ${teljesNev}</strong><br />Mobil: ${telszam}</p>
-                                <p align="left" class="cegadatok">${cegadatok.nev}<br />${cegadatok[0].cim}<br />Tel.: ${cegadatok.telefon}<br />E-mail: ${email}</p>
+                                <p align="left" class="cegadatok">${cegadatok.nev}<br />${cegadatok.cim}<br />Tel.: ${cegadatok.telefon}<br />E-mail: ${email}</p>
                             </div>
                             <div class="pdfnormaldiv">
                                 <p class="ingatlancim" align="left">${ingatlan.cim}</p>
