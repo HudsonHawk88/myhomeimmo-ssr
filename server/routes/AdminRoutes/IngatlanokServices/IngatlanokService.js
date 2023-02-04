@@ -254,6 +254,7 @@ router.post('/jovahagyas', async (req, res) => {
         } else {
             if (!hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
                 const ingatlanId = req.headers.ingatlanId;
+                const ingId = req.headers.ingatlanid;
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                 const mail = {
@@ -261,15 +262,10 @@ router.post('/jovahagyas', async (req, res) => {
                     to: `${process.env.foEmail}`, // list of receivers
                     subject: `${teljesNev} - új ingatlan`, // Subject line
                     html: `<b>Kedves Berki Mónika!</b><br><br>
-                    ${teljesNev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingatlanId ? ingatlanId : 'Nincs id, valami hiba van...'}<br>
+                    ${teljesNev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingId ? ingId : 'Nincs id, valami hiba van...'}<br>
                     Tisztelettel:<br>
                     ${teljesNev}<br>` // html body
                 }
-                nodemailer.createTransport(mailconf).sendMail(mail, (errrr, ressss) => {
-                    if (errrr) {
-                        console.log(errrr);
-                    }
-                })
                 transporter.sendMail(mail,
                 (err) => {
                     if (!err) {

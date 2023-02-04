@@ -77,6 +77,7 @@ const IngatlanForm = (props) => {
     const [telepulesObj, setTelepulesObj] = useState(defaultTelepulesObj);
     const [ingatlanOptions, setIngatlanOptions] = useState([]);
     const [altipusOptions, setAltipusOptions] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const isIrszamTyped = () => {
         if (helyseg.irszam && helyseg.irszam.length === 4) {
@@ -479,6 +480,7 @@ const IngatlanForm = (props) => {
     }
 
     const onSubmit = (e) => {
+        setLoading(true);
         /*    e.preventDefault(); */
         let kuldObj = ingatlanObj;
         kuldObj.helyseg = helyseg;
@@ -525,6 +527,7 @@ const IngatlanForm = (props) => {
             datas = makeFormData(kuldObj, 'kepek', false);
             Services.addIngatlan(datas).then((res) => {
                 if (!res.err) {
+                    setLoading(false);
                     toggleModal();
                     listIngatlanok();
                     addNotification('success', res.msg);
@@ -538,6 +541,7 @@ const IngatlanForm = (props) => {
                         })
                     }
                 } else {
+                    setLoading(false);
                     addNotification('error', res.err);
                 }
             });
@@ -566,8 +570,10 @@ const IngatlanForm = (props) => {
                     toggleModal();
                     listIngatlanok();
                     addNotification('success', res.msg);
+                    setLoading(false);
                 } else {
                     addNotification('error', res.err);
+                    setLoading(false);
                 }
             });
         }
@@ -1169,8 +1175,7 @@ const IngatlanForm = (props) => {
                 </div>
             </ModalBody>
             <ModalFooter>
-                <Button type='button' hidden onClick={() => sendMail(100)}>Send mail</Button>
-                <Button type="submit" color="primary">
+                <Button type="submit" color="primary" disabled={loading}>
                     Mentés
                 </Button>
                 <Button type="button" color="dark" onClick={toggleModal}>
