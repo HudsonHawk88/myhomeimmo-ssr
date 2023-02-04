@@ -33,7 +33,7 @@ const AdminSidebar = (props) => {
                                 &nbsp; Főoldal
                             </NavLink>
                         </NavItem>
-                        {hasRole(user.roles, ['SZUPER_ADMIN', 'VEVOK_ADMIN']) && (
+                        {/* {hasRole(user.roles, ['SZUPER_ADMIN', 'VEVOK_ADMIN']) && (
                             <NavItem className="admin-sidebar__navitem">
                                 <NavLink className="admin-sidebar__navlink nav-link" to="/admin/vevok" history={history} id="vevok">
                                     &nbsp;&nbsp;
@@ -41,7 +41,7 @@ const AdminSidebar = (props) => {
                                     &nbsp; Vevők
                                 </NavLink>
                             </NavItem>
-                        )}
+                        )} */}
                         {hasRole(user.roles, ['SZUPER_ADMIN', 'INGATLAN_ADMIN']) && (
                             <NavItem className="admin-sidebar__navitem">
                                 <NavLink className="admin-sidebar__navlink nav-link" to="/admin/ingatlanok" history={history} id="ingatlanok">

@@ -168,11 +168,12 @@ const Ingatlanok = (props) => {
                         </Button>
                     </>
                 )}
-                {hasRole(props.user.roles, ['INGATLAN_ADMIN']) && (
+                {/* TODO: Visszarakni ha lesz más megoldás PDF generálásra HTML-ből!!! */}
+                {/* {hasRole(props.user.roles, ['INGATLAN_ADMIN']) && (
                     <Button key={row.id + 2} color="link" onClick={() => printAjanloPDF(row.id)}>
                         <i className="fas fa-file-pdf" />
                     </Button>
-                )}
+                )} */}
             </React.Fragment>
         );
     };
