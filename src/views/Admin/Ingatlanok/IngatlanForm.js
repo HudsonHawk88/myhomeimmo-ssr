@@ -474,9 +474,9 @@ const IngatlanForm = (props) => {
         if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
             Services.jovahagyasraKuldes(ingatlanId).then((res) => {
                 if (!res.err) {
-                    addNotification('error', 'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" ')
-                } else {
                     addNotification('success', res.msg)
+                } else {
+                    addNotification('error', 'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" ');
                 }
         })}
     }
@@ -535,13 +535,16 @@ const IngatlanForm = (props) => {
                     addNotification('success', res.msg);
                     
                    // TODO: Email küldés nem megy localhost tls miatt!!!! (MYHOME-17) 
-                    if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
-                        Services.jovahagyasraKuldes(res.ingatlanId).then((err) => {
-                            if (err) {
+                   sendMail(res.ingatlanId)
+                    /* if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
+                        Services.jovahagyasraKuldes(res.ingatlanId).then((res) => {
+                            if (res.err) {
                                 addNotification('error', 'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" ')
+                            } else {
+
                             }
                         })
-                    }
+                    } */
                 } else {
                     setLoading(false);
                     addNotification('error', res.err);
