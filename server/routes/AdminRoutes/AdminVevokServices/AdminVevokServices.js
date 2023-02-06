@@ -1,4 +1,4 @@
-import { jwtparams, UseQuery, pool, validateToken, hasRole, getId, getJSONfromLongtext, getNumberFromBoolean } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole, getId, getJSONfromLongtext, getIngatlanokByKm } from '../../../common/QueryHelpers.js';
 import express from 'express';
 import nodemailer from 'nodemailer';
 import mailconf from '../../common/MailerService/mailconfig.json';
@@ -242,8 +242,8 @@ router.post('/kiajanl', async (req, res) => {
                 const sql = `SELECT nev, email, erdeklodes FROM adminvevok WHERE id = '${id}';`;
                 const result = await UseQuery(sql);
                 let vevo = getJSONfromLongtext(result[0], 'toBool');
-                let kereso = req.body;
-                kereso = JSON.parse(JSON.stringify(kereso));
+                let kereso = vevo.erdeklodes;
+                /* kereso = JSON.parse(JSON.stringify(kereso)); */
                 const keys = Object.keys(kereso);
 
                 let where = '';
@@ -301,6 +301,7 @@ router.post('/kiajanl', async (req, res) => {
                 
 
                 if (kereso['telepules']) {
+                    console.log(kereso['telepules'])
                     if (kereso['telepules'].km > 0) {
                         let km = kereso['telepules'].km;
                         let telepnev = kereso['telepules'].telepulesnev;
@@ -323,7 +324,10 @@ router.post('/kiajanl', async (req, res) => {
                     newWhere = newWhere.slice(0, resultNew - 1);
                 }
 
+                console.log(kereso)
+
                 let keresSql = `SELECT id FROM ingatlanok ${leftJoin !== '' ? leftJoin : ''} WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''}${newWhere !== '' ? ' AND ' + newWhere : ''};`;
+                console.log(keresSql)
 
                 const keresoResult = await UseQuery(keresSql);
                 const ingatlanUrl = keresoResult.map((ing) => {

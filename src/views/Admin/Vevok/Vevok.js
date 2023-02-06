@@ -278,8 +278,8 @@ const Vevok = (props) => {
             if (!res.err) {
                 setNev(res.nev);
                 setCim(res.cim);
-                setSelectedTelepules({ label: res.erdeklodes.telepules.label, value: res.erdeklodes.telepules.label });
-                setTelepulesObj({ telepulesnev: res.erdeklodes.telepules.label, km: res.erdeklodes.telepules.km })
+                setSelectedTelepules({ label: res.erdeklodes.telepules.telepulesnev, value: res.erdeklodes.telepules.telepulesnev });
+                setTelepulesObj({ telepulesnev: res.erdeklodes.telepules.telepulesnev, km: res.erdeklodes.telepules.km })
 
                 setTelefon(res.telefon);
                 setAdminVevo({
