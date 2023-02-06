@@ -2,7 +2,6 @@ import { createPool } from 'mysql2';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import path from 'path';
-import puppeteer from 'puppeteer';
 
 dotenv.config({
     path: path.resolve(__dirname, '../.env')
@@ -65,24 +64,6 @@ const docHeight = () => {
   const body = document.body
   const html = document.documentElement;
   return Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-}
-
-const printPDF = async (html, format, isLandscape) => {
-    
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    /* let n = html.concat(html.concat(html))
-    n = n.concat(html); */
-    await page.setContent(html, { "waitUntil" : "networkidle0", "timeout": 0 });
-    await page.emulateMediaType('screen')
-/*     const totalPage = await page.$('html');
-    const boundingBox = await totalPage.boundingBox(); */
-    
- /*    const pdf = await page.pdf({ format: format, landscape: isLandscape, path: 'Információs_lap.pdf', height: `${boundingBox.height}px`, }); */
-    const pdf = await page.pdf({ format: format, landscape: isLandscape, path: 'Információs_lap.pdf', height: `${docHeight}px`, });
-    
-    await browser.close();
-    return pdf
 }
 
 function verifyJson(input) {
@@ -369,7 +350,6 @@ export {
     createIngatlanokTriggerSql,
     getIngatlanokByKm,
     getKepekForXml,
-    printPDF,
     getJSONfromLongtext,
     getBooleanFromNumber,
     getNumberFromBoolean,

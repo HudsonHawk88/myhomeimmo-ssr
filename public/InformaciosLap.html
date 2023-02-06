@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            html { -webkit-print-color-adjust: 'exact'; width: 100%; } 
+            /*  @media print { .break { break-after: 'always' } } */
+            * { font-family: 'OpenSans-Regular' }
+            .alcimpdf { font-size: 9; margin: 10px 5px 5px 5px; padding: 0; }
+            .pdftartalom { padding: 10px; margin: 10px; border: 2px solid blue; break-after: always; position: relative; top: 0px; }  
+            p { color: blue; padding: 5px 15px 5px 0px } 
+            .pdftartalom ~ .pdftartalom { top: 0px;  break-after: always }
+            .break { break-after: always }
+            .pdfcim { text-align: center; color: blue; padding: 5; margin: 0 } 
+            .pdfnevjegy { margin-left: auto; padding: 5px 20px; border: 2px solid blue; font-size: 9 } 
+            .nevcim { font-size: 10; padding: 2px; margin: 0 } 
+            .cegadatok { font-size: 9; padding: 2px; margin: 0 } 
+            hr { border-color: 3px solid blue; margin: 0; padding: 5; } 
+            .pdfnormaldiv { padding: 10px 0px; position: relative; max-width: 100%; } 
+            .ingatlancim { margin: 10px 5px 5px 5px; font-weight: bold; font-size: 9; } 
+            .arref { margin: 10px 5px 10px 5px; font-weight: bold; font-size: 9; } 
+            .ingatkepek { width: 100%; height: 130px; display: flex; flex-direction: row; justify-content: space-evenly; }
+            .ingkepek { width: calc(33% - 200px); height: 130px; padding: 0; margin: 0; } 
+            /* .ingkepek {   position: relative; }  */
+            .leiraspdf { margin: 10px 5px 5px 5px; font-weight: bold; font-size: 9; display: flex; max-width: 100%; } 
+            .partabla { font-size: 9; } 
+            tr:nth-child(even) { background-color: lightgray; } 
+            td { padding: 10px }
+        </style>
+    </head>
+    <body>
+        <div class="pdftartalom">
+            <h3 class="pdfcim">Információs lap</h3>
+            <div class="pdfnevjegy">
+                <p align='right' class="nevcim"><strong>Név: ${teljesNev}</strong><br />Mobil: ${telszam}</p>
+                <p align="left" class="cegadatok">${cegadatok.nev}<br />${cegadatok.cim}<br />Tel.: ${cegadatok.telefon}<br />E-mail: ${email}</p>
+            </div>
+            <div class="pdfnormaldiv">
+                <p class="ingatlancim" align="left">${ingatlan.cim}</p>
+                <hr>
+                <p align="left" class="arref">Ár: <strong>${ingatlan.ar} ${ingatlan.penznem} </strong> Referencia szám: <strong>${ingatlan.refid}</strong></p>
+                <div class="ingatkepek">${renderKepek(ingatlan.kepek)}</div>
+                <h3 class="alcimpdf"><strong>Általános leírás:</strong></h3>
+                <hr>
+                <p class="leiraspdf">${ingatlan.leiras}</p>
+                <h3 class="alcimpdf"><strong>Paraméterek:</strong></h3>
+                <hr>
+                ${renderParameterek(ingatlan, tipusOpts, altipusOpts)}
+            </div>
+        </div>
+    </body>
+</html>

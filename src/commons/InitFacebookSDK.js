@@ -1,4 +1,4 @@
-const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID;
+const facebookAppId = __isBrowser__ ? process.env.REACT_APP_FACEBOOK_APP_ID : '';
 
 async function apiAuthenticate(accessToken) {
     // authenticate with the api using a facebook access token,

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
+import { Page, Document, pdf, Font, StyleSheet } from '@react-pdf/renderer';
+import Html from 'react-pdf-html';
 
 import Services from './Services';
 import IngatlanForm from './IngatlanForm';
@@ -117,16 +119,22 @@ const Ingatlanok = (props) => {
     };
 
     const printAjanloPDF = (id) => {
-        Services.printPDF(id).then((res) => {
-            if (res) {
-               /*  const url = window.URL.createObjectURL(new Blob([new Uint8Array(res.data.data).buffer])); */
-                const url = window.URL.createObjectURL(new Blob([new Uint8Array(res.data.data).buffer], { type: 'application/pdf' }));
-              /*   window.open(url, '_blank'); */
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'Információs lap.pdf');
-                document.body.appendChild(link);
-                link.click();
+        Services.printPDF(id).then( async (res) => {
+            if (!res.err) {
+                const html = res.html;
+                Font.register({
+                    family: 'OpenSans-Regular',
+                    src: `${process.env.staticUrl}/fonts/OpenSans-Regular.ttf`
+                });
+                const styles = StyleSheet.create({
+                    pdftartalom: {
+                        fontFamily: "OpenSans-Regular"
+                    }
+                })
+                const newPdf = <Document language='hu'><Page style={styles.pdftartalom} size="A4" wrap><Html>{html}</Html></Page></Document>;
+                const newPdfBuffer = await pdf(newPdf).toBlob();
+                const url = window.URL.createObjectURL(newPdfBuffer, { type: "application/pdf" });
+                window.open(url, '_blank');
             }
         })
     }
@@ -169,11 +177,11 @@ const Ingatlanok = (props) => {
                     </>
                 )}
                 {/* TODO: Visszarakni ha lesz más megoldás PDF generálásra HTML-ből!!! */}
-                {/* {hasRole(props.user.roles, ['INGATLAN_ADMIN']) && (
+                {hasRole(props.user.roles, ['INGATLAN_ADMIN']) && (
                     <Button key={row.id + 2} color="link" onClick={() => printAjanloPDF(row.id)}>
                         <i className="fas fa-file-pdf" />
                     </Button>
-                )} */}
+                )}
             </React.Fragment>
         );
     };

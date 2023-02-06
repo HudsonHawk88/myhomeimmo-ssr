@@ -50,7 +50,8 @@ module.exports = {
         new EnvironmentPlugin({
             reachaptchaApiKey: process.env.REACT_APP_recaptchakey,
             reachaptchaSecretKey: process.env.REACT_APP_recaptchasecret,
-            shareUrl: process.env.REACT_APP_url
+            shareUrl: process.env.REACT_APP_url,
+            staticUrl: process.env.REACT_APP_staticUrl
         }),
         new HtmlWebpackPlugin({
             template: './public/index.html',
@@ -124,7 +125,10 @@ module.exports = {
                         }
                     },
                     'source-map-loader'
-                ]
+                ],
+                resolve: {
+                    fullySpecified: false
+                }
             },
             {
                 test: /\.(scss|css)$/,
@@ -164,7 +168,8 @@ module.exports = {
             tty: false,
             constants: false,
             vm: false,
-            zlib: false
+            zlib: false,
+            'process/browser': require.resolve('process/browser')
         }
     }
 };

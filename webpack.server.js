@@ -73,7 +73,7 @@ module.exports = {
             }
         ]
     },
-    externals: [webpackNodeExternals(), 'react-helmet'],
+    externals: [webpackNodeExternals(), 'react-helmet', 'canvg', 'html2canvas', 'dompurify'],
     resolve: {
         fallback: {
             child_process: false,
