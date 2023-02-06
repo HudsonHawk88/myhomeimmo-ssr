@@ -168,7 +168,8 @@ module.exports = {
             tty: false,
             constants: false,
             vm: false,
-            zlib: false
+            zlib: false,
+            process: false 
         }
     }
 };
