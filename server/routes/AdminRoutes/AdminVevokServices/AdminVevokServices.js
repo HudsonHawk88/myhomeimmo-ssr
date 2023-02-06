@@ -337,7 +337,7 @@ router.post('/kiajanl', async (req, res) => {
 
                 const teljesNev = `${vevo.nev.titulus && vevo.nev.titulus + ' '} ${vevo.nev.vezeteknev} ${vevo.nev.keresztnev}`;
                 const mail = {
-                    from: `${process.env.foEmail}`, // sender address
+                    from: `${process.env.REACT_APP_noreplyemail}`, // sender address
                     to: `${teljesNev} <${vevo.email}>`, // list of receivers
                     subject: `Ezek az ingatlanok érdekelhetik...`, // Subject line
                     html: `<b>Kedves ${teljesNev}!</b><br><br>
