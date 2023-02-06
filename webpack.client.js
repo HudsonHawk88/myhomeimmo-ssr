@@ -41,9 +41,9 @@ module.exports = {
         }
     },
     plugins: [
-        new ProvidePlugin({
+/*         new ProvidePlugin({
             process: 'process/browser'
-        }),
+        }), */
         new DefinePlugin({
             __isBrowser__: 'true'
         }),
@@ -168,8 +168,7 @@ module.exports = {
             tty: false,
             constants: false,
             vm: false,
-            zlib: false,
-            'process/browser': require.resolve('process/browser')
+            zlib: false
         }
     }
 };

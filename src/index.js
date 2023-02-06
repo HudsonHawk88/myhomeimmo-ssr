@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { hydrateRoot, createRoot } from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { initFacebookSdk } from './commons/InitFacebookSDK';
+/* import { initFacebookSdk } from './commons/InitFacebookSDK'; */
 
 import App from './App';
 
@@ -28,4 +28,6 @@ function startApp() {
     }
 }
 
-initFacebookSdk().then(startApp);
+startApp()
+
+/* initFacebookSdk().then(startApp); */
