@@ -747,7 +747,7 @@ const IngatlanForm = (props) => {
                     <div className="col-md-12">
                         <RVFormGroup>
                             <Label>{isRequired('Leírás:', true)}</Label>
-                            <RVInput required type="textarea" rows="7" name="leiras" id="leiras" value={ingatlanObj.leiras} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
+                            <RVInput required maxLength={1700} type="textarea" rows="7" name="leiras" id="leiras" value={ingatlanObj.leiras} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
                             <RVFormFeedback />
                         </RVFormGroup>
                     </div>

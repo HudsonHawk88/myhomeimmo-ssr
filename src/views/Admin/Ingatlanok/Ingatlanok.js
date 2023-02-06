@@ -128,10 +128,11 @@ const Ingatlanok = (props) => {
                 });
                 const styles = StyleSheet.create({
                     pdftartalom: {
-                        fontFamily: "OpenSans-Regular"
+                        fontFamily: "OpenSans-Regular",
+                        maxHeight: '100%'
                     }
                 })
-                const newPdf = <Document language='hu'><Page style={styles.pdftartalom} size="A4" wrap><Html>{html}</Html></Page></Document>;
+                const newPdf = <Document language='hu'><Page style={styles.pdftartalom} size="A4" debug break><Html>{html}</Html></Page></Document>;
                 const newPdfBuffer = await pdf(newPdf).toBlob();
                 const url = window.URL.createObjectURL(newPdfBuffer, { type: "application/pdf" });
                 window.open(url, '_blank');
