@@ -49,13 +49,11 @@ const Vevok = (props) => {
         altipus: '',
         rendeltetes: '',
         statusz: '',
-        referenciaSzam: '',
         ar: '',
         penznem: 'Ft',
         alapterulet: '',
         szobaszam: '',
         telepules: defaultTelepulesObj,
-        referenciaSzam: '',
         telek: '',
         emelet: '',
         epitesmod: '',
@@ -73,7 +71,6 @@ const Vevok = (props) => {
     const [telepulesObj, setTelepulesObj] = useState(defaultTelepulesObj);
     const [telepulesekOpts, setTelepulesekOpts] = useState([]);
     const [adminVevokJson, setAdminVevokJson] = useState([]);
-    const [erdeklodesekOptions, setErdeklodesekOptions] = useState([]);
     const [adminVevo, setAdminVevo] = useState(defaultAdminVevo);
     const [nev, setNev] = useState(defaultNev);
     const [cim, setCim] = useState(defaultCim);
@@ -220,21 +217,12 @@ const Vevok = (props) => {
         }
     };
 
-    const getErdeklodesekOptions = () => {
-        Services.getErdeklodesek().then((res) => {
-            if (!res.err) {
-                setErdeklodesekOptions(res);
-            }
-        });
-    };
-
     const init = () => {
         getOrszagok();
         getTelepulesek();
         listAdminVevo();
         getOptions();
         getTelepulesekOpts();
-      /*   getErdeklodesekOptions(); */
     };
 
     useEffect(() => {
@@ -277,6 +265,7 @@ const Vevok = (props) => {
     };
 
     const toggleKriteriumModal = () => {
+        console.log(adminVevo)
         setKriteriumModal(!kriteriumModal);
     }
 
@@ -289,19 +278,51 @@ const Vevok = (props) => {
             if (!res.err) {
                 setNev(res.nev);
                 setCim(res.cim);
+                setSelectedTelepules({ label: res.erdeklodes.telepules.label, value: res.erdeklodes.telepules.label });
+                setTelepulesObj({ telepulesnev: res.erdeklodes.telepules.label, km: res.erdeklodes.telepules.km })
+
                 setTelefon(res.telefon);
                 setAdminVevo({
                     email: res.email,
-                    username: res.username,
-                    password: '',
-                    roles: res.roles,
-                    avatar: res.avatar !== 'undefined' ? res.avatar : [],
-                    isErtekesito: res.isErtekesito
+                    erdeklodesek: res.erdeklodes
                 });
+                setKeresoObj(res.erdeklodes);
             } else {
                 addNotification(res.err);
             }
         });
+    };
+
+
+  const handleTelepulesChange = (e) => {
+        if (e) {
+            setSelectedTelepules(e);
+            setKeresoObj({
+                ...keresoObj,
+                telepules: {
+                    telepulesnev: e.label,
+                    km: '0'
+                }
+            });
+            setTelepulesObj({
+                telepulesnev: e.label,
+                km: '0'
+            });
+        } else {
+            setSelectedTelepules(null);
+            setKeresoObj({
+                ...keresoObj,
+                telepules: {
+                    telepulesnev: '',
+                    km: '0'
+                },
+                irszam: ''
+            });
+            setTelepulesObj({
+                telepulesnev: '',
+                km: '0'
+            });
+        }
     };
 
     const handleNewClick = () => {
@@ -335,11 +356,16 @@ const Vevok = (props) => {
         let user = adminVevo;
         user.nev = nev;
         user.cim = cim;
+        
         user.telefon = telefon;
+        user.erdeklodesek = keresoObj;
+        user.erdeklodesek.telepules = telepulesObj;
+        console.log(user);
 
         if (!currentId) {
             Services.addAdminVevo(user).then((res) => {
                 if (!res.err) {
+                    toggleKriteriumModal();
                     toggleModal();
                     listAdminVevo();
                     addNotification('success', res.msg);
@@ -350,6 +376,7 @@ const Vevok = (props) => {
         } else {
             Services.editAdminVevo(user, currentId).then((res) => {
                 if (!res.err) {
+                    toggleKriteriumModal();
                     toggleModal();
                     listAdminVevo();
                     addNotification('success', res.msg);
@@ -415,293 +442,286 @@ const Vevok = (props) => {
         );
     };
 
+    const saveVevoErdekeltseg = (e) => {
+        onSave(e);
+    }
+
     const renderKriteriumokModal = () => {
         return (
-           <Modal isOpen={kriteriumModal} toggle={toggleKriteriumModal} size='xl' backdrop='static'>
-            <ModalHeader>Kritériumok:</ModalHeader>
-            <ModalBody>
-                <div className="row">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <Label>Ingatlan státusza:</Label>
-                            <RVInput type="select" name="statusz" id="statusz" value={keresoObj.statusz} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
-                                <option key="" value="">
-                                    Kérjük válasszon státuszt...
-                                </option>
-                                {statuszOptions.map((statusz) => {
-                                    return (
-                                        <option key={statusz.id} value={statusz.value}>
-                                            {statusz.nev}
-                                        </option>
-                                    );
-                                })}
-                            </RVInput>
-                        </div>
-                        <div className="col-md-4">
-                            <Label>Ingatlan típusa:</Label>
-                            <RVInput type="select" name="tipus" id="tipus" value={keresoObj.tipus} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
-                                <option key="" value="">
-                                    Kérjük válasszon típust...
-                                </option>
-                                {tipusOptions.map((tipus) => {
-                                    return (
-                                        <option key={tipus.id} value={tipus.value + ''}>
-                                            {tipus.nev}
-                                        </option>
-                                    );
-                                })}
-                            </RVInput>
-                        </div>
-                        <div className="col-md-4">
-                            <RVFormGroup>
-                                <Label>{'Altipus:'}</Label>
-                                <RVInput
-                                    type="select"
-                                    name="altipus"
-                                    id="altipus"
-                                    disabled={keresoObj.tipus === '' || !altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus)}
-                                    value={keresoObj.altipus}
-                                    onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}
-                                >
-                                    <option key="defaultRendeltetes" value="">
-                                        {altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus)
-                                            ? 'Kérjük válasszon altipust...'
-                                            : 'Ehhez a típushoz nem tartozik altípus...'}
-                                    </option>
-                                    {renderAltipusOptions()}
-                                </RVInput>
-                            </RVFormGroup>
-                        </div>
-                    </div>
-                    <div className="row g-3">
-                        <div className="col-md-4">
-                            <RVFormGroup>
-                                <Label>{'Rendeltetés:'}</Label>
-                                <RVInput type="select" name="rendeltetes" id="rendeltetes" value={keresoObj.rendeltetes} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
-                                    <option key="defaultRendeltetes" value="">
-                                        Kérjük válasszon rendeltetést...
-                                    </option>
-                                    {rendeltesOptions.map((item) => {
-                                        return (
-                                            <option key={item.id} value={item.value}>
-                                                {item.value}
+            <Modal isOpen={kriteriumModal} toggle={toggleKriteriumModal} size='xl' backdrop='static'>
+                <RVForm onSubmit={saveVevoErdekeltseg} noValidate>
+                    <ModalHeader>Kritériumok:</ModalHeader>
+                    <ModalBody>
+                            <div className="row">
+                                <div className="row">
+                                    <div className="col-md-4">
+                                        <Label>Ingatlan státusza:</Label>
+                                        <RVInput type="select" name="statusz" id="statusz" value={keresoObj.statusz} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                            <option key="" value="">
+                                                Kérjük válasszon státuszt...
                                             </option>
-                                        );
-                                    })}
-                                </RVInput>
-                            </RVFormGroup>
-                        </div>
-                        <div className="col-md-4">
-                            <Label>Település:</Label>
-                            <Select
-                                type="select"
-                                name="telepulesnev"
-                                id="telepulesnev"
-                                options={telepulesekOpts}
-                                value={selectedTelepules}
-                                isClearable
-                                placeholder="Kérjük válasszon települést..."
-                                onChange={(e) => {
-                                    handleTelepulesChange(e);
-                                }}
-                            />
-                        </div>
-                        <div className="col-md-4">
-                            <Label>+ km </Label>
-                            <RVInput
-                                type="select"
-                                name="km"
-                                id="km"
-                                value={telepulesObj.km}
-                                onChange={(e) =>
-                                    setTelepulesObj({
-                                        ...telepulesObj,
-                                        km: e.target.value
-                                    })
-                                }
-                            >
-                                {renderKmOptions()}
-                            </RVInput>
-                        </div>
-                    </div>
-                    <div className="row g-3">
-                        <div className="col-md-3">
-                            <Label>Max. ár: (Ft)</Label>
-                            <RVInput
-                                type="text"
-                                id="ar"
-                                name="ar"
-                                value={arFormatter(keresoObj.ar)}
-                                onChange={(e) => {
-                                    setKeresoObj({
-                                        ...keresoObj,
-                                        ar: arFormatter(e.target.value)
-                                    });
-                                }}
-                            />
-                        </div>
-                        <div className="col-md-3">
-                            <RVFormGroup>
-                                <Label>{'Pénznem:'}</Label>
-                                <RVInput type="select" name="penznem" id="penznem" value={keresoObj.penznem} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
-                                    {/*  <option key="defaultPénznem" value="">
-                                        {'Kérjük válasszon pénznemet...'}
-                                    </option> */}
-                                    {penznemOptions.map((item) => {
-                                        return (
-                                            <option key={item.id} value={item.value}>
-                                                {item.nev}
+                                            {statuszOptions.map((statusz) => {
+                                                return (
+                                                    <option key={statusz.id} value={statusz.value}>
+                                                        {statusz.nev}
+                                                    </option>
+                                                );
+                                            })}
+                                        </RVInput>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Label>Ingatlan típusa:</Label>
+                                        <RVInput type="select" name="tipus" id="tipus" value={keresoObj.tipus} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                            <option key="" value="">
+                                                Kérjük válasszon típust...
                                             </option>
-                                        );
-                                    })}
-                                </RVInput>
-                            </RVFormGroup>
-                        </div>
-                        <div className="col-md-3">
-                            <RVFormGroup>
-                                <Label>{'Min. alapterület:'}</Label>
-                                <RVInputGroup>
-                                    <RVInput
-                                        pattern="[0-9]+"
-                                        name="alapterulet"
-                                        id="alapterulet"
-                                        invalid={false}
-                                        value={keresoObj.alapterulet}
-                                        onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}
-                                    />
-                                    <RVInputGroupText>
-                                        m <sup>2</sup>
-                                    </RVInputGroupText>
-                                </RVInputGroup>
-                            </RVFormGroup>
-                        </div>
-                        <div className="col-md-3">
-                            <Label>{'Szobaszam:'}</Label>
-                            <RVInput pattern="[0-9]+" name="szobaszam" id="szobaszam" invalid={false} value={keresoObj.szobaszam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                        </div>
-                    </div>
-                    <div className="row g-3">
-                        <div className="col-md-4">
-                            <Label>Referencia szám:</Label>
-                            <RVInput type="text" id="referenciaSzam" name="referenciaSzam" value={keresoObj.referenciaSzam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                        </div>
-                        <div className="col-md-4">
-                            <RVFormGroup>
-                                <Label>{'Min. telekméret:'}</Label>
-                                <RVInputGroup>
-                                    <RVInput pattern="[0-9]+" name="telek" id="telek" invalid={false} value={keresoObj.telek} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                                    <RVInputGroupText>
-                                        m <sup>2</sup>
-                                    </RVInputGroupText>
-                                </RVInputGroup>
-                            </RVFormGroup>
-                        </div>
-                        <div className="col-md-4">
-                            <Label>Emelet: </Label>
-                            <RVInput type="select" name="emelet" id="emelet" value={keresoObj.emelet} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
-                                <option key="" value="">
-                                    Kérjük válasszon emeletet...
-                                </option>
-                                {emeletOptions.map((emelet) => {
-                                    return (
-                                        <option key={emelet.id} value={emelet.value}>
-                                            {emelet.nev}
+                                            {tipusOptions.map((tipus) => {
+                                                return (
+                                                    <option key={tipus.id} value={tipus.value + ''}>
+                                                        {tipus.nev}
+                                                    </option>
+                                                );
+                                            })}
+                                        </RVInput>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <RVFormGroup>
+                                            <Label>{'Altipus:'}</Label>
+                                            <RVInput
+                                                type="select"
+                                                name="altipus"
+                                                id="altipus"
+                                                disabled={keresoObj.tipus === '' || !altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus)}
+                                                value={keresoObj.altipus}
+                                                onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}
+                                            >
+                                                <option key="defaultRendeltetes" value="">
+                                                    {altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus)
+                                                        ? 'Kérjük válasszon altipust...'
+                                                        : 'Ehhez a típushoz nem tartozik altípus...'}
+                                                </option>
+                                                {renderAltipusOptions()}
+                                            </RVInput>
+                                        </RVFormGroup>
+                                    </div>
+                                </div>
+                                <div className="row g-3">
+                                    <div className="col-md-4">
+                                        <RVFormGroup>
+                                            <Label>{'Rendeltetés:'}</Label>
+                                            <RVInput type="select" name="rendeltetes" id="rendeltetes" value={keresoObj.rendeltetes} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                                <option key="defaultRendeltetes" value="">
+                                                    Kérjük válasszon rendeltetést...
+                                                </option>
+                                                {rendeltesOptions.map((item) => {
+                                                    return (
+                                                        <option key={item.id} value={item.value}>
+                                                            {item.value}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </RVInput>
+                                        </RVFormGroup>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Label>Település:</Label>
+                                        <Select
+                                            type="select"
+                                            name="telepulesnev"
+                                            id="telepulesnev"
+                                            options={telepulesekOpts}
+                                            value={selectedTelepules}
+                                            isClearable
+                                            placeholder="Kérjük válasszon települést..."
+                                            onChange={(e) => {
+                                                handleTelepulesChange(e);
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Label>+ km </Label>
+                                        <RVInput
+                                            type="select"
+                                            name="km"
+                                            id="km"
+                                            value={telepulesObj.km}
+                                            onChange={(e) =>
+                                                setTelepulesObj({
+                                                    ...telepulesObj,
+                                                    km: e.target.value
+                                                })
+                                            }
+                                        >
+                                            {renderKmOptions()}
+                                        </RVInput>
+                                    </div>
+                                </div>
+                                <div className="row g-3">
+                                    <div className="col-md-3">
+                                        <Label>Max. ár: (Ft)</Label>
+                                        <RVInput
+                                            type="text"
+                                            id="ar"
+                                            name="ar"
+                                            value={arFormatter(keresoObj.ar)}
+                                            onChange={(e) => {
+                                                setKeresoObj({
+                                                    ...keresoObj,
+                                                    ar: arFormatter(e.target.value)
+                                                });
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <RVFormGroup>
+                                            <Label>{'Pénznem:'}</Label>
+                                            <RVInput type="select" name="penznem" id="penznem" value={keresoObj.penznem} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                                {penznemOptions.map((item) => {
+                                                    return (
+                                                        <option key={item.id} value={item.value}>
+                                                            {item.nev}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </RVInput>
+                                        </RVFormGroup>
+                                    </div>
+                                    <div className="col-md-3">
+                                        <RVFormGroup>
+                                            <Label>{'Min. alapterület:'}</Label>
+                                            <RVInputGroup>
+                                                <RVInput
+                                                    pattern="[0-9]+"
+                                                    name="alapterulet"
+                                                    id="alapterulet"
+                                                    invalid={false}
+                                                    value={keresoObj.alapterulet}
+                                                    onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}
+                                                />
+                                                <RVInputGroupText>
+                                                    m <sup>2</sup>
+                                                </RVInputGroupText>
+                                            </RVInputGroup>
+                                        </RVFormGroup>
+                                    </div>
+                                    <div className="col-md-3">
+                                        <Label>{'Szobaszam:'}</Label>
+                                        <RVInput pattern="[0-9]+" name="szobaszam" id="szobaszam" invalid={false} value={keresoObj.szobaszam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                                    </div>
+                                </div>
+                                <div className="row g-3">
+                                    <div className="col-md-4">
+                                        <RVFormGroup>
+                                            <Label>{'Min. telekméret:'}</Label>
+                                            <RVInputGroup>
+                                                <RVInput pattern="[0-9]+" name="telek" id="telek" invalid={false} value={keresoObj.telek} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                                                <RVInputGroupText>
+                                                    m <sup>2</sup>
+                                                </RVInputGroupText>
+                                            </RVInputGroup>
+                                        </RVFormGroup>
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Label>Emelet: </Label>
+                                        <RVInput type="select" name="emelet" id="emelet" value={keresoObj.emelet} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                            <option key="" value="">
+                                                Kérjük válasszon emeletet...
+                                            </option>
+                                            {emeletOptions.map((emelet) => {
+                                                return (
+                                                    <option key={emelet.id} value={emelet.value}>
+                                                        {emelet.nev}
+                                                    </option>
+                                                );
+                                            })}
+                                        </RVInput>
+                                    </div>
+                                    <div className="col-md-4" />
+                                </div>
+                                <div className="row g-3">
+                                <div className="col-md-4">
+                                    <Label>Építés módja: </Label>
+                                    <RVInput type="select" name="epitesmod" id="epitesmod" value={keresoObj.epitesmod} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                        <option key="" value="">
+                                            Kérjük válasszon építési módot...
                                         </option>
-                                    );
-                                })}
-                            </RVInput>
-                        </div>
-                    </div>
-                    <div className="row g-3">
-                        <div className="col-md-4">
-                            <Label>Építés módja: *</Label>
-                            <RVInput type="select" name="epitesmod" id="epitesmod" value={keresoObj.epitesmod} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
-                                <option key="" value="">
-                                    Kérjük válasszon építési módot...
-                                </option>
-                                {epitesmodOptions.map((epitesmod) => {
-                                    return (
-                                        <option key={epitesmod.id} value={epitesmod.value}>
-                                            {epitesmod.nev}
+                                        {epitesmodOptions.map((epitesmod) => {
+                                            return (
+                                                <option key={epitesmod.id} value={epitesmod.value}>
+                                                    {epitesmod.nev}
+                                                </option>
+                                            );
+                                        })}
+                                    </RVInput>
+                                </div>
+                                <div className="col-md-4">
+                                    <Label>Fűtés módja:</Label>
+                                    <RVInput type="select" name="futes" id="futes" value={keresoObj.futes} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                        <option key="" value="">
+                                            Kérjük válasszon fűtési módot...
                                         </option>
-                                    );
-                                })}
-                            </RVInput>
-                        </div>
-                        <div className="col-md-4">
-                            <Label>Fűtés módja:</Label>
-                            <RVInput type="select" name="futes" id="futes" value={keresoObj.futes} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
-                                <option key="" value="">
-                                    Kérjük válasszon fűtési módot...
-                                </option>
-                                {futesOptions.map((futesmod) => {
-                                    return (
-                                        <option key={futesmod.id} value={futesmod.value}>
-                                            {futesmod.nev}
+                                        {futesOptions.map((futesmod) => {
+                                            return (
+                                                <option key={futesmod.id} value={futesmod.value}>
+                                                    {futesmod.nev}
+                                                </option>
+                                            );
+                                        })}
+                                    </RVInput>
+                                </div>
+                                <div className="col-md-4">
+                                    <Label>Ingatlan állapota:</Label>
+                                    <RVInput type="select" name="allapot" id="allapot" value={keresoObj.allapot} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                        <option key="" value="">
+                                            Kérjük válasszon állapotot...
                                         </option>
-                                    );
-                                })}
-                            </RVInput>
+                                        {allapotOptions.map((allapot) => {
+                                            return (
+                                                <option key={allapot.id} value={allapot.value}>
+                                                    {allapot.nev}
+                                                </option>
+                                            );
+                                        })}
+                                    </RVInput>
+                                </div>
+                            </div>
+                            <div className="row g-3">
+                                <div className="col-md-3">
+                                    <Label>Erkély</Label>
+                                    &nbsp;&nbsp;
+                                    <RVInput type="checkbox" id="isErkely" name="isErkely" checked={keresoObj.isErkely} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                                </div>
+                                <div className="col-md-3">
+                                    <Label>Tetőtér</Label>
+                                    &nbsp;&nbsp;
+                                    <RVInput type="checkbox" id="isTetoter" name="isTetoter" checked={keresoObj.isTetoter} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                                </div>
+                                <div className="col-md-3">
+                                    <Label>Lift</Label>
+                                    &nbsp;&nbsp;
+                                    <RVInput type="checkbox" id="isLift" name="isLift" checked={keresoObj.isLift} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                                </div>
+                                <div className="col-md-3">
+                                    <Label>Új építés</Label>
+                                    &nbsp;&nbsp;
+                                    <RVInput type="checkbox" id="isUjEpitesu" name="isUjEpitesu" checked={keresoObj.isUjEpitesu} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-4">
-                            <Label>Ingatlan állapota:</Label>
-                            <RVInput type="select" name="allapot" id="allapot" value={keresoObj.allapot} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
-                                <option key="" value="">
-                                    Kérjük válasszon állapotot...
-                                </option>
-                                {allapotOptions.map((allapot) => {
-                                    return (
-                                        <option key={allapot.id} value={allapot.value}>
-                                            {allapot.nev}
-                                        </option>
-                                    );
-                                })}
-                            </RVInput>
-                        </div>
-                    </div>
-                    <div className="row g-3">
-                        <div className="col-md-3">
-                            <Label>Erkély</Label>
-                            &nbsp;&nbsp;
-                            <RVInput type="checkbox" id="isErkely" name="isErkely" checked={keresoObj.isErkely} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                        </div>
-                        <div className="col-md-3">
-                            <Label>Tetőtér</Label>
-                            &nbsp;&nbsp;
-                            <RVInput type="checkbox" id="isTetoter" name="isTetoter" checked={keresoObj.isTetoter} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                        </div>
-                        <div className="col-md-3">
-                            <Label>Lift</Label>
-                            &nbsp;&nbsp;
-                            <RVInput type="checkbox" id="isLift" name="isLift" checked={keresoObj.isLift} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                        </div>
-                        <div className="col-md-3">
-                            <Label>Új építés</Label>
-                            &nbsp;&nbsp;
-                            <RVInput type="checkbox" id="isUjEpitesu" name="isUjEpitesu" checked={keresoObj.isUjEpitesu} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-12">
-                            <Button color="success" onClick={() => keres()}>
-                                <i className="fas fa-search"></i>&nbsp;&nbsp; Keresés
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </ModalBody>
-            <ModalFooter>
-                <Button color='success' type='submit'>Mentés</Button>
-                <Button color='secondary' type='button' onClick={toggleKriteriumModal}>Mégsem</Button>
-            </ModalFooter>
-           </Modal>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color='success' type='submit'>Mentés</Button>
+                        <Button color='secondary' type='button' onClick={toggleKriteriumModal}>Mégsem</Button>
+                    </ModalFooter>
+                </RVForm>
+            </Modal>
+           
         );
     }
 
     const renderModal = () => {
-        // console.log(adminVevo);
         return (
-            <Modal isOpen={modalOpen} toggle={toggleModal} size="xl" backdrop="static">
+            <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
                 <RVForm onSubmit={onSave} noValidate={true}>
                     <ModalHeader>{!currentId ? 'Vevő hozzáadása' : 'Vevő módosítása'}</ModalHeader>
                     <ModalBody>
@@ -713,16 +733,16 @@ const Vevok = (props) => {
                                 <RVInput name="titulus" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.titulus} />
                             </div>
                             <div className="col-md-5">
-                                <Label>Vezetéknév:</Label>
-                                <RVInput name="vezeteknev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.vezeteknev} />
+                                <Label>Vezetéknév: *</Label>
+                                <RVInput name="vezeteknev" type="text" required onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.vezeteknev} />
                             </div>
                             <div className="col-md-5">
-                                <Label>Keresztnév:</Label>
-                                <RVInput name="keresztnev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.keresztnev} />
+                                <Label>Keresztnév: *</Label>
+                                <RVInput name="keresztnev" type="text" required onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.keresztnev} />
                             </div>
                             <div className="col-md-12" />
                             <br />
-                            <div className="col-md-5">
+                         {/*    <div className="col-md-5">
                                 <Label>Ország:</Label>
                                 <RVInput type="select" id="orszag" name="orszag" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.orszag.id}>
                                     <option key="default" value="">
@@ -784,7 +804,7 @@ const Vevok = (props) => {
                                 <RVInput name="ajto" id="ajto" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.ajto} />
                             </div>
                             <div className="col-md-12" />
-                            <br />
+                            <br /> */}
                             <div className="col-md-6">
                                 <div className="row">
                                     <div className="col-md-3">
@@ -801,27 +821,24 @@ const Vevok = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-6">
-                                <Label>Érdeklődések:</Label>
-                                <Select name="erdeklodesek" id="erdeklodesek" options={erdeklodesekOptions} isMulti onChange={(e) => setAdminVevo({ ...adminVevo, erdeklodesek: e })} value={adminVevo.erdeklodesek} />
-                            </div>
-                            <div className="col-md-12" />
+                            <div className='col-md-6' />
                         </div>
                         <hr />
                         <h4>Kapcsolattartási adatok:</h4>
                         <br />
                         <div className="row">
-                            <div className="col-md-3">
+                            <div className="col-md-6">
                                 <Label>Email: *</Label>
-                                <RVInput name="email" id="email" type="email" onChange={(e) => handleInputChange(e, adminVevo, setAdminVevo)} value={adminVevo.email} />
+                                <RVInput name="email" id="email" type="email" required onChange={(e) => handleInputChange(e, adminVevo, setAdminVevo)} value={adminVevo.email} />
                             </div>
+                            <div className="col-md-6" />
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        <Button type="button" onClick={toggleKriteriumModal}>Kritériumok megadása</Button>
-                        <Button color="success" type="submit">
+{/*                         <Button color="success" type="submit">
                             Mentés
-                        </Button>
+                        </Button> */}
+                        <Button type="button" color='warning' onClick={toggleKriteriumModal}>Kritériumok megadása</Button>
                         <Button color="secondary" type="button" onClick={() => toggleModal()}>
                             Mégsem
                         </Button>
@@ -853,8 +870,19 @@ const Vevok = (props) => {
 
     const telefonFormatter = (cell, row) => {
         const { telefon } = row;
-        return `${telefon.orszaghivo}-${telefon.korzet}/${telefon.telszam}`;
+        
+        return row.telefon.orszaghivo !== '' ? `${telefon.orszaghivo}-${telefon.korzet}/${telefon.telszam}` : 'Nincs';
     };
+
+    const handleKiajanlasClick = (id) => {
+        Services.kiajanl(id).then((res) => {
+            if (!res.err) {
+                addNotification('success', res.msg);
+            } else {
+                addNotification('error', res.msg);
+            }
+        })
+    }
 
     const tableIconFormatter = (cell, row) => {
         return (
@@ -875,6 +903,9 @@ const Vevok = (props) => {
                     //   onClick={() => handleDeleteClick(cell)}
                 >
                     <i className="fas fa-trash" />
+                </Button>
+                <Button key={row.id + 3} color="link" onClick={() => handleKiajanlasClick(row.id)}>
+                    <i className='fas fa-external-link-alt' />
                 </Button>
             </React.Fragment>
         );

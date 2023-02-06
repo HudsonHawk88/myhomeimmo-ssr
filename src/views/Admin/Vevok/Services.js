@@ -155,11 +155,11 @@ export default class Services {
             method: 'POST',
             cache: 'no-cache',
             headers: {
-                // "Content-Type": "application/json",
+                'Content-Type': 'application/json',
                 // "Accept": "application/json",
                 // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
             },
-            body: adminVevo
+            body: JSON.stringify(adminVevo)
         });
 
         return result;
@@ -170,12 +170,12 @@ export default class Services {
             method: 'PUT',
             cache: 'no-cache',
             headers: {
-                // "Content-Type": "application/json",
+                'Content-Type': 'application/json',
                 // "Accept": "application/json",
                 // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
                 id: id
             },
-            body: adminVevo
+            body: JSON.stringify(adminVevo)
         });
 
         return result;
@@ -195,6 +195,22 @@ export default class Services {
 
         return result;
     };
+
+      static kiajanl = (id) => {
+        let result = Microservices.fetchApi(adminVevokUrl + '/kiajanl', {
+            method: 'POST',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+                id: id
+            }
+        });
+
+        return result;
+    };
+
 
         // OPTIONS START
 

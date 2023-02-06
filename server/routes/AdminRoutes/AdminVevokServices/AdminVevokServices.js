@@ -1,8 +1,12 @@
 import { jwtparams, UseQuery, pool, validateToken, hasRole, getId, getJSONfromLongtext, getNumberFromBoolean } from '../../../common/QueryHelpers.js';
 import express from 'express';
-import bcrypt from 'bcrypt';
+import nodemailer from 'nodemailer';
+import mailconf from '../../common/MailerService/mailconfig.json';
+
 const router = express.Router();
 const adminvevok = pool;
+const transporter = nodemailer.createTransport(mailconf);
+
 
 // ADMINVEVOK START
 
@@ -68,9 +72,8 @@ router.post('/', async (req, res) => {
         } else {
             if (user.roles && user.roles.length !== 0 && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'VEVOK_ADMIN'])) {
                 let felvitelObj = req.body;
+                console.log(felvitelObj);
                 if (felvitelObj) {
-                    felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
-                    const hash = await bcrypt.hash(felvitelObj.password, 10);
                     //store user, password and role
                     const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.adminvevok (
                     id INT NOT NULL PRIMARY KEY,
@@ -78,16 +81,16 @@ router.post('/', async (req, res) => {
                     cim json DEFAULT NULL,
                     telefon json DEFAULT NULL,
                     email text DEFAULT NULL,
-                    erdeklodes json,
+                    erdeklodes json DEFAULT NULL
                   ) ENGINE=InnoDB;`;
                     adminvevok.query(sql, async (error) => {
                         if (!error) {
-                            const sqlEmail = `SELECT email, nev FROM adminvevok WHERE email = '${felvitelObj.email}' OR nev = '${felvitelObj.nev}';`;
+                            const sqlEmail = `SELECT email, nev FROM adminvevok WHERE email = '${felvitelObj.email}';`;
                             const resultEmail = await UseQuery(sqlEmail);
                             if (resultEmail.length === 0) {
                                 let id = await getId(req.headers.id, 'adminvevok');
                                 const sql = `INSERT INTO adminvevok (id, nev, cim, telefon, email, erdeklodes)
-                                VALUES ('${id}', '${felvitelObj.nev}', '${felvitelObj.cim}', '${felvitelObj.telefon}', '${felvitelObj.email}', '${felvitelObj.erdeklodes}');`;
+                                VALUES ('${id}', '${JSON.stringify(felvitelObj.nev)}', '${JSON.stringify(felvitelObj.cim)}', '${JSON.stringify(felvitelObj.telefon)}', '${felvitelObj.email}', '${JSON.stringify(felvitelObj.erdeklodesek)}');`;
                                 adminvevok.query(sql, (err) => {
                                     if (!err) {
                                         res.status(200).send({
@@ -143,7 +146,7 @@ router.put('/', async (req, res) => {
             if (modositoObj) {
                 if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'VEVOK_ADMIN'])) {
                     if (id) {
-                        const sql = `UPDATE adminvevok SET nev = '${modositoObj.nev}', cim = '${modositoObj.cim}', telefon = '${modositoObj.telefon}', email = '${modositoObj.email}', erdeklodes = '${modositoObj.erdeklodes}';`;
+                        const sql = `UPDATE adminvevok SET nev = '${JSON.stringify(modositoObj.nev)}', cim = '${JSON.stringify(modositoObj.cim)}', telefon = '${JSON.stringify(modositoObj.telefon)}', email = '${modositoObj.email}', erdeklodes = '${JSON.stringify(modositoObj.erdeklodesek)}';`;
                         adminvevok.query(sql, (err) => {
                             if (!err) {
                                 res.status(200).send({
@@ -212,6 +215,147 @@ router.delete('/', async (req, res) => {
                         err: 'Id megadása kötelező'
                     });
                 }
+            } else {
+                res.status(403).send({
+                    err: 'Nincs jogosultsága az adott művelethez!'
+                });
+            }
+        }
+    } else {
+        res.status(401).send({
+            err: 'Nincs belépve! Kérem jelentkezzen be!'
+        });
+    }
+});
+
+router.post('/kiajanl', async (req, res) => {
+    const token = req.cookies.JWT_TOKEN;
+    if (token) {
+        const user = await validateToken(token, jwtparams.secret);
+        if (user === null) {
+            res.status(401).send({
+                err: 'Nincs belépve! Kérem jelentkezzen be!'
+            });
+        } else {
+            if (user.roles && user.roles.length !== 0 && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'VEVOK_ADMIN'])) {
+                let id = req.headers.id;
+                const sql = `SELECT nev, email, erdeklodes FROM adminvevok WHERE id = '${id}';`;
+                const result = await UseQuery(sql);
+                let vevo = getJSONfromLongtext(result[0], 'toBool');
+                let kereso = req.body;
+                kereso = JSON.parse(JSON.stringify(kereso));
+                const keys = Object.keys(kereso);
+
+                let where = '';
+                let newWhere = '';
+                let leftJoin = '';
+                keys.forEach((filter) => {
+                    if (kereso[filter] !== '' && kereso[filter] !== false && filter !== 'irszam' && filter !== 'telepules') {
+                        if (
+                            filter === 'telek' ||
+                            filter === 'alapterulet' ||
+                            filter === 'ar' ||
+                            filter === 'isHirdetheto' ||
+                            filter === 'isKiemelt' ||
+                            filter === 'isLift' ||
+                            filter === 'isErkely' ||
+                            filter === 'isTetoter' ||
+                            filter !== 'irszam' ||
+                            filter === 'statusz' ||
+                            filter === 'tipus' ||
+                            filter === 'szobaszam' ||
+                            filter === 'emelet' ||
+                            filter === 'epitesmod' ||
+                            filter === 'futes' ||
+                            filter === 'allapot' ||
+                            filter === 'atipus' ||
+                            filter === 'rendeltetes'
+                        ) {
+                            if (filter === 'telek' || filter === 'alapterulet') {
+                                where = where.concat(`${filter}>=${kereso[filter]} AND `);
+                            }
+                            if (filter === 'ar') {
+                                const ar = kereso[filter].replace(/ /g, '');
+                                where = where.concat(`REPLACE(${filter}, ' ', '') <= ${ar} AND `);
+                            }
+                            if (filter === 'isHirdetheto' || filter === 'isKiemelt' || filter === 'isLift' || filter === 'isErkely' || filter === 'isUjEpitesu' || filter === 'isTetoter') {
+                                where = where.concat(`${filter}='${Number(kereso[filter])}' AND `);
+                            }
+                            if (
+                                filter === 'statusz' ||
+                                filter === 'tipus' ||
+                                filter === 'altipus' ||
+                                filter === 'rendeltetes' ||
+                                filter === 'szobaszam' ||
+                                filter === 'emelet' ||
+                                filter === 'epitesmod' ||
+                                filter === 'futes' ||
+                                filter === 'allapot' ||
+                                filter === 'penznem'
+                            ) {
+                                where = where.concat(`${filter}='${kereso[filter]}' AND `);
+                            }
+                        }
+                    }
+                });
+                
+
+                if (kereso['telepules']) {
+                    if (kereso['telepules'].km > 0) {
+                        let km = kereso['telepules'].km;
+                        let telepnev = kereso['telepules'].telepulesnev;
+                        leftJoin = await getIngatlanokByKm(telepnev, km);
+                        newWhere = `distance >= 0 ORDER BY distances.distance`;
+                    } else {
+                        if (kereso['telepules'].telepulesnev !== '' && leftJoin === '') {
+                            newWhere = newWhere.concat(` telepules='${kereso['telepules'].telepulesnev}' AND `);
+                        }
+                    }
+                }
+
+                let resss = where.lastIndexOf('AND');
+                if (resss !== -1) {
+                    where = where.slice(0, resss - 1);
+                }
+
+                let resultNew = newWhere.lastIndexOf('AND');
+                if (resultNew !== -1) {
+                    newWhere = newWhere.slice(0, resultNew - 1);
+                }
+
+                let keresSql = `SELECT id FROM ingatlanok ${leftJoin !== '' ? leftJoin : ''} WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''}${newWhere !== '' ? ' AND ' + newWhere : ''};`;
+
+                const keresoResult = await UseQuery(keresSql);
+                const ingatlanUrl = keresoResult.map((ing) => {
+                    const url = `${process.env.REACT_APP_url}${ing.id}`
+                    return url;
+                });
+
+                const teljesNev = `${vevo.nev.titulus && vevo.nev.titulus + ' '} ${vevo.nev.vezeteknev} ${vevo.nev.keresztnev}`;
+                const mail = {
+                    from: `${process.env.foEmail}`, // sender address
+                    to: `${teljesNev} <${vevo.email}>`, // list of receivers
+                    subject: `Ezek az ingatlanok érdekelhetik...`, // Subject line
+                    html: `<b>Kedves ${teljesNev}!</b><br><br>
+                    Az alábbi ingatlanok érdekelhetik:<br>
+                    <ul>
+                        ${ingatlanUrl.map((u) => {
+                            return `<li>${u}</li>`
+                        })}
+                        
+                    </ul><br>
+                    Tisztelettel:<br>
+                    MyhomeImmo Kft.<br>` // html body
+                }
+
+                transporter.sendMail(mail, (err) => {
+                    if (!err) {
+                        res.status(200).send({ msg: 'Az ajánló email sikeresen elküldve!' });
+                    } else {
+                        res.status(500).send({ err: err, msg: 'Az ajánló email küldése sikertelen volt!' });
+                    }
+                })
+
             } else {
                 res.status(403).send({
                     err: 'Nincs jogosultsága az adott művelethez!'
