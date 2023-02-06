@@ -340,7 +340,7 @@ router.post('/kiajanl', async (req, res) => {
                     Az alábbi ingatlanok érdekelhetik:<br>
                     <ul>
                         ${ingatlanUrl.map((u) => {
-                            return `<li>${u}</li>`
+                            return `<li><a href="${u}" target="_blank">${u}</a></li>`
                         })}
                         
                     </ul><br>
