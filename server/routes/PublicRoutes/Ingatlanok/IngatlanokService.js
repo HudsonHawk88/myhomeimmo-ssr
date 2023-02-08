@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
     if (isExist) {
         const id = req.query.id;
         const sql = id
-            ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1' isKiemelt='1' ORDER BY rogzitIdo DESC;`
+            ? `SELECT * FROM ingatlanok WHERE id='${id}' AND isAktiv='1' ORDER BY rogzitIdo DESC;`
             : `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, rogzitIdo FROM ingatlanok WHERE isAktiv='1' AND isKiemelt='1' ORDER BY rogzitIdo DESC;`;
 
         let result = await UseQuery(sql);
