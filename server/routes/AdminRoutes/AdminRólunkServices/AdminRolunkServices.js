@@ -2,6 +2,7 @@ import { jwtparams, UseQuery, pool, validateToken, hasRole, getJSONfromLongtext,
 import express from 'express';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import multer from 'multer';
+import sharp from 'sharp';
 const router = express.Router();
 const rolunk = pool;
 

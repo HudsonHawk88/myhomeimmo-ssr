@@ -3,6 +3,7 @@ import express from 'express';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import path from 'path';
 import multer from 'multer';
+import sharp from 'sharp';
 const router = express.Router();
 const myArt = pool;
 

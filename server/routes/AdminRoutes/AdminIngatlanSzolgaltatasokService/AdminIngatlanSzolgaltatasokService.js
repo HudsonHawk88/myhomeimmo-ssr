@@ -1,6 +1,7 @@
 import express from 'express';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import multer from 'multer';
+import sharp from 'sharp';
 import { jwtparams, UseQuery, pool, validateToken, hasRole, getId, getJSONfromLongtext } from '../../../common/QueryHelpers.js';
 
 const router = express.Router();

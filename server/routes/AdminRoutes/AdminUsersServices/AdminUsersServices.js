@@ -3,6 +3,7 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import multer from 'multer';
+import sharp from 'sharp';
 /* import { getJSONfromLongtext } from '../../../common/QueryHelpers'; */
 const router = express.Router();
 const adminusers = pool;
