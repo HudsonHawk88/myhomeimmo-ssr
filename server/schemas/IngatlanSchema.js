@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import sharp from 'sharp';
 import { pool, UseQuery, hasRole, getJSONfromLongtext, getId } from '../common/QueryHelpers.js';
 
@@ -31,13 +31,15 @@ const addIngatlan = async (req, res) => {
             let kepek = [];
             if (req.files) {
                 req.files.forEach((kep, index) => {
+                    let extIndex = kep.originalname.lastIndexOf('.');
+                    let fname = kep.originalname.substring(0, extIndex);
                     kepek.push({
-                        filename: kep.filename,
+                        filename: `${fname}.jpg`,
                         isCover: index.toString() === '0' ? true : false,
-                        src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
-                        title: kep.filename
+                        src: `${process.env.ingatlankepekUrl}/${id}/${fname}.jpg`,
+                        title: `${fname}.jpg`
                     });
-                    let extIndex = kep.filename.lastIndexOf('.');
+                    /* let extIndex = kep.filename.lastIndexOf('.');
                     let fname = kep.filename.substring(0, extIndex);
                     sharp(kep.path)
                         .jpeg({ quality: 80 })
@@ -53,16 +55,27 @@ const addIngatlan = async (req, res) => {
                             } else {
                                 console.log(err);
                             }
-                        });
-                    /* sharp(kep.path)
-                        .resize({ width: 250, height: 200, fit: 'inside' })
+                        }); */
+                    
+                    sharp(kep.buffer)
+                        .jpeg({ quality: 80 })
+                        .resize({ width: 1500, fit: 'inside' })
+                        .withMetadata()
                         .toBuffer((err, buff) => {
                             if (!err) {
-                                fs.writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}_icon.jpg`, buff);
+                                const dir = `${process.env.ingatlankepekdir}/${id}`;
+                                const isDirExist = existsSync(dir);
+                                if (!isDirExist) {
+                                    mkdirSync(dir);
+                                }
+                                writeFileSync(`${dir}/${fname}.jpg`, buff);
+                                sharp(buff)
+                                .resize({ width: 250, height: 200, fit: 'inside' })
+                                .toFile(`${dir}/${fname}_icon.jpg`);
                             } else {
                                 console.log(err);
                             }
-                        }); */
+                        });
                 });
             }
 
@@ -102,14 +115,17 @@ const editIngatlan = async (req, res, user) => {
             }
             if (req.files) {
                 req.files.map((kep, index) => {
+                    let extIndex = kep.originalname.lastIndexOf('.');
+                    let fname = kep.originalname.substring(0, extIndex);
+                    const dir = `${process.env.ingatlankepekdir}/${id}`;
                     kepek.push({
-                        filename: kep.filename,
+                        filename: `${fname}.jpg`,
                         isCover: false,
-                        src: `${process.env.ingatlankepekUrl}/${id}/${kep.filename}`,
-                        title: kep.filename
+                        src: `${process.env.ingatlankepekUrl}/${id}/${fname}.jpg`,
+                        title: `${fname}.jpg`
                     });
 
-                    let extIndex = kep.filename.lastIndexOf('.');
+                   /*  let extIndex = kep.filename.lastIndexOf('.');
                     let fname = kep.filename.substring(0, extIndex);
                     sharp(kep.path)
                         .jpeg({ quality: 80 })
@@ -122,6 +138,25 @@ const editIngatlan = async (req, res, user) => {
                                     .resize({ width: 250, height: 200, fit: 'inside' })
                                     .toFile(`${process.env.ingatlankepekdir}/${id}/${fname}_icon.jpg`)
                                     .catch((err) => console.log(err));
+                            } else {
+                                console.log(err);
+                            }
+                        }); */
+
+                    sharp(kep.buffer)
+                        .jpeg({ quality: 80 })
+                        .resize({ width: 1500, fit: 'inside' })
+                        .withMetadata()
+                        .toBuffer((err, buff) => {
+                            if (!err) {
+                                const isDirExist = existsSync(dir);
+                                if (!isDirExist) {
+                                    mkdirSync(dir);
+                                }
+                                writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`, buff);
+                                sharp(buff)
+                                .resize({ width: 250, height: 200, fit: 'inside' })
+                                .toFile(`${dir}/${fname}_icon.jpg`);
                             } else {
                                 console.log(err);
                             }

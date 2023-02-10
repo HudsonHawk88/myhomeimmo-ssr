@@ -40,7 +40,7 @@ export default class Services {
             mode: 'cors',
             cache: 'no-cache',
             headers: {
-                /*   'Content-Type': 'application/json', */
+                /* 'Content-Type': 'application/json', */
                 'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
             },
             body: data

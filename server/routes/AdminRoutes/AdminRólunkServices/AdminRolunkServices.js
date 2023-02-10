@@ -5,7 +5,7 @@ import multer from 'multer';
 const router = express.Router();
 const rolunk = pool;
 
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         if (file) {
             const id = await getId(req.headers.id, 'rolunk');
@@ -22,7 +22,8 @@ const storage = multer.diskStorage({
             cb(null, file.originalname); //Appending .jpg
         }
     }
-});
+}); */
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // ROLUNK START
@@ -106,11 +107,30 @@ router.post('/', upload.array('kep'), async (req, res) => {
                                 let kepek = [];
                                 if (req.files) {
                                     req.files.forEach((kep) => {
+                                        let extIndex = kep.originalname.lastIndexOf('.');
+                                        let fname = kep.originalname.substring(0, extIndex);
                                         kepek.push({
-                                            src: `${process.env.rolunkUrl}/${id}/${kep.filename}`,
-                                            title: kep.filename,
-                                            filename: kep.filename
+                                            src: `${process.env.rolunkUrl}/${id}/${fname}.jpg`,
+                                            title: `${fname}.jpg`,
+                                            filename: `${fname}.jpg`
                                         });
+
+                                        sharp(kep.buffer)
+                                            .jpeg({ quality: 80 })
+                                            .resize({ width: 1500, fit: 'inside' })
+                                            .withMetadata()
+                                            .toBuffer((err, buff) => {
+                                                if (!err) {
+                                                    const dir = `${process.env.rolunkDir}/${id}`;
+                                                    const isDirExist = existsSync(dir);
+                                                    if (!isDirExist) {
+                                                        mkdirSync(dir);
+                                                    }
+                                                    writeFileSync(`${dir}/${fname}.jpg`, buff);
+                                                } else {
+                                                    console.log(err);
+                                                }
+                                            });
                                     });
                                 }
                                 felvitelObj.kep = kepek;
@@ -189,11 +209,30 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
 
                         if (req.files) {
                             req.files.map((kep) => {
+                                let extIndex = kep.originalname.lastIndexOf('.');
+                                let fname = kep.originalname.substring(0, extIndex);
                                 kepek.push({
-                                    src: `${process.env.rolunkUrl}/${id}/${kep.filename}`,
-                                    title: kep.filename,
-                                    filename: kep.filename
+                                    src: `${process.env.rolunkUrl}/${id}/${fname}.jpg`,
+                                    title: `${fname}.jpg`,
+                                    filename: `${fname}.jpg`
                                 });
+                                
+                                 sharp(kep.buffer)
+                                    .jpeg({ quality: 80 })
+                                    .resize({ width: 1500, fit: 'inside' })
+                                    .withMetadata()
+                                    .toBuffer((err, buff) => {
+                                        if (!err) {
+                                            const dir = `${process.env.rolunkDir}/${id}`;
+                                            const isDirExist = existsSync(dir);
+                                            if (!isDirExist) {
+                                                mkdirSync(dir);
+                                            }
+                                            writeFileSync(`${dir}/${fname}.jpg`, buff);
+                                        } else {
+                                            console.log(err);
+                                        }
+                                    });
                             });
                         }
 

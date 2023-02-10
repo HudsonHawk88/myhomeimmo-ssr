@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport(mailconf);
 
 //TODO: Egyéb (nem publikus) dokumentumok, képek feltöltését megvalósítani!!!
 
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         let id = await getId(req.headers.id, 'ingatlanok');
         const dir = `${process.env.ingatlankepekdir}/${id}`;
@@ -24,25 +24,8 @@ const storage = multer.diskStorage({
         if (!exist) {
             mkdirSync(dir);
         }
-        /*  console.log(req.file); */
-        /*  const fname = file.filename.split('.').slice(0, -1).join('.'); */
-        /*     sharp(file).resize(250, 200).toFile(`${process.env.ingatlankepekdir}/${id}/${fname}_icon.jpg`);
-        sharp(file).jpeg({ quality: 80 }).resize(2500, 1500).toFile(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`); */
         cb(null, dir);
     },
-    /*  imageOptions: {
-        fileFormat: 'webp',
-        quality: 80
-    }, */
-    /* imageOptions: {
-        fileFormat: 'jpg',
-        quality: 60,
-        resize: {
-            width: 2500,
-            height: 1500,
-            resizeMode: 'inside'
-        }
-    } */
     filename: function (req, file, cb) {
         let extIndex = file.originalname.lastIndexOf('.');
         let fname = file.originalname.substring(0, extIndex);
@@ -50,7 +33,9 @@ const storage = multer.diskStorage({
 
         cb(null, ref); //Appending .jpg
     }
-});
+}); */
+
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage });
 
