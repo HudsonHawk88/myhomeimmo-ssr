@@ -409,18 +409,17 @@ router.put('/galeriak', upload.array('uj_kepek'), async (req, res) => {
                 // TODO Email címet most csak szuperadmin tud módoítani!!!!
                 if (user.roles && user.roles.length !== 0 && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                     if (id) {
-                        modositoObj = JSON.parse(JSON.stringify(modositoObj));
                         modositoObj.isActive = getNumberFromBoolean(modositoObj.isActive);
 
                         let kepek = [];
                         if (modositoObj.kepek) {
                             modositoObj.kepek = JSON.parse(JSON.stringify(modositoObj.kepek));
-                            if (Array.isArray(modositoObj.kep)) {
+                            if (Array.isArray(modositoObj.kepek)) {
                                 modositoObj.kep.forEach((item) => {
                                     kepek.push(JSON.parse(item));
                                 });
                             } else {
-                                kepek.push(JSON.parse(modositoObj.kepek));
+                                kepek.push(modositoObj.kepek);
                             }
                         }
 

@@ -221,7 +221,7 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
                                     .withMetadata()
                                     .toBuffer((err, buff) => {
                                         if (!err) {
-                                            const dir = `${process.env.adminIngSzolgUrl}/${id}`;
+                                            const dir = `${process.env.adminIngSzolgDir}/${id}`;
                                             const isDirExist = existsSync(dir);
                                             if (!isDirExist) {
                                                 mkdirSync(dir);
