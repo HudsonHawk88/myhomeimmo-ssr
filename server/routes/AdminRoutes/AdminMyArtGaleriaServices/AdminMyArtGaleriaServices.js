@@ -415,7 +415,7 @@ router.put('/galeriak', upload.array('uj_kepek'), async (req, res) => {
                         if (modositoObj.kepek) {
                             modositoObj.kepek = JSON.parse(JSON.stringify(modositoObj.kepek));
                             if (Array.isArray(modositoObj.kepek)) {
-                                modositoObj.kep.forEach((item) => {
+                                modositoObj.kepek.forEach((item) => {
                                     kepek.push(JSON.parse(item));
                                 });
                             } else {
