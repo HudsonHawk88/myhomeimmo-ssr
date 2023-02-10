@@ -2,10 +2,12 @@ import { jwtparams, UseQuery, pool, validateToken, hasRole, getId, getJSONfromLo
 import express from 'express';
 import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import multer from 'multer';
+import sharp from 'sharp';
+
 const router = express.Router();
 const kapcsolat = pool;
 
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         if (file) {
             const id = await getId(req.headers.id, 'kapcsolat');
@@ -22,7 +24,9 @@ const storage = multer.diskStorage({
             cb(null, file.originalname); //Appending .jpg
         }
     }
-});
+}); */
+
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // KAPCSOLAT START
@@ -73,6 +77,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', upload.array('kep'), async (req, res) => {
+/* router.post('/', async (req, res) => { */
     const token = req.cookies.JWT_TOKEN;
     if (token) {
         const user = await validateToken(token, jwtparams.secret);
@@ -83,6 +88,7 @@ router.post('/', upload.array('kep'), async (req, res) => {
         } else {
             if (user.roles && user.roles.length !== 0 && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                 let felvitelObj = req.body;
+                console.log(req.body)
                 if (felvitelObj) {
                     felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
                     //store user, password and role
@@ -105,18 +111,39 @@ router.post('/', upload.array('kep'), async (req, res) => {
                             if (result.length === 0) {
                                 let id = await getId(req.headers.id, 'kapcsolat');
                                 let kepek = [];
+                                console.log(req.files);
+                                console.log(req.file);
                                 if (req.files) {
                                     req.files.forEach((kep) => {
+                                        let extIndex = kep.originalname.lastIndexOf('.');
+                                        let fname = kep.originalname.substring(0, extIndex);
                                         kepek.push({
-                                            src: `${process.env.kapcsolatUrl}/${id}/${kep.filename}`,
-                                            title: kep.filename,
-                                            filename: kep.filename
+                                            src: `${process.env.kapcsolatUrl}/${id}/${fname}.jpg`,
+                                            title: `${fname}.jpg`,
+                                            filename: `${fname}.jpg`
                                         });
+                                        
+                                        sharp(kep.buffer)
+                                            .jpeg({ quality: 80 })
+                                            .resize({ width: 1500, fit: 'inside' })
+                                            .withMetadata()
+                                            .toBuffer((err, buff) => {
+                                                if (!err) {
+                                                    const dir = `${process.env.kapcsolatDir}/${id}`;
+                                                    const isDirExist = existsSync(dir);
+                                                    if (!isDirExist) {
+                                                        mkdirSync(dir);
+                                                    }
+                                                    writeFileSync(`${dir}/${fname}.jpg`, buff);
+                                                } else {
+                                                    console.log(err);
+                                                }
+                                            });
                                     });
                                 }
                                 felvitelObj.kep = kepek;
                                 const sql = `INSERT INTO kapcsolat (id, azonosito, kep, nev, cim, email, telefon, kapcsolatcim, kapcsolatleiras)
-                          VALUES ('${id}', '${felvitelObj.azonosito}', '${JSON.stringify(felvitelObj.kep)}', '${felvitelObj.nev}', '${felvitelObj.cim}', '${felvitelObj.email}', '${
+                                VALUES ('${id}', '${felvitelObj.azonosito}', '${JSON.stringify(felvitelObj.kep)}', '${felvitelObj.nev}', '${felvitelObj.cim}', '${felvitelObj.email}', '${
                                     felvitelObj.telefon
                                 }', '${felvitelObj.kapcsolatcim}', '${felvitelObj.kapcsolatleiras}');`;
                                 kapcsolat.query(sql, (err) => {
@@ -190,11 +217,31 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
 
                         if (req.files) {
                             req.files.map((kep) => {
+                                let extIndex = kep.originalname.lastIndexOf('.');
+                                let fname = kep.originalname.substring(0, extIndex);
                                 kepek.push({
-                                    src: `${process.env.kapcsolatUrl}/${id}/${kep.filename}`,
-                                    title: kep.filename,
-                                    filename: kep.filename
+                                    src: `${process.env.kapcsolatUrl}/${id}/${fname}.jpg`,
+                                    title: `${fname}.jpg`,
+                                    filename: `${fname}.jpg`
                                 });
+
+                                
+                                sharp(kep.buffer)
+                                    .jpeg({ quality: 80 })
+                                    .resize({ width: 1500, fit: 'inside' })
+                                    .withMetadata()
+                                    .toBuffer((err, buff) => {
+                                        if (!err) {
+                                            const dir = `${process.env.kapcsolatDir}/${id}`;
+                                            const isDirExist = existsSync(dir);
+                                            if (!isDirExist) {
+                                                mkdirSync(dir);
+                                            }
+                                            writeFileSync(`${dir}/${fname}.jpg`, buff);
+                                        } else {
+                                            console.log(err);
+                                        }
+                                    });
                             });
                         }
 

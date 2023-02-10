@@ -1,12 +1,12 @@
 import express from 'express';
-import { existsSync, mkdirSync, writeFileSync, rmSync, rm } from 'fs';
+import { existsSync, mkdirSync, writeFileSync, rmSync } from 'fs';
 import multer from 'multer';
 import { jwtparams, UseQuery, pool, validateToken, hasRole, getId, getJSONfromLongtext } from '../../../common/QueryHelpers.js';
 
 const router = express.Router();
 const ingatlanSzolg = pool;
 
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
         let id = await getId(req.headers.id, 'ingatlan_szolg');
         const dir = `${process.env.adminIngSzolgDir}/${id}/`;
@@ -19,7 +19,8 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         cb(null, file.originalname); //Appending .jpg
     }
-});
+}); */
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // ROLES START
@@ -102,11 +103,31 @@ router.post('/', upload.array('kep'), async (req, res) => {
                                 let kepek = [];
                                 if (req.files) {
                                     req.files.forEach((kep) => {
+                                        let extIndex = kep.originalname.lastIndexOf('.');
+                                        let fname = kep.originalname.substring(0, extIndex);
+
                                         kepek.push({
-                                            src: `${process.env.adminIngSzolgUrl}/${id}/${kep.filename}`,
-                                            title: kep.filename,
-                                            filename: kep.filename
+                                            src: `${process.env.adminIngSzolgUrl}/${id}/${fname}.jpg`,
+                                            title: `${fname}.jpg`,
+                                            filename: `${fname}.jpg`
                                         });
+
+                                        sharp(kep.buffer)
+                                            .jpeg({ quality: 80 })
+                                            .resize({ width: 1500, fit: 'inside' })
+                                            .withMetadata()
+                                            .toBuffer((err, buff) => {
+                                                if (!err) {
+                                                    const dir = `${process.env.adminIngSzolgDir}/${id}`;
+                                                    const isDirExist = existsSync(dir);
+                                                    if (!isDirExist) {
+                                                        mkdirSync(dir);
+                                                    }
+                                                    writeFileSync(`${dir}/${fname}.jpg`, buff);
+                                                } else {
+                                                    console.log(err);
+                                                }
+                                            });
                                     });
                                 }
 
@@ -185,11 +206,30 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
 
                         if (req.files) {
                             req.files.map((kep) => {
+                                let extIndex = kep.originalname.lastIndexOf('.');
+                                let fname = kep.originalname.substring(0, extIndex);
                                 kepek.push({
-                                    src: `${process.env.adminIngSzolgUrl}/${id}/${kep.filename}`,
-                                    title: kep.filename,
-                                    filename: kep.filename
+                                    src: `${process.env.adminIngSzolgUrl}/${id}/${fname}.jpg`,
+                                    title: `${fname}.jpg`,
+                                    filename: `${fname}.jpg`
                                 });
+
+                                sharp(kep.buffer)
+                                    .jpeg({ quality: 80 })
+                                    .resize({ width: 1500, fit: 'inside' })
+                                    .withMetadata()
+                                    .toBuffer((err, buff) => {
+                                        if (!err) {
+                                            const dir = `${process.env.adminIngSzolgUrl}/${id}`;
+                                            const isDirExist = existsSync(dir);
+                                            if (!isDirExist) {
+                                                mkdirSync(dir);
+                                            }
+                                            writeFileSync(`${dir}/${fname}.jpg`, buff);
+                                        } else {
+                                            console.log(err);
+                                        }
+                                    });
                             });
                         }
 
