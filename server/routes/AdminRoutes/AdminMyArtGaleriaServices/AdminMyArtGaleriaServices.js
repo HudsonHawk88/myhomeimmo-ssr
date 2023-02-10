@@ -413,7 +413,6 @@ router.put('/galeriak', upload.array('uj_kepek'), async (req, res) => {
 
                         let kepek = [];
                         if (modositoObj.kepek) {
-                            modositoObj.kepek = JSON.parse(JSON.stringify(modositoObj.kepek));
                             if (Array.isArray(modositoObj.kepek)) {
                                 modositoObj.kepek.forEach((item) => {
                                     kepek.push(JSON.parse(item));
@@ -452,10 +451,10 @@ router.put('/galeriak', upload.array('uj_kepek'), async (req, res) => {
                             });
                         }
 
-                        modositoObj.kep = kepek;
+                
                         const sql = `UPDATE myart_galeriak SET azonosito='${modositoObj.azonosito}', nev='${modositoObj.nev}', muveszNev='${modositoObj.muveszNev}', muveszTelefon='${
                             modositoObj.muveszTelefon
-                        }', muveszEmail='${modositoObj.muveszEmail}', muveszUrl='${modositoObj.muveszUrl}', kepek='${JSON.stringify(modositoObj.kepek)}', leiras='${modositoObj.leiras}', isActive='${
+                        }', muveszEmail='${modositoObj.muveszEmail}', muveszUrl='${modositoObj.muveszUrl}', kepek='${JSON.stringify(kepek)}', leiras='${modositoObj.leiras}', isActive='${
                             modositoObj.isActive
                         }' WHERE id = '${id}';`;
                         myArt.query(sql, (err) => {
