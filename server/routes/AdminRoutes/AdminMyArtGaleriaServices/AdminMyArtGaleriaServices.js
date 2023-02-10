@@ -465,7 +465,8 @@ router.put('/galeriak', upload.array('uj_kepek'), async (req, res) => {
                                 });
                             } else {
                                 res.status(500).send({
-                                    err: 'MyArt galéria bejegyzés módosítása sikertelen!'
+                                    err: err,
+                                    msg: 'MyArt galéria bejegyzés módosítása sikertelen!'
                                 });
                             }
                         });
