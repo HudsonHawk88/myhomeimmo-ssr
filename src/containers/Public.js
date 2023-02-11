@@ -27,23 +27,26 @@ const Public = (props) => {
     return location.pathname === '/login' && !isAdmin ? (
         <React.Fragment>{children}</React.Fragment>
     ) : (
-        <div className="public_full">
-            <PublicHeader {...props} />
-            {loading ? (
-                <div className="tartalom">
-                    <Loading isLoading={loading} />
-                </div>
-            ) : (
-                <React.Fragment>
-                    {__isBrowser__ && location.pathname === '/' && location.pathname !== '/login' && <PublicHeaderCarousel ingatlanok={data} />}
+        <React.Fragment>
+            <div className="public_full">
+                <PublicHeader {...props} />
+                {loading ? (
                     <div className="tartalom">
-                        {/*   <Outlet /> */}
-                        {children}
+                        <Loading isLoading={loading} />
                     </div>
-                </React.Fragment>
-            )}
+                ) : (
+                    <React.Fragment>
+                        {__isBrowser__ && location.pathname === '/' && location.pathname !== '/login' && <PublicHeaderCarousel ingatlanok={data} />}
+                        <div className="tartalom">
+                            {/*   <Outlet /> */}
+                            {children}
+                        </div>
+                    </React.Fragment>
+                )}
+                
+            </div>
             <PublicFooter />
-        </div>
+        </React.Fragment>
     );
 };
 

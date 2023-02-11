@@ -4,7 +4,12 @@
 html body {
     font-family: Arial, Helvetica, sans-serif;
     position: relative;
-    overflow-x: hidden;
+    overflow: overlay;
+    scrollbar-width: none;
+}
+
+html body::-webkit-scrollbar {
+    display: none;
 }
 
 #root {
@@ -15,7 +20,8 @@ html body {
     padding: 0px;
     margin: 0px;
     position: relative;
-    overflow-x: hidden;
+   /*   overflow-x: hidden !important; */
+     
     /*     background-image: var(themes-public-bgcolor); */
     /*     background-size: cover; */
 }
@@ -23,7 +29,9 @@ html body {
 .public_full {
     min-width: 100%;
     min-height: 100%;
-    overflow: hidden !important;
+   /*  overflow: hidden; */
+    /* overflow-y: clip;   */ 
+   /*  overflow-y: clip; */
     // width: 100%;
     // display: grid;
     // grid-template-rows: auto auto auto 1fr auto ;
@@ -229,7 +237,8 @@ html body {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    min-height: calc(100vh - 200px);
+    
+    /* min-height: calc(100vh - 200px); */
     margin: 0px;
     background-color: var(themes-public-bgcolor2);
 

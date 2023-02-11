@@ -1,7 +1,12 @@
 html body {
   font-family: Arial, Helvetica, sans-serif;
   position: relative;
-  overflow-x: hidden;
+  overflow: overlay;
+  scrollbar-width: none;
+}
+
+html body::-webkit-scrollbar {
+  display: none;
 }
 
 #root {
@@ -12,7 +17,7 @@ html body {
   padding: 0px;
   margin: 0px;
   position: relative;
-  overflow-x: hidden;
+  /*   overflow-x: hidden !important; */
   /*     background-image: var(themes-public-bgcolor); */
   /*     background-size: cover; */
 }
@@ -20,7 +25,9 @@ html body {
 .public_full {
   min-width: 100%;
   min-height: 100%;
-  overflow: hidden !important;
+  /*  overflow: hidden; */
+  /* overflow-y: clip;   */
+  /*  overflow-y: clip; */
 }
 
 .modal-body {
@@ -205,7 +212,7 @@ html body {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  min-height: calc(100vh - 200px);
+  /* min-height: calc(100vh - 200px); */
   margin: 0px;
   background-color: rgb(237, 224, 122);
   /*     background-image: var(themes-public-navbarbgimage); */
@@ -735,8 +742,8 @@ html body {
   /* background-image: var(themes-public-navbarbgimage);
   background-size: contain; */
   margin: 0px auto;
-  /* min-width: 100%; */
-  width: 100vw;
+  min-width: 100%;
+  /* width: calc(100vw - (100vw - 100%)); */
   border-radius: 0px;
   position: fixed !important;
   top: 60px;

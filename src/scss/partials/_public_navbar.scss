@@ -9,8 +9,8 @@
     /* background-image: var(themes-public-navbarbgimage);
     background-size: contain; */
     margin: 0px auto;
-    /* min-width: 100%; */
-    width: 100vw;
+    min-width: 100%;
+    /* width: calc(100vw - (100vw - 100%)); */
     border-radius: 0px;
     position: fixed !important;
     top: 60px;
