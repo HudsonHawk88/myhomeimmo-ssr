@@ -55,6 +55,7 @@ html body {
   grid-template-columns: auto;
   position: fixed !important;
   min-width: 100%;
+  max-width: 100%;
   z-index: 2;
   /*  background-color: rgba(0, 0, 0, 0.9); */
   background-color: rgb(255, 255, 255);
@@ -732,6 +733,7 @@ html body {
   background-size: contain; */
   margin: 0px auto;
   min-width: 100%;
+  max-width: 100%;
   border-radius: 0px;
   position: fixed !important;
   top: 60px;
