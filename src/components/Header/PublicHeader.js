@@ -19,9 +19,6 @@ const PublicHeader = (props) => {
                         <i aria-hidden className="fas fa-phone-alt"></i>&nbsp; +36-20/461-9075
                     </div> */}
                     <div className="kozossegi">
-                        <Link className="nav-link public-navbar__nav-link job_button" to="/myjob" replace>
-                            Dolgozz Velünk!
-                        </Link>
                         <a href="https://www.facebook.com/myhomeberkimonika" target="_blank" rel="noreferrer">
                             <i aria-hidden className="fab fa-facebook-square"></i>
                         </a>
