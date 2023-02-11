@@ -84,7 +84,7 @@ const PublicHeaderCarousel = (props) => {
                 </UncontrolledAccordion>
             </div>
             <div className="col-lg-6 undernav__carousel">
-                <Gallery items={getItems()} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} infinite={true} autoPlay={true} slideInterval={15000} showBullets={false} />
+                <Gallery items={getItems()} showFullscreenButton={false} showNav={false} showThumbnails={false} showPlayButton={false} infinite={true} autoPlay={true} slideInterval={15000} showBullets={false} />
             </div>
         </div>
     );
