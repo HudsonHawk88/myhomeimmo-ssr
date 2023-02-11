@@ -73,7 +73,7 @@ const PublicHeaderCarousel = (props) => {
 
     return (
         <div className="undernav row">
-            <div className="col-md-6 undernav__kereso">
+            <div className="col-lg-6 undernav__kereso">
                 <UncontrolledAccordion defaultOpen="1">
                     <AccordionItem>
                         <AccordionHeader targetId="1">Gyorskereső</AccordionHeader>
@@ -83,7 +83,7 @@ const PublicHeaderCarousel = (props) => {
                     </AccordionItem>
                 </UncontrolledAccordion>
             </div>
-            <div className="col-md-6 undernav__carousel">
+            <div className="col-lg-6 undernav__carousel">
                 <Gallery items={getItems()} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} infinite={true} autoPlay={true} slideInterval={15000} showBullets={false} />
             </div>
         </div>

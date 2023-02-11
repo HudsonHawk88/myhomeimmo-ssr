@@ -12,31 +12,32 @@ const PublicHeader = (props) => {
 
     return (
         <React.Fragment>
+            <div id="logo" />
             <div className="plus_nav">
                 <div className="plus_content">
-                    <div className="tel">
+{/*                     <div className="tel">
                         <i aria-hidden className="fas fa-phone-alt"></i>&nbsp; +36-20/461-9075
-                    </div>
+                    </div> */}
                     <div className="kozossegi">
                         <Link className="nav-link public-navbar__nav-link job_button" to="/myjob" replace>
-                            {/* <i className="far fa-bookmark"></i> */}
-                            {/* <i className="fas fa-home" /> */}
                             Dolgozz Velünk!
                         </Link>
-                        {/* <button className="job_button">Dolgozz Velünk!</button> */}
                         <a href="https://www.facebook.com/myhomeberkimonika" target="_blank" rel="noreferrer">
                             <i aria-hidden className="fab fa-facebook-square"></i>
                         </a>
                         <a href="https://www.instagram.com/myhomeberkimonika/" target="_blank" rel="noreferrer">
                             <i aria-hidden className="fab fa-instagram"></i>
                         </a>
-                        <i aria-hidden className="fab fa-youtube"></i>
-                        <i aria-hidden className="fab fa-whatsapp"></i>
+                        <a href="#" target="_blank" rel="noreferrer">
+                            <i className="fab fa-tiktok"></i>
+                        </a>
+                         <a href="#" target="_blank" rel="noreferrer">
+                            <i aria-hidden className="fab fa-whatsapp"></i>
+                        </a>
                     </div>
                 </div>
             </div>
             <Navbar expand="lg" light className="public-navbar" dark>
-                <div id="logo" />
                 <div className="navbar-toggler" onClick={() => toggleNavbar('public_navbar_collapse')}>
                     <i aria-hidden className="fas fa-bars"></i>
                 </div>
@@ -94,7 +95,7 @@ const PublicHeader = (props) => {
                                 &nbsp; Kapcsolat
                             </Link>
                         </NavItem>
-                        <UncontrolledDropdown className="nav-item public-navbar__nav-item" inNavbar nav>
+                        {/* <UncontrolledDropdown className="nav-item public-navbar__nav-item" inNavbar nav>
                             <DropdownToggle nav caret className="nav-link public-navbar__nav-link">
                                 <i aria-hidden className="far fa-file-alt"></i>
                                 &nbsp; GDPR
@@ -107,13 +108,19 @@ const PublicHeader = (props) => {
                                     </Link>
                                 </DropdownItem>
                             </DropdownMenu>
-                        </UncontrolledDropdown>
+                        </UncontrolledDropdown> */}
                         <NavItem className="nav-item public-navbar__nav-item">
+                            <Link className="nav-link public-navbar__nav-link" to="/myjob" id="myjob" replace>
+                                <i aria-hidden className="fas fa-shapes"></i>
+                                &nbsp; Dolgozz Velünk!
+                            </Link>
+                        </NavItem>
+                        {/* <NavItem className="nav-item public-navbar__nav-item">
                             <Link className="nav-link public-navbar__nav-link" to="/myart" id="myart" replace>
                                 <i aria-hidden className="fas fa-shapes"></i>
                                 &nbsp; MyArt
                             </Link>
-                        </NavItem>
+                        </NavItem> */}
                     </Nav>
                 </Collapse>
             </Navbar>

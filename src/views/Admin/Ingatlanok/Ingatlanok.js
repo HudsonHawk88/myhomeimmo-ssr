@@ -119,7 +119,7 @@ const Ingatlanok = (props) => {
     };
 
     const printAjanloPDF = (id) => {
-        Services.printPDF(id).then( async (res) => {
+        Services.printPDF(id).then(async (res) => {
             if (!res.err) {
                 const html = res.html;
                 Font.register({
@@ -128,17 +128,23 @@ const Ingatlanok = (props) => {
                 });
                 const styles = StyleSheet.create({
                     pdftartalom: {
-                        fontFamily: "OpenSans-Regular",
+                        fontFamily: 'OpenSans-Regular',
                         maxHeight: '100%'
                     }
-                })
-                const newPdf = <Document language='hu'><Page style={styles.pdftartalom} size="A4" break><Html>{html}</Html></Page></Document>;
+                });
+                const newPdf = (
+                    <Document language="hu">
+                        <Page style={styles.pdftartalom} size="A4" break>
+                            <Html>{html}</Html>
+                        </Page>
+                    </Document>
+                );
                 const newPdfBuffer = await pdf(newPdf).toBlob();
-                const url = window.URL.createObjectURL(newPdfBuffer, { type: "application/pdf" });
+                const url = window.URL.createObjectURL(newPdfBuffer, { type: 'application/pdf' });
                 window.open(url, '_blank');
             }
-        })
-    }
+        });
+    };
 
     const openFacebookShare = (url, title, w, h) => {
         if (__isBrowser__) {

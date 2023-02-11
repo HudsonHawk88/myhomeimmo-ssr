@@ -32,15 +32,42 @@ html body {
   font-size: 12px;
 }
 
+#logo {
+  display: block;
+  position: fixed;
+  content: url("../images/logo_uj.png");
+  height: 100px;
+  padding: 10px;
+  z-index: 222;
+}
+@media screen and (min-width: 992px) {
+  #logo {
+    display: block;
+    height: 140px;
+    padding: 10px;
+    /*  border-radius: 10px 0px 0px 10px; */
+  }
+}
+
 .plus_nav {
   display: grid;
   grid-template-columns: auto;
-  background-color: rgba(0, 0, 0, 0.9);
+  position: fixed !important;
+  min-width: 100%;
+  z-index: 2;
+  /*  background-color: rgba(0, 0, 0, 0.9); */
+  background-color: rgb(255, 255, 255);
   /*   border-radius: 10px; */
-  min-height: 30px;
+  height: 60px !important;
+  padding: 0px 10px;
+}
+@media screen and (min-width: 992px) {
+  .plus_nav {
+    /*  min-height: 30px; */
+  }
 }
 .plus_nav .nav-link {
-  color: white;
+  color: black;
   cursor: pointer;
   font-size: 0.8em;
   padding: 5px;
@@ -57,11 +84,19 @@ html body {
 .plus_content {
   display: grid;
   grid-template-columns: auto auto;
+  justify-content: center;
   align-items: center;
   font-size: 1.2em;
   color: white;
   font-weight: bolder;
-  padding: 10px;
+  height: 75px;
+  /* padding: 15px 5px; */
+}
+@media screen and (min-width: 992px) {
+  .plus_content {
+    justify-content: right;
+    /* padding: 15px; */
+  }
 }
 
 .fb-share-button {
@@ -80,10 +115,17 @@ html body {
 
 .kozossegi {
   display: flex;
-  align-content: center;
-  align-self: center;
-  justify-self: right;
+  position: relative;
+  min-width: 100%;
+  justify-content: center;
   align-items: center;
+  top: 11px;
+}
+@media screen and (min-width: 992px) {
+  .kozossegi {
+    position: unset;
+    top: unset;
+  }
 }
 .kozossegi a {
   color: white;
@@ -95,22 +137,28 @@ html body {
   cursor: pointer;
 }
 
-.kozossegi .fa-facebook-square:hover {
+.kozossegi .fa-facebook-square {
   color: rgb(8, 122, 234);
 }
 
-.kozossegi .fa-instagram:hover {
+.kozossegi .fa-tiktok {
+  color: rgb(0, 0, 0);
+  text-shadow: 2px 2px rgb(247, 0, 78);
+  font-size: 22px;
+}
+
+.kozossegi .fa-instagram {
   background: -webkit-linear-gradient(69deg, rgb(221, 242, 6) 39%, rgb(240, 3, 3) 72%, rgb(255, 0, 215) 100%);
   background-clip: "text";
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.kozossegi .fa-youtube:hover {
+.kozossegi .fa-youtube {
   color: red;
 }
 
-.kozossegi .fa-whatsapp:hover {
+.kozossegi .fa-whatsapp {
   color: rgb(0, 163, 86);
 }
 
@@ -146,6 +194,8 @@ html body {
 }
 
 .tartalom {
+  position: relative;
+  top: 101px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -154,6 +204,11 @@ html body {
   background-color: rgb(237, 224, 122);
   /*     background-image: var(themes-public-navbarbgimage); */
   /*  background-size: contain; */
+}
+@media screen and (min-width: 992px) {
+  .tartalom {
+    top: 140px;
+  }
 }
 .tartalom .inner_tartalom {
   background-color: rgba(255, 255, 255, 0.1);
@@ -669,13 +724,17 @@ html body {
 
 .public-navbar {
   font-size: 1em;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgb(255, 255, 255);
   box-shadow: none;
   /* background-image: var(themes-public-navbarbgimage);
   background-size: contain; */
   margin: 0px auto;
   min-width: 100%;
   border-radius: 0px;
+  position: fixed !important;
+  top: 60px;
+  z-index: 2;
+  padding: 0px 10px;
 }
 @media screen and (min-width: 1080px) {
   .public-navbar {
@@ -695,44 +754,43 @@ html body {
   /*    background-color: var(themes-public-navbarbgcolor); */
   min-height: 100%;
   border-radius: 0px;
-  padding: 0px 5px;
+  padding: 0px;
+  justify-content: right !important;
 }
 .public-navbar .container-fluid .navbar-toggler {
+  position: relative;
+  top: -28px;
+  right: -7px;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 5px;
+  padding: 10px;
+  margin: -14px 5px;
+  border: 1px black solid;
+  border-radius: 10px;
 }
 .public-navbar .container-fluid .navbar-toggler i {
   font-size: 30px;
-  color: white !important;
+  color: black !important;
 }
 @media screen and (min-width: 992px) {
   .public-navbar .container-fluid {
     border-radius: 10px;
+    justify-content: space-between !important;
   }
 }
-.public-navbar #logo {
-  display: block;
-  /*   background-color: rgba(0, 0, 0, 0.7); */
-  content: url("../images/logo2.png");
-  height: 60px;
-  width: 80px;
-  padding: 5px 0px;
-}
-@media screen and (min-width: 992px) {
-  .public-navbar #logo {
-    display: block;
-    /*  border-radius: 10px 0px 0px 10px; */
-  }
+.public-navbar__collapse {
+  position: relative;
+  top: 10px;
+  padding-bottom: 0px !important;
 }
 @media screen and (min-width: 992px) {
   .public-navbar__collapse {
+    top: unset;
     min-height: 60px;
     padding-left: 10px;
   }
 }
 .public-navbar__nav {
-  padding: 10px;
+  padding: 10px 0px 0px 0px;
   /*  background-color: var(themes-public-navbgcolor); */
   width: 100%;
   border-radius: 0px;
@@ -744,6 +802,7 @@ html body {
     align-items: center;
     padding: 0px;
     min-height: 60px;
+    justify-content: right;
     /*   border-radius: 0px 10px 10px 0px; */
     font-size: 1.1em;
   }
@@ -774,29 +833,29 @@ html body {
   transition-property: background-color, border-bottom, text-shadow;
   transition-timing-function: ease-in;
   transition-duration: 0.2s;
-  color: #ffffff !important;
+  color: rgb(0, 0, 0) !important;
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 .public-navbar .nav-link:hover {
-  background-color: rgb(120, 212, 223);
+  background-color: rgb(58, 214, 197);
   border: unset;
-  text-shadow: 1px 1px rgb(120, 212, 223);
+  text-shadow: 1px 1px rgb(58, 214, 197);
 }
 @media screen and (min-width: 992px) {
   .public-navbar .nav-link:hover {
-    border-bottom: 5px solid rgb(120, 212, 223);
+    border-bottom: 5px solid rgb(58, 214, 197);
     background-color: unset;
   }
 }
 .public-navbar .nav-link.active {
-  background-color: rgb(120, 212, 223);
+  background-color: rgb(58, 214, 197);
   border: unset;
 }
 @media screen and (min-width: 992px) {
   .public-navbar .nav-link.active {
-    border-bottom: 5px solid rgb(120, 212, 223);
+    border-bottom: 5px solid rgb(58, 214, 197);
     background-color: unset;
   }
 }
@@ -816,7 +875,7 @@ html body {
 }
 @media screen and (min-width: 992px) {
   .public-navbar .dropdown-item {
-    background-color: rgba(0, 0, 0, 0.9) !important;
+    background-color: rgb(255, 255, 255) !important;
     padding: 5px !important;
   }
 }
@@ -839,6 +898,13 @@ html body {
   min-width: 100% !important;
   min-height: 400px;
   margin: 0px;
+  position: relative;
+  top: 101px;
+}
+@media screen and (min-width: 992px) {
+  .undernav {
+    top: 140px;
+  }
 }
 .undernav__carousel {
   padding: 0px !important;
@@ -860,12 +926,12 @@ html body {
 .undernav .accordion-header {
   display: block;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 992px) {
   .undernav .accordion-header {
     display: none;
   }
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 992px) {
   .undernav .accordion-collapse {
     display: flex !important;
   }
@@ -893,7 +959,7 @@ html body {
   min-height: 500px;
   max-height: 500px;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 992px) {
   .undernav .image-gallery {
     min-height: 100%;
     max-height: 100%;
@@ -1493,6 +1559,7 @@ html body {
 
 .public-footer {
   position: relative;
+  top: 101px;
   bottom: 0px;
   height: 55px;
   width: 100%;
@@ -1509,6 +1576,7 @@ html body {
 @media screen and (min-width: 992px) {
   .public-footer {
     box-shadow: 0.25rem 0.25rem 4px 4px rgba(174, 255, 237, 0.514);
+    top: 140px;
     /* border-radius: 10px; */
   }
 }

@@ -43,15 +43,40 @@ html body {
     font-size: 12px;
 }
 
+#logo {
+    display: block;
+    position: fixed;
+    content: var(themes-public-navbarlogo);
+    height: 100px;
+    padding: 10px;
+    z-index: 222;
+
+    @media screen and (min-width: 992px) {
+        display: block;
+        height: 140px;
+        padding: 10px;
+        /*  border-radius: 10px 0px 0px 10px; */
+    }
+}
+
 .plus_nav {
     display: grid;
     grid-template-columns: auto;
-    background-color: rgba(0, 0, 0, 0.9);
+    position: fixed !important;
+    min-width: 100%;
+    z-index: 2;
+   /*  background-color: rgba(0, 0, 0, 0.9); */
+    background-color: rgba(255, 255, 255, 1);
     /*   border-radius: 10px; */
-    min-height: 30px;
+    height: 60px !important;
+    padding: 0px 10px;
+
+    @media screen and (min-width: 992px) {
+       /*  min-height: 30px; */
+    }
 
     .nav-link {
-        color: white;
+        color: black;
         cursor: pointer;
         font-size: 0.8em;
         padding: 5px;
@@ -69,11 +94,19 @@ html body {
 .plus_content {
     display: grid;
     grid-template-columns: auto auto;
+    justify-content: center;
     align-items: center;
     font-size: 1.2em;
     color: white;
     font-weight: bolder;
-    padding: 10px;
+    height: 75px;
+    /* padding: 15px 5px; */
+
+    @media screen and (min-width: 992px) {
+        justify-content: right;
+        /* padding: 15px; */
+    }
+
 }
 
 // .job {
@@ -99,10 +132,16 @@ html body {
 
 .kozossegi {
     display: flex;
-    align-content: center;
-    align-self: center;
-    justify-self: right;
+    position: relative;
+    min-width: 100%;
+    justify-content: center;
     align-items: center;
+    top: 11px;
+
+    @media screen and (min-width: 992px) {
+        position: unset;
+        top: unset;
+    }
 
     a {
         color: white;
@@ -115,22 +154,28 @@ html body {
     cursor: pointer;
 }
 
-.kozossegi .fa-facebook-square:hover {
+.kozossegi .fa-facebook-square {
     color: rgb(8, 122, 234);
 }
 
-.kozossegi .fa-instagram:hover {
+.kozossegi .fa-tiktok {
+    color: rgb(0, 0, 0);
+    text-shadow: 2px 2px rgb(247,0,78);
+    font-size: 22px;
+}
+
+.kozossegi .fa-instagram {
     background: -webkit-linear-gradient(69deg, rgba(221, 242, 6, 1) 39%, rgba(240, 3, 3, 1) 72%, rgba(255, 0, 215, 1) 100%);
     background-clip: 'text';
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.kozossegi .fa-youtube:hover {
+.kozossegi .fa-youtube {
     color: red;
 }
 
-.kozossegi .fa-whatsapp:hover {
+.kozossegi .fa-whatsapp {
     color: rgb(0, 163, 86);
 }
 
@@ -172,12 +217,18 @@ html body {
 }
 
 .tartalom {
+    position: relative;
+    top: 101px;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
     min-height: calc(100vh - 200px);
     margin: 0px;
     background-color: var(themes-public-bgcolor2);
+
+    @media screen and (min-width: 992px) {
+        top: 140px;
+    }
     // padding: 10px 10px 10px 0px;
     // background: var(themes-public-navbarbgimage);
     /*     background-image: var(themes-public-navbarbgimage); */

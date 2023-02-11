@@ -6,6 +6,12 @@
     min-width: 100% !important;
     min-height: 400px;
     margin: 0px;
+    position: relative;
+    top: 101px;
+
+    @media screen and (min-width: 992px) {
+        top: 140px;
+    }
 
     &__carousel {
         // max-height: 400px;
@@ -33,13 +39,13 @@
     .accordion-header {
         display: block;
 
-        @media screen and (min-width: 768px) {
+        @media screen and (min-width: 992px) {
             display: none;
         }
     }
 
     .accordion-collapse {
-        @media screen and (min-width: 768px) {
+        @media screen and (min-width: 992px) {
             display: flex !important;
         }
     }
@@ -71,7 +77,7 @@
         min-height: 500px;
         max-height: 500px;
 
-        @media screen and (min-width: 768px) {
+        @media screen and (min-width: 992px) {
             min-height: 100%;
             max-height: 100%;
         }

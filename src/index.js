@@ -28,6 +28,6 @@ function startApp() {
     }
 }
 
-startApp()
+startApp();
 
 /* initFacebookSdk().then(startApp); */
