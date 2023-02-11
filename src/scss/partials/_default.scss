@@ -6,11 +6,20 @@ html body {
     position: relative;
     overflow: overlay;
     scrollbar-width: none;
+    background-color: #fff;
+   /*  scrollbar-width: thin; */
 }
 
 html body::-webkit-scrollbar {
     display: none;
+    width: 10px;
+   /*  background-color: #fff; */
 }
+
+/* html body::-webkit-scrollbar-track-piece {
+  background: #fff;
+  height: 10px;
+} */
 
 #root {
     /* min-height: 100vh;
@@ -58,6 +67,7 @@ html body::-webkit-scrollbar {
 #logo {
     display: block;
     position: fixed;
+    top: 5px;
     content: var(themes-public-navbarlogo);
     height: 100px;
     padding: 10px;
@@ -79,15 +89,17 @@ html body::-webkit-scrollbar {
     width: 100vw;
     z-index: 2;
     /*  background-color: rgba(0, 0, 0, 0.9); */
-    background-color: rgba(255, 255, 255, 1);
+    /* background-color: rgba(255, 255, 255, 1); */
+    background-color: white !important;
     /*   border-radius: 10px; */
-    height: 60px !important;
+    height: 80px;
     padding: 0px;
     
 
     @media screen and (min-width: 992px) {
         padding: 0px 10px;
-
+        justify-content: right;
+        
         /*  min-height: 30px; */
     }
 
@@ -110,7 +122,7 @@ html body::-webkit-scrollbar {
 .plus_content {
     display: grid;
     grid-template-columns: auto auto;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     font-size: 1.2em;
     color: white;
@@ -120,6 +132,7 @@ html body::-webkit-scrollbar {
 
     @media screen and (min-width: 992px) {
         justify-content: right;
+        top: 40px;
         /* padding: 15px; */
     }
 }
@@ -151,11 +164,13 @@ html body::-webkit-scrollbar {
     min-width: 100%;
     justify-content: center;
     align-items: center;
-    top: 8px;
+    top: 20px;
+    margin: 0 0 0 25px;
 
     @media screen and (min-width: 992px) {
-        position: unset;
-        top: unset;
+        position: relative;
+        top: 10px;
+        margin: unset;
     }
 
     a {
@@ -170,16 +185,29 @@ html body::-webkit-scrollbar {
 }
 
 .kozossegi .fa-facebook-square {
+    color: #999;
+}
+
+.kozossegi .fa-facebook-square:hover {
     color: rgb(8, 122, 234);
 }
 
 .kozossegi .fa-tiktok {
+    color: #999;
+    font-size: 25px;
+    text-shadow: none;
+}
+
+.kozossegi .fa-tiktok:hover {
     color: rgb(0, 0, 0);
     text-shadow: 2px 2px rgb(247, 0, 78);
-    font-size: 25px;
 }
 
 .kozossegi .fa-instagram {
+    color: #999;
+}
+
+.kozossegi .fa-instagram:hover {
     background: -webkit-linear-gradient(69deg, rgba(221, 242, 6, 1) 39%, rgba(240, 3, 3, 1) 72%, rgba(255, 0, 215, 1) 100%);
     background-clip: 'text';
     -webkit-background-clip: text;
@@ -191,6 +219,10 @@ html body::-webkit-scrollbar {
 }
 
 .kozossegi .fa-whatsapp {
+    color: #999;
+}
+
+.kozossegi .fa-whatsapp:hover {
     color: rgb(0, 163, 86);
 }
 
@@ -233,7 +265,7 @@ html body::-webkit-scrollbar {
 
 .tartalom {
     position: relative;
-    top: 101px;
+    top: 115px;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
