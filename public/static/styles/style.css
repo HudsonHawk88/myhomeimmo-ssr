@@ -907,6 +907,7 @@ html body {
   position: relative;
   top: 101px;
   max-width: 100vw;
+  overflow: hidden !important;
 }
 @media screen and (min-width: 992px) {
   .undernav {
