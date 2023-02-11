@@ -67,7 +67,7 @@ html body {
     min-width: 100%;
     max-width: 100%;
     z-index: 2;
-   /*  background-color: rgba(0, 0, 0, 0.9); */
+    /*  background-color: rgba(0, 0, 0, 0.9); */
     background-color: rgba(255, 255, 255, 1);
     /*   border-radius: 10px; */
     height: 60px !important;
@@ -75,8 +75,8 @@ html body {
 
     @media screen and (min-width: 992px) {
         padding: 0px 10px;
-        
-       /*  min-height: 30px; */
+
+        /*  min-height: 30px; */
     }
 
     .nav-link {
@@ -110,7 +110,6 @@ html body {
         justify-content: right;
         /* padding: 15px; */
     }
-
 }
 
 // .job {
@@ -164,7 +163,7 @@ html body {
 
 .kozossegi .fa-tiktok {
     color: rgb(0, 0, 0);
-    text-shadow: 2px 2px rgb(247,0,78);
+    text-shadow: 2px 2px rgb(247, 0, 78);
     font-size: 25px;
 }
 

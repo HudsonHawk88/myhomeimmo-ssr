@@ -15,7 +15,7 @@ const PublicHeader = (props) => {
             <div id="logo" />
             <div className="plus_nav">
                 <div className="plus_content">
-{/*                     <div className="tel">
+                    {/*                     <div className="tel">
                         <i aria-hidden className="fas fa-phone-alt"></i>&nbsp; +36-20/461-9075
                     </div> */}
                     <div className="kozossegi">
@@ -28,7 +28,7 @@ const PublicHeader = (props) => {
                         <a href="#" target="_blank" rel="noreferrer">
                             <i className="fab fa-tiktok"></i>
                         </a>
-                         <a href="#" target="_blank" rel="noreferrer">
+                        <a href="#" target="_blank" rel="noreferrer">
                             <i aria-hidden className="fab fa-whatsapp"></i>
                         </a>
                     </div>
