@@ -23,6 +23,7 @@ html body {
 .public_full {
     min-width: 100%;
     min-height: 100%;
+    overflow: hidden !important;
     // width: 100%;
     // display: grid;
     // grid-template-rows: auto auto auto 1fr auto ;

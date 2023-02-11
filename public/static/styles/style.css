@@ -20,6 +20,7 @@ html body {
 .public_full {
   min-width: 100%;
   min-height: 100%;
+  overflow: hidden !important;
 }
 
 .modal-body {
