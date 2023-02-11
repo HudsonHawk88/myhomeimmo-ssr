@@ -73,14 +73,10 @@ html body::-webkit-scrollbar {
   display: flex;
   position: fixed !important;
   justify-content: center;
-  /* min-width: 100%; */
   width: 100vw;
   z-index: 2;
-  /*  background-color: rgba(0, 0, 0, 0.9); */
-  /* background-color: rgba(255, 255, 255, 1); */
   background-color: white !important;
-  /*   border-radius: 10px; */
-  height: 80px;
+  height: 70px;
   padding: 0px;
 }
 @media screen and (min-width: 992px) {
@@ -108,13 +104,11 @@ html body::-webkit-scrollbar {
 .plus_content {
   display: grid;
   grid-template-columns: auto auto;
-  /* justify-content: center; */
   align-items: center;
   font-size: 1.2em;
   color: white;
   font-weight: bolder;
-  height: 75px;
-  /* padding: 15px 5px; */
+  height: 70px;
 }
 @media screen and (min-width: 992px) {
   .plus_content {
@@ -145,7 +139,7 @@ html body::-webkit-scrollbar {
   justify-content: center;
   align-items: center;
   top: 20px;
-  margin: 0 0 0 25px;
+  margin: 0 0 0 20px;
 }
 @media screen and (min-width: 992px) {
   .kozossegi {
@@ -239,7 +233,7 @@ html body::-webkit-scrollbar {
 
 .tartalom {
   position: relative;
-  top: 115px;
+  top: 110px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -779,9 +773,9 @@ html body::-webkit-scrollbar {
   /* width: calc(100vw - (100vw - 100%)); */
   border-radius: 0px;
   position: fixed !important;
-  top: 72px;
+  top: 70px;
   z-index: 2;
-  padding: 10px !important;
+  padding: 5px 10px !important;
 }
 @media screen and (min-width: 1080px) {
   .public-navbar {
@@ -806,7 +800,7 @@ html body::-webkit-scrollbar {
 }
 .public-navbar .container-fluid .navbar-toggler {
   position: relative;
-  top: -35px;
+  top: -30px;
   right: -7px;
   cursor: pointer;
   padding: 10px;
@@ -943,12 +937,11 @@ html body::-webkit-scrollbar {
 }
 
 .undernav {
-  display: flex;
   min-width: 100% !important;
   min-height: 400px;
   margin: 0px !important;
   position: relative;
-  top: 115px;
+  top: 110px;
   max-width: 100vw;
   overflow: hidden !important;
 }
@@ -1610,7 +1603,7 @@ html body::-webkit-scrollbar {
 
 .public-footer {
   position: relative;
-  top: 115px;
+  top: 110px;
   bottom: 0px;
   height: 55px;
   width: 100%;

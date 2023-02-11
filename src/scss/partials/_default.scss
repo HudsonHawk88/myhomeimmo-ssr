@@ -85,14 +85,10 @@ html body::-webkit-scrollbar {
     display: flex;
     position: fixed !important;
     justify-content: center;
-    /* min-width: 100%; */
     width: 100vw;
     z-index: 2;
-    /*  background-color: rgba(0, 0, 0, 0.9); */
-    /* background-color: rgba(255, 255, 255, 1); */
     background-color: white !important;
-    /*   border-radius: 10px; */
-    height: 80px;
+    height: 70px;
     padding: 0px;
     
 
@@ -122,13 +118,11 @@ html body::-webkit-scrollbar {
 .plus_content {
     display: grid;
     grid-template-columns: auto auto;
-    /* justify-content: center; */
     align-items: center;
     font-size: 1.2em;
     color: white;
     font-weight: bolder;
-    height: 75px;
-    /* padding: 15px 5px; */
+    height: 70px;
 
     @media screen and (min-width: 992px) {
         justify-content: right;
@@ -165,7 +159,7 @@ html body::-webkit-scrollbar {
     justify-content: center;
     align-items: center;
     top: 20px;
-    margin: 0 0 0 25px;
+    margin: 0 0 0 20px;
 
     @media screen and (min-width: 992px) {
         position: relative;
@@ -265,7 +259,7 @@ html body::-webkit-scrollbar {
 
 .tartalom {
     position: relative;
-    top: 115px;
+    top: 110px;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
