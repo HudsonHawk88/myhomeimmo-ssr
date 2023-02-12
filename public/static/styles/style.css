@@ -54,7 +54,7 @@ html body::-webkit-scrollbar {
 #logo {
   display: block;
   position: fixed;
-  top: 5px;
+  top: 2px;
   content: url("../images/logo_uj.png");
   height: 100px;
   padding: 10px;
@@ -63,6 +63,7 @@ html body::-webkit-scrollbar {
 @media screen and (min-width: 992px) {
   #logo {
     display: block;
+    top: 0px;
     height: 140px;
     padding: 10px;
     /*  border-radius: 10px 0px 0px 10px; */

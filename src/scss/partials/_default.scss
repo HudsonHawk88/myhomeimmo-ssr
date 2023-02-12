@@ -67,7 +67,7 @@ html body::-webkit-scrollbar {
 #logo {
     display: block;
     position: fixed;
-    top: 5px;
+    top: 2px;
     content: var(themes-public-navbarlogo);
     height: 100px;
     padding: 10px;
@@ -75,6 +75,7 @@ html body::-webkit-scrollbar {
 
     @media screen and (min-width: 992px) {
         display: block;
+        top: 0px;
         height: 140px;
         padding: 10px;
         /*  border-radius: 10px 0px 0px 10px; */
