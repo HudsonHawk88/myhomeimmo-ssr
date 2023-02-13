@@ -31,11 +31,13 @@ html body::-webkit-scrollbar {
 }
 
 .public_full {
-  min-width: 100%;
-  min-height: 100%;
-  /*  overflow: hidden; */
-  /* overflow-y: clip;   */
-  /*  overflow-y: clip; */
+  width: 100%;
+  /*   margin: 0px 15%; */
+  /* min-width: 100%; */
+  /* min-height: 100%; */
+  /* overflow: hidden; */
+  /* overflow-y: clip; */
+  /* overflow-y: clip; */
 }
 
 .modal-body {
@@ -55,6 +57,7 @@ html body::-webkit-scrollbar {
   display: block;
   position: fixed;
   top: 2px;
+  left: 0px;
   content: url("../images/logo_uj.png");
   height: 100px;
   padding: 10px;
@@ -62,6 +65,7 @@ html body::-webkit-scrollbar {
 }
 @media screen and (min-width: 992px) {
   #logo {
+    left: 10vw;
     display: block;
     top: 0px;
     height: 140px;
@@ -74,16 +78,20 @@ html body::-webkit-scrollbar {
   display: flex;
   position: fixed !important;
   justify-content: center;
-  width: 100vw;
+  /* width: 100vw; */
   z-index: 2;
   background-color: white !important;
   height: 70px;
+  width: 100%;
   padding: 0px;
+  /* margin: 0px 15% 0px 0px; */
 }
 @media screen and (min-width: 992px) {
   .plus_nav {
-    padding: 0px 10px;
+    /* padding: 0px 6.75em; */
+    /*    padding: 5px 10px; */
     justify-content: right;
+    padding: 0px 10vw;
     /*  min-height: 30px; */
   }
 }
@@ -233,20 +241,24 @@ html body::-webkit-scrollbar {
 }
 
 .tartalom {
-  position: relative;
-  top: 110px;
+  /* position: relative;
+  top: 110px; */
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
+  padding: 10px;
+  min-height: 100vh;
   /* min-height: calc(100vh - 200px); */
   margin: 0px;
-  background-color: rgb(237, 224, 122);
+  background-color: #f2f2f2;
+  /* background-color: var(themes-public-bgcolor2); */
   /*     background-image: var(themes-public-navbarbgimage); */
   /*  background-size: contain; */
 }
 @media screen and (min-width: 992px) {
   .tartalom {
-    top: 140px;
+    padding: 0px 10vw;
+    /*    top: 140px; */
   }
 }
 .tartalom .inner_tartalom {
@@ -761,15 +773,25 @@ html body::-webkit-scrollbar {
   border-radius: 10px;
 }
 
+header {
+  display: flex;
+  min-height: fit-content;
+  width: inherit;
+}
+@media screen and (min-width: 992px) {
+  header {
+    min-height: 140px;
+  }
+}
+
 .public-navbar {
-  font-size: 1em;
+  font-size: 0.8em;
   background-color: rgb(255, 255, 255);
   /*  background-color: transparent; */
-  box-shadow: none;
   /* background-image: var(themes-public-navbarbgimage);
   background-size: contain; */
   margin: 0px auto;
-  min-width: 100%;
+  width: 100%;
   /*  background-color: transparent; */
   /* width: calc(100vw - (100vw - 100%)); */
   border-radius: 0px;
@@ -777,18 +799,24 @@ html body::-webkit-scrollbar {
   top: 70px;
   z-index: 2;
   padding: 5px 10px !important;
+  box-shadow: 0px 5px 5px grey;
+  /*  @media screen and (min-width: 1080px) {
+       font-size: 1.2em;
+   } */
+}
+@media screen and (min-width: 992px) and (max-width: 1080px) {
+  .public-navbar {
+    /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
+    font-size: 0.85em;
+    padding: 5px 10vw !important;
+    /*     border-radius: 10px; */
+  }
 }
 @media screen and (min-width: 1080px) {
   .public-navbar {
     /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
     font-size: 1em;
-    /*  border-radius: 10px; */
-  }
-}
-@media screen and (min-width: 992px) and (max-width: 1080px) {
-  .public-navbar {
-    /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
-    font-size: 1em;
+    padding: 5px 10vw !important;
     /*     border-radius: 10px; */
   }
 }
@@ -941,14 +969,16 @@ html body::-webkit-scrollbar {
   min-width: 100% !important;
   min-height: 400px;
   margin: 0px !important;
-  position: relative;
-  top: 110px;
-  max-width: 100vw;
+  /* position: relative; */
+  /*   top: 110px; */
+  padding: 0px;
+  background-color: #f2f2f2;
   overflow: hidden !important;
 }
 @media screen and (min-width: 992px) {
   .undernav {
-    top: 140px;
+    /* top: 140px; */
+    padding: 0px 10vw;
   }
 }
 .undernav__carousel {
@@ -1603,9 +1633,9 @@ html body::-webkit-scrollbar {
 }
 
 .public-footer {
-  position: relative;
-  top: 110px;
-  bottom: 0px;
+  /* position: relative; */
+  /* top: 110px; */
+  bottom: 0px !important;
   height: 55px;
   width: 100%;
   display: flex;

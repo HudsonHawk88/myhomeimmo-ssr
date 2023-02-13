@@ -29,7 +29,9 @@ const Public = (props) => {
     ) : (
         <React.Fragment>
             <div className="public_full">
-                <PublicHeader {...props} />
+                <header>
+                    <PublicHeader {...props} />
+                </header>
                 {loading ? (
                     <div className="tartalom">
                         <Loading isLoading={loading} />
@@ -43,9 +45,9 @@ const Public = (props) => {
                         </div>
                     </React.Fragment>
                 )}
-                
+                <PublicFooter />
             </div>
-            <PublicFooter />
+         
         </React.Fragment>
     );
 };

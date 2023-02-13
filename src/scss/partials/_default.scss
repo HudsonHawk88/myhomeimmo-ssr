@@ -36,15 +36,13 @@ html body::-webkit-scrollbar {
 }
 
 .public_full {
-    min-width: 100%;
-    min-height: 100%;
-   /*  overflow: hidden; */
-    /* overflow-y: clip;   */ 
-   /*  overflow-y: clip; */
-    // width: 100%;
-    // display: grid;
-    // grid-template-rows: auto auto auto 1fr auto ;
-    // padding: 0px;
+    width: 100%;
+  /*   margin: 0px 15%; */
+    /* min-width: 100%; */
+    /* min-height: 100%; */
+    /* overflow: hidden; */
+    /* overflow-y: clip; */
+    /* overflow-y: clip; */
 
     // @media screen and (min-width: 992px) {
     //     padding: 0px 5vw;
@@ -68,12 +66,14 @@ html body::-webkit-scrollbar {
     display: block;
     position: fixed;
     top: 2px;
+    left: 0px;
     content: var(themes-public-navbarlogo);
     height: 100px;
     padding: 10px;
     z-index: 222;
 
     @media screen and (min-width: 992px) {
+        left: 10vw;
         display: block;
         top: 0px;
         height: 140px;
@@ -86,17 +86,20 @@ html body::-webkit-scrollbar {
     display: flex;
     position: fixed !important;
     justify-content: center;
-    width: 100vw;
+    /* width: 100vw; */
     z-index: 2;
     background-color: white !important;
     height: 70px;
+    width: 100%;
     padding: 0px;
-    
+    /* margin: 0px 15% 0px 0px; */
+   
 
     @media screen and (min-width: 992px) {
-        padding: 0px 10px;
+        /* padding: 0px 6.75em; */
+     /*    padding: 5px 10px; */
         justify-content: right;
-        
+        padding: 0px 10vw;
         /*  min-height: 30px; */
     }
 
@@ -259,18 +262,21 @@ html body::-webkit-scrollbar {
 }
 
 .tartalom {
-    position: relative;
-    top: 110px;
+    /* position: relative;
+    top: 110px; */
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    
+    padding: 10px;
+    min-height: 100vh;
     /* min-height: calc(100vh - 200px); */
     margin: 0px;
-    background-color: var(themes-public-bgcolor2);
+    background-color: #f2f2f2;
+    /* background-color: var(themes-public-bgcolor2); */
 
     @media screen and (min-width: 992px) {
-        top: 140px;
+        padding: 0px 10vw;
+     /*    top: 140px; */
     }
     // padding: 10px 10px 10px 0px;
     // background: var(themes-public-navbarbgimage);
