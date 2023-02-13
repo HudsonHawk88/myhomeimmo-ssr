@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import FooldalContent from './FooldalContent';
 
 const Fooldal = (props) => {
+
     return (
         <div className="public-inner-content">
             <Helmet>

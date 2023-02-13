@@ -6,7 +6,8 @@ html body {
     position: relative;
     overflow: overlay;
     scrollbar-width: none;
-    background-color: #fff;
+    background-color: #f2f2f2;
+    
    /*  scrollbar-width: thin; */
 }
 
@@ -37,6 +38,7 @@ html body::-webkit-scrollbar {
 
 .public_full {
     width: 100%;
+    
   /*   margin: 0px 15%; */
     /* min-width: 100%; */
     /* min-height: 100%; */
@@ -264,20 +266,24 @@ html body::-webkit-scrollbar {
 .tartalom {
     /* position: relative;
     top: 110px; */
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    padding: 10px;
-    min-height: 100vh;
+    display: block;
+    height: 100%;
+    /* flex-wrap: wrap;
+    flex-direction: row; */
+    /* padding: 10px; */
+    /* min-height: calc(200vh + 210px); */
     /* min-height: calc(100vh - 200px); */
+    box-shadow: none !important;
     margin: 0px;
-    background-color: #f2f2f2;
+    padding: 0px 10px;
+    
     /* background-color: var(themes-public-bgcolor2); */
 
-    @media screen and (min-width: 992px) {
-        padding: 0px 7vw;
-     /*    top: 140px; */
-    }
+        @media screen and (min-width: 992px) {
+            padding: 0px 7vw;
+            /* min-height: calc(200vh + 210px); */
+        /*    top: 140px; */
+        }
     // padding: 10px 10px 10px 0px;
     // background: var(themes-public-navbarbgimage);
     /*     background-image: var(themes-public-navbarbgimage); */
@@ -666,29 +672,34 @@ html body::-webkit-scrollbar {
 }
 
 .public-inner-content {
-    display: flex;
-    flex: 1 1 calc(100% - 400px);
-    flex-wrap: wrap;
+    position: relative;
+    top: 10px;
+    /* padding: 10px; */
     // padding: 10px;
-    justify-content: flex-start;
+    justify-content: left;
     border: none;
+    row-gap: 10px;
+    column-gap: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    /* gap: 5px; */
 
     // background-color: rgb(255, 238, 139);
-    margin: 0px;
+    /* margin: 0px; */
 
     @media screen and (min-width: 768px) {
-        justify-content: flex-start;
-        margin: 0px;
+       /*  justify-content: flex-start; */
+        /* margin: 0px; */
     }
 
     @media screen and (min-width: 768px) and (max-width: 1400px) {
-        justify-content: center;
-        margin: 0px 5%;
+        /* justify-content: center; */
+      /*   margin: 0px 5%; */
     }
 
     @media screen and (min-width: 1401px) {
-        justify-content: flex-start;
-        margin: 0px 8%;
+        /* ustify-content: flex-start; */
+       /*  margin: 0px 8%; */
     }
 
     .nodata {
@@ -713,10 +724,11 @@ html body::-webkit-scrollbar {
         display: flex;
         justify-content: center;
         align-items: center;
-        flex: 1 1 300px; /*  Stretching: */
-        // flex: 0 1 150px; /*  No stretching: */
+        flex-direction: column;
+        // flex: 1 1 calc(25% - 5vw - 10px); /*  Stretching: */
+        flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
         // max-width: ;
-        max-height: 600px;
+        max-height: 300px;
         margin: 6px !important;
         text-align: center;
         border: 1px black solid;
@@ -724,15 +736,18 @@ html body::-webkit-scrollbar {
         overflow-wrap: break-word;
 
         @media screen and (min-width: 768px) {
-            flex: 0 1 300px;
+            flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+            max-height: 300px;
         }
 
         @media screen and (min-width: 768px) and (max-width: 1200px) {
-            flex: 0 1 300px;
+            flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+            max-height: 300px;
         }
 
         @media screen and (min-width: 1201px) {
-            flex: 0 1 300px;
+            flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+            max-height: 300px;
         }
 
         & img {
@@ -758,6 +773,14 @@ html body::-webkit-scrollbar {
 
         &:hover {
             box-shadow: 5px 5px var(themes-public-ingatlanlistacardhover);
+        }
+
+        & .card-body {
+            position: relative;
+            height: 300px;
+            padding: 0px !important;
+            display: flex;
+            flex-direction: row;
         }
 
         & .card-footer {

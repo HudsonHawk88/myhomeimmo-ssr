@@ -3,7 +3,7 @@ html body {
   position: relative;
   overflow: overlay;
   scrollbar-width: none;
-  background-color: #fff;
+  background-color: #f2f2f2;
   /*  scrollbar-width: thin; */
 }
 
@@ -243,14 +243,16 @@ html body::-webkit-scrollbar {
 .tartalom {
   /* position: relative;
   top: 110px; */
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  padding: 10px;
-  min-height: 100vh;
+  display: block;
+  height: 100%;
+  /* flex-wrap: wrap;
+  flex-direction: row; */
+  /* padding: 10px; */
+  /* min-height: calc(200vh + 210px); */
   /* min-height: calc(100vh - 200px); */
+  box-shadow: none !important;
   margin: 0px;
-  background-color: #f2f2f2;
+  padding: 0px 10px;
   /* background-color: var(themes-public-bgcolor2); */
   /*     background-image: var(themes-public-navbarbgimage); */
   /*  background-size: contain; */
@@ -258,6 +260,7 @@ html body::-webkit-scrollbar {
 @media screen and (min-width: 992px) {
   .tartalom {
     padding: 0px 7vw;
+    /* min-height: calc(200vh + 210px); */
     /*    top: 140px; */
   }
 }
@@ -576,29 +579,34 @@ html body::-webkit-scrollbar {
 }
 
 .public-inner-content {
-  display: flex;
-  flex: 1 1 calc(100% - 400px);
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  position: relative;
+  top: 10px;
+  /* padding: 10px; */
+  justify-content: left;
   border: none;
-  margin: 0px;
+  row-gap: 10px;
+  column-gap: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  /* gap: 5px; */
+  /* margin: 0px; */
 }
 @media screen and (min-width: 768px) {
   .public-inner-content {
-    justify-content: flex-start;
-    margin: 0px;
+    /*  justify-content: flex-start; */
+    /* margin: 0px; */
   }
 }
 @media screen and (min-width: 768px) and (max-width: 1400px) {
   .public-inner-content {
-    justify-content: center;
-    margin: 0px 5%;
+    /* justify-content: center; */
+    /*   margin: 0px 5%; */
   }
 }
 @media screen and (min-width: 1401px) {
   .public-inner-content {
-    justify-content: flex-start;
-    margin: 0px 8%;
+    /* ustify-content: flex-start; */
+    /*  margin: 0px 8%; */
   }
 }
 .public-inner-content .nodata {
@@ -621,8 +629,9 @@ html body::-webkit-scrollbar {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 1 1 300px; /*  Stretching: */
-  max-height: 600px;
+  flex-direction: column;
+  flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+  max-height: 300px;
   margin: 6px !important;
   text-align: center;
   border: 1px black solid;
@@ -631,17 +640,20 @@ html body::-webkit-scrollbar {
 }
 @media screen and (min-width: 768px) {
   .public-inner-content .card {
-    flex: 0 1 300px;
+    flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+    max-height: 300px;
   }
 }
 @media screen and (min-width: 768px) and (max-width: 1200px) {
   .public-inner-content .card {
-    flex: 0 1 300px;
+    flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+    max-height: 300px;
   }
 }
 @media screen and (min-width: 1201px) {
   .public-inner-content .card {
-    flex: 0 1 300px;
+    flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+    max-height: 300px;
   }
 }
 .public-inner-content .card img {
@@ -666,6 +678,13 @@ html body::-webkit-scrollbar {
 }
 .public-inner-content .card:hover {
   box-shadow: 5px 5px black;
+}
+.public-inner-content .card .card-body {
+  position: relative;
+  height: 300px;
+  padding: 0px !important;
+  display: flex;
+  flex-direction: row;
 }
 .public-inner-content .card .card-footer {
   background-color: transparent;
@@ -773,13 +792,13 @@ html body::-webkit-scrollbar {
   border-radius: 10px;
 }
 
-header {
+.public_full header {
   display: flex;
   height: 112px;
   width: inherit;
 }
 @media screen and (min-width: 992px) {
-  header {
+  .public_full header {
     min-height: 140px;
   }
 }
@@ -1104,6 +1123,109 @@ header {
   position: absolute;
   bottom: 35px;
   font-size: 1.2em;
+}
+
+.ingat_card {
+  /* min-width: calc(33.3% - 10px);
+  max-width: 100%;
+  height: 200px;
+  margin: 5px;
+  border: 1px solid black; */
+  cursor: pointer;
+  /*  padding: 0px !important; */
+  /* border: 2px solid gray; */
+  width: 100% !important;
+  border: 1px solid #aaa;
+  max-width: 100%;
+  padding: 0px 15px 0px 0px !important;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  max-height: 180px;
+  flex: 0 1 100% !important;
+  /* border: 1px solid #aaa; */
+  /* @media screen and (min-width: 768px) and (max-width: 992px) {
+      width: 50% !important;
+  } */
+}
+@media only screen and (min-width: 992px) and (max-width: 1400px) {
+  .ingat_card {
+    flex: 0 1 calc(50% - 20px) !important;
+  }
+}
+@media only screen and (min-width: 1400px) {
+  .ingat_card {
+    flex: 0 1 33% !important;
+  }
+}
+.ingat_card:hover {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.8) 0px 5px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.8) 0 0 5px 5px;
+  box-shadow: rgba(0, 0, 0, 0.8) 0 5px 5px;
+}
+.ingat_card__badges {
+  position: absolute;
+  display: flex;
+  justify-content: flex-start;
+  height: 30px;
+  padding: 0px;
+  opacity: 0.8;
+}
+.ingat_card__badges span {
+  border-top-left-radius: 15px;
+}
+.ingat_card__card {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 170px;
+  max-height: 170px;
+  /* padding: -5px -15px; */
+}
+.ingat_card__card__image {
+  /*  width: 40%; */
+  width: 40%;
+  /* padding: 5px; */
+  height: 170px;
+}
+.ingat_card__card__image img {
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
+  /* border: 1px solid #aaa;
+  border-right: none; */
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 15px;
+  /*   height: 100%; */
+}
+.ingat_card__card__adatok {
+  /* display: inline-block;
+  margin: auto 0px; */
+  font-size: 0.85em;
+  width: 60%;
+  padding: 5px;
+  max-height: 180px;
+  /*  border: 1px solid #aaa; */
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+.ingat_card__card__megtekgomb {
+  width: 12.5%;
+  height: inherit;
+}
+.ingat_card__card__megtekgomb button {
+  color: black;
+  background-color: rgb(58, 214, 197);
+  width: 100%;
+  height: 170px;
+  border: none;
+  box-shadow: none;
+}
+.ingat_card__card__megtekgomb button:hover {
+  background-color: rgb(58, 214, 197);
+  color: black;
+}
+.ingat_card__card__megtekgomb button:active {
+  background-color: rgb(58, 214, 197);
+  color: black;
 }
 
 .ingatlan_card {
@@ -1636,7 +1758,7 @@ header {
 }
 
 .public-footer {
-  /* position: relative; */
+  position: relative;
   /* top: 110px; */
   bottom: 0px !important;
   height: 55px;

@@ -1,7 +1,7 @@
 @use '../variables/colors';
 @use '../functions/var' as *;
 
-header {
+.public_full header {
     display: flex;
     height: 112px;
     width: inherit;
