@@ -257,7 +257,7 @@ html body::-webkit-scrollbar {
 }
 @media screen and (min-width: 992px) {
   .tartalom {
-    padding: 0px 10vw;
+    padding: 0px 7vw;
     /*    top: 140px; */
   }
 }
@@ -448,7 +448,7 @@ html body::-webkit-scrollbar {
   padding: 0px !important;
 }
 .tartalom .reszletes_kereso {
-  background-color: rgb(120, 212, 223);
+  background-color: rgb(58, 214, 197);
   display: flex;
   flex-wrap: wrap;
   padding: 20px;
@@ -775,7 +775,7 @@ html body::-webkit-scrollbar {
 
 header {
   display: flex;
-  min-height: fit-content;
+  height: 112px;
   width: inherit;
 }
 @media screen and (min-width: 992px) {
@@ -978,10 +978,12 @@ header {
 @media screen and (min-width: 992px) {
   .undernav {
     /* top: 140px; */
-    padding: 0px 10vw;
+    padding: 0px 7vw;
   }
 }
 .undernav__carousel {
+  height: 200px;
+  width: 100%;
   padding: 0px !important;
   margin: 0px !important;
 }
@@ -989,7 +991,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(120, 212, 223);
+  background-color: rgb(58, 214, 197);
   padding: 0px !important;
 }
 .undernav .accordion {
@@ -1012,8 +1014,9 @@ header {
   }
 }
 .undernav .accordion-body {
-  background-color: rgb(120, 212, 223);
+  background-color: rgb(58, 214, 197);
   padding: 0px;
+  width: 100%;
 }
 .undernav .accordion-body .btn.btn-success {
   background-color: rgb(147, 245, 98);

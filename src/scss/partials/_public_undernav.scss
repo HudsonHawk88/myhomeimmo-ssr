@@ -13,12 +13,14 @@
 
     @media screen and (min-width: 992px) {
         /* top: 140px; */
-        padding: 0px 10vw;
+        padding: 0px 7vw;
     }
 
     &__carousel {
         // max-height: 400px;
         // min-height: 400px;
+        height: 200px;
+        width: 100%;
         padding: 0px !important;
         margin: 0px !important;
     }
@@ -56,6 +58,7 @@
     .accordion-body {
         background-color: var(themes-public-sidebarbg);
         padding: 0px;
+        width: 100%;
 
         & .btn.btn-success {
             background-color: var(themes-public-viewbutton);

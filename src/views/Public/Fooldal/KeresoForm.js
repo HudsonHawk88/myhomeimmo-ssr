@@ -183,13 +183,13 @@ const KeresoForm = (props) => {
 
     return (
         <div className="row" style={{ padding: '20px' }}>
-            <h4>Gyorskereső</h4>
-            <div className="row g-2">
-                <div className="col-lg-6 col-md-12">
-                    <Label>Ingatlan státusza:</Label>
+           {/*  <h4>Gyorskereső</h4> */}
+            <div className="row g-1">
+                <div className="col-lg-2 col-md-12">
+                    {/* <Label>Ingatlan státusza:</Label> */}
                     <Input type="select" name="statusz" id="statusz" value={keresoObj.statusz} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
                         <option key="" value="">
-                            Kérjük válasszon státuszt...
+                            Eladó/Kiadó
                         </option>
                         {statuszOptions.map((statusz) => {
                             return (
@@ -200,12 +200,12 @@ const KeresoForm = (props) => {
                         })}
                     </Input>
                 </div>
-                <div className="col-lg-6 col-md-12">
-                    <Label>Ingatlan típusa:</Label>
+                <div className="col-lg-2 col-md-12">
+                    {/* <Label>Ingatlan típusa:</Label> */}
                     <Input type="select" name="tipus" id="tipus" value={keresoObj.tipus} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
-                        <option key="" value="">
-                            Kérjük válasszon típust...
-                        </option>
+                        {/* <option key="" value="">
+                            Ingatlan típusa
+                        </option> */}
                         {tipusOptions.map((tipus) => {
                             return (
                                 <option key={tipus.id} value={tipus.value + ''}>
@@ -215,10 +215,7 @@ const KeresoForm = (props) => {
                         })}
                     </Input>
                 </div>
-            </div>
-            <div className="row g-2">
-                <div className="col-lg-6 col-md-12">
-                    <Label>Település:</Label>
+                  <div className="col-lg-3 col-md-12">
                     <Select
                         type="select"
                         name="telepulesnev"
@@ -226,23 +223,18 @@ const KeresoForm = (props) => {
                         options={telepulesekOpts}
                         value={selectedTelepules}
                         isClearable
-                        placeholder="Kérjük válasszon települést..."
+                        placeholder="Településnév"
                         onChange={handleTelepulesChange}
                     />
                 </div>
-                <div className="col-lg-6 col-md-12">
-                    <Label>Referenciaszám:</Label>
-                    <Input type="text" name="referenciaSzam" id="referenciaSzam" value={keresoObj.referenciaSzam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                </div>
-            </div>
-            <div className="row g-2">
-                <div className="col-lg-6 col-md-6">
-                    <Label>Ár:</Label>
+                  <div className="col-lg-2 col-md-6">
+                    {/* <Label>Ár:</Label> */}
                     <RVInput
                         pattern="[0-9 ]+"
                         invalid={false}
                         name="ar"
                         id="ar"
+                        placeholder='Ár'
                         value={keresoObj.ar}
                         onChange={(e) => {
                             setKeresoObj({
@@ -254,13 +246,14 @@ const KeresoForm = (props) => {
                         }}
                     />
                 </div>
-                <div className="col-lg-6 col-md-6">
+                <div className="col-lg-2 col-md-6">
                     <RVFormGroup>
-                        <Label>{'Pénznem:'}</Label>
+                        {/* <Label>{'Pénznem:'}</Label> */}
                         <RVInput
                             type="select"
                             name="penznem"
                             id="penznem"
+                            placeholder='Pénznem'
                             value={keresoObj.penznem}
                             onChange={(e) => {
                                 handleInputChange(e, keresoObj, setKeresoObj);
@@ -279,36 +272,64 @@ const KeresoForm = (props) => {
                         </RVInput>
                     </RVFormGroup>
                 </div>
-                <div className="col-lg-6 col-md-6">
-                    <RVFormGroup>
-                        <Label>{'Min. alapterület:'}</Label>
-                        <RVInputGroup>
-                            <RVInput
-                                pattern="[0-9]+"
-                                name="alapterulet"
-                                id="alapterulet"
-                                invalid={false}
-                                value={keresoObj.alapterulet}
-                                onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}
-                            />
-                            <RVInputGroupText>
-                                m <sup>2</sup>
-                            </RVInputGroupText>
-                        </RVInputGroup>
-                    </RVFormGroup>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                    <Label>{'Szobaszam:'}</Label>
-                    <RVInput pattern="[0-9]+" name="szobaszam" id="szobaszam" invalid={false} value={keresoObj.szobaszam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                </div>
-            </div>
-            <div className="row g-2">
-                <div className="col-md-12">
+                <div className="col-lg-1 col-md-12">
                     <Button color="success" onClick={() => keres()}>
-                        <i className="fas fa-search"></i>&nbsp;&nbsp; Keresés
+                        <i className="fas fa-search"></i>
                     </Button>
                 </div>
             </div>
+            
+           {/*  <div className="row g-2">
+                <div className="col-lg-2 col-md-6">
+                    <RVInput
+                        pattern="[0-9 ]+"
+                        invalid={false}
+                        name="ar"
+                        id="ar"
+                        placeholder='Ár'
+                        value={keresoObj.ar}
+                        onChange={(e) => {
+                            setKeresoObj({
+                                ...keresoObj,
+                                ar: arFormatter(e.target.value)
+                            });
+                        }}
+                    />
+                </div>
+                <div className="col-lg-2 col-md-6">
+                    <RVFormGroup>
+                        <RVInput
+                            type="select"
+                            name="penznem"
+                            id="penznem"
+                            placeholder='Pénznem'
+                            value={keresoObj.penznem}
+                            onChange={(e) => {
+                                handleInputChange(e, keresoObj, setKeresoObj);
+                            }}
+                        >
+                            {penznemOptions.map((item) => {
+                                return (
+                                    <option key={item.id} value={item.value}>
+                                        {item.nev}
+                                    </option>
+                                );
+                            })}
+                        </RVInput>
+                    </RVFormGroup>
+                </div>
+                <div className="col-lg-2 col-md-12">
+                    <Input type="text" name="referenciaSzam" id="referenciaSzam" placeholder='Ref.szám' value={keresoObj.referenciaSzam} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
+                </div>
+            </div> */}
+
+           {/*  <div className="row g-1">
+                <div className="col-md-12">
+                    <Button color="success" onClick={() => keres()}>
+                        <i className="fas fa-search"></i>
+                    </Button>
+                </div>
+            </div> */}
         </div>
     );
 };
