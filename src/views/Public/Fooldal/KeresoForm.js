@@ -183,7 +183,7 @@ const KeresoForm = (props) => {
 
     return (
         <div className="row" style={{ padding: '20px' }}>
-           {/*  <h4>Gyorskereső</h4> */}
+            {/*  <h4>Gyorskereső</h4> */}
             <div className="row g-1">
                 <div className="col-lg-2 col-md-12">
                     {/* <Label>Ingatlan státusza:</Label> */}
@@ -215,7 +215,7 @@ const KeresoForm = (props) => {
                         })}
                     </Input>
                 </div>
-                  <div className="col-lg-3 col-md-12">
+                <div className="col-lg-3 col-md-12">
                     <Select
                         type="select"
                         name="telepulesnev"
@@ -227,14 +227,14 @@ const KeresoForm = (props) => {
                         onChange={handleTelepulesChange}
                     />
                 </div>
-                  <div className="col-lg-2 col-md-6">
+                <div className="col-lg-2 col-md-6">
                     {/* <Label>Ár:</Label> */}
                     <RVInput
                         pattern="[0-9 ]+"
                         invalid={false}
                         name="ar"
                         id="ar"
-                        placeholder='Ár'
+                        placeholder="Ár"
                         value={keresoObj.ar}
                         onChange={(e) => {
                             setKeresoObj({
@@ -253,7 +253,7 @@ const KeresoForm = (props) => {
                             type="select"
                             name="penznem"
                             id="penznem"
-                            placeholder='Pénznem'
+                            placeholder="Pénznem"
                             value={keresoObj.penznem}
                             onChange={(e) => {
                                 handleInputChange(e, keresoObj, setKeresoObj);
@@ -273,13 +273,13 @@ const KeresoForm = (props) => {
                     </RVFormGroup>
                 </div>
                 <div className="col-lg-1 col-md-12">
-                    <Button color="success" onClick={() => keres()}>
+                    <Button color="dark" onClick={() => keres()}>
                         <i className="fas fa-search"></i>
                     </Button>
                 </div>
             </div>
-            
-           {/*  <div className="row g-2">
+
+            {/*  <div className="row g-2">
                 <div className="col-lg-2 col-md-6">
                     <RVInput
                         pattern="[0-9 ]+"
@@ -323,7 +323,7 @@ const KeresoForm = (props) => {
                 </div>
             </div> */}
 
-           {/*  <div className="row g-1">
+            {/*  <div className="row g-1">
                 <div className="col-md-12">
                     <Button color="success" onClick={() => keres()}>
                         <i className="fas fa-search"></i>

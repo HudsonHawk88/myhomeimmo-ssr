@@ -568,8 +568,8 @@ const Ingatlanok = (props) => {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-md-12">
-                            <Button color="success" onClick={() => keres()}>
+                        <div className="col-md-12 p-0">
+                            <Button color="dark" onClick={() => keres()}>
                                 <i className="fas fa-search"></i>&nbsp;&nbsp; Keresés
                             </Button>
                         </div>
@@ -580,7 +580,8 @@ const Ingatlanok = (props) => {
     };
 
     return (
-        <div className="public-inner-content">
+        /*  <div className="public-inner-content"> */
+        <div className="ingatlanok_osszkereso">
             <Helmet>
                 <title>Ingatlanok</title>
             </Helmet>

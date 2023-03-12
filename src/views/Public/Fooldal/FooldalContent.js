@@ -7,9 +7,8 @@ import IngatlanCard from '../../../commons/IngatlanCard.js';
 const FooldalContent = (props) => {
     const location = useLocation();
     const [ingatlanOptions, setIngatlanOptions] = useState([]);
-    
-    const { data } = props;
 
+    const { data } = props;
 
     const scrollToElement = (id) => {
         var element = document.getElementById(id);
@@ -29,12 +28,9 @@ const FooldalContent = (props) => {
                 scrollToElement('ingatlan_0');
             }
         }
-
     }, [data, location.pathname]);
 
-
-
-/*     const ertekFormatter = (ingatlan) => {
+    /*     const ertekFormatter = (ingatlan) => {
         switch (ingatlan.statusz) {
             case 'Kiadó': {
                 return `Ár: ${ingatlan.ar} ${ingatlan.penznem}/hó ${ingatlan.kaucio ? 'Kaució: ' + ingatlan.kaucio + ' ' + ingatlan.penznem : ''}`;
@@ -48,8 +44,6 @@ const FooldalContent = (props) => {
         }
     }; */
 
-
-
     const getOptions = () => {
         Services.getIngatlanOptions().then((res) => {
             if (!res.err) {
@@ -62,14 +56,11 @@ const FooldalContent = (props) => {
         getOptions();
     }, []);
 
- 
-
     const renderKiemeltIngatlanok = () => {
         return (
-            data && data.map((ingat) => {
-                return (
-                    <IngatlanCard ingatlanOptions={ingatlanOptions} ingat={ingat} />
-                );
+            data &&
+            data.map((ingat) => {
+                return <IngatlanCard key={'ING_' + ingat.id} ingatlanOptions={ingatlanOptions} ingat={ingat} />;
             })
         );
     };

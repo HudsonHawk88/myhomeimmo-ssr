@@ -47,7 +47,6 @@ const Public = (props) => {
                 )}
                 <PublicFooter />
             </div>
-            
         </React.Fragment>
     );
 };

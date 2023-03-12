@@ -8,7 +8,6 @@ import { arFormatter } from './Lib.js';
 const IngatlanCard = (props) => {
     const navigate = useNavigate();
     const { ingat, ingatlanOptions } = props;
-    console.log(ingat)
 
     const viewIngatlan = (id) => {
         navigate(`/ingatlan?id=${id}`, { replace: true, state: { id: id } });
@@ -16,6 +15,14 @@ const IngatlanCard = (props) => {
 
     const isNew = (isUjEpitesu) => {
         if (isUjEpitesu) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    const isVip = (isVip) => {
+        if (isVip) {
             return true;
         } else {
             return false;
@@ -34,7 +41,6 @@ const IngatlanCard = (props) => {
         }
     };
 
-
     const tipusFormatter = (type) => {
         let tipus = '';
         ingatlanOptions.forEach((option) => {
@@ -49,7 +55,7 @@ const IngatlanCard = (props) => {
         return tipus;
     };
 
-        const meretFormatter = (ingatlan) => {
+    const meretFormatter = (ingatlan) => {
         switch (ingatlan.tipus + '') {
             case '3': {
                 return `Méret: ${ingatlan.telek} m`;
@@ -146,54 +152,42 @@ const IngatlanCard = (props) => {
     };
 
     const renderBadges = () => {
-        const badgeStyle = {
-            fontSize: '17px'
-        };
-
         return (
             <React.Fragment>
-                {isNew(ingat.isUjEpitesu) && (
+                {isNewIngatlan(ingat.rogzitIdo) && (
                     <React.Fragment>
-                        <Badge style={badgeStyle} color="primary">
-                            Újépítés!
+                        <Badge color="danger" key={'badge_' + ingat.id}>
+                            Új!
                         </Badge>
-                        &nbsp;&nbsp;
                     </React.Fragment>
                 )}
-                {isNewIngatlan(ingat.rogzitIdo) && (  
-                    <Badge style={badgeStyle} color="danger">
-                        Új!
-                    </Badge> 
+                {isNew(ingat.isUjEpitesu) && (
+                    <React.Fragment>
+                        <Badge color="primary">Újépítés!</Badge>
+                    </React.Fragment>
                 )}
+                {isVip(ingat.isVip) && <Badge color="black">VIP</Badge>}
             </React.Fragment>
         );
-    }
+    };
 
     const renderKep = () => {
         let keplista = ingat.kepek;
 
-        return (
-            ingat.kepek && ingat.kepek.length !== 0 ? (
-                keplista.map((kep) => {
-                    if (kep.isCover) {
-                        let extIndex = kep.src.lastIndexOf('.');
-                        let extension = kep.src.substring(extIndex);
-                        let fname = kep.src.substring(0, extIndex);
-                        let icon = fname + '_icon' + extension;
-                        return (
-                            <img
-                                key={kep.title}
-                                src={icon}
-                                alt={kep.title}
-                            />
-                        );
-                    }
-                })
-            ) : (
-                <React.Fragment />
-            )
+        return ingat.kepek && ingat.kepek.length !== 0 ? (
+            keplista.map((kep) => {
+                if (kep.isCover) {
+                    let extIndex = kep.src.lastIndexOf('.');
+                    let extension = kep.src.substring(extIndex);
+                    let fname = kep.src.substring(0, extIndex);
+                    let icon = fname + '_icon' + extension;
+                    return <img key={kep.title} src={icon} alt={kep.title} />;
+                }
+            })
+        ) : (
+            <React.Fragment />
         );
-    }
+    };
 
     const renderAdatok = () => {
         const kaucio = ingat.kaucio + '';
@@ -223,24 +217,24 @@ const IngatlanCard = (props) => {
                 {szintFormatter(ingat)}&nbsp;&nbsp;
             </React.Fragment>
         );
-    }
+    };
 
     return (
-        <div className='ingat_card' onClick={() => viewIngatlan(ingat.id)}>
-            <div className='ingat_card__card'>
-                <div className='ingat_card__badges'>{ingat && renderBadges()}</div>
-                <div className='ingat_card__card__image'>{ingat && renderKep()}</div>
-                <div className='ingat_card__card__adatok'>{ingat && renderAdatok()}</div>
-{/*                 <div className='ingat_card__card__megtekgomb'>
+        /*  <div className="ingat_card" onClick={() => viewIngatlan(ingat.id)}> */
+        <div className="ingat_card__card" onClick={() => viewIngatlan(ingat.id)}>
+            <div className="ingat_card__badges">{ingat && renderBadges()}</div>
+            <div className="ingat_card__card__image">{ingat && renderKep()}</div>
+            <div className="ingat_card__card__adatok">{ingat && renderAdatok()}</div>
+            {/*                 <div className='ingat_card__card__megtekgomb'>
                     <Button onClick={} className="viewgomb">
                         <i class="fas fa-eye"></i>
                     </Button>
                 </div> */}
-            </div>
         </div>
-    )
-}
+        /* </div> */
+    );
+};
 
-IngatlanCard.propTypes = {}
+IngatlanCard.propTypes = {};
 
-export default IngatlanCard
+export default IngatlanCard;

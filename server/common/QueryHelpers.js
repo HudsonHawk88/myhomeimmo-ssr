@@ -88,7 +88,8 @@ const getJSONfromLongtext = (object, direction = 'toBool') => {
             key === 'isUjEpitesu' ||
             key === 'isErtekesito' ||
             key === 'isActive' ||
-            key === 'isTetoter'
+            key === 'isTetoter' ||
+            key === 'isVip'
         ) {
             if (direction) {
                 if (direction === 'toBool') {
