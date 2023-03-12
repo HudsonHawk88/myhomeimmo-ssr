@@ -106,12 +106,12 @@ export default class Services {
             cache: 'no-cache',
             headers: {
                 'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-              /*   'Content-Type': 'application/pdf', */
+                /*   'Content-Type': 'application/pdf', */
                 ingatlanId: ingatlanId
             }
         });
         return result;
-    }
+    };
 
     // INGATLANOK END
 

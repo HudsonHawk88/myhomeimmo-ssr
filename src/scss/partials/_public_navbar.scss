@@ -1,26 +1,49 @@
 @use '../variables/colors';
 @use '../functions/var' as *;
 
+.public_full header {
+    display: flex;
+    height: 112px;
+    width: inherit;
+
+    @media screen and (min-width: 992px) {
+        min-height: 140px;
+    }
+}
+
 .public-navbar {
-    font-size: 1em;
+    font-size: 0.8em;
     background-color: var(themes-public-navbgcolor);
+    /*  background-color: transparent; */
     // min-height: 80px;
-    box-shadow: none;
     /* background-image: var(themes-public-navbarbgimage);
     background-size: contain; */
     margin: 0px auto;
-    min-width: 100%;
+    width: 100%;
+    /*  background-color: transparent; */
+    /* width: calc(100vw - (100vw - 100%)); */
     border-radius: 0px;
+    position: fixed !important;
+    top: 70px;
+    z-index: 2;
+    padding: 5px 10px !important;
+    box-shadow: 0px 5px 5px grey;
+
+    /*  @media screen and (min-width: 1080px) {
+        font-size: 1.2em;
+    } */
+
+    @media screen and (min-width: 992px) and (max-width: 1080px) {
+        /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
+        font-size: 0.85em;
+        padding: 5px 7vw !important;
+        /*     border-radius: 10px; */
+    }
 
     @media screen and (min-width: 1080px) {
         /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
         font-size: 1em;
-        /*  border-radius: 10px; */
-    }
-
-    @media screen and (min-width: 992px) and (max-width: 1080px) {
-        /* box-shadow: 0.25rem 0.25rem 4px 4px var(themes-public-boxshadowcolor); */
-        font-size: 1em;
+        padding: 5px 7vw !important;
         /*     border-radius: 10px; */
     }
 
@@ -28,57 +51,58 @@
         /*    background-color: var(themes-public-navbarbgcolor); */
         min-height: 100%;
         border-radius: 0px;
-        padding: 0px 5px;
+        padding: 0px;
+        justify-content: right !important;
 
         & .navbar-toggler {
+            position: relative;
+            top: -30px;
+            right: -7px;
             cursor: pointer;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 5px;
+            padding: 10px;
+            margin: -14px 5px;
+            border: 1px black solid;
+            border-radius: 10px;
 
             & i {
                 font-size: 30px;
-                color: white !important;
+                color: black !important;
             }
         }
 
         @media screen and (min-width: 992px) {
             border-radius: 10px;
-        }
-    }
-
-    #logo {
-        display: block;
-        /*   background-color: rgba(0, 0, 0, 0.7); */
-        content: var(themes-public-navbarlogo);
-        height: 60px;
-        width: 80px;
-        padding: 5px 0px;
-
-        @media screen and (min-width: 992px) {
-            display: block;
-            /*  border-radius: 10px 0px 0px 10px; */
+            justify-content: space-between !important;
         }
     }
 
     &__collapse {
+        position: relative;
+        top: 10px;
+        padding-bottom: 0px !important;
+
+        z-index: 222222;
         @media screen and (min-width: 992px) {
+            top: unset;
             min-height: 60px;
             padding-left: 10px;
         }
     }
 
     &__nav {
-        padding: 10px;
+        padding: 10px 0px 0px 0px;
         /*  background-color: var(themes-public-navbgcolor); */
         width: 100%;
         border-radius: 0px;
         /* margin: 10px 0px; */
         font-size: 1em;
+        /*  background-color: white !important; */
 
         @media screen and (min-width: 992px) {
             align-items: center;
             padding: 0px;
             min-height: 60px;
+            justify-content: right;
             /*   border-radius: 0px 10px 10px 0px; */
             font-size: 1.1em;
         }
@@ -112,6 +136,7 @@
         transition-property: background-color, border-bottom, text-shadow;
         transition-timing-function: ease-in;
         transition-duration: 0.2s;
+        border-radius: 15px;
         color: var(themes-public-navbarlinkcolor) !important;
         display: flex;
         align-items: center;
@@ -119,13 +144,13 @@
 
         &:hover {
             background-color: var(themes-public-navlinkhoveractive);
-            border: unset;
-            text-shadow: 1px 1px var(themes-public-navlinktextshadow);
+            /*             border: unset;
+            text-shadow: 1px 1px var(themes-public-navlinktextshadow); */
 
-            @media screen and (min-width: 992px) {
+            /*           @media screen and (min-width: 992px) {
                 border-bottom: 5px solid var(themes-public-navlinkhoveractive);
                 background-color: unset;
-            }
+            } */
         }
 
         &.active {
@@ -142,7 +167,7 @@
             min-height: 55px;
             display: flex;
             align-items: center;
-            padding: 5px !important;
+            padding: 10px !important;
         }
     }
 

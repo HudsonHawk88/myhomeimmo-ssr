@@ -474,12 +474,16 @@ const IngatlanForm = (props) => {
         if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
             Services.jovahagyasraKuldes(ingatlanId).then((res) => {
                 if (!res.err) {
-                    addNotification('success', res.msg)
+                    addNotification('success', res.msg);
                 } else {
-                    addNotification('error', 'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" ');
+                    addNotification(
+                        'error',
+                        'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" '
+                    );
                 }
-        })}
-    }
+            });
+        }
+    };
 
     const onSubmit = (e) => {
         setLoading(true);
@@ -533,9 +537,9 @@ const IngatlanForm = (props) => {
                     toggleModal();
                     listIngatlanok();
                     addNotification('success', res.msg);
-                    
-                   // TODO: Email küldés nem megy localhost tls miatt!!!! (MYHOME-17) 
-                   sendMail(res.ingatlanId)
+
+                    // TODO: Email küldés nem megy localhost tls miatt!!!! (MYHOME-17)
+                    sendMail(res.ingatlanId);
                     /* if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
                         Services.jovahagyasraKuldes(res.ingatlanId).then((res) => {
                             if (res.err) {
@@ -747,7 +751,16 @@ const IngatlanForm = (props) => {
                     <div className="col-md-12">
                         <RVFormGroup>
                             <Label>{isRequired('Leírás:', true)}</Label>
-                            <RVInput required maxLength={1700} type="textarea" rows="7" name="leiras" id="leiras" value={ingatlanObj.leiras} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
+                            <RVInput
+                                required
+                                maxLength={1700}
+                                type="textarea"
+                                rows="7"
+                                name="leiras"
+                                id="leiras"
+                                value={ingatlanObj.leiras}
+                                onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)}
+                            />
                             <RVFormFeedback />
                         </RVFormGroup>
                     </div>
@@ -926,9 +939,9 @@ const IngatlanForm = (props) => {
                             <RVInput type="checkbox" name="isUjEpitesu" id="isUjEpitesu" checked={ingatlanObj.isUjEpitesu} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)} />
                         </RVFormGroup>
                     </div>
-                    {/* TODO: Email küldés nem megy localhost tls miatt VISSZATENNI A COMMENTELT RÉSZT!!!! (MYHOME-17) */} 
+                    {/* TODO: Email küldés nem megy localhost tls miatt VISSZATENNI A COMMENTELT RÉSZT!!!! (MYHOME-17) */}
                     <div className="col-md-3" hidden={!hasRole(user.roles, ['SZUPER_ADMIN'])}>
-                    {/*     <div className="col-md-3"> */}
+                        {/*     <div className="col-md-3"> */}
                         <RVFormGroup>
                             <Label>Publikus</Label>
                             &nbsp;&nbsp;

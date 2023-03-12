@@ -155,7 +155,7 @@ export default class Services {
             method: 'POST',
             cache: 'no-cache',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
                 // "Accept": "application/json",
                 // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
             },
@@ -196,7 +196,7 @@ export default class Services {
         return result;
     };
 
-      static kiajanl = (id) => {
+    static kiajanl = (id) => {
         let result = Microservices.fetchApi(adminVevokUrl + '/kiajanl', {
             method: 'POST',
             cache: 'no-cache',
@@ -211,8 +211,7 @@ export default class Services {
         return result;
     };
 
-
-        // OPTIONS START
+    // OPTIONS START
 
     static getAltipusOptions = () => {
         let result = Microservices.fetchApi(optionsUrl + '/altipusoptions', {

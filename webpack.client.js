@@ -41,7 +41,7 @@ module.exports = {
         }
     },
     plugins: [
-/*         new ProvidePlugin({
+        /*         new ProvidePlugin({
             process: 'process/browser'
         }), */
         new DefinePlugin({
@@ -51,7 +51,8 @@ module.exports = {
             reachaptchaApiKey: process.env.REACT_APP_recaptchakey,
             reachaptchaSecretKey: process.env.REACT_APP_recaptchasecret,
             shareUrl: process.env.REACT_APP_url,
-            staticUrl: process.env.REACT_APP_staticUrl
+            staticUrl: process.env.REACT_APP_staticUrl,
+            mainUrl: process.env.REACT_APP_mainUrl
         }),
         new HtmlWebpackPlugin({
             template: './public/index.html',
@@ -169,7 +170,7 @@ module.exports = {
             constants: false,
             vm: false,
             zlib: false,
-            process: false 
+            process: false
         }
     }
 };

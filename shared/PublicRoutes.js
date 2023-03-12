@@ -19,9 +19,9 @@ const getReqUrl = (path) => {
         origin = window.location.host;
         url = `http://${origin}${path}`;
     } else {
-        url = `http://localhost:3000${path}`;
+        url = `${process.env.REACT_APP_mainUrl}${path}`;
     }
-    /*   console.log(url) */
+
     return url;
 };
 

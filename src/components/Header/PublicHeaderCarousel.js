@@ -52,8 +52,9 @@ const PublicHeaderCarousel = (props) => {
 
     const getItems = () => {
         let items = [];
+        const kepSrc = '/static/images/slideweb.jpg';
         /*     console.log(ingatlanok) */
-        ingatlanok &&
+        /* ingatlanok &&
             ingatlanok.forEach((ingatlan, index) => {
                 let kep = ingatlan && ingatlan.kepek && ingatlan.kepek.length !== 0 && JSON.parse(JSON.stringify(ingatlan.kepek[0]));
                 if (kep) {
@@ -66,14 +67,22 @@ const PublicHeaderCarousel = (props) => {
                         thumbnailWidth: '500px'
                     });
                 }
-            });
+            }); */
+        items.push({
+            original: kepSrc,
+            thumbnail: kepSrc,
+            originalHeight: '200px',
+            originalWidth: '100%'
+            /* renderItem: () => item(ingatlan, kep, index), */
+            /* thumbnailWidth: '500px' */
+        });
 
         return items;
     };
 
     return (
-        <div className="undernav row">
-            <div className="col-md-6 undernav__kereso">
+        <div className="undernav">
+            <div className="undernav__kereso">
                 <UncontrolledAccordion defaultOpen="1">
                     <AccordionItem>
                         <AccordionHeader targetId="1">Gyorskereső</AccordionHeader>
@@ -83,8 +92,18 @@ const PublicHeaderCarousel = (props) => {
                     </AccordionItem>
                 </UncontrolledAccordion>
             </div>
-            <div className="col-md-6 undernav__carousel">
-                <Gallery items={getItems()} showFullscreenButton={false} showThumbnails={false} showPlayButton={false} infinite={true} autoPlay={true} slideInterval={15000} showBullets={false} />
+            <div className="undernav__carousel">
+                <Gallery
+                    items={getItems()}
+                    showFullscreenButton={false}
+                    showNav={false}
+                    showThumbnails={false}
+                    showPlayButton={false}
+                    infinite={true}
+                    autoPlay={true}
+                    slideInterval={15000}
+                    showBullets={false}
+                />
             </div>
         </div>
     );
