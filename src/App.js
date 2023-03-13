@@ -175,6 +175,7 @@ function App(props) {
             ) : (
                 <React.Fragment>
                     <Pubroutes
+                        mainUrl={process.env.mainUrl}
                         isAdmin={isAdmin}
                         setUser={setUser}
                         setErtekesito={setErtekesito}
