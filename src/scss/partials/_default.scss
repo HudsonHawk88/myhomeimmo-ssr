@@ -96,6 +96,13 @@ html body::-webkit-scrollbar {
     padding: 10px;
 }
 
+#hitelnet {
+    display: block;
+    width: 250px;
+    content: var(themes-public-hitelnetlogo);
+    padding: 10px;
+}
+
 .plus_nav {
     display: flex;
     position: fixed !important;

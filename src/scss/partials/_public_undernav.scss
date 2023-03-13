@@ -27,7 +27,7 @@
         background-color: rgba(57, 214, 197, 1);
 
         @media screen and (min-width: 992px) {
-            height: 400px;
+            height: 500px;
         }
     }
 
@@ -131,8 +131,8 @@
             @media screen and (min-width: 992px) {
                 min-width: 100%;
                 max-width: 100%;
-                min-height: 400px;
-                max-height: 400px;
+                min-height: 500px;
+                max-height: 500px;
                 border-radius: 15px;
             }
 
@@ -145,7 +145,17 @@
 
                 @media screen and (min-width: 992px) {
                     /* height: 400px; */
-                    min-height: 400px;
+                    width: 70vw;
+                    min-height: 500px;
+                    margin: 0px auto;
+                    display: block;
+                    /*  width: 100%; */
+                }
+
+                @media screen and (min-width: 1800px) {
+                    /* height: 400px; */
+                    width: 50vw;
+                    min-height: 500px;
                     margin: 0px auto;
                     display: block;
                     /*  width: 100%; */
