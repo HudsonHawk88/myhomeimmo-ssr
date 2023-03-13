@@ -588,7 +588,7 @@ const Ingatlan = (props) => {
                                 <div className="col-md-12">
                                     <Label>
                                         Az{' '}
-                                        <a href="https://www.myhomeimmo.hu/adatkezeles" target="_blank">
+                                        <a href={process.env.mainUrl + '/adatkezeles'} target="_blank">
                                             {' '}
                                             adatkezelési tájékoztatót
                                         </a>{' '}

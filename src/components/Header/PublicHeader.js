@@ -25,7 +25,7 @@ const PublicHeader = (props) => {
                         <a href="https://www.instagram.com/myhomeberkimonika/" target="_blank" rel="noreferrer">
                             <i aria-hidden className="fab fa-instagram"></i>
                         </a>
-                        <a href="#" target="_blank" rel="noreferrer">
+                        <a href="https://www.tiktok.com/@myhomeingatlan" target="_blank" rel="noreferrer">
                             <i className="fab fa-tiktok"></i>
                         </a>
                         <a href="#" target="_blank" rel="noreferrer">

@@ -16,6 +16,15 @@ const PublicSidebar = (props) => {
             <div className="sidebar_elements">
                 <div className="banner">
                     <span>
+                        Hitelnet szakértő is vagyok!
+                        <br />
+                        <div id="hitelnet" />
+                    </span>
+                </div>
+            </div>
+            <div className="sidebar_elements">
+                <div className="banner">
+                    <span>
                         Weboldalkészítés, számítógép-, és telefonszervíz, informatikai oktatás és egyéb informatikai szolgáltatások eléhető áron!
                         <br />
                         <button className="glow-on-hover" onClick={() => window.open('https://inftechsol.hu/elerhetosegek', '_blank')}>
