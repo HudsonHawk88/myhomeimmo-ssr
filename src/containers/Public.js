@@ -45,7 +45,7 @@ const Public = (props) => {
                         </div>
                     </React.Fragment>
                 )}
-                <PublicFooter />
+                <PublicFooter mainUrl={props.mainUrl} />
             </div>
         </React.Fragment>
     );

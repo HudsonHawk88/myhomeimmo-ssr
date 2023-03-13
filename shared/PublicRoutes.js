@@ -35,7 +35,7 @@ const PublicRoutes = [
     { path: '/adatkezeles', element: Adatkezeles },
     { path: '/rolunk', element: Rolunk },
     { path: '/kapcsolat', element: Kapcsolat },
-    { path: '/myjob', element: MyJob, fetchInitialData: (path = `/api/myjob`) => Microservices.fetchApi(getReqUrl(path)) },
+    { path: '/myjob', element: MyJob },
     { path: '/myart', element: MyArt }
 ];
 
