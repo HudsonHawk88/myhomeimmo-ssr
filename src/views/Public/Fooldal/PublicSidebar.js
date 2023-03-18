@@ -7,8 +7,6 @@ const PublicSidebar = (props) => {
             <div className="sidebar_elements">
                 <div className="banner">
                     <span>
-                        Etikus ingatlanos vagyok!
-                        <br />
                         <div id="etikus" />
                     </span>
                 </div>
@@ -16,8 +14,6 @@ const PublicSidebar = (props) => {
             <div className="sidebar_elements">
                 <div className="banner">
                     <span>
-                        Hitelnet szakértő is vagyok!
-                        <br />
                         <div id="hitelnet" />
                     </span>
                 </div>
