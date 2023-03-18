@@ -244,7 +244,8 @@ router.get('/javitas', async (req, res) => {
 
             let newHird = ing.hirdeto;
             newHird.feladoAvatar.map((avatar) => {
-                let newSrc = avatar.src.replace('http://inftechsol.hu:5500', `${process.env.REACT_APP_mainUrl}`);
+                let oldSrc = avatar.src.slice(0, avatar.src.indexOf('/', 8));
+                let newSrc = avatar.src.replace(oldSrc, `${process.env.REACT_APP_mainUrl}`);
                 avatar.src = newSrc;
             });
 
@@ -270,14 +271,14 @@ router.get('/javitas', async (req, res) => {
             const sql = `UPDATE ingatlanok SET kepek='${JSON.stringify(elem.kepek)}', hirdeto='${JSON.stringify(elem.hirdeto)}' WHERE id='${elem.id}';`;
             ingatlanok.query(sql, (errrrr) => {
                 if (!errrrr) {
-                    console.log('JÓ');
+                    /* console.log('JÓ'); */
                 } else {
-                    console.log('ROSSZ');
+                    /* console.log('ROSSZ'); */
                 }
             });
             /*     } */
         });
-        res.send({ msg: 'HELLO' });
+        res.send({ msg: 'OK' });
     } else {
         res.send([]);
     }
