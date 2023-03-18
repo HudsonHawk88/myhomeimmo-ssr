@@ -89,6 +89,8 @@ const Ingatlanok = (props) => {
 
     useEffect(() => {
         init();
+
+        return () => {};
     }, []);
 
     const toggleModal = () => {
@@ -107,6 +109,7 @@ const Ingatlanok = (props) => {
     };
 
     const handleEditClick = (id) => {
+        console.log('ANYÁD..........');
         setCurrentId(id);
         setFormType('MOD');
         toggleModal();
@@ -165,6 +168,7 @@ const Ingatlanok = (props) => {
             <React.Fragment>
                 <Button
                     key={row.id + 1}
+                    type="button"
                     color="link"
                     onClick={() => {
                         openFacebookShare(`https://www.facebook.com/sharer/sharer.php?u=${process.env.shareUrl + row.id}`, 'Megosztás facebookon', 800, 800);
@@ -175,17 +179,16 @@ const Ingatlanok = (props) => {
                 {((hasRole(props.user.roles, ['INGATLAN_ADMIN']) && props.user.roles.find((role) => role.value === 'INGATLAN_OSSZ_LEK') === undefined) ||
                     props.user.email === row.hirdeto.feladoEmail) && (
                     <>
-                        <Button key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
+                        <Button type="button" key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
                             <i className="fas fa-pencil-alt" />
                         </Button>
-                        <Button key={row.id + 3} color="link" onClick={() => handleDeleteClick(row.id)}>
+                        <Button type="button" key={row.id + 3} color="link" onClick={() => handleDeleteClick(row.id)}>
                             <i className="fas fa-trash" />
                         </Button>
                     </>
                 )}
-                {/* TODO: Visszarakni ha lesz más megoldás PDF generálásra HTML-ből!!! */}
                 {hasRole(props.user.roles, ['INGATLAN_ADMIN']) && (
-                    <Button key={row.id + 2} color="link" onClick={() => printAjanloPDF(row.id)}>
+                    <Button type="button" key={row.id + 2} color="link" onClick={() => printAjanloPDF(row.id)}>
                         <i className="fas fa-file-pdf" />
                     </Button>
                 )}
@@ -304,6 +307,8 @@ const Ingatlanok = (props) => {
                 }
             ]
         };
+
+        console.log(ingatlanokJson);
 
         return <DataTable bordered columns={columns} datas={ingatlanokJson} paginationOptions={paginationOptions} />;
     };

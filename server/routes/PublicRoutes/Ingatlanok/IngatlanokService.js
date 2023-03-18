@@ -244,7 +244,7 @@ router.get('/javitas', async (req, res) => {
 
             let newHird = ing.hirdeto;
             newHird.feladoAvatar.map((avatar) => {
-                let newSrc = avatar.src.replace('http://192.168.1.76:5500', `${process.env.REACT_APP_mainUrl}`);
+                let newSrc = avatar.src.replace('http://inftechsol.hu:5500', `${process.env.REACT_APP_mainUrl}`);
                 avatar.src = newSrc;
             });
 

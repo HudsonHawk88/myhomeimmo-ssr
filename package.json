@@ -7,7 +7,7 @@
         "@dnd-kit/core": "^6.0.5",
         "@dnd-kit/sortable": "^7.0.1",
         "@dnd-kit/utilities": "^3.2.0",
-        "@inftechsol/react-data-table": "^0.6.9",
+        "@inftechsol/react-data-table": "^1.0.0",
         "@inftechsol/reactstrap-form-validation": "^0.2.5",
         "@loadable/component": "5.15.2",
         "@loadable/server": "5.15.2",

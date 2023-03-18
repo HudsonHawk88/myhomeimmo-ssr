@@ -1714,6 +1714,8 @@ html body::-webkit-scrollbar {
   border-radius: 50%;
   height: 100px;
   width: 100px;
+  object-fit: cover;
+  object-position: top;
 }
 .public_rolunk__leiras {
   padding: 20px 10px;

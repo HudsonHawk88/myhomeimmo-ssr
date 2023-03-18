@@ -73,7 +73,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use(routes, (req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', ['http://192.168.11.167:3000', 'http://localhost:3000']);
+    res.setHeader('Access-Control-Allow-Origin', ['http://192.168.11.167:3000', 'http://localhost:3000', 'http://192.168.1.76:5500', 'http://inftechsol.hu:5500']);
     res.header('Access-Control-Allow-Methods', '*');
     res.header('Access-Control-Allow-Headers', '*');
     return next();
