@@ -536,7 +536,14 @@ const AdminUsers = (props) => {
                             </div>
                             <div className="col-md-3">
                                 <Label>Felhasználónév: *</Label>
-                                <RVInput autoComplete="none" name="username" id="username" type="text" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.username} />
+                                <RVInput
+                                    autoComplete="new-password"
+                                    name="username"
+                                    id="username"
+                                    type="text"
+                                    onChange={(e) => handleInputChange(e, adminUser, setAdminUser)}
+                                    value={adminUser.username}
+                                />
                             </div>
                             <div className="col-md-3">
                                 <Label>Jelszó: *</Label>
