@@ -10,23 +10,21 @@ $colors: (
             bgcolor2: rgba(237, 224, 122, 1),
             bgimage: url('../static/images/blackback.png'),
             fbcolor: #4267b2,
-            mainColor: rgba(120, 212, 223, 1),
-            // navbarbgimage: url('/images/borito.jpg'),
+            mainColor: rgba(58, 214, 197, 1),
             navbarbgimage: url('/static/images/borito2.jpg'),
             navbarbgcolor: rgba(255, 255, 255, 0.4),
-            /* navbgcolor: rgba(0, 0, 0, 0.9), */ navbgcolor: rgba(255, 255, 255, 1),
+            navbgcolor: rgba(255, 255, 255, 1),
             navbarlogo: url('../images/logo_uj.png'),
             etikuslogo: url('../images/etikus.png'),
             hitelnetlogo: url('../images/hitelnet_logo.png'),
             navbarlinkcolor: rgba(0, 0, 0, 1),
-            /* navbarlinkcolor: rgba(58,214,197, 1), */ alapadatok: rgba(58, 214, 197, 1),
+            alapadatok: rgba(58, 214, 197, 1),
             ertekesitoadatok: rgba(58, 214, 197, 1),
             navlinkhoveractive: rgba(58, 214, 197, 1),
             navlinktextshadow: rgba(58, 214, 197, 1),
             boxshadowcolor: rgba(174, 255, 237, 0.514),
             sidebarbg: rgba(58, 214, 197, 1),
             reszl_keresobg: #14ac89,
-            // collapsebg: rgba(255,213,13, 0.6),
             collapsebg: rgba(174, 255, 237, 0.514),
             collapsefontcolor: rgba(0, 0, 0, 1),
             ingatlanlistacardborder: darkgray,
@@ -57,7 +55,7 @@ $colors: (
             tartalombgcolor: #d7c599,
             footerbgcolor: #ffc107,
             footerfontcolor: black,
-            mainColor: rgba(120, 212, 223, 1)
+            mainColor: rgba(58, 214, 197, 1)
         )
     )
 );
