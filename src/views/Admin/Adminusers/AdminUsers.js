@@ -416,21 +416,21 @@ const AdminUsers = (props) => {
                         <div className="row">
                             <div className="col-md-2">
                                 <Label>Titulus:</Label>
-                                <RVInput autoComplete="off" name="titulus" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.titulus} />
+                                <RVInput autoComplete="none" name="titulus" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.titulus} />
                             </div>
                             <div className="col-md-5">
                                 <Label>Vezetéknév:</Label>
-                                <RVInput autoComplete="off" name="vezeteknev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.vezeteknev} />
+                                <RVInput autoComplete="none" name="vezeteknev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.vezeteknev} />
                             </div>
                             <div className="col-md-5">
                                 <Label>Keresztnév:</Label>
-                                <RVInput autoComplete="off" name="keresztnev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.keresztnev} />
+                                <RVInput autoComplete="none" name="keresztnev" type="text" onChange={(e) => handleInputChange(e, nev, setNev)} value={nev.keresztnev} />
                             </div>
                             <div className="col-md-12" />
                             <br />
                             <div className="col-md-5">
                                 <Label>Ország:</Label>
-                                <RVInput autoComplete="off" type="select" id="orszag" name="orszag" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.orszag.id}>
+                                <RVInput autoComplete="none" type="select" id="orszag" name="orszag" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.orszag.id}>
                                     <option key="default" value="">
                                         {'Kérjük válasszon országot...'}
                                     </option>
@@ -439,12 +439,12 @@ const AdminUsers = (props) => {
                             </div>
                             <div className="col-md-2">
                                 <Label>Irányítószám:</Label>
-                                <RVInput autoComplete="off" name="irszam" id="irszam" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.irszam} />
+                                <RVInput autoComplete="none" name="irszam" id="irszam" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.irszam} />
                             </div>
                             <div className="col-md-5">
                                 <Label>Település:</Label>
                                 <RVInput
-                                    autoComplete="off"
+                                    autoComplete="none"
                                     type="select"
                                     name="telepules"
                                     id="telepules"
@@ -462,33 +462,33 @@ const AdminUsers = (props) => {
                             <br />
                             <div className="col-md-6">
                                 <Label>Közterület:</Label>
-                                <RVInput autoComplete="off" name="kozterulet" id="kozterulet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.kozterulet} />
+                                <RVInput autoComplete="none" name="kozterulet" id="kozterulet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.kozterulet} />
                             </div>
                             <div className="col-md-2">
                                 <Label>Házszám:</Label>
-                                <RVInput autoComplete="off" name="hazszam" id="hazszam" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.hazszam} />
+                                <RVInput autoComplete="none" name="hazszam" id="hazszam" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.hazszam} />
                             </div>
                             <div className="col-md-2">
                                 <Label>Helyrajzi szám:</Label>
-                                <RVInput autoComplete="off" name="hrsz" id="hrsz" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.hrsz} />
+                                <RVInput autoComplete="none" name="hrsz" id="hrsz" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.hrsz} />
                             </div>
                             <div className="col-md-2">
                                 <Label>Postafiók:</Label>
-                                <RVInput autoComplete="off" name="postafiok" id="postafiok" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.postafiok} />
+                                <RVInput autoComplete="none" name="postafiok" id="postafiok" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.postafiok} />
                             </div>
                             <div className="col-md-12" />
                             <br />
                             <div className="col-md-4">
                                 <Label>Épület:</Label>
-                                <RVInput autoComplete="off" name="epulet" id="epulet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.epulet} />
+                                <RVInput autoComplete="none" name="epulet" id="epulet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.epulet} />
                             </div>
                             <div className="col-md-4">
                                 <Label>Emelet:</Label>
-                                <RVInput autoComplete="off" name="emelet" id="emelet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.emelet} />
+                                <RVInput autoComplete="none" name="emelet" id="emelet" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.emelet} />
                             </div>
                             <div className="col-md-4">
                                 <Label>Ajtó:</Label>
-                                <RVInput autoComplete="off" name="ajto" id="ajto" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.ajto} />
+                                <RVInput autoComplete="none" name="ajto" id="ajto" type="text" onChange={(e) => handleInputChange(e, cim, setCim)} value={cim.ajto} />
                             </div>
                             <div className="col-md-12" />
                             <br />
@@ -497,7 +497,7 @@ const AdminUsers = (props) => {
                                     <div className="col-md-3">
                                         <Label>Országhívó:</Label>
                                         <RVInput
-                                            autoComplete="off"
+                                            autoComplete="none"
                                             type="text"
                                             name="orszaghivo"
                                             id="orszaghivo"
@@ -507,11 +507,11 @@ const AdminUsers = (props) => {
                                     </div>
                                     <div className="col-md-3">
                                         <Label>Körzetszám:</Label>
-                                        <RVInput autoComplete="off" type="text" name="korzet" id="korzet" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.korzet} />
+                                        <RVInput autoComplete="none" type="text" name="korzet" id="korzet" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.korzet} />
                                     </div>
                                     <div className="col-md-6">
                                         <Label>Telefonszám:</Label>
-                                        <RVInput autoComplete="off" type="text" name="telszam" id="telszam" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.telszam} />
+                                        <RVInput autoComplete="none" type="text" name="telszam" id="telszam" onChange={(e) => handleInputChange(e, telefon, setTelefon)} value={telefon.telszam} />
                                     </div>
                                 </div>
                             </div>
@@ -532,20 +532,20 @@ const AdminUsers = (props) => {
                         <div className="row">
                             <div className="col-md-3">
                                 <Label>Email: *</Label>
-                                <RVInput autoComplete="off" name="email" id="email" type="email" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.email} />
+                                <RVInput autoComplete="none" name="email" id="email" type="email" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.email} />
                             </div>
                             <div className="col-md-3">
                                 <Label>Felhasználónév: *</Label>
-                                <RVInput autoComplete="off" name="username" id="username" type="text" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.username} />
+                                <RVInput autoComplete="none" name="username" id="username" type="text" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.username} />
                             </div>
                             <div className="col-md-3">
                                 <Label>Jelszó: *</Label>
-                                <RVInput autoComplete="off" name="password" id="password" type="password" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.password} />
+                                <RVInput autoComplete="none" name="password" id="password" type="password" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.password} />
                             </div>
                             <div className="col-md-3">
                                 <Label>Értékesítő: *</Label>
                                 <RVInput
-                                    autoComplete="off"
+                                    autoComplete="none"
                                     name="isErtekesito"
                                     id="isErtekesito"
                                     type="checkbox"
