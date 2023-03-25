@@ -1,6 +1,18 @@
 import express from 'express';
 import multer from 'multer';
-import { jwtparams, pool, validateToken, createIngatlanokSql, createIngatlanokTriggerSql, hasRole, getJSONfromLongtext, isTableExists, getId, UseQuery, printPDF } from '../../../common/QueryHelpers.js';
+import {
+    jwtparams,
+    pool,
+    validateToken,
+    createIngatlanokSql,
+    createIngatlanokTriggerSql,
+    hasRole,
+    getJSONfromLongtext,
+    isTableExists,
+    getId,
+    UseQuery,
+    printPDF
+} from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync, readFileSync } from 'fs';
 import nodemailer from 'nodemailer';
 import path from 'path';
@@ -10,7 +22,7 @@ import mailconf from '../../common/MailerService/mailconfig.json';
 
 const router = express.Router();
 const ingatlanok = pool;
-let poolConfig = "smtps://username:password@smtp.example.com/?pool=true";
+let poolConfig = 'smtps://username:password@smtp.example.com/?pool=true';
 const transporter = nodemailer.createTransport(mailconf);
 
 //TODO: Egyéb (nem publikus) dokumentumok, képek feltöltését megvalósítani!!!
@@ -239,8 +251,9 @@ router.post('/jovahagyas', async (req, res) => {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
             if (!hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
-                const ingatlanId = req.headers.ingatlanId;
+                /* const ingatlanId = req.headers.ingatlanId; */
                 const ingId = req.headers.ingatlanid;
+                const isPublikus = req.headers.isAktiv;
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                 const mail = {
@@ -248,21 +261,39 @@ router.post('/jovahagyas', async (req, res) => {
                     to: `${process.env.foEmail}`, // list of receivers
                     subject: `${teljesNev} - új ingatlan`, // Subject line
                     html: `<b>Kedves Berki Mónika!</b><br><br>
-                    ${teljesNev} ingatlanértékesítő új ingatlant adott hozzá. Az ingatlan id-je: ${ingId ? ingId : 'Nincs id, valami hiba van...'}<br>
+                    ${teljesNev} ingatlanértékesítő szeretné ${isPublikus ? ' publikussá ' : ' inaktívvá '} tenni az ingatlanját. Az ingatlan id-je: ${
+                        ingId ? ingId : 'Nincs id, valami hiba van...'
+                    }<br>
                     Tisztelettel:<br>
                     ${teljesNev}<br>` // html body
-                }
-                transporter.sendMail(mail,
-                (err) => {
-                    if (!err) {
-                        res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
-                    } else {
-                        /* console.log(mailconf);
+                };
+                const sql = `UPDATE ingatlanok SET isAktiv = '0' WHERE id = '${ingId}';`;
+
+                if (isPublikus) {
+                    ingatlanok.query(sql, (err) => {
+                        if (!err) {
+                            transporter.sendMail(mail, (err) => {
+                                if (!err) {
+                                    res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
+                                } else {
+                                    /* console.log(mailconf);
                         console.log(err); */
-                        res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
-                    }
+                                    res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    transporter.sendMail(mail, (err) => {
+                        if (!err) {
+                            res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
+                        } else {
+                            /* console.log(mailconf);
+                        console.log(err); */
+                            res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
+                        }
+                    });
                 }
-            );
             } else {
                 res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
             }
@@ -284,7 +315,7 @@ const renderKepek = (kepek) => {
     }
 
     return str;
-}
+};
 
 const getNemUresFields = (ertek) => {
     let hidden = false;
@@ -341,7 +372,11 @@ const renderParameterek = (ingatlan, tipusOpts, altipusOpts) => {
         </tr>
         <tr>
             <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}><strong>Altípusa: </strong></td>
-            <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}>${altipusFormatter(typeof altipusOpts.options === 'string' ? JSON.parse(altipusOpts.options) : altipusOpts.options, ingatlan.tipus, ingatlan.altipus)}</td>
+            <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}>${altipusFormatter(
+        typeof altipusOpts.options === 'string' ? JSON.parse(altipusOpts.options) : altipusOpts.options,
+        ingatlan.tipus,
+        ingatlan.altipus
+    )}</td>
             <td ${getNemUresFields(ingatlan.telepules) ? 'hidden' : ''}><strong>Település: </strong></td>
             <td ${getNemUresFields(ingatlan.telepules) ? 'hidden' : ''}>${ingatlan.telepules}</td>
             <td ${getNemUresFields(ingatlan.rendeltetes) ? 'hidden' : ''}><strong>Rendeltetés: </strong></td>
@@ -365,9 +400,9 @@ const renderParameterek = (ingatlan, tipusOpts, altipusOpts) => {
         </tr>
     </table>
     `;
-    
+
     return newP;
-} 
+};
 
 // INGATLAN PDF AJANLO GENEÁLÁS
 
@@ -378,36 +413,36 @@ router.post('/infoPDF', async (req, res) => {
         if (user === null) {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
-                const ingatlanId = req.headers.ingatlanid;
-                const ingatlanSql = `SELECT * FROM ingatlanok WHERE id='${ingatlanId}';`;
-                const cegadatSql = `SELECT nev, cim, telefon FROM kapcsolat WHERE id='1';`;
-                const tipusOptionsSql = `SELECT * FROM ingatlan_options;`;
-                const altipusOptionsSql = `SELECT * FROM ingatlan_subtypes;`;
-                let ingatlan = await UseQuery(ingatlanSql);
-                let cegadatok = await UseQuery(cegadatSql);
-                let tipusOptions = await UseQuery(tipusOptionsSql);
-                let altipusOptions = await UseQuery(altipusOptionsSql);
-                let tipusOpts = tipusOptions[0];
-                let altipusOpts = altipusOptions[0];
+            const ingatlanId = req.headers.ingatlanid;
+            const ingatlanSql = `SELECT * FROM ingatlanok WHERE id='${ingatlanId}';`;
+            const cegadatSql = `SELECT nev, cim, telefon FROM kapcsolat WHERE id='1';`;
+            const tipusOptionsSql = `SELECT * FROM ingatlan_options;`;
+            const altipusOptionsSql = `SELECT * FROM ingatlan_subtypes;`;
+            let ingatlan = await UseQuery(ingatlanSql);
+            let cegadatok = await UseQuery(cegadatSql);
+            let tipusOptions = await UseQuery(tipusOptionsSql);
+            let altipusOptions = await UseQuery(altipusOptionsSql);
+            let tipusOpts = tipusOptions[0];
+            let altipusOpts = altipusOptions[0];
 
-                // USER ADATOK
-                let nev = JSON.parse(user.nev);
-                const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
-                let telszam = JSON.parse(user.telefon);
-                telszam = `${telszam.orszaghivo}-${telszam.korzet}/${telszam.telszam}`; 
-                const email = user.email;
-                ingatlan = getJSONfromLongtext(ingatlan[0], 'toBool');
-                cegadatok = getJSONfromLongtext(cegadatok[0], 'toBool');
+            // USER ADATOK
+            let nev = JSON.parse(user.nev);
+            const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
+            let telszam = JSON.parse(user.telefon);
+            telszam = `${telszam.orszaghivo}-${telszam.korzet}/${telszam.telszam}`;
+            const email = user.email;
+            ingatlan = getJSONfromLongtext(ingatlan[0], 'toBool');
+            cegadatok = getJSONfromLongtext(cegadatok[0], 'toBool');
             /*     tipusOptions = getJSONfromLongtext(tipusOpts, 'toBool');
                 altipusOpts = getJSONfromLongtext(altipusOpts, 'toBool'); */
 
-                // INGATLANADATOK
-              /*   const elsokepek = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.filter((kep, index) => index < 4); */
-              /*   const alaprajz = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.map((kep) => kep.filename.includes('alaprajz')); */
-                const filePath =  path.resolve(__dirname, '..', 'build/public', 'InformaciosLap.html');
+            // INGATLANADATOK
+            /*   const elsokepek = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.filter((kep, index) => index < 4); */
+            /*   const alaprajz = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.map((kep) => kep.filename.includes('alaprajz')); */
+            const filePath = path.resolve(__dirname, '..', 'build/public', 'InformaciosLap.html');
 
-                let html = readFileSync(filePath, { encoding: 'utf-8' });
-                html = html
+            let html = readFileSync(filePath, { encoding: 'utf-8' });
+            html = html
                 .replace('${teljesNev}', teljesNev)
                 .replace('${telszam}', telszam)
                 .replace('${cegadatok.nev}', cegadatok.nev)
@@ -421,11 +456,9 @@ router.post('/infoPDF', async (req, res) => {
                 .replace('${ingatlan.leiras}', ingatlan.leiras)
                 .replace('${renderParameterek(ingatlan, tipusOpts, altipusOpts)}', renderParameterek(ingatlan, tipusOpts, altipusOpts));
 
-                if(ingatlan && tipusOpts && altipusOpts && html) {
-                    res.status(200).send({ html: html });
-                }
-
-  
+            if (ingatlan && tipusOpts && altipusOpts && html) {
+                res.status(200).send({ html: html });
+            }
         }
     } else {
         res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });

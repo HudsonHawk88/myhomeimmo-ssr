@@ -18,7 +18,7 @@ const Ingatlanok = (props) => {
     const [tipusFilterOptions, setTipusFilterOptions] = useState([]);
     const [formType, setFormType] = useState('FEL'); // ['FEL', 'MOD', 'DEL']
 
-    const { addNotification } = props;
+    const { addNotification, user } = props;
 
     const generateXml = () => {
         Services.generateXml().then((res) => {
@@ -162,6 +162,21 @@ const Ingatlanok = (props) => {
         }
     };
 
+    const sendMail = (ingatlanId, isAktiv) => {
+        if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
+            Services.jovahagyasraKuldes(ingatlanId, isAktiv).then((res) => {
+                if (!res.err) {
+                    addNotification('success', res.msg);
+                } else {
+                    addNotification(
+                        'error',
+                        'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" '
+                    );
+                }
+            });
+        }
+    };
+
     const tableIconFormatter = (cell, row) => {
         return (
             <React.Fragment>
@@ -175,8 +190,7 @@ const Ingatlanok = (props) => {
                 >
                     <i className="fa fa-facebook-square" />
                 </Button>
-                {((hasRole(props.user.roles, ['INGATLAN_ADMIN']) && props.user.roles.find((role) => role.value === 'INGATLAN_OSSZ_LEK') === undefined) ||
-                    props.user.email === row.hirdeto.feladoEmail) && (
+                {((hasRole(user.roles, ['INGATLAN_ADMIN']) && user.roles.find((role) => role.value === 'INGATLAN_OSSZ_LEK') === undefined) || user.email === row.hirdeto.feladoEmail) && (
                     <>
                         <Button type="button" key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
                             <i className="fas fa-pencil-alt" />
@@ -186,9 +200,14 @@ const Ingatlanok = (props) => {
                         </Button>
                     </>
                 )}
-                {hasRole(props.user.roles, ['INGATLAN_ADMIN']) && (
+                {hasRole(user.roles, ['INGATLAN_ADMIN']) && (
                     <Button type="button" key={row.id + 2} color="link" onClick={() => printAjanloPDF(row.id)}>
                         <i className="fas fa-file-pdf" />
+                    </Button>
+                )}
+                {!hasRole(user.roles, ['SZUPER_ADMIN']) && user.email === row.hirdeto.feladoEmail && (
+                    <Button type="button" color="link" onClick={() => sendMail(row.id, row.isAktiv)}>
+                        <i class="fas fa-user-check" />
                     </Button>
                 )}
             </React.Fragment>

@@ -86,14 +86,15 @@ export default class Services {
         return result;
     };
 
-    static jovahagyasraKuldes = (ingatlanId) => {
+    static jovahagyasraKuldes = (ingatlanId, isAktiv) => {
         let result = Microservices.fetchApi(ingatlanJovahagyasAdminUrl, {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
             headers: {
                 'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                ingatlanId: ingatlanId
+                ingatlanId: ingatlanId,
+                isAktiv: isAktiv
             }
         });
         return result;

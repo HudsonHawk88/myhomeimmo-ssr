@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, ModalHeader, ModalBody, ModalFooter, Label } from 'reactstrap';
+import { Button, ModalHeader, ModalBody, ModalFooter, Label, Modal } from 'reactstrap';
 import { RVForm, RVFormGroup, RVInput, RVInputGroup, RVFormFeedback, RVInputGroupText } from '@inftechsol/reactstrap-form-validation';
 import { useDropzone } from 'react-dropzone';
 import Select from 'react-select';
@@ -77,7 +77,12 @@ const IngatlanForm = (props) => {
     const [telepulesObj, setTelepulesObj] = useState(defaultTelepulesObj);
     const [ingatlanOptions, setIngatlanOptions] = useState([]);
     const [altipusOptions, setAltipusOptions] = useState([]);
+    const [kepekModal, setKepekModal] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const toggleKepekModal = () => {
+        setKepekModal(!kepekModal);
+    };
 
     const isIrszamTyped = () => {
         if (helyseg.irszam && helyseg.irszam.length === 4) {
@@ -485,51 +490,18 @@ const IngatlanForm = (props) => {
         }
     };
 
-    const onSubmit = (e) => {
+    const onSubmit = (e, isKuld) => {
         setLoading(true);
-        /*    e.preventDefault(); */
         let kuldObj = ingatlanObj;
         kuldObj.helyseg = helyseg;
         kuldObj.helyseg.telepules = telepulesObj;
         kuldObj.hirdeto = hirdeto;
         kuldObj.ar = arFormatter(kuldObj.ar);
         kuldObj.kaucio = kuldObj.kaucio !== '' ? arFormatter(kuldObj.kaucio) : '';
-        /* console.log(telepulesObj, kuldObj, helyseg); */
-        /* if (kuldObj.helyseg.telepules.id) {
-            kuldObj.telepules = kuldObj.helyseg.telepules.telepulesnev;
-        } else {
-            telepulesek.map((telepules) => {
-                if (telepules.id.toString() === helyseg.telepules) {
-                    kuldObj.telepules = telepules.telepulesnev;
-                    kuldObj.helyseg.telepules = telepules;
-                }
-            });
-        } */
 
-        /* kuldObj.feladoNev = felado.feladoNev;
-        kuldObj.feladoEmail = felado.feladoEmail;
-        kuldObj.feladoTelefon = felado.feladoTelefon;
-        kuldObj.feladoAvatar = felado.feladoAvatar;
-        kuldObj.isErtekesito = user.isErtekesito; */
         let datas = {};
 
-        // datas.append('kepek', kuldObj.kepek);
         if (!currentId) {
-            /*   for (var key in kuldObj) {
-                if (key === 'kepek' || key === 'feladoAvatar' || key === 'helyseg' || key === 'hirdeto') {
-                    if (key === 'kepek') {
-                        kuldObj.kepek.forEach((kep) => {
-                            if (kep.file) {
-                                datas.append('kepek', kep.file);
-                            }
-                        });
-                    } else {
-                        datas.append(key, JSON.stringify(kuldObj[key]));
-                    }
-                } else {
-                    datas.append(key, kuldObj[key]);
-                }
-            } */
             datas = makeFormData(kuldObj, 'kepek', false);
             Services.addIngatlan(datas).then((res) => {
                 if (!res.err) {
@@ -537,42 +509,15 @@ const IngatlanForm = (props) => {
                     toggleModal();
                     listIngatlanok();
                     addNotification('success', res.msg);
-
-                    // TODO: Email küldés nem megy localhost tls miatt!!!! (MYHOME-17)
-                    sendMail(res.ingatlanId);
-                    /* if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
-                        Services.jovahagyasraKuldes(res.ingatlanId).then((res) => {
-                            if (res.err) {
-                                addNotification('error', 'Valami hiba történt a jóváhagyásra küldéskor! Kérjük Próbál meg újra a jóváhagyásr küldést a "Jóvágyásra küldés gombbal! Ha ez sem működik, kérlek érteítsd a rendszergazdát!" ')
-                            } else {
-
-                            }
-                        })
-                    } */
+                    if (isKuld) {
+                        sendMail(res.ingatlanId, kuldObj.isAktiv);
+                    }
                 } else {
                     setLoading(false);
                     addNotification('error', res.err);
                 }
             });
         } else {
-            /*  for (var key in kuldObj) {
-                if (key === 'kepek' || key === 'feladoAvatar' || key === 'helyseg' || key === 'hirdeto') {
-                    if (key === 'kepek') {
-                        kuldObj.kepek.forEach((kep) => {
-                            if (kep.file) {
-                                datas.append('uj_kepek', kep.file);
-                            } else {
-                                datas.append('kepek', JSON.stringify(kep));
-                            }
-                        });
-                    } else {
-                        datas.append(key, JSON.stringify(kuldObj[key]));
-                    }
-                } else {
-                    datas.append(key, kuldObj[key]);
-                }
-            } */
-
             datas = makeFormData(kuldObj, 'kepek', true);
             Services.editIngatlan(datas, currentId).then((res) => {
                 if (!res.err) {
@@ -580,12 +525,41 @@ const IngatlanForm = (props) => {
                     listIngatlanok();
                     addNotification('success', res.msg);
                     setLoading(false);
+                    if (isKuld) {
+                        sendMail(currentId, kuldObj.isAktiv);
+                    }
                 } else {
                     addNotification('error', res.err);
                     setLoading(false);
                 }
             });
         }
+    };
+
+    const renderKepekModal = () => {
+        return (
+            <Modal isOpen={kepekModal} toggle={toggleKepekModal}>
+                <ModalHeader>{`Képek ${currentId ? ' módosítása' : 'felvitele'}`}</ModalHeader>
+                <ModalBody>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <h5>Képek</h5>
+                        </div>
+                        <hr />
+                        <div className="col-md-12">
+                            <RVFormGroup>
+                                <MyDropzone multiple />
+                            </RVFormGroup>
+                        </div>
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <Button type="button" onClick={toggleKepekModal}>
+                        Ok
+                    </Button>
+                </ModalFooter>
+            </Modal>
+        );
     };
 
     //TODO: Egyéb (nem publikus) dokumentumok felvitelét megoldani!!!
@@ -1179,23 +1153,21 @@ const IngatlanForm = (props) => {
                             </RVInput>
                         </RVFormGroup>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-12">
-                        <h5>Képek</h5>
-                    </div>
-                    <hr />
-                    <div className="col-md-12">
-                        <RVFormGroup>
-                            <MyDropzone multiple />
-                        </RVFormGroup>
-                    </div>
+                    {renderKepekModal()}
                 </div>
             </ModalBody>
             <ModalFooter>
-                <Button type="submit" color="primary" disabled={loading}>
+                <Button type="button" color="success" onClick={toggleKepekModal}>{`Képek ${!currentId ? ' felvitele' : ' módosítása'}`}</Button>
+                <Button type="submit" color="primary" disabled={loading || ingatlanObj.kepek.length === 0}>
                     Mentés
                 </Button>
+                {!hasRole(user.roles, ['SZUPER_ADMIN']) && (
+                    <React.Fragment>
+                        <Button type="button" color="primary" onClick={(e) => onSubmit(e, true)} disabled={loading || ingatlanObj.kepek.length === 0}>
+                            Mentés és engedélyeztetés
+                        </Button>
+                    </React.Fragment>
+                )}
                 <Button type="button" color="dark" onClick={toggleModal}>
                     Mégsem
                 </Button>
