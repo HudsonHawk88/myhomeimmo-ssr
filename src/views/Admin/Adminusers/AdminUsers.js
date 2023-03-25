@@ -232,6 +232,7 @@ const AdminUsers = (props) => {
         user.cim = cim;
         user.telefon = telefon;
         user.password = currentId ? user.newPassword : user.password;
+        delete user.newPassword;
 
         let datas = new FormData();
 
