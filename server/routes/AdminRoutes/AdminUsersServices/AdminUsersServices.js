@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
             });
         } else {
             if (id) {
-                const sql = `SELECT * FROM adminusers WHERE id='${id}';`;
+                const sql = `SELECT avatar, cim, email, id, isErtekesito, nev, roles, telefon, username FROM adminusers WHERE id='${id}';`;
                 adminusers.query(sql, (err, result) => {
                     if (!err) {
                         if (result[0].email === user.email || (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']))) {
@@ -58,7 +58,7 @@ router.get('/', async (req, res) => {
                     }
                 });
             } else {
-                const sql = `SELECT * FROM adminusers;`;
+                const sql = `SELECT avatar, cim, email, id, isErtekesito, nev, roles, telefon, username FROM adminusers;`;
                 adminusers.query(sql, (error, ress) => {
                     if (error) {
                         res.status(500).send({ err: 'Hiba történt a felhasználók lekérdezésekor!' });
@@ -143,8 +143,6 @@ router.post('/', upload.array('avatar'), async (req, res) => {
                                                     console.log(err);
                                                 }
                                             });
-
-                                        
                                     });
                                 }
                                 felvitelObj.avatar = kepek;
