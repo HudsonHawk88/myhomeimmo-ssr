@@ -248,8 +248,8 @@ router.get('/javitas', async (req, res) => {
                 let newSrc = avatar.src.replace(oldSrc, `${process.env.REACT_APP_mainUrl}`);
                 avatar.src = newSrc;
             });
-
-            ing.hirdeto = newHird;
+            const emailPart = newHird.feladoEmail.slice(0, newHird.feladoEmail.indexOf('@'));
+            newHird.feladoEmail = emailPart + '@myhomeimmo.hu';
 
             return ing;
         });
