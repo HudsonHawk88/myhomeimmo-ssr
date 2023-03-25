@@ -109,7 +109,6 @@ const Ingatlanok = (props) => {
     };
 
     const handleEditClick = (id) => {
-        console.log('ANYÁD..........');
         setCurrentId(id);
         setFormType('MOD');
         toggleModal();
@@ -307,8 +306,6 @@ const Ingatlanok = (props) => {
                 }
             ]
         };
-
-        console.log(ingatlanokJson);
 
         return <DataTable bordered columns={columns} datas={ingatlanokJson} paginationOptions={paginationOptions} />;
     };

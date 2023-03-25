@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Input, Label, Button } from 'reactstrap';
 import Select from 'react-select';
 import { Helmet } from 'react-helmet';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { RVForm, RVFormGroup, RVInput, RVInputGroup, RVFormFeedback, RVInputGroupText } from '@inftechsol/reactstrap-form-validation';
 
 import { handleInputChange } from '../../../commons/InputHandlers';
@@ -14,6 +14,16 @@ import { arFormatter } from '../../../commons/Lib.js';
 
 const Ingatlanok = (props) => {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const toBool = (value) => {
+        let result = true;
+        if (value === 'false' || value === '') {
+            result = false;
+        }
+
+        return result;
+    };
 
     const defaultTelepulesObj = {
         telepulesnev: 'Zalaegerszeg',
@@ -159,10 +169,18 @@ const Ingatlanok = (props) => {
                                 setTelepulesObj(defaultTelepulesObj);
                             }
                         } else {
-                            newObj[kkey] = kereso[kkey];
+                            if (kereso[kkey] === 'false' || kereso[kkey] === 'true') {
+                                newObj[kkey] = toBool(kereso[kkey]);
+                            } else {
+                                newObj[kkey] = kereso[kkey];
+                            }
                         }
                     } else {
-                        newObj[key] = kereso[key] ? kereso[key] : '';
+                        if (kereso[kkey] === 'false' || kereso[kkey] === 'true') {
+                            newObj[kkey] = toBool(kereso[kkey]);
+                        } else {
+                            newObj[key] = kereso[key] ? kereso[key] : '';
+                        }
                     }
                 });
             });
@@ -222,10 +240,44 @@ const Ingatlanok = (props) => {
         }
     }, [loading]);
 
-    const keres = () => {
+    const getParams = () => {
         let newKereso = keresoObj;
         newKereso.telepules = telepulesObj;
-        listIngatlanok(newKereso);
+        const kereso = {};
+        Object.keys(newKereso).map((key) => {
+            if (newKereso[key] !== '') {
+                if (key === 'telepules') {
+                    Object.assign(kereso, { ['telepules']: { telepulesnev: newKereso.telepules.telepulesnev, km: newKereso.telepules.km } });
+                } else {
+                    if (newKereso[key] === 'true' || newKereso[key] === 'false') {
+                        Object.assign(kereso, { [key]: toBool(newKereso[key]) });
+                    } else {
+                        Object.assign(kereso, { [key]: newKereso[key] });
+                    }
+                }
+            }
+        });
+
+        return kereso;
+    };
+
+    const keres = () => {
+        let sendObj = keresoObj;
+        sendObj.telepules = telepulesObj;
+        let newKereso = keresoObj;
+        newKereso.telepules = telepulesObj.telepulesnev;
+        const ker = getParams();
+        const queryParams = Object.keys(ker)
+            .map((key) => {
+                if (key === 'telepules') {
+                    return key + '=' + JSON.stringify(newKereso[key]);
+                } else {
+                    return key + '=' + newKereso[key];
+                }
+            })
+            .join('&');
+        navigate(`/ingatlanok?${queryParams}`);
+        listIngatlanok(sendObj);
     };
 
     const renderKmOptions = () => {

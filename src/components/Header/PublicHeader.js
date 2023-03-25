@@ -48,7 +48,7 @@ const PublicHeader = (props) => {
                             </a>
                         </NavItem>
                         <NavItem className="nav-item public-navbar__nav-item">
-                            <Link className="nav-link public-navbar__nav-link" to="/ingatlanok" replace>
+                            <Link className="nav-link public-navbar__nav-link" to="/ingatlanok">
                                 {/* <i className="fas fa-home" /> */}
                                 <i aria-hidden className="fas fa-house-user"></i>
                                 &nbsp; Ingatlanok
@@ -61,13 +61,13 @@ const PublicHeader = (props) => {
                             </DropdownToggle>
                             <DropdownMenu>
                                 <DropdownItem>
-                                    <Link className="nav-link public-navbar__nav-link" to="/ingatlanszolgaltatasok" replace>
+                                    <Link className="nav-link public-navbar__nav-link" to="/ingatlanszolgaltatasok">
                                         <i aria-hidden className="fas fa-handshake"></i>
                                         &nbsp; Ingatlan szolgáltatások
                                     </Link>
                                 </DropdownItem>
                                 <DropdownItem>
-                                    <Link className="nav-link public-navbar__nav-link" to="/penzugyiszolgaltatasok" replace>
+                                    <Link className="nav-link public-navbar__nav-link" to="/penzugyiszolgaltatasok">
                                         <i aria-hidden className="fas fa-piggy-bank"></i>
                                         &nbsp; Pénzügyi szolgáltatások
                                     </Link>
@@ -81,13 +81,13 @@ const PublicHeader = (props) => {
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <NavItem className="nav-item public-navbar__nav-item">
-                            <Link className="nav-link public-navbar__nav-link" to="/rolunk" replace>
+                            <Link className="nav-link public-navbar__nav-link" to="/rolunk">
                                 <i aria-hidden className="fas fa-info-circle"></i>
                                 &nbsp; Rólunk
                             </Link>
                         </NavItem>
                         <NavItem className="nav-item public-navbar__nav-item">
-                            <Link className="nav-link public-navbar__nav-link" to="/kapcsolat" replace>
+                            <Link className="nav-link public-navbar__nav-link" to="/kapcsolat">
                                 <i aria-hidden className="fas fa-phone-alt"></i>
                                 &nbsp; Kapcsolat
                             </Link>
@@ -107,7 +107,7 @@ const PublicHeader = (props) => {
                             </DropdownMenu>
                         </UncontrolledDropdown> */}
                         <NavItem className="nav-item public-navbar__nav-item">
-                            <Link className="nav-link public-navbar__nav-link" to="/myjob" id="myjob" replace>
+                            <Link className="nav-link public-navbar__nav-link" to="/myjob" id="myjob">
                                 <i aria-hidden className="fas fa-shapes"></i>
                                 &nbsp; Dolgozz Velünk!
                             </Link>

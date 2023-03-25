@@ -264,7 +264,6 @@ const Vevok = (props) => {
     };
 
     const toggleKriteriumModal = () => {
-        console.log(adminVevo);
         setKriteriumModal(!kriteriumModal);
     };
 
@@ -358,7 +357,6 @@ const Vevok = (props) => {
         user.telefon = telefon;
         user.erdeklodesek = keresoObj;
         user.erdeklodesek.telepules = telepulesObj;
-        console.log(user);
 
         if (!currentId) {
             Services.addAdminVevo(user).then((res) => {

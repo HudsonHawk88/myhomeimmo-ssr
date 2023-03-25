@@ -106,7 +106,7 @@ function App(props) {
     })
   } */
 
-    /*   useEffect(() => {
+    /* useEffect(() => {
     
     const token = localStorage ? localStorage.getItem('refreshToken') : "";
     if (isAdmin) {
@@ -117,6 +117,20 @@ function App(props) {
 
     
   }, [isAdmin]); */
+
+    const onBackButtonEvent = useCallback((e) => {
+        e.preventDefault();
+        var currentLocation = window.location.pathname;
+
+        /* console.log(currentLocation, e.state); */
+    }, []);
+
+    useEffect(() => {
+        window.addEventListener('popstate', onBackButtonEvent);
+        return () => {
+            window.removeEventListener('popstate', onBackButtonEvent);
+        };
+    }, [onBackButtonEvent]);
 
     useEffect(() => {
         if ((__isBrowser__ && location.pathname.startsWith('/admin')) || location.pathname === '/login') {

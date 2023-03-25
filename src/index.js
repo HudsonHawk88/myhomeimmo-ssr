@@ -14,20 +14,20 @@ function startApp() {
     if (isBrowser) {
         const root = createRoot(container);
         root.render(
-            <StrictMode>
-                <Router>
-                    <App serverData={window.__INITIAL_DATA__} history={history} />
-                </Router>
-            </StrictMode>
+            /* <StrictMode> */
+            <Router>
+                <App serverData={window.__INITIAL_DATA__} history={history} />
+            </Router>
+            /*   </StrictMode> */
         );
     } else {
         const root = hydrateRoot(
             container,
-            <StrictMode>
-                <Router>
-                    <App serverData={window.__INITIAL_DATA__} history={history} />
-                </Router>
-            </StrictMode>
+            /* <StrictMode> */
+            <Router>
+                <App serverData={window.__INITIAL_DATA__} history={history} />
+            </Router>
+            /* </StrictMode> */
         );
     }
 }

@@ -10,7 +10,7 @@ const IngatlanCard = (props) => {
     const { ingat, ingatlanOptions } = props;
 
     const viewIngatlan = (id) => {
-        navigate(`/ingatlan?id=${id}`, { replace: true, state: { id: id } });
+        navigate(`/ingatlan?id=${id}`, { state: { id: id } });
     };
 
     const isNew = (isUjEpitesu) => {

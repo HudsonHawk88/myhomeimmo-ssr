@@ -11,9 +11,7 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
     const reorder = (list, startIndex, endIndex) => {
         let result = Array.from(list);
         const [removed] = result.splice(startIndex, 1);
-        console.log(removed);
         result.splice(endIndex, 0, removed);
-        console.log(result);
         result.forEach((kep, index) => {
             if (index === 0) {
                 kep.isCover = true;
@@ -32,7 +30,6 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
 
         if (active.id !== over.id) {
             const newArray = reorder(lll, active.id, over.id);
-            console.log(newArray);
             setList({
                 ...list,
                 [property]: newArray
