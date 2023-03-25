@@ -408,7 +408,7 @@ const AdminUsers = (props) => {
         // console.log(adminUser);
         return (
             <Modal isOpen={modalOpen} toggle={toggleModal} size="xl" backdrop="static">
-                <RVForm onSubmit={onSave} encType="multipart/form-data" noValidate={true}>
+                <RVForm autoComplete="off" onSubmit={onSave} encType="multipart/form-data" noValidate={true}>
                     <ModalHeader>{!currentId ? 'Admin felhasználó hozzáadása' : 'Admin felhasználó módosítása'}</ModalHeader>
                     <ModalBody>
                         <h4>Alapadatok:</h4>
