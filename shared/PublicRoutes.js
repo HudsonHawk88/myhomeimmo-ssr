@@ -19,7 +19,7 @@ const getReqUrl = (path) => {
         origin = window.location.host;
         url = `http://${origin}${path}`;
     } else {
-        url = `${process.env.HOST ? process.env.HOST : '127.0.0.1'}:${process.env.PORT ? process.env.PORT : '3000'}${path}`;
+        url = `http://${process.env.HOST ? process.env.HOST : '127.0.0.1'}:${process.env.PORT ? process.env.PORT : '3000'}${path}`;
     }
 
     return url;
