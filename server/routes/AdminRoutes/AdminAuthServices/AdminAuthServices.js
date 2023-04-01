@@ -69,76 +69,76 @@ router.post('/token', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    try {
-        let userObj = req.body;
-        // userObj = JSON.parse(userObj);
-        if (userObj) {
-            const sql = `SELECT username, password, roles, avatar, nev, telefon, email, isErtekesito FROM adminusers WHERE email = '${userObj.email}'`;
+    /* try { */
+    let userObj = req.body;
+    // userObj = JSON.parse(userObj);
+    if (userObj) {
+        const sql = `SELECT username, password, roles, avatar, nev, telefon, email, isErtekesito FROM adminusers WHERE email = '${userObj.email}'`;
 
-            const result = await UseQuery(sql);
-            //fail
-            if (result.length === 0) {
-                res.status(403).send({ err: 'Nincs ilyen felhasználó regisztrálva!' });
-            } else {
-                //compare salted password
-                const saltedPassword = await result[0].password;
-
-                const successResult = bcrypt.compareSync(userObj.password, saltedPassword);
-
-                //logged in successfully generate session
-                if (successResult === true) {
-                    const user = result[0];
-                    let ertekesito = {};
-                    // const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
-                    // const userAvatar = await UseQuery(getUserAvatarSql);
-                    user.roles = user.roles ? user.roles : null;
-                    let avatar = user.avatar ? user.avatar : [];
-                    user.telefon = user.telefon ? user.telefon : {};
-                    user.nev = user.nev ? user.nev : {};
-                    user.isErtekesito = user.isErtekesito === 1 ? true : false;
-                    if (!user.isErtekesito) {
-                        const getAdminSql = `SELECT nev, telefon, email, avatar FROM adminusers WHERE username='berkimonika';`;
-                        const admin = await UseQuery(getAdminSql);
-                        ertekesito['nev'] = JSON.parse(admin[0].nev);
-                        ertekesito['telefon'] = JSON.parse(admin[0].telefon);
-                        ertekesito['email'] = admin[0].email;
-                        ertekesito['avatar'] = JSON.parse(admin[0].avatar);
-                    }
-                    //sign my jwt
-                    const payLoad = { name: user.username, roles: user.roles, email: user.email, telefon: user.telefon, nev: user.nev, isErtekesito: user.isErtekesito };
-                    const token = jwt.sign(payLoad, jwtparams.secret, { algorithm: 'HS256', expiresIn: jwtparams.expire });
-                    const refreshtoken = jwt.sign(payLoad, jwtparams.refresh, { algorithm: 'HS256' });
-                    const updateSql = `UPDATE adminusers SET token = '${refreshtoken}' WHERE email = '${user.email}';`;
-                    //save the refresh token in the database
-                    adminusers.query(updateSql, (errrrr) => {
-                        if (!errrrr) {
-                            res.setHeader('set-cookie', [`JWT_TOKEN=${token}; httponly; path=/`]);
-                            res.status(200).send({
-                                user: {
-                                    username: user.username,
-                                    avatar: JSON.parse(avatar),
-                                    roles: JSON.parse(user.roles),
-                                    email: user.email,
-                                    telefon: JSON.parse(user.telefon),
-                                    nev: JSON.parse(user.nev),
-                                    isErtekesito: user.isErtekesito
-                                },
-                                ertekesito: ertekesito !== {} ? ertekesito : null,
-                                refreshToken: refreshtoken
-                            });
-                        }
-                    });
-                    //maybe check if it succeeds..
-                } else {
-                    res.status(403).send({ err: 'Helytelen jelszó!' });
-                }
-            }
+        const result = await UseQuery(sql);
+        //fail
+        if (result.length === 0) {
+            res.status(403).send({ err: 'Nincs ilyen felhasználó regisztrálva!' });
         } else {
-            res.status(400).send({ err: 'Email cím és jelszó megadása kötelező' });
+            //compare salted password
+            const saltedPassword = await result[0].password;
+
+            const successResult = bcrypt.compareSync(userObj.password, saltedPassword);
+
+            //logged in successfully generate session
+            if (successResult === true) {
+                const user = result[0];
+                let ertekesito = {};
+                // const getUserAvatarSql = `SELECT avatar FROM adminusers WHERE email='${user.email}'`;
+                // const userAvatar = await UseQuery(getUserAvatarSql);
+                user.roles = user.roles ? user.roles : null;
+                let avatar = user.avatar ? user.avatar : [];
+                user.telefon = user.telefon ? user.telefon : {};
+                user.nev = user.nev ? user.nev : {};
+                user.isErtekesito = user.isErtekesito === 1 ? true : false;
+                if (!user.isErtekesito) {
+                    const getAdminSql = `SELECT nev, telefon, email, avatar FROM adminusers WHERE username='berkimonika';`;
+                    const admin = await UseQuery(getAdminSql);
+                    ertekesito['nev'] = JSON.parse(admin[0].nev);
+                    ertekesito['telefon'] = JSON.parse(admin[0].telefon);
+                    ertekesito['email'] = admin[0].email;
+                    ertekesito['avatar'] = JSON.parse(admin[0].avatar);
+                }
+                //sign my jwt
+                const payLoad = { name: user.username, roles: user.roles, email: user.email, telefon: user.telefon, nev: user.nev, isErtekesito: user.isErtekesito };
+                const token = jwt.sign(payLoad, jwtparams.secret, { algorithm: 'HS256', expiresIn: jwtparams.expire });
+                const refreshtoken = jwt.sign(payLoad, jwtparams.refresh, { algorithm: 'HS256' });
+                const updateSql = `UPDATE adminusers SET token = '${refreshtoken}' WHERE email = '${user.email}';`;
+                //save the refresh token in the database
+                adminusers.query(updateSql, (errrrr) => {
+                    if (!errrrr) {
+                        res.setHeader('set-cookie', [`JWT_TOKEN=${token}; httponly; path=/`]);
+                        res.status(200).send({
+                            user: {
+                                username: user.username,
+                                avatar: JSON.parse(avatar),
+                                roles: JSON.parse(user.roles),
+                                email: user.email,
+                                telefon: JSON.parse(user.telefon),
+                                nev: JSON.parse(user.nev),
+                                isErtekesito: user.isErtekesito
+                            },
+                            ertekesito: ertekesito !== {} ? ertekesito : null,
+                            refreshToken: refreshtoken
+                        });
+                    }
+                });
+                //maybe check if it succeeds..
+            } else {
+                res.status(403).send({ err: 'Helytelen jelszó!' });
+            }
         }
-    } catch (ex) {
-        console.error(ex);
+    } else {
+        res.status(400).send({ err: 'Email cím és jelszó megadása kötelező' });
     }
+    /* } catch (ex) {
+        console.error(ex);
+    } */
 });
 
 router.post('/logout', (req, res) => {

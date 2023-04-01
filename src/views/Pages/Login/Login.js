@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Card, Button, Form, Input } from 'reactstrap';
+import { Card, Button } from 'reactstrap';
+import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
 import Services from './Services';
 
 function Login(props) {
@@ -9,6 +10,7 @@ function Login(props) {
     });
 
     const { setUser, setErtekesito, history, addNotification } = props;
+    console.log(props);
 
     const handleInputChange = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -18,10 +20,11 @@ function Login(props) {
         });
     };
 
-    const submitLoginForm = (e) => {
-        e.preventDefault();
-        Services.login(loginObj, props.isAdmin).then((res, err) => {
-            if (!err) {
+    const submitLoginForm = () => {
+        /* e.preventDefault(); */
+        Services.login(loginObj, props.isAdmin).then((res) => {
+            console.log(res);
+            if (!res.err) {
                 localStorage.setItem('refreshToken', res.refreshToken);
                 setUser(res.user);
                 if (res.ertekesito) {
@@ -30,6 +33,7 @@ function Login(props) {
                 window.location.href = '/admin';
                 /*  history.push('/admin'); */
             } else {
+                console.log(res);
                 addNotification('error', res.err);
             }
         });
@@ -39,7 +43,7 @@ function Login(props) {
         return (
             <div className="logincard">
                 <Card>
-                    <Form onSubmit={submitLoginForm}>
+                    <RVForm onSubmit={submitLoginForm} noValidate={true}>
                         <div className="row">
                             <div className="col-md-12">
                                 <h4>Bejelentkezés</h4>
@@ -47,16 +51,16 @@ function Login(props) {
                             <br />
                             <br />
                             <div className="col-md-12">
-                                <Input type="email" name="email" id="email" placeholder="Email cím" onChange={handleInputChange} value={loginObj.email} />
+                                <RVInput type="email" name="email" id="email" placeholder="Email cím" onChange={handleInputChange} value={loginObj.email} />
                                 <br />
-                                <Input type="password" name="password" id="password" placeholder="Jelszó" onChange={handleInputChange} value={loginObj.password} />
+                                <RVInput type="password" name="password" id="password" placeholder="Jelszó" onChange={handleInputChange} value={loginObj.password} />
                                 <br />
                                 <Button type="submit" color="success">
                                     Bejelentkezés
                                 </Button>
                             </div>
                         </div>
-                    </Form>
+                    </RVForm>
                 </Card>
             </div>
         );
