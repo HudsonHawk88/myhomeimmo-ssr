@@ -77,7 +77,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', upload.array('kep'), async (req, res) => {
-/* router.post('/', async (req, res) => { */
+    /* router.post('/', async (req, res) => { */
     const token = req.cookies.JWT_TOKEN;
     if (token) {
         const user = await validateToken(token, jwtparams.secret);
@@ -88,7 +88,6 @@ router.post('/', upload.array('kep'), async (req, res) => {
         } else {
             if (user.roles && user.roles.length !== 0 && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                 let felvitelObj = req.body;
-                console.log(req.body)
                 if (felvitelObj) {
                     felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
                     //store user, password and role
@@ -111,8 +110,6 @@ router.post('/', upload.array('kep'), async (req, res) => {
                             if (result.length === 0) {
                                 let id = await getId(req.headers.id, 'kapcsolat');
                                 let kepek = [];
-                                console.log(req.files);
-                                console.log(req.file);
                                 if (req.files) {
                                     req.files.forEach((kep) => {
                                         let extIndex = kep.originalname.lastIndexOf('.');
@@ -122,7 +119,7 @@ router.post('/', upload.array('kep'), async (req, res) => {
                                             title: `${fname}.jpg`,
                                             filename: `${fname}.jpg`
                                         });
-                                        
+
                                         sharp(kep.buffer)
                                             .jpeg({ quality: 80 })
                                             .resize({ width: 1500, fit: 'inside' })
@@ -225,7 +222,6 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
                                     filename: `${fname}.jpg`
                                 });
 
-                                
                                 sharp(kep.buffer)
                                     .jpeg({ quality: 80 })
                                     .resize({ width: 1500, fit: 'inside' })

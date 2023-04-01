@@ -7,7 +7,6 @@ const router = express.Router();
 const adminvevok = pool;
 const transporter = nodemailer.createTransport(mailconf);
 
-
 // ADMINVEVOK START
 
 router.get('/', async (req, res) => {
@@ -72,7 +71,6 @@ router.post('/', async (req, res) => {
         } else {
             if (user.roles && user.roles.length !== 0 && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'VEVOK_ADMIN'])) {
                 let felvitelObj = req.body;
-                console.log(felvitelObj);
                 if (felvitelObj) {
                     //store user, password and role
                     const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.adminvevok (
@@ -90,7 +88,9 @@ router.post('/', async (req, res) => {
                             if (resultEmail.length === 0) {
                                 let id = await getId(req.headers.id, 'adminvevok');
                                 const sql = `INSERT INTO adminvevok (id, nev, cim, telefon, email, erdeklodes)
-                                VALUES ('${id}', '${JSON.stringify(felvitelObj.nev)}', '${JSON.stringify(felvitelObj.cim)}', '${JSON.stringify(felvitelObj.telefon)}', '${felvitelObj.email}', '${JSON.stringify(felvitelObj.erdeklodesek)}');`;
+                                VALUES ('${id}', '${JSON.stringify(felvitelObj.nev)}', '${JSON.stringify(felvitelObj.cim)}', '${JSON.stringify(felvitelObj.telefon)}', '${
+                                    felvitelObj.email
+                                }', '${JSON.stringify(felvitelObj.erdeklodesek)}');`;
                                 adminvevok.query(sql, (err) => {
                                     if (!err) {
                                         res.status(200).send({
@@ -98,13 +98,15 @@ router.post('/', async (req, res) => {
                                         });
                                     } else {
                                         res.status(500).send({
-                                            err: err, msg: 'Vevő hozzáadása sikertelen!'
+                                            err: err,
+                                            msg: 'Vevő hozzáadása sikertelen!'
                                         });
                                     }
                                 });
                             } else {
                                 res.status(400).send({
-                                    err: err, msg: 'Ezzel a névvel / email címmel már regisztráltak!'
+                                    err: err,
+                                    msg: 'Ezzel a névvel / email címmel már regisztráltak!'
                                 });
                             }
                         } else {
@@ -146,7 +148,9 @@ router.put('/', async (req, res) => {
             if (modositoObj) {
                 if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'VEVOK_ADMIN'])) {
                     if (id) {
-                        const sql = `UPDATE adminvevok SET nev = '${JSON.stringify(modositoObj.nev)}', cim = '${JSON.stringify(modositoObj.cim)}', telefon = '${JSON.stringify(modositoObj.telefon)}', email = '${modositoObj.email}', erdeklodes = '${JSON.stringify(modositoObj.erdeklodesek)}';`;
+                        const sql = `UPDATE adminvevok SET nev = '${JSON.stringify(modositoObj.nev)}', cim = '${JSON.stringify(modositoObj.cim)}', telefon = '${JSON.stringify(
+                            modositoObj.telefon
+                        )}', email = '${modositoObj.email}', erdeklodes = '${JSON.stringify(modositoObj.erdeklodesek)}';`;
                         adminvevok.query(sql, (err) => {
                             if (!err) {
                                 res.status(200).send({
@@ -298,10 +302,8 @@ router.post('/kiajanl', async (req, res) => {
                         }
                     }
                 });
-                
 
                 if (kereso['telepules']) {
-                    console.log(kereso['telepules'])
                     if (kereso['telepules'].km > 0) {
                         let km = kereso['telepules'].km;
                         let telepnev = kereso['telepules'].telepulesnev;
@@ -324,14 +326,12 @@ router.post('/kiajanl', async (req, res) => {
                     newWhere = newWhere.slice(0, resultNew - 1);
                 }
 
-                console.log(kereso)
-
                 let keresSql = `SELECT id FROM ingatlanok ${leftJoin !== '' ? leftJoin : ''} WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''}${newWhere !== '' ? ' AND ' + newWhere : ''};`;
-                console.log(keresSql)
+                /*  console.log(keresSql); */
 
                 const keresoResult = await UseQuery(keresSql);
                 const ingatlanUrl = keresoResult.map((ing) => {
-                    const url = `${process.env.REACT_APP_url}${ing.id}`
+                    const url = `${process.env.REACT_APP_url}${ing.id}`;
                     return url;
                 });
 
@@ -344,13 +344,13 @@ router.post('/kiajanl', async (req, res) => {
                     Az alábbi ingatlanok érdekelhetik:<br>
                     <ul>
                         ${ingatlanUrl.map((u) => {
-                            return `<li><a href="${u}" target="_blank">${u}</a></li>`
+                            return `<li><a href="${u}" target="_blank">${u}</a></li>`;
                         })}
                         
                     </ul><br>
                     Tisztelettel:<br>
                     MyhomeImmo Kft.<br>` // html body
-                }
+                };
 
                 transporter.sendMail(mail, (err) => {
                     if (!err) {
@@ -358,8 +358,7 @@ router.post('/kiajanl', async (req, res) => {
                     } else {
                         res.status(500).send({ err: err, msg: 'Az ajánló email küldése sikertelen volt!' });
                     }
-                })
-
+                });
             } else {
                 res.status(403).send({
                     err: 'Nincs jogosultsága az adott művelethez!'

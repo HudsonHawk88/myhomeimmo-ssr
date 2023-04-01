@@ -253,7 +253,7 @@ router.post('/jovahagyas', async (req, res) => {
             if (!hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
                 /* const ingatlanId = req.headers.ingatlanId; */
                 const ingId = req.headers.ingatlanid;
-                const isPublikus = req.headers.isAktiv;
+                const isPublikus = req.headers.isaktiv;
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                 const mail = {

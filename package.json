@@ -91,7 +91,7 @@
     },
     "scripts": {
         "test": "react scripts test",
-        "copyfiles": "cp -r build/public/static/images public/static/ && rm -rf build && mkdir build && cp -r public build && cp ./server/server.config.js ./build && prettier --write src/",
+        "copyfiles": "cp -r build/public/static/fonts public/static/ && cp -r build/public/static/scripts public/static/ && cp -r build/public/static/styles public/static/ && cp -r build/public/static/xml public/static/ && cp -r build/public/static/images public/static/ && rm -rf build && mkdir build && cp -r public build && cp ./server/server.config.js ./build && prettier --write src/",
         "webpack:client": "webpack --env development --mode development --config webpack.client.js --watch",
         "webpack:server": "webpack --env development --mode development --config webpack.server.js --watch",
         "webpack:run": "nodemon --watch build --exec node build/bundle.js",

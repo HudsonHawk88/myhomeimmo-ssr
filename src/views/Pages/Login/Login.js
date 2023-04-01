@@ -9,8 +9,7 @@ function Login(props) {
         password: ''
     });
 
-    const { setUser, setErtekesito, history, addNotification } = props;
-    console.log(props);
+    const { setUser, setErtekesito, addNotification } = props;
 
     const handleInputChange = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -23,7 +22,6 @@ function Login(props) {
     const submitLoginForm = () => {
         /* e.preventDefault(); */
         Services.login(loginObj, props.isAdmin).then((res) => {
-            console.log(res);
             if (!res.err) {
                 localStorage.setItem('refreshToken', res.refreshToken);
                 setUser(res.user);
@@ -33,7 +31,6 @@ function Login(props) {
                 window.location.href = '/admin';
                 /*  history.push('/admin'); */
             } else {
-                console.log(res);
                 addNotification('error', res.err);
             }
         });
