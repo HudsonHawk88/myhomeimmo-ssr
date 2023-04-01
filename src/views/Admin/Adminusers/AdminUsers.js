@@ -231,13 +231,19 @@ const AdminUsers = (props) => {
         user.nev = nev;
         user.cim = cim;
         user.telefon = telefon;
-        user.password = currentId ? user.newPassword : user.password;
-        delete user.newPassword;
-
+        if (!user.password) {
+            delete user.password;
+        }
+        if (!user.newPassword) {
+            delete user.newPassword;
+        } else if (user.newPassword !== '') {
+            user.password = user.newPassword;
+        }
         let datas = new FormData();
 
         if (!currentId) {
             datas = makeFormData(user, 'avatar', false);
+            datas.delete('newPassword');
             Services.addAdminUser(datas).then((res) => {
                 if (!res.err) {
                     toggleModal();
@@ -270,6 +276,7 @@ const AdminUsers = (props) => {
             } */
         } else {
             datas = makeFormData(user, 'avatar', true);
+            datas.delete('newPassword');
             Services.editAdminUser(datas, currentId).then((res) => {
                 if (!res.err) {
                     toggleModal();
@@ -533,17 +540,31 @@ const AdminUsers = (props) => {
                                 <Label>Felhasználónév: *</Label>
                                 <RVInput name="username" id="username" type="text" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} value={adminUser.username} />
                             </div>
-                            <div className="col-md-3">
-                                <Label>Jelszó: *</Label>
-                                <RVInput
-                                    autoComplete="new-password"
-                                    name={currentId ? 'newPassword' : 'password'}
-                                    id={currentId ? 'newPassword' : 'password'}
-                                    type="password"
-                                    onChange={(e) => handleInputChange(e, adminUser, setAdminUser)}
-                                    value={currentId ? adminUser.newPassword : adminUser.password}
-                                />
-                            </div>
+                            {!currentId ? (
+                                <div className="col-md-3">
+                                    <Label>Jelszó: *</Label>
+                                    <RVInput
+                                        autoComplete="new-password"
+                                        name={'password'}
+                                        id={'password'}
+                                        type="password"
+                                        onChange={(e) => handleInputChange(e, adminUser, setAdminUser)}
+                                        value={adminUser.password}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="col-md-3">
+                                    <Label> Új jelszó: *</Label>
+                                    <RVInput
+                                        autoComplete="new-password"
+                                        name={'newPassword'}
+                                        id={'newPassword'}
+                                        type="password"
+                                        onChange={(e) => handleInputChange(e, adminUser, setAdminUser)}
+                                        value={adminUser.newPassword}
+                                    />
+                                </div>
+                            )}
                             <div className="col-md-3">
                                 <Label>Értékesítő: *</Label>
                                 <RVInput name="isErtekesito" id="isErtekesito" type="checkbox" onChange={(e) => handleInputChange(e, adminUser, setAdminUser)} checked={adminUser.isErtekesito} />

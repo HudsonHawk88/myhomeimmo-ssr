@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
-import { Page, Document, pdf, Font, StyleSheet } from '@react-pdf/renderer';
+import { Page, Document, pdf, Font, StyleSheet, View } from '@react-pdf/renderer';
 import Html from 'react-pdf-html';
 
 import Services from './Services';
@@ -132,11 +132,17 @@ const Ingatlanok = (props) => {
                     pdftartalom: {
                         fontFamily: 'OpenSans-Regular',
                         maxHeight: '100%'
+                    },
+                    pagebreak: {
+                        clear: 'both',
+                        breakBefore: 'always'
                     }
                 });
                 const newPdf = (
                     <Document language="hu">
                         <Page style={styles.pdftartalom} size="A4" break>
+                            <Html>{html}</Html>
+                            <View style={styles.pagebreak} break />
                             <Html>{html}</Html>
                         </Page>
                     </Document>
