@@ -86,7 +86,7 @@ export default class Services {
         return result;
     };
 
-    static jovahagyasraKuldes = (ingatlanId, isAktiv, publikusChange) => {
+    static jovahagyasraKuldes = (ingatlanId, isAktiv, publikusChange, isNew) => {
         let result = Microservices.fetchApi(ingatlanJovahagyasAdminUrl, {
             method: 'POST',
             mode: 'cors',
@@ -95,7 +95,8 @@ export default class Services {
                 'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
                 ingatlanId: ingatlanId,
                 isAktiv: isAktiv,
-                publikusChange: publikusChange
+                publikusChange: publikusChange,
+                isNew: isNew
             }
         });
         return result;

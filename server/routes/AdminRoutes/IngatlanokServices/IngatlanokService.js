@@ -254,13 +254,15 @@ router.post('/jovahagyas', async (req, res) => {
                 /* const ingatlanId = req.headers.ingatlanId; */
                 const ingId = req.headers.ingatlanid;
                 const isPublikus = req.headers.isaktiv;
+                const publikusChange = req.headers.publikuschange;
+                const isNew = req.headers.isnew;
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                 const mail = {
                     from: `${teljesNev} <${user.email}>`, // sender address
                     to: `${process.env.foEmail}`, // list of receivers
                     subject: `${teljesNev} - új ingatlan`, // Subject line
-                    html: isPublikus
+                    html: publikusChange
                         ? `<b>Kedves ${process.env.foNev}!</b><br><br>
                     ${teljesNev} ingatlanértékesítő szeretné ${isPublikus ? ' publikussá ' : ' inaktívvá '} tenni az ingatlanját. Az ingatlan id-je: ${
                               ingId ? ingId : 'Nincs id, valami hiba van...'
