@@ -168,9 +168,9 @@ const Ingatlanok = (props) => {
         }
     };
 
-    const sendMail = (ingatlanId, isAktiv) => {
+    const sendMail = (ingatlanId, isAktiv, publikusChange, isNew) => {
         if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
-            Services.jovahagyasraKuldes(ingatlanId, isAktiv).then((res) => {
+            Services.jovahagyasraKuldes(ingatlanId, isAktiv, publikusChange, isNew).then((res) => {
                 if (!res.err) {
                     addNotification('success', res.msg);
                 } else {
@@ -212,7 +212,7 @@ const Ingatlanok = (props) => {
                     </Button>
                 )}
                 {!hasRole(user.roles, ['SZUPER_ADMIN']) && user.email === row.hirdeto.feladoEmail && (
-                    <Button type="button" color="link" onClick={() => sendMail(row.id, row.isAktiv)}>
+                    <Button type="button" color="link" onClick={() => sendMail(row.id, row.isAktiv, false, row.isAktiv ? false : true)}>
                         <i class="fas fa-user-check" />
                     </Button>
                 )}

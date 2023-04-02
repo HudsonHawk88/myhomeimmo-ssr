@@ -260,12 +260,17 @@ router.post('/jovahagyas', async (req, res) => {
                     from: `${teljesNev} <${user.email}>`, // sender address
                     to: `${process.env.foEmail}`, // list of receivers
                     subject: `${teljesNev} - új ingatlan`, // Subject line
-                    html: `<b>Kedves Berki Mónika!</b><br><br>
+                    html: isPublikus
+                        ? `<b>Kedves ${process.env.foNev}!</b><br><br>
                     ${teljesNev} ingatlanértékesítő szeretné ${isPublikus ? ' publikussá ' : ' inaktívvá '} tenni az ingatlanját. Az ingatlan id-je: ${
-                        ingId ? ingId : 'Nincs id, valami hiba van...'
-                    }<br>
+                              ingId ? ingId : 'Nincs id, valami hiba van...'
+                          }<br><br>
+                          Tisztelettel:<br>
+                          ${teljesNev}`
+                        : `<b>Kedves ${process.env.foNev}!</b><br><br>
+                    ${teljesNev} ingatlanértékesítő ${isNew ? 'felvitt egy új ingatlant' : 'módosította az ingatlanját'} Az ingatlan id-je: ${ingId ? ingId : 'Nincs id, valami hiba van...'}<br><br>
                     Tisztelettel:<br>
-                    ${teljesNev}<br>` // html body
+                    ${teljesNev}`
                 };
                 const sql = `UPDATE ingatlanok SET isAktiv = '0' WHERE id = '${ingId}';`;
 
