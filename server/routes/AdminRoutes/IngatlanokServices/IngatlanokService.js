@@ -276,7 +276,7 @@ router.post('/jovahagyas', async (req, res) => {
                 };
                 const sql = `UPDATE ingatlanok SET isAktiv = '0' WHERE id = '${ingId}';`;
 
-                if (isPublikus) {
+                if (isPublikus && publikusChange) {
                     ingatlanok.query(sql, (err) => {
                         if (!err) {
                             transporter.sendMail(mail, (err) => {
