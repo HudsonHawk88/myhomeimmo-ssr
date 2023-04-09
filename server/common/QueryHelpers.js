@@ -37,6 +37,15 @@ const getIngatlanId = async (reqID) => {
     return id;
 };
 
+const stringToBool = (value) => {
+    let result = false;
+    if (value === 'true' || value === '1') {
+        result = true;
+    }
+
+    return result;
+};
+
 const getId = async (reqID, tableName) => {
     let id = undefined;
     if (reqID !== undefined) {
@@ -61,10 +70,10 @@ const getId = async (reqID, tableName) => {
 };
 
 const docHeight = () => {
-  const body = document.body
-  const html = document.documentElement;
-  return Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-}
+    const body = document.body;
+    const html = document.documentElement;
+    return Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+};
 
 function verifyJson(input) {
     try {
@@ -341,6 +350,7 @@ END IF;
 
 export {
     pool,
+    stringToBool,
     getId,
     getDataFromDatabase,
     jwtparams,

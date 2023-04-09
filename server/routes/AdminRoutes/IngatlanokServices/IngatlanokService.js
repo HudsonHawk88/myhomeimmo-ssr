@@ -9,7 +9,7 @@ import {
     hasRole,
     getJSONfromLongtext,
     isTableExists,
-    getId,
+    stringToBool,
     UseQuery,
     printPDF
 } from '../../../common/QueryHelpers.js';
@@ -253,15 +253,15 @@ router.post('/jovahagyas', async (req, res) => {
             if (!hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']) && user.isErtekesito) {
                 /* const ingatlanId = req.headers.ingatlanId; */
                 const ingId = req.headers.ingatlanid;
-                const isPublikus = req.headers.isaktiv;
-                const publikusChange = req.headers.publikuschange;
-                const isNew = req.headers.isnew;
+                const isPublikus = stringToBool(req.headers.isaktiv);
+                const publikusChange = stringToBool(req.headers.publikuschange);
+                const isNew = stringToBool(req.headers.isnew);
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                 const mail = {
                     from: `${teljesNev} <${user.email}>`, // sender address
                     to: `${process.env.foEmail}`, // list of receivers
-                    subject: `${teljesNev} - ${publikusChange ? 'Láthatóság megváltoztatása' : !isNew ? 'módosított ' : 'új '} ingatlan`, // Subject line
+                    subject: `${teljesNev} - ${publikusChange ? 'Láthatóság megváltoztatása' : isNew ? 'Módosított ingatlan' : 'Új ingatlan'}`, // Subject line
                     html: publikusChange
                         ? `<b>Kedves ${process.env.foNev}!</b><br><br>
                     ${teljesNev} ingatlanértékesítő szeretné ${isPublikus ? ' inaktívvá ' : ' publikussá '} tenni az ingatlanját. Az ingatlan id-je: ${
