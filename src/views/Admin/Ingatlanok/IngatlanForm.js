@@ -538,7 +538,7 @@ const IngatlanForm = (props) => {
 
     const renderKepekModal = () => {
         return (
-            <Modal isOpen={kepekModal} toggle={toggleKepekModal}>
+            <Modal isOpen={kepekModal} toggle={toggleKepekModal} size="xl">
                 <ModalHeader>{`Képek ${currentId ? ' módosítása' : 'felvitele'}`}</ModalHeader>
                 <ModalBody>
                     <div className="row">
@@ -727,7 +727,7 @@ const IngatlanForm = (props) => {
                             <Label>{isRequired('Leírás:', true)}</Label>
                             <RVInput
                                 required
-                                maxLength={1700}
+                                // maxLength={1700}
                                 type="textarea"
                                 rows="7"
                                 name="leiras"

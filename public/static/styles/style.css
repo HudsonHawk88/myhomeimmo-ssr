@@ -945,6 +945,18 @@ html body::-webkit-scrollbar {
   border-radius: 10px;
 }
 
+/* #kepekmodal {
+    position: absolute;
+    display: flex;
+    left: 30px;
+    right: 60px !important;
+    margin: 0px !important;
+    top: 30px !important;
+    min-width: calc(100vw - 90px);
+    max-width: calc(100vw - 90px);
+    min-height: calc(100vh - 60px);
+    max-height: calc(100vh - 60px);
+} */
 .public_full header {
   display: flex;
   height: 112px;
