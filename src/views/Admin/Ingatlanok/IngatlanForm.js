@@ -510,7 +510,7 @@ const IngatlanForm = (props) => {
                     listIngatlanok();
                     addNotification('success', res.msg);
                     if (isKuld) {
-                        sendMail(res.ingatlanId, kuldObj.isAktiv, true, true);
+                        sendMail(res.ingatlanId, kuldObj.isAktiv, false, true);
                     }
                 } else {
                     setLoading(false);
@@ -526,7 +526,7 @@ const IngatlanForm = (props) => {
                     addNotification('success', res.msg);
                     setLoading(false);
                     if (isKuld) {
-                        sendMail(currentId, kuldObj.isAktiv, true, false);
+                        sendMail(currentId, kuldObj.isAktiv, false, false);
                     }
                 } else {
                     addNotification('error', res.err);
