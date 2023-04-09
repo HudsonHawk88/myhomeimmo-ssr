@@ -264,7 +264,7 @@ router.post('/jovahagyas', async (req, res) => {
                     subject: `${teljesNev} - ${isPublikus ? 'új ' : 'módosított '} ingatlan`, // Subject line
                     html: publikusChange
                         ? `<b>Kedves ${process.env.foNev}!</b><br><br>
-                    ${teljesNev} ingatlanértékesítő szeretné ${isPublikus ? ' publikussá ' : ' inaktívvá '} tenni az ingatlanját. Az ingatlan id-je: ${
+                    ${teljesNev} ingatlanértékesítő szeretné ${isPublikus ? ' inaktívvá ' : ' publikussá '} tenni az ingatlanját. Az ingatlan id-je: ${
                               ingId ? ingId : 'Nincs id, valami hiba van...'
                           }<br><br>
                           Tisztelettel:<br>
@@ -276,7 +276,7 @@ router.post('/jovahagyas', async (req, res) => {
                 };
                 const sql = `UPDATE ingatlanok SET isAktiv = '0' WHERE id = '${ingId}';`;
 
-                if (isPublikus && publikusChange) {
+                if (publikusChange) {
                     ingatlanok.query(sql, (err) => {
                         if (!err) {
                             transporter.sendMail(mail, (err) => {
