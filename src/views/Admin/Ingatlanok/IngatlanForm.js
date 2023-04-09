@@ -526,7 +526,7 @@ const IngatlanForm = (props) => {
                     addNotification('success', res.msg);
                     setLoading(false);
                     if (isKuld) {
-                        sendMail(currentId, kuldObj.isAktiv, true, false);
+                        sendMail(currentId, kuldObj.isAktiv, false, false);
                     }
                 } else {
                     addNotification('error', res.err);

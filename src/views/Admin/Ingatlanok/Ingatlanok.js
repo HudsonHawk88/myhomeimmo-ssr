@@ -212,7 +212,7 @@ const Ingatlanok = (props) => {
                     </Button>
                 )}
                 {!hasRole(user.roles, ['SZUPER_ADMIN']) && user.email === row.hirdeto.feladoEmail && (
-                    <Button type="button" color="link" onClick={() => sendMail(row.id, row.isAktiv, false, false)}>
+                    <Button type="button" color="link" onClick={() => sendMail(row.id, row.isAktiv, true, false)}>
                         <i class="fas fa-user-check" />
                     </Button>
                 )}
