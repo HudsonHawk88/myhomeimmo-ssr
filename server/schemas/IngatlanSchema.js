@@ -185,25 +185,28 @@ const editIngatlan = async (req, res, user) => {
             }' , hirdeto='${JSON.stringify(modositoObj.hirdeto)}' WHERE id='${id}';`;
             pool.query(sql, (err) => {
                 if (!err) {
-                    res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
                     let nev = JSON.parse(user.nev);
-                    const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
-                    const mail = {
-                        from: `${teljesNev} <${user.email}>`, // sender address
-                        to: `${modositoObj.hirdeto.feladoEmail}`, // list of receivers
-                        subject: `${teljesNev} ${modositoObj.isAktiv ? 'publikussá' : 'inkatívvá'} tette a hirdetésed!`, // Subject line
-                        html: `<b>Kedves ${modositoObj.hirdeto.feladoNev}!</b><br><br>
-                    ${teljesNev} admin ${modositoObj.isAktiv ? 'publikussá tette a hirdetésed!' : 'levette a hirdetésed láthatóságát!'} Az ingatlanod id-je: ${
-                            ingId ? ingId : 'Nincs id, valami hiba van...'
-                        }<br><br>
-                    Tisztelettel:<br>
-                    ${teljesNev}`
-                    };
-                    transporter.sendMail(mail, (err) => {
-                        if (!err) {
-                            res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
-                        }
-                    });
+                    if (hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+                        const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
+                        const mail = {
+                            from: `${teljesNev} <${user.email}>`, // sender address
+                            to: `${modositoObj.hirdeto.feladoEmail}`, // list of receivers
+                            subject: `${teljesNev} ${modositoObj.isAktiv ? 'publikussá' : 'inkatívvá'} tette a hirdetésed!`, // Subject line
+                            html: `<b>Kedves ${modositoObj.hirdeto.feladoNev}!</b><br><br>
+                            ${teljesNev} admin ${modositoObj.isAktiv ? 'publikussá tette a hirdetésed!' : 'levette a hirdetésed láthatóságát!'} Az ingatlanod id-je: ${
+                                ingId ? ingId : 'Nincs id, valami hiba van...'
+                            }<br><br>
+                            Tisztelettel:<br>
+                            ${teljesNev}`
+                        };
+                        transporter.sendMail(mail, (mailerr) => {
+                            if (!mailerr) {
+                                res.status(200).send({ msg: 'Ingatlan sikeresen módosítva és e-mail sikeresen elküldve a hirdetőnek!' });
+                            }
+                        });
+                    } else {
+                        res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
+                    }
                 } else {
                     res.status(500).send({ err: 'Ingatlan módosítása sikertelen!', msg: err });
                 }
