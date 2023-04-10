@@ -286,6 +286,10 @@ const getChangedField = (newObject, oldObject) => {
             oldValue = oldObject[key] === '1' || oldObject[key] === 1 ? true : false;
             newValue = oldObject[key] === '1' || oldObject[key] === 1 ? true : false;
         }
+        if (key === 'ar' || key === 'kaucio') {
+            oldValue = oldObject[key].replace(/\s/g, '');
+            newValue = newObject[key].replace(/\s/g, '');
+        }
         console.log('NEW VALUE: ', newObject[key]);
         console.log(typeof newObject, Array.isArray(newObject));
         const isObjects = isObject(newValue) && isObject(oldValue);
