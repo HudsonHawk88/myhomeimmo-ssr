@@ -2,6 +2,7 @@ import { createPool } from 'mysql2';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import path from 'path';
+import { restart } from 'nodemon';
 
 dotenv.config({
     path: path.resolve(__dirname, '../.env')
@@ -178,6 +179,122 @@ const getKepekForXml = (kepek, data) => {
     return kepekdata;
 };
 
+const isObject = (object) => {
+    return object !== null && typeof object === 'object';
+};
+
+const getNameByFieldName = (fieldName) => {
+    switch (fieldName) {
+        case 'id':
+            return 'Id';
+        case 'refid':
+            return 'Referencia id';
+        case 'tipus':
+            return 'Típus';
+        case 'altipus':
+            return 'Altípus';
+        case 'cim':
+            return 'Hirdetés címe';
+        case 'leiras':
+            return 'Hiretés leírása';
+        case 'irsz':
+            return 'Irányítószám';
+        case 'telepules':
+            return 'Település';
+        case 'ar':
+            return 'Ingatlan ár';
+        case 'penznem':
+            return 'Pénznem';
+        case 'statusz':
+            return 'Ingatlan státusza';
+        case 'allapot':
+            return 'Ingatlan állapota';
+        case 'emelet':
+            return 'Emelet';
+        case 'alapterulet':
+            return 'Ingatlan alapterülete';
+        case 'telek':
+            return 'Telek alapterülete';
+        case 'telektipus':
+            return 'Telek típusa';
+        case 'beepithetoseg':
+            return 'Telek beépíthetősége';
+        case 'szobaszam':
+            return 'Szobák száma';
+        case 'felszobaszam':
+            return 'Félszobák száma';
+        case 'epitesmod':
+            return 'Ingatlan építési módja';
+        case 'villanygogyaszt':
+            return 'Ingatlan átlagos éves villanyfogyasztása';
+        case 'gazfogyaszt':
+            return 'Ingatlan átlagos éves gázfogyasztása';
+        case 'etanusitvany':
+            return 'Ingatlan energiatanusítványa';
+        case 'futes':
+            return 'Fűtés módja';
+        case 'viz':
+            return 'Víz';
+        case 'gaz':
+            return 'Gáz';
+        case 'villany':
+            return 'Villany';
+        case 'szennyviz':
+            return 'Szennyvíz';
+        case 'isHirdethető':
+            return 'Hirdethetőség';
+        case 'isKiemelt':
+            return 'Kiemeltség';
+        case 'isErkely':
+            return 'Erkély';
+        case 'isTetoter':
+            return 'Tetőtér';
+        case 'isLift':
+            return 'Lift';
+        case 'isAktiv':
+            return 'Publikus';
+        case 'isUjepitesu':
+            return 'Újépítés';
+        case 'isVip':
+            return 'VIP';
+        case 'kaucio':
+            return 'Kaució';
+        case 'officeid':
+            return 'Iroda';
+        case 'rendeltetes':
+            return 'Ingatlan rendeltetése';
+        case 'hirdeto':
+            return 'Ingatlan hirdetője';
+    }
+};
+
+const getChangedField = (newObject, oldObject) => {
+    const newObjKeys = Object.keys(newObject);
+    const oldObjKeys = Object.keys(oldObject);
+    let fieldNames = [];
+
+    /* if (oldObjKeys.length !== newObjKeys.length) return false; */
+
+    for (let key of oldObjKeys) {
+        const newValue = newObject[key];
+        const oldValue = oldObject[key];
+
+        const isObjects = isObject(newValue) && isObject(oldValue);
+
+        if ((isObjects && !getChangedField(newValue, oldValue)) || (!isObjects && newValue !== oldValue)) {
+            fieldNames.push({ fieldName: getNameByFieldName(key), regiErtek: oldValue, ujErtek: newValue });
+        }
+    }
+
+    return true;
+};
+
+const renderValtozatasok = (valtozasok) => {
+    return valtozasok.map((item) => {
+        return `<li>${item.fieldName}: Régi érték: ${item.regiErtek} Új érték: ${item.ujErtek}</li>`;
+    });
+};
+
 const UseQuery = async (sql) => {
     return new Promise((data) => {
         // console.log(pool)
@@ -352,6 +469,9 @@ export {
     pool,
     stringToBool,
     getId,
+    getChangedField,
+    renderValtozatasok,
+    isObject,
     getDataFromDatabase,
     jwtparams,
     UseQuery,

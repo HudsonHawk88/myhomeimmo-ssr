@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import sharp from 'sharp';
 import nodemailer from 'nodemailer';
 import mailconf from '../routes/common/MailerService/mailconfig.json';
-import { pool, UseQuery, hasRole, getJSONfromLongtext, getId } from '../common/QueryHelpers.js';
+import { pool, UseQuery, hasRole, getJSONfromLongtext, getId, getChangedField } from '../common/QueryHelpers.js';
 
 const transporter = nodemailer.createTransport(mailconf);
 
@@ -28,7 +28,7 @@ const addIngatlan = async (req, res) => {
         felvitelObj.szobaszam
     }', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.isHirdetheto}', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${
         felvitelObj.isLift
-    }', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.isTetoter}', '${JSON.stringify(felvitelObj.hirdeto)}');`;
+    }', '${kepek.length > 0 ? felvitelObj.isAktiv : 0}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.isTetoter}', '${JSON.stringify(felvitelObj.hirdeto)}');`;
 
     pool.query(sql, async (error) => {
         if (!error) {
@@ -180,7 +180,7 @@ const editIngatlan = async (req, res, user) => {
                 modositoObj.szobaszam
             }', felszobaszam='${modositoObj.felszobaszam}', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${
                 modositoObj.isKiemelt
-            }', isErkely='${modositoObj.isErkely}', isLift='${modositoObj.isLift}', isAktiv='${modositoObj.isAktiv}', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${
+            }', isErkely='${modositoObj.isErkely}', isLift='${modositoObj.isLift}', isAktiv='${kepek.length > 0 ? modositoObj.isAktiv : 0}', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${
                 modositoObj.isTetoter
             }' , hirdeto='${JSON.stringify(modositoObj.hirdeto)}' WHERE id='${id}';`;
             pool.query(sql, (err) => {
@@ -189,6 +189,7 @@ const editIngatlan = async (req, res, user) => {
                     if (hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                         const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                         const ingId = modositoObj.id;
+
                         const mail = {
                             from: `${teljesNev} <${user.email}>`, // sender address
                             to: `${modositoObj.hirdeto.feladoEmail}`, // list of receivers

@@ -1158,7 +1158,7 @@ const IngatlanForm = (props) => {
             </ModalBody>
             <ModalFooter>
                 <Button type="button" color="success" onClick={toggleKepekModal}>{`Képek ${!currentId ? ' felvitele' : ' módosítása'}`}</Button>
-                <Button type="submit" color="primary" disabled={loading || ingatlanObj.kepek.length === 0}>
+                <Button type="submit" color="primary" disabled={loading}>
                     Mentés
                 </Button>
                 {!hasRole(user.roles, ['SZUPER_ADMIN']) && (

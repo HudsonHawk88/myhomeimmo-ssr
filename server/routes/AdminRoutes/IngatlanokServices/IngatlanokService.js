@@ -11,7 +11,8 @@ import {
     isTableExists,
     stringToBool,
     UseQuery,
-    printPDF
+    getChangedField,
+    renderValtozatasok
 } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync, readFileSync } from 'fs';
 import nodemailer from 'nodemailer';
@@ -258,6 +259,9 @@ router.post('/jovahagyas', async (req, res) => {
                 const isNew = stringToBool(req.headers.isnew);
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
+                let oldIng = await UseQuery(`SELECT * FROM ingatlanok WHERE id = '${ingId}';`);
+                oldIng = getJSONfromLongtext(oldIng, 'toNumber');
+                const changedFields = getChangedField(modositoObj, oldIng);
                 const mail = {
                     from: `${teljesNev} <${user.email}>`, // sender address
                     to: `${process.env.foEmail}`, // list of receivers
@@ -271,6 +275,10 @@ router.post('/jovahagyas', async (req, res) => {
                           ${teljesNev}`
                         : `<b>Kedves ${process.env.foNev}!</b><br><br>
                     ${teljesNev} ingatlanértékesítő ${isNew ? 'felvitt egy új ingatlant' : 'módosította az ingatlanját'} Az ingatlan id-je: ${ingId ? ingId : 'Nincs id, valami hiba van...'}<br><br>
+                    Az alábbi dolgok módosultak: <br>
+                    <ul>
+                    ${renderValtozatasok(changedFields)}
+                    </ul>
                     Tisztelettel:<br>
                     ${teljesNev}`
                 };
