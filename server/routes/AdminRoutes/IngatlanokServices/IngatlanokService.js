@@ -261,7 +261,7 @@ router.post('/jovahagyas', async (req, res) => {
                 const mail = {
                     from: `${teljesNev} <${user.email}>`, // sender address
                     to: `${process.env.foEmail}`, // list of receivers
-                    subject: `${teljesNev} - ${publikusChange ? 'Láthatóság megváltoztatása' : isNew ? 'Módosított ingatlan' : 'Új ingatlan'}`, // Subject line
+                    subject: `${teljesNev} - ${publikusChange ? 'Láthatóság megváltoztatása' : !isNew ? 'Módosított ingatlan' : 'Új ingatlan'}`, // Subject line
                     html: publikusChange
                         ? `<b>Kedves ${process.env.foNev}!</b><br><br>
                     ${teljesNev} ingatlanértékesítő szeretné ${isPublikus ? ' inaktívvá ' : ' publikussá '} tenni az ingatlanját. Az ingatlan id-je: ${

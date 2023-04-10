@@ -1,6 +1,10 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import sharp from 'sharp';
+import nodemailer from 'nodemailer';
+import mailconf from '../routes/common/MailerService/mailconfig.json';
 import { pool, UseQuery, hasRole, getJSONfromLongtext, getId } from '../common/QueryHelpers.js';
+
+const transporter = nodemailer.createTransport(mailconf);
 
 const addIngatlan = async (req, res) => {
     const felvitelObj = getJSONfromLongtext(req.body, 'toNumber');
@@ -56,7 +60,7 @@ const addIngatlan = async (req, res) => {
                                 console.log(err);
                             }
                         }); */
-                    
+
                     sharp(kep.buffer)
                         .jpeg({ quality: 80 })
                         .resize({ width: 1500, fit: 'inside' })
@@ -69,9 +73,7 @@ const addIngatlan = async (req, res) => {
                                     mkdirSync(dir);
                                 }
                                 writeFileSync(`${dir}/${fname}.jpg`, buff);
-                                sharp(buff)
-                                .resize({ width: 250, height: 200, fit: 'inside' })
-                                .toFile(`${dir}/${fname}_icon.jpg`);
+                                sharp(buff).resize({ width: 250, height: 200, fit: 'inside' }).toFile(`${dir}/${fname}_icon.jpg`);
                             } else {
                                 console.log(err);
                             }
@@ -125,7 +127,7 @@ const editIngatlan = async (req, res, user) => {
                         title: `${fname}.jpg`
                     });
 
-                   /*  let extIndex = kep.filename.lastIndexOf('.');
+                    /*  let extIndex = kep.filename.lastIndexOf('.');
                     let fname = kep.filename.substring(0, extIndex);
                     sharp(kep.path)
                         .jpeg({ quality: 80 })
@@ -154,9 +156,7 @@ const editIngatlan = async (req, res, user) => {
                                     mkdirSync(dir);
                                 }
                                 writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`, buff);
-                                sharp(buff)
-                                .resize({ width: 250, height: 200, fit: 'inside' })
-                                .toFile(`${dir}/${fname}_icon.jpg`);
+                                sharp(buff).resize({ width: 250, height: 200, fit: 'inside' }).toFile(`${dir}/${fname}_icon.jpg`);
                             } else {
                                 console.log(err);
                             }
@@ -186,6 +186,24 @@ const editIngatlan = async (req, res, user) => {
             pool.query(sql, (err) => {
                 if (!err) {
                     res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
+                    let nev = JSON.parse(user.nev);
+                    const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
+                    const mail = {
+                        from: `${teljesNev} <${user.email}>`, // sender address
+                        to: `${modositoObj.hirdeto.feladoEmail}`, // list of receivers
+                        subject: `${teljesNev} ${modositoObj.isAktiv ? 'publikussá' : 'inkatívvá'} tette a hirdetésed!`, // Subject line
+                        html: `<b>Kedves ${modositoObj.hirdeto.feladoNev}!</b><br><br>
+                    ${teljesNev} admin ${modositoObj.isAktiv ? 'publikussá tette a hirdetésed!' : 'levette a hirdetésed láthatóságát!'} Az ingatlanod id-je: ${
+                            ingId ? ingId : 'Nincs id, valami hiba van...'
+                        }<br><br>
+                    Tisztelettel:<br>
+                    ${teljesNev}`
+                    };
+                    transporter.sendMail(mail, (err) => {
+                        if (!err) {
+                            res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
+                        }
+                    });
                 } else {
                     res.status(500).send({ err: 'Ingatlan módosítása sikertelen!', msg: err });
                 }
