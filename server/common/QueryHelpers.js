@@ -290,7 +290,9 @@ const getChangedField = (newObject, oldObject) => {
             oldValue = oldObject[key].replace(/\s/g, '');
             newValue = newObject[key].replace(/\s/g, '');
         }
-        console.log('NEW VALUE: ', newObject[key]);
+
+        console.log('OLD VALUE: ', oldValue);
+        console.log('NEW VALUE: ', newValue);
         console.log(typeof newObject, Array.isArray(newObject));
         const isObjects = isObject(newValue) && isObject(oldValue);
 
