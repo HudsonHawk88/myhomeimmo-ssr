@@ -279,8 +279,13 @@ const getChangedField = (newObject, oldObject) => {
     /* if (oldObjKeys.length !== newObjKeys.length) return false; */
 
     for (let key of oldObjKeys) {
-        const newValue = newObject[key] === '1' || newObject[key] === 1 ? true : false;
-        const oldValue = oldObject[key] === '1' || oldObject[key] === 1 ? true : false;
+        let newValue = newObject[key];
+        let oldValue = oldObject[key];
+
+        if (key === 'isHirdethető' || key === 'isKiemelt' || key === 'isErkely' || key === 'isTetoter' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu' || key === 'isVip') {
+            oldValue = oldObject[key] === '1' || oldObject[key] === 1 ? true : false;
+            newValue = oldObject[key] === '1' || oldObject[key] === 1 ? true : false;
+        }
         console.log('NEW VALUE: ', newObject[key]);
         console.log(typeof newObject, Array.isArray(newObject));
         const isObjects = isObject(newValue) && isObject(oldValue);
