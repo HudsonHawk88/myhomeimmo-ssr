@@ -262,6 +262,7 @@ router.post('/jovahagyas', async (req, res) => {
                 let oldIng = await UseQuery(`SELECT * FROM ingatlanok WHERE id = '${ingId}';`);
                 oldIng = getJSONfromLongtext(oldIng[0], 'toNumber');
                 const modositoObj = getJSONfromLongtext(req.body, 'toNumber');
+                console.log(modositoObj);
                 const changedFields = getChangedField(modositoObj, oldIng);
                 const mail = {
                     from: `${teljesNev} <${user.email}>`, // sender address
