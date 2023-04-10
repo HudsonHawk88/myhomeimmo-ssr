@@ -254,7 +254,7 @@ const getNameByFieldName = (fieldName) => {
             return 'Lift';
         case 'isAktiv':
             return 'Publikus';
-        case 'isUjepitesu':
+        case 'isUjEpitesu':
             return 'Újépítés';
         case 'isVip':
             return 'VIP';
@@ -266,6 +266,8 @@ const getNameByFieldName = (fieldName) => {
             return 'Ingatlan rendeltetése';
         case 'hirdeto':
             return 'Ingatlan hirdetője';
+        case 'rogzitIdo':
+            return 'Rögzíttés ideje';
     }
 };
 
@@ -277,13 +279,13 @@ const getChangedField = (newObject, oldObject) => {
     /* if (oldObjKeys.length !== newObjKeys.length) return false; */
 
     for (let key of oldObjKeys) {
-        const newValue = newObject[key];
-        const oldValue = oldObject[key];
+        const newValue = newObject[key] === '1' || newObject[key] === 1 ? true : false;
+        const oldValue = oldObject[key] === '1' || oldObject[key] === 1 ? true : false;
         console.log('NEW VALUE: ', newObject[key]);
         console.log(typeof newObject, Array.isArray(newObject));
         const isObjects = isObject(newValue) && isObject(oldValue);
 
-        if ((isObjects && !getChangedField(newValue, oldValue)) || (!isObjects && newValue !== undefined && newValue !== oldValue)) {
+        if ((isObjects && !getChangedField(newValue, oldValue)) || (!isObjects && newValue !== oldValue)) {
             fieldNames.push({ fieldName: getNameByFieldName(key), regiErtek: oldValue, ujErtek: newValue });
         }
     }
