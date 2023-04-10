@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import path from 'path';
 import { restart } from 'nodemon';
+import { type } from 'os';
 
 dotenv.config({
     path: path.resolve(__dirname, '../.env')
@@ -278,10 +279,11 @@ const getChangedField = (newObject, oldObject) => {
     for (let key of oldObjKeys) {
         const newValue = newObject[key];
         const oldValue = oldObject[key];
-
+        console.log('NEW VALUE: ', newValue);
+        console.log(typeof newObject, Array.isArray(newObject));
         const isObjects = isObject(newValue) && isObject(oldValue);
 
-        if ((isObjects && !getChangedField(newValue, oldValue)) || (!isObjects && newValue !== oldValue)) {
+        if ((isObjects && !getChangedField(newValue, oldValue)) || (!isObjects && newValue !== undefined && newValue !== oldValue)) {
             fieldNames.push({ fieldName: getNameByFieldName(key), regiErtek: oldValue, ujErtek: newValue });
         }
     }
@@ -291,7 +293,6 @@ const getChangedField = (newObject, oldObject) => {
 
 const renderValtozatasok = (valtozasok) => {
     return valtozasok.map((item) => {
-        console.log(valtozasok);
         return `<li>${item.fieldName}: Régi érték: ${item.regiErtek} Új érték: ${item.ujErtek}</li>`;
     });
 };

@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport(mailconf);
 
 const addIngatlan = async (req, res) => {
     const felvitelObj = getJSONfromLongtext(req.body, 'toNumber');
-    console.log(req.file);
+    /*   console.log(req.file); */
     /*     felvitelObj.isKiemelt = getNumberFromBoolean(felvitelObj.isKiemelt);
     felvitelObj.isErkely = getNumberFromBoolean(felvitelObj.isErkely);
     felvitelObj.isLift = getNumberFromBoolean(felvitelObj.isLift);
