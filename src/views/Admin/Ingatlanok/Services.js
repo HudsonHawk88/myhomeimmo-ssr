@@ -86,7 +86,7 @@ export default class Services {
         return result;
     };
 
-    static jovahagyasraKuldes = (ingatlanId, isAktiv, publikusChange, isNew) => {
+    static jovahagyasraKuldes = (ingatlanId, isAktiv, publikusChange, isNew, modositoObj) => {
         let result = Microservices.fetchApi(ingatlanJovahagyasAdminUrl, {
             method: 'POST',
             mode: 'cors',
@@ -97,7 +97,8 @@ export default class Services {
                 isAktiv: isAktiv,
                 publikusChange: publikusChange,
                 isNew: isNew
-            }
+            },
+            body: JSON.stringify(modositoObj)
         });
         return result;
     };

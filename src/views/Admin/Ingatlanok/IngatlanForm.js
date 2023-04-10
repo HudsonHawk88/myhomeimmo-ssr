@@ -475,9 +475,9 @@ const IngatlanForm = (props) => {
         return isHidden;
     };
 
-    const sendMail = (ingatlanId, isAktiv, publikusChange, isNew) => {
+    const sendMail = (ingatlanId, isAktiv, publikusChange, isNew, kuldObj) => {
         if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
-            Services.jovahagyasraKuldes(ingatlanId, isAktiv, publikusChange, isNew).then((res) => {
+            Services.jovahagyasraKuldes(ingatlanId, isAktiv, publikusChange, isNew, kuldObj).then((res) => {
                 if (!res.err) {
                     addNotification('success', res.msg);
                 } else {
@@ -510,7 +510,7 @@ const IngatlanForm = (props) => {
                     listIngatlanok();
                     addNotification('success', res.msg);
                     if (isKuld) {
-                        sendMail(res.ingatlanId, kuldObj.isAktiv, false, true);
+                        sendMail(res.ingatlanId, kuldObj.isAktiv, false, true, kuldObj);
                     }
                 } else {
                     setLoading(false);
@@ -526,7 +526,7 @@ const IngatlanForm = (props) => {
                     addNotification('success', res.msg);
                     setLoading(false);
                     if (isKuld) {
-                        sendMail(currentId, kuldObj.isAktiv, false, false);
+                        sendMail(currentId, kuldObj.isAktiv, false, false, kuldObj);
                     }
                 } else {
                     addNotification('error', res.err);
