@@ -188,6 +188,7 @@ const editIngatlan = async (req, res, user) => {
                     let nev = JSON.parse(user.nev);
                     if (hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                         const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
+                        const ingId = modositoObj.id;
                         const mail = {
                             from: `${teljesNev} <${user.email}>`, // sender address
                             to: `${modositoObj.hirdeto.feladoEmail}`, // list of receivers
