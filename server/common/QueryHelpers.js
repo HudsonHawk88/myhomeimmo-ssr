@@ -291,6 +291,7 @@ const getChangedField = (newObject, oldObject) => {
 
 const renderValtozatasok = (valtozasok) => {
     return valtozasok.map((item) => {
+        console.log(valtozasok);
         return `<li>${item.fieldName}: Régi érték: ${item.regiErtek} Új érték: ${item.ujErtek}</li>`;
     });
 };
