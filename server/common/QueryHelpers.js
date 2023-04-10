@@ -286,7 +286,7 @@ const getChangedField = (newObject, oldObject) => {
         }
     }
 
-    return true;
+    return fieldNames;
 };
 
 const renderValtozatasok = (valtozasok) => {
