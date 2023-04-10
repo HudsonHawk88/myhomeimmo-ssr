@@ -248,6 +248,7 @@ router.post('/jovahagyas', async (req, res) => {
     const token = req.cookies.JWT_TOKEN;
     if (token) {
         const user = await validateToken(token, jwtparams.secret);
+        const modositoObj = getJSONfromLongtext(req.body, 'toNumber');
         if (user === null) {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
@@ -261,8 +262,6 @@ router.post('/jovahagyas', async (req, res) => {
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                 let oldIng = await UseQuery(`SELECT * FROM ingatlanok WHERE id = '${ingId}';`);
                 oldIng = getJSONfromLongtext(oldIng[0], 'toNumber');
-                const modositoObj = getJSONfromLongtext(req.body, 'toNumber');
-                console.log(modositoObj);
                 const changedFields = getChangedField(modositoObj, oldIng);
                 const mail = {
                     from: `${teljesNev} <${user.email}>`, // sender address
