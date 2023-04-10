@@ -202,6 +202,8 @@ const editIngatlan = async (req, res, user) => {
                         transporter.sendMail(mail, (mailerr) => {
                             if (!mailerr) {
                                 res.status(200).send({ msg: 'Ingatlan sikeresen módosítva és e-mail sikeresen elküldve a hirdetőnek!' });
+                            } else {
+                                res.status(409).send({ err: err, msg: 'Hiba történt a levélküldéskor!' });
                             }
                         });
                     } else {
