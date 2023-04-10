@@ -262,7 +262,9 @@ router.post('/jovahagyas', async (req, res) => {
                 let oldIng = await UseQuery(`SELECT * FROM ingatlanok WHERE id = '${ingId}';`);
                 oldIng = getJSONfromLongtext(oldIng, 'toNumber');
                 const modositoObj = getJSONfromLongtext(req.body, 'toNumber');
-                const changedFields = getChangedField(modositoObj, oldIng);
+                console.log(modositoObj);
+                console.log(oldIng);
+                const changedFields = getChangedField(modositoObj, oldIng[0]);
                 const mail = {
                     from: `${teljesNev} <${user.email}>`, // sender address
                     to: `${process.env.foEmail}`, // list of receivers
@@ -276,7 +278,7 @@ router.post('/jovahagyas', async (req, res) => {
                           ${teljesNev}`
                         : `<b>Kedves ${process.env.foNev}!</b><br><br>
                     ${teljesNev} ingatlanértékesítő ${isNew ? 'felvitt egy új ingatlant' : 'módosította az ingatlanját'} Az ingatlan id-je: ${ingId ? ingId : 'Nincs id, valami hiba van...'}<br><br>
-                    {${
+                    ${
                         !isNew && modositoObj
                             ? `Az alábbi dolgok módosultak: <br>
                     <ul>
