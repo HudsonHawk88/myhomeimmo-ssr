@@ -108,8 +108,8 @@ const IngatlanForm = (props) => {
     };
 
     const listOrszagok = () => {
-        Services.listOrszagok().then((res) => {
-            if (!res.err) {
+        Services.listOrszagok((err, res) => {
+            if (!err) {
                 setOrszagok(res);
                 setDefault(res);
             }
@@ -117,16 +117,16 @@ const IngatlanForm = (props) => {
     };
 
     const listTelepulesek = () => {
-        Services.listTelepulesek().then((res) => {
-            if (!res.err) {
+        Services.listTelepulesek((err, res) => {
+            if (!err) {
                 setTelepulesek(res);
             }
         });
     };
 
     const getTelepulesByIrsz = (irsz) => {
-        Services.getTelepulesByIrsz(irsz).then((res) => {
-            if (!res.err) {
+        Services.getTelepulesByIrsz(irsz, (err, res) => {
+            if (!err) {
                 if (res.length === 1) {
                     setTelepulesObj({
                         ...telepulesObj,
@@ -157,8 +157,8 @@ const IngatlanForm = (props) => {
     };
 
     const getIngatlan = (id) => {
-        Services.getIngatlan(id).then((res) => {
-            if (!res.err) {
+        Services.getIngatlan(id, (err, res) => {
+            if (!err) {
                 res[0].tipus = res[0].tipus + '';
                 setIngatlanObj(res[0]);
                 setHirdeto(res[0].hirdeto);
@@ -170,13 +170,13 @@ const IngatlanForm = (props) => {
     };
 
     const getOptions = () => {
-        Services.getIngatlanOptions().then((res) => {
-            if (!res.err) {
+        Services.getIngatlanOptions((err, res) => {
+            if (!err) {
                 setIngatlanOptions(res);
             }
         });
-        Services.getAltipusOptions().then((res) => {
-            if (!res.err) {
+        Services.getAltipusOptions((err, res) => {
+            if (!err) {
                 setAltipusOptions(res);
             }
         });
@@ -278,6 +278,7 @@ const IngatlanForm = (props) => {
                 ...ingatlanObj,
                 kepek: [...ingatlanObj.kepek, ...kepek]
             });
+            console.log(kepek);
         }, []);
 
         const { getRootProps, getInputProps } = useDropzone({ accept: 'image/*', onDrop });
@@ -477,8 +478,8 @@ const IngatlanForm = (props) => {
 
     const sendMail = (ingatlanId, isAktiv, publikusChange, isNew, kuldObj) => {
         if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
-            Services.jovahagyasraKuldes(ingatlanId, isAktiv, publikusChange, isNew, kuldObj).then((res) => {
-                if (!res.err) {
+            Services.jovahagyasraKuldes(ingatlanId, isAktiv, publikusChange, isNew, kuldObj, (err, res) => {
+                if (!err) {
                     addNotification('success', res.msg);
                 } else {
                     addNotification(
@@ -503,8 +504,8 @@ const IngatlanForm = (props) => {
 
         if (!currentId) {
             datas = makeFormData(kuldObj, 'kepek', false);
-            Services.addIngatlan(datas).then((res) => {
-                if (!res.err) {
+            Services.addIngatlan(datas, (err, res) => {
+                if (!err) {
                     setLoading(false);
                     toggleModal();
                     listIngatlanok();
@@ -519,8 +520,8 @@ const IngatlanForm = (props) => {
             });
         } else {
             datas = makeFormData(kuldObj, 'kepek', true);
-            Services.editIngatlan(datas, currentId).then((res) => {
-                if (!res.err) {
+            Services.editIngatlan(datas, currentId, (err, res) => {
+                if (!err) {
                     toggleModal();
                     listIngatlanok();
                     addNotification('success', res.msg);
@@ -538,7 +539,7 @@ const IngatlanForm = (props) => {
 
     const renderKepekModal = () => {
         return (
-            <Modal isOpen={kepekModal} toggle={toggleKepekModal} size="xl">
+            <Modal isOpen={kepekModal} toggle={toggleKepekModal} size="xl" className="fullscreen">
                 <ModalHeader>{`Képek ${currentId ? ' módosítása' : 'felvitele'}`}</ModalHeader>
                 <ModalBody>
                     <div className="row">

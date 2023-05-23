@@ -1,4 +1,5 @@
 import Fooldal from '../src/views/Admin/Fooldal/Fooldal';
+import Projektek from '../src/views/Admin/Projektek/Projektek';
 import Ingatlanok from '../src/views/Admin/Ingatlanok/Ingatlanok';
 import Jogosultsagok from '../src/views/Admin/Jogosultsagok/Jogosultsagok';
 import AdminUsers from '../src/views/Admin/Adminusers/AdminUsers';
@@ -12,6 +13,7 @@ import MyArtBase from '../src/views/Admin/MyArt/MyArtBase';
 
 const AdminRoutes = [
     { path: '/admin', element: Fooldal },
+    { path: '/admin/projektek', element: Projektek },
     { path: '/admin/ingatlanok', element: Ingatlanok },
     { path: '/admin/jogosultsagok', element: Jogosultsagok },
     { path: '/admin/felhasznalok', element: AdminUsers },

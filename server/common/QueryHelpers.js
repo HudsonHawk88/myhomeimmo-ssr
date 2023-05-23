@@ -2,12 +2,16 @@ import { createPool } from 'mysql2';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import path from 'path';
-import { restart } from 'nodemon';
-import { type } from 'os';
+import { existsSync, mkdirSync, createWriteStream } from 'fs';
 
 dotenv.config({
     path: path.resolve(__dirname, '../.env')
 });
+
+const hungarian = new Intl.Locale('hu', {
+    hourCycle: 'h24'
+});
+
 const db_params = {
     host: process.env.dbhost,
     user: process.env.dbuser,
@@ -16,28 +20,26 @@ const db_params = {
 };
 const pool = createPool(db_params);
 
-const getIngatlanId = async (reqID) => {
-    let id = undefined;
-    if (reqID !== undefined) {
-        id = parseInt(reqID, 10);
-    } else {
-        const isExist = await isIngatlanokTableExists();
-        if (isExist) {
-            const getLastIdSql = `SELECT MAX(id) as id FROM ingatlanok;`;
-            let result = await UseQuery(getLastIdSql);
-            let newID = result[0].id;
-            if (newID && newID !== 'null') {
-                id = newID + 1;
-            } else {
-                id = 1;
-            }
-        } else {
-            id = 1;
-        }
-    }
+const quote = (val) => (typeof val === 'string' ? `"${val}"` : val);
 
-    return id;
-};
+const boolValues = [
+    'isHirdetheto',
+    'isKiemelt',
+    'isErkely',
+    'isLift',
+    'isAktiv',
+    'isUjEpitesu',
+    'isErtekesito',
+    'isActive',
+    'isTetoter',
+    'isVip',
+    'isTobbEpuletes',
+    'isAkadalymentes',
+    'isLegkondicionalt',
+    'isZoldOtthon',
+    'isNapelemes',
+    'isSzigetelt'
+];
 
 const stringToBool = (value) => {
     let result = false;
@@ -86,11 +88,59 @@ function verifyJson(input) {
     return true;
 }
 
+const isObjectKey = (objectKeys, key) => {
+    let result = false;
+
+    if (objectKeys.find((element) => element === key)) {
+        result = true;
+    }
+
+    return result;
+};
+
+const getInsertSql = (tableName, keys, object, objectKeys) => {
+    let c = `INSERT INTO ${tableName} (`;
+    keys.forEach((key, index) => {
+        let v = '';
+        if (isObjectKey(objectKeys, key)) {
+            /* if ((key === 'borito' || key === 'projektlakaskepek', key === 'cim', key === 'epuletszintek')) { */
+            if (index < keys.length - 1) {
+                c.concat(`${key},`);
+                v.concat(`'${JSON.stringify(object[key])}', `);
+            } else {
+                c.concat(`${key}`);
+                v.concat(`'${JSON.stringify(object[key])}'`);
+            }
+        } else {
+            if (index < keys.length - 1) {
+                c.concat(`${key},`);
+                v.concat(`'${object[key]}', `);
+            } else {
+                c.concat(`${key}`);
+                v.concat(`'${object[key]}'`);
+            }
+        }
+        return v;
+    });
+
+    const sql = c.concat(`) VALUES (${v});`);
+
+    return sql;
+};
+
+const getUpdateScript = (table, criteria, update) => {
+    return `UPDATE ${table} SET ${Object.entries(update)
+        .map(([field, value]) => `${field}=${quote(value)}`)
+        .join(', ')} WHERE ${Object.entries(criteria)
+        .map(([field, value]) => `${field}=${quote(value)}`)
+        .join(' AND ')}`;
+};
+
 const getJSONfromLongtext = (object, direction = 'toBool') => {
     const keys = Object.keys(object);
     let newObj = {};
     keys.forEach((key) => {
-        if (
+        /* if (
             key === 'isHirdetheto' ||
             key === 'isKiemelt' ||
             key === 'isErkely' ||
@@ -101,7 +151,8 @@ const getJSONfromLongtext = (object, direction = 'toBool') => {
             key === 'isActive' ||
             key === 'isTetoter' ||
             key === 'isVip'
-        ) {
+        ) { */
+        if (isObjectKey(boolValues, key)) {
             if (direction) {
                 if (direction === 'toBool') {
                     if (object[key] === 0 || object[key] === '0') {
@@ -166,6 +217,19 @@ const jwtparams = {
     secret: process.env.JWT_SECRET,
     refresh: process.env.JWT_REFRESH_SECRET,
     expire: process.env.JWT_EXPIRE
+};
+
+const log = (endPoint, error) => {
+    const time = new Date().toLocaleDateString(hungarian);
+    let filePath = `${process.env.REACT_APP_logDir}/${time}_error.log`;
+    const isDirExist = existsSync(process.env.REACT_APP_logDir);
+    const logger = createWriteStream(filePath, { flags: 'a' });
+
+    if (!isDirExist) {
+        mkdirSync(process.env.REACT_APP_logDir);
+    }
+
+    logger.write(`ERROR: ${endPoint}: ${time} - ${error}\n`);
 };
 
 const getKepekForXml = (kepek, data) => {
@@ -267,7 +331,7 @@ const getNameByFieldName = (fieldName) => {
         case 'hirdeto':
             return 'Ingatlan hirdetője';
         case 'rogzitIdo':
-            return 'Rögzíttés ideje';
+            return 'Rögzítés ideje';
     }
 };
 
@@ -482,6 +546,7 @@ END IF;
 
 export {
     pool,
+    log,
     stringToBool,
     getId,
     getChangedField,
@@ -497,6 +562,8 @@ export {
     getIngatlanokByKm,
     getKepekForXml,
     getJSONfromLongtext,
+    getInsertSql,
+    getUpdateScript,
     getBooleanFromNumber,
     getNumberFromBoolean,
     isTableExists,

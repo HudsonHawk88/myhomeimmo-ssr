@@ -21,6 +21,8 @@ import adminIngatlanSzolg from './routes/AdminRoutes/AdminIngatlanSzolgaltatasok
 import adminPenzugySzolg from './routes/AdminRoutes/AdminPenzugyiSzolgaltatasokService/AdminPenzugyiSzolgaltatasokService.js';
 import publicIngatlanSzolg from './routes/PublicRoutes/IngatlanSzolgService/IngatlanSzolgServices.js';
 import publicPenzugySzolg from './routes/PublicRoutes/PenzugyiSzolgService/PenzugyiSzolgServices.js';
+import publicProjektekServices from './routes/PublicRoutes/ProjektekSevice/ProjektekServices.js';
+import adminProjektekServices from './routes/AdminRoutes/AdminProjektServices/AdminProjektServices.js';
 import adminIngatlanokService from './routes/AdminRoutes/IngatlanokServices/IngatlanokService.js';
 import adminGdpr from './routes/AdminRoutes/AdminGDPR/AdminGDPRServices.js';
 import publicGdpr from './routes/PublicRoutes/GDPR/publicGDPRServices.js';
@@ -118,6 +120,9 @@ app.use(['/api/admin/roles'], adminrolesServices);
 app.use(['/api/admin/users'], adminusersServices);
 // ADMINVEVOK
 app.use(['/api/admin/vevok'], adminvevokServices);
+// PROJEKTEK
+app.use(['/api/projektek'], publicProjektekServices);
+app.use(['/api/admin/projektek'], adminProjektekServices);
 // INGATLANOK
 app.use(['/api/ingatlan'], ingatlanokServices);
 app.use(['/api/admin/ingatlanok'], adminIngatlanokService);

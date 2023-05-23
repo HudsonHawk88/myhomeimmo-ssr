@@ -10,7 +10,25 @@ import ReklamRoutes from './routes/ReklamRoutes';
 import AdmRoutes from './routes/Adminroutes';
 import Login from './views/Pages/Login/Login';
 import { hasRole } from './commons/Lib';
-import process from 'process';
+
+const createNotification = (type, msg) => {
+    switch (type) {
+        case 'info':
+            NotificationManager.info(msg);
+            break;
+        case 'success':
+            NotificationManager.success(msg);
+            break;
+        case 'warning':
+            NotificationManager.warning(msg);
+            break;
+        case 'error':
+            NotificationManager.error(msg);
+            break;
+        default:
+            NotificationManager.info(msg);
+    }
+};
 
 function App(props) {
     const { history, serverData } = props;
@@ -23,10 +41,16 @@ function App(props) {
     let location = history && history.location;
     const isAdmin = __isBrowser__ && window.location.pathname.startsWith('/admin');
 
-    useEffect(() => {
+    /*     useEffect(() => {
         setInterval(() => {
             refreshToken();
         }, 60000 * 60);
+    }, []); */
+
+    useEffect(() => {
+        setInterval(() => {
+            refreshToken();
+        }, 1000 * 60);
     }, []);
 
     /*    useEffect(() => {
@@ -50,49 +74,35 @@ function App(props) {
 
     /* console.log(props.staticContext.data) */
 
-    const createNotification = (type, msg) => {
-        switch (type) {
-            case 'info':
-                NotificationManager.info(msg);
-                break;
-            case 'success':
-                NotificationManager.success(msg);
-                break;
-            case 'warning':
-                NotificationManager.warning(msg);
-                break;
-            case 'error':
-                NotificationManager.error(msg);
-                break;
-            default:
-                NotificationManager.info(msg);
-        }
-    };
-
     const refreshToken = () => {
         const token = localStorage ? localStorage.getItem('refreshToken') : '';
         if (token && isAdmin) {
-            Services.refreshToken(token, isAdmin).then((res) => {
-                if (!res.err) {
+            Services.refreshToken(token, isAdmin, (err, res) => {
+                if (!err) {
                     setUser(res.user);
                     if (res.ertekesito && res.ertekesito !== {}) {
                         setErtekesito(res.ertekesito);
                     }
+                } else {
+                    localStorage.removeItem('refreshToken');
+                    setTimeout(() => {
+                        logout('redirect');
+                    }, 5000);
                 }
             });
         }
     };
 
-    const logout = () => {
+    const logout = (command) => {
         const token = localStorage ? localStorage.getItem('refreshToken') : '';
-        Services.logout(token, isAdmin).then((res) => {
-            if (!res.err) {
+        Services.logout(token, isAdmin, (err) => {
+            if (!err) {
                 localStorage.removeItem('refreshToken');
                 if (__isBrowser__) {
-                    window.location.href = '/';
+                    if (command && command === 'redirect') {
+                        window.location.reload();
+                    }
                 }
-            } else {
-                /*  createNotification("error", "Váratlan hiba a kijelentkezésnél! Kérjük próbáld meg újra!"); */
             }
         });
     };
@@ -204,4 +214,4 @@ function App(props) {
     );
 }
 
-export default App;
+export { App, createNotification };

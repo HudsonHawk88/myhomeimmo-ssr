@@ -10,7 +10,7 @@ import { Microservices } from '../../shared/MicroServices';
 
 import PublicRoutes from '../../shared/PublicRoutes';
 import AdminRoutes from '../../shared/AdminRoutes';
-import App from '../../src/App';
+import { App } from '../../src/App';
 import { array } from 'prop-types';
 
 /* const statsFile = path.resolve(__dirname, '../build/loadable-stats.json');

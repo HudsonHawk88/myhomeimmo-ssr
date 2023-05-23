@@ -12,7 +12,8 @@ import {
     stringToBool,
     UseQuery,
     getChangedField,
-    renderValtozatasok
+    renderValtozatasok,
+    log
 } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, rmSync, readFileSync } from 'fs';
 import nodemailer from 'nodemailer';
@@ -161,10 +162,11 @@ router.post('/', upload.array('kepek'), async (req, res) => {
                                     /*  uploadIco.array('kepek'); */
                                     return addIngatlan(req, res);
                                 } else {
-                                    console.log('NOK');
+                                    log('POST /api/admin/ingatlanok', eee);
                                 }
                             });
                         } else {
+                            log('POST /api/admin/ingatlanok', errr);
                             res.status(500).send({ err: errr });
                         }
                     });
@@ -299,6 +301,7 @@ router.post('/jovahagyas', async (req, res) => {
                                 } else {
                                     /* console.log(mailconf);
                         console.log(err); */
+                                    log('POST /api/admin/ingatlanok', err);
                                     res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
                                 }
                             });
@@ -311,6 +314,7 @@ router.post('/jovahagyas', async (req, res) => {
                         } else {
                             /* console.log(mailconf);
                         console.log(err); */
+                            log('POST /api/admin/ingatlanok', err);
                             res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
                         }
                     });

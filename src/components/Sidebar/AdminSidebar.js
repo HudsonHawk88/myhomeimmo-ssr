@@ -42,6 +42,15 @@ const AdminSidebar = (props) => {
                                 </NavLink>
                             </NavItem>
                         )}
+                        {hasRole(user.roles, ['SZUPER_ADMIN', 'PROJEKTEK_ADMIN']) && (
+                            <NavItem className="admin-sidebar__navitem">
+                                <NavLink className="admin-sidebar__navlink nav-link" to="/admin/projektek" history={history} id="projektek">
+                                    &nbsp;&nbsp;
+                                    <i className="fas fa-project-diagram" />
+                                    &nbsp; Projektek
+                                </NavLink>
+                            </NavItem>
+                        )}
                         {hasRole(user.roles, ['SZUPER_ADMIN', 'INGATLAN_ADMIN']) && (
                             <NavItem className="admin-sidebar__navitem">
                                 <NavLink className="admin-sidebar__navlink nav-link" to="/admin/ingatlanok" history={history} id="ingatlanok">

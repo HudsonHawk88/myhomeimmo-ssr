@@ -1064,6 +1064,46 @@ html body::-webkit-scrollbar {
     }
 }
 
+.modal-dialog.modal-xl.fullscreen {
+    max-width: none !important;
+    margin: unset !important;
+}
+
+.projekt_stepper {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: fit-content;
+    max-height: fit-content;
+    margin: 10px 0 20px 0 !important;
+
+    .btn {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+        width: 50px;
+        text-align: center;
+    }
+
+    .btn.page {
+        border-radius: 50%;
+    }
+
+    .pagebutton_container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .pagebutton_leiras {
+            text-align: center;
+        }
+    }
+}
+
 // Teljes képernyős modal
 /* #kepekmodal {
     position: absolute;

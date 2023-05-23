@@ -21,8 +21,8 @@ const Ingatlanok = (props) => {
     const { addNotification, user } = props;
 
     const generateXml = () => {
-        Services.generateXml().then((res) => {
-            if (!res.err) {
+        Services.generateXml((err, res) => {
+            if (!err) {
                 addNotification('success', res.msg);
             } else {
                 addNotification('error', res.err);
@@ -31,8 +31,8 @@ const Ingatlanok = (props) => {
     };
 
     const getIngatlanOptions = () => {
-        Services.getIngatlanOptions().then((res) => {
-            if (!res.err) {
+        Services.getIngatlanOptions((err, res) => {
+            if (!err) {
                 setIngatlanOptions(res);
                 const ooo = res;
                 ooo.forEach((option) => {
@@ -54,16 +54,16 @@ const Ingatlanok = (props) => {
     };
 
     const getAltipusOptions = () => {
-        Services.getAltipusOptions().then((res) => {
-            if (!res.err) {
+        Services.getAltipusOptions((err, res) => {
+            if (!err) {
                 setAltipusOptions(res);
             }
         });
     };
 
     const listIngatlanok = () => {
-        Services.listIngatlanok().then((res) => {
-            if (!res.err) {
+        Services.listIngatlanok((err, res) => {
+            if (!err) {
                 setIngatlanokJson(res);
             }
         });
@@ -121,8 +121,8 @@ const Ingatlanok = (props) => {
     };
 
     const printAjanloPDF = (id) => {
-        Services.printPDF(id).then(async (res) => {
-            if (!res.err) {
+        Services.printPDF(id, async (err, res) => {
+            if (!err) {
                 const html = res.html;
                 Font.register({
                     family: 'OpenSans-Regular',
@@ -170,8 +170,8 @@ const Ingatlanok = (props) => {
 
     const sendMail = (ingatlanId, isAktiv, publikusChange, isNew) => {
         if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
-            Services.jovahagyasraKuldes(ingatlanId, isAktiv, publikusChange, isNew).then((res) => {
-                if (!res.err) {
+            Services.jovahagyasraKuldes(ingatlanId, isAktiv, publikusChange, isNew, (err, res) => {
+                if (!err) {
                     addNotification('success', res.msg);
                 } else {
                     addNotification(
@@ -196,7 +196,9 @@ const Ingatlanok = (props) => {
                 >
                     <i className="fa fa-facebook-square" />
                 </Button>
-                {((hasRole(user.roles, ['INGATLAN_ADMIN']) && user.roles.find((role) => role.value === 'INGATLAN_OSSZ_LEK') === undefined) || user.email === row.hirdeto.feladoEmail) && (
+                {((hasRole(user.roles, ['INGATLAN_ADMIN']) && user.roles.find((role) => role.value === 'INGATLAN_OSSZ_LEK') === undefined) ||
+                    user.email === row.hirdeto.feladoEmail ||
+                    hasRole(user.roles, ['SZUPER_ADMIN'])) && (
                     <>
                         <Button type="button" key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
                             <i className="fas fa-pencil-alt" />
@@ -356,8 +358,8 @@ const Ingatlanok = (props) => {
     };
 
     const deleteIngatlan = () => {
-        Services.deleteIngatlan(currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteIngatlan(currentId, (err, res) => {
+            if (!err) {
                 toggleDeleteModal();
                 setCurrentId(null);
                 listIngatlanok();

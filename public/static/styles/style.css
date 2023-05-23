@@ -945,6 +945,42 @@ html body::-webkit-scrollbar {
   border-radius: 10px;
 }
 
+.modal-dialog.modal-xl.fullscreen {
+  max-width: none !important;
+  margin: unset !important;
+}
+
+.projekt_stepper {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: fit-content;
+  max-height: fit-content;
+  margin: 10px 0 20px 0 !important;
+}
+.projekt_stepper .btn {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  width: 50px;
+  text-align: center;
+}
+.projekt_stepper .btn.page {
+  border-radius: 50%;
+}
+.projekt_stepper .pagebutton_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.projekt_stepper .pagebutton_container .pagebutton_leiras {
+  text-align: center;
+}
+
 /* #kepekmodal {
     position: absolute;
     display: flex;

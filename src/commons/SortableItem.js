@@ -4,17 +4,21 @@ import { CSS } from '@dnd-kit/utilities';
 import { Button, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
 
 const SortableItem = ({ id, ...props }) => {
-    const { deleteImage, item } = props;
+    const { deleteImage, item, key } = props;
     const { src, preview, filename, nev, isCover } = item;
-    const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id });
+    const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id: id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
-        transition
+        transition,
+        touchAction: 'none',
+        margin: '0 auto',
+        overflow: 'auto'
     };
     const imageStyle = {
         width: '150px',
-        height: '100px'
+        maxHeight: '100px',
+        display: 'flex'
     };
 
     const getSrc = (src) => {
@@ -31,7 +35,7 @@ const SortableItem = ({ id, ...props }) => {
     };
 
     return (
-        <div id={id} ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        <div key={id} id={id} ref={setNodeRef} style={style} className="kepkard_admin" {...attributes} {...listeners}>
             <Card className={nev}>
                 <CardTitle>{nev}</CardTitle>
                 <CardBody>

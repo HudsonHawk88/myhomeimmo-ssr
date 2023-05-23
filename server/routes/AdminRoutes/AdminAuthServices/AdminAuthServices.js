@@ -12,8 +12,8 @@ router.post('/token', async (req, res) => {
     // console.log("USER: ", user);
     if (user === null) {
         const sql = `UPDATE adminusers SET token=NULL WHERE token='${token}';`;
-        adminusers.query(sql, (error) => {
-            if (!error) {
+        adminusers.query(sql, (error, result) => {
+            if (!error || result.length === 1) {
                 res.sendStatus(200);
             } else {
                 res.status(500).send({ err: error });
@@ -26,7 +26,7 @@ router.post('/token', async (req, res) => {
         const sql = `SELECT username, roles, avatar, email, nev, telefon, isErtekesito FROM adminusers WHERE token = '${token}';`;
         const result = await UseQuery(sql);
         if (result.length === 0) {
-            res.sendStatus(401);
+            res.status(401).send({ msg: 'Nincs bejelentkezve! Kérem jelentkezzen be újból!' });
         } else {
             const user = result[0];
             let ertekesito = {};
@@ -130,7 +130,7 @@ router.post('/login', async (req, res) => {
                 });
                 //maybe check if it succeeds..
             } else {
-                res.status(403).send({ err: 'Helytelen jelszó!' });
+                res.status(403).send({ msg: 'Helytelen jelszó!' });
             }
         }
     } else {

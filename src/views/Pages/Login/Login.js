@@ -21,17 +21,14 @@ function Login(props) {
 
     const submitLoginForm = () => {
         /* e.preventDefault(); */
-        Services.login(loginObj, props.isAdmin).then((res) => {
-            if (!res.err) {
+        Services.login(loginObj, props.isAdmin, (err, res) => {
+            if (!err) {
                 localStorage.setItem('refreshToken', res.refreshToken);
                 setUser(res.user);
                 if (res.ertekesito) {
                     setErtekesito(res.ertekesito);
                 }
                 window.location.href = '/admin';
-                /*  history.push('/admin'); */
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
