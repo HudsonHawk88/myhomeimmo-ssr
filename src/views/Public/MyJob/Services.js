@@ -6,17 +6,21 @@ const rechaptchaUrl = location.origin + '/api/recaptcha';
 export default class Services {
     // INGATLAN SZOLGALTATASOK START
 
-    static sendJobApply = (emailObj) => {
-        let result = Microservices.fetchApi(applyJobUrl, {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+    static sendJobApply = (emailObj, fnDone) => {
+        let result = Microservices.fetchApi(
+            applyJobUrl,
+            {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+                },
+                body: JSON.stringify(emailObj)
             },
-            body: JSON.stringify(emailObj)
-        });
+            fnDone
+        );
 
         return result;
     };
@@ -24,15 +28,20 @@ export default class Services {
 
     // RECHAPTCHA START
 
-    static checkRechaptcha = (token) => {
-        let result = Microservices.fetchApi(rechaptchaUrl, {
-            method: 'POST',
-            mode: 'cors',
-            // cache: "no-cache",
-            headers: {
-                response: token
-            }
-        });
+    static checkRechaptcha = (token, fnDone) => {
+        let result = Microservices.fetchApi(
+            rechaptchaUrl,
+            {
+                method: 'POST',
+                mode: 'cors',
+                // cache: "no-cache",
+                headers: {
+                    response: token
+                }
+            },
+            fnDone
+        );
+
         return result;
     };
 

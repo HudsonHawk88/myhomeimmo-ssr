@@ -72,8 +72,8 @@ const Ingatlanok = (props) => {
     const [loading, setLoading] = useState(false);
 
     const getOptions = useCallback(() => {
-        Services.getIngatlanOptions().then((res) => {
-            if (!res.err) {
+        Services.getIngatlanOptions((err, res) => {
+            if (!err) {
                 res.forEach((item) => {
                     if (
                         item.nev === 'tipus' ||
@@ -107,16 +107,16 @@ const Ingatlanok = (props) => {
                 });
             }
         });
-        Services.getAltipusOptions().then((res) => {
-            if (!res.err) {
+        Services.getAltipusOptions((err, res) => {
+            if (!err) {
                 setAltipusOptions(res);
             }
         });
     }, []);
 
     const getTelepulesekOpts = useCallback(() => {
-        Services.listTelepulesek().then((res) => {
-            if (!res.err) {
+        Services.listTelepulesek((err, res) => {
+            if (!err) {
                 let telOpts = [];
                 res.forEach((item) => {
                     telOpts.push({
@@ -127,8 +127,6 @@ const Ingatlanok = (props) => {
                 setTelepulesekOpts(telOpts);
                 /*                 setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
                 setKeresoObj({ ...keresoObj, telepules: { telepulesnev: 'Zalaegerszeg', km: '0' } }); */
-            } else {
-                props.notification('error', res.msg);
             }
         });
     }, []);
@@ -136,8 +134,8 @@ const Ingatlanok = (props) => {
     const listIngatlanok = (kereso) => {
         setLoading(true);
         /* let k = kereso ? kereso : keresoObj; */
-        Services.keresesIngatlanok(kereso).then((res) => {
-            if (!res.err) {
+        Services.keresesIngatlanok(kereso, (err, res) => {
+            if (!err) {
                 // console.log(res);
                 setIngatlanok(res);
                 setLoading(false);

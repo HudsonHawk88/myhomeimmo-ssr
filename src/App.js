@@ -108,8 +108,8 @@ function App(props) {
     };
 
     /*   const getIngatlanok = () => {
-    Services.listIngatlanok().then((res) => {
-        if (!res.err) {
+    Services.listIngatlanok((err, res) => {
+        if (!err) {
             let kiemeltIngatlanok = res.filter((ing) => ing.isKiemelt)
             setIngatlanok(kiemeltIngatlanok);
         }

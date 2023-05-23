@@ -23,11 +23,9 @@ const IngatlanSzolgaltatasok = (props) => {
     const [ingatlanSzolgObj, setIngatlanSzolgObj] = useState(defaultSzolgObj);
 
     const listIngatlanSzolgaltatasok = () => {
-        Services.listIngatlanSzolgaltatasok().then((res) => {
-            if (res && !res.err) {
+        Services.listIngatlanSzolgaltatasok((err, res) => {
+            if (!err) {
                 setIngatlanSzolgJson(res);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -46,8 +44,8 @@ const IngatlanSzolgaltatasok = (props) => {
     }, []);
 
     const getIngatlanSzolgaltatasok = (id) => {
-        Services.getIngatlanSzolgaltatas(id).then((res) => {
-            if (!res.err) {
+        Services.getIngatlanSzolgaltatas(id, (err, res) => {
+            if (!err) {
                 serializeValue(
                     'de',
                     {
@@ -58,8 +56,6 @@ const IngatlanSzolgaltatasok = (props) => {
                     setIngatlanSzolgObj,
                     'leiras'
                 );
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -103,11 +99,9 @@ const IngatlanSzolgaltatasok = (props) => {
             ...ingatlanSzolgObj,
             kep: filtered
         });
-        Services.deleteImage(filename, currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteImage(filename, currentId, (err, res) => {
+            if (!err) {
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -318,37 +312,31 @@ const IngatlanSzolgaltatasok = (props) => {
         let datas = {};
         if (!currentId) {
             datas = makeFormData(kuldObj, 'kep', false);
-            Services.addIngatlanSzolgaltatas(datas).then((res) => {
-                if (!res.err) {
+            Services.addIngatlanSzolgaltatas(datas, (err, res) => {
+                if (!err) {
                     listIngatlanSzolgaltatasok();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         } else {
             datas = makeFormData(kuldObj, 'kep', true);
-            Services.editIngatlanSzolgaltatas(datas, currentId).then((res) => {
-                if (!res.err) {
+            Services.editIngatlanSzolgaltatas(datas, currentId, (err, res) => {
+                if (!err) {
                     listIngatlanSzolgaltatasok();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         }
     };
 
     const onDelete = () => {
-        Services.deleteIngatlanSzolgaltatas(currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteIngatlanSzolgaltatas(currentId, (err, res) => {
+            if (!err) {
                 listIngatlanSzolgaltatasok();
                 toggleDeleteModal();
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

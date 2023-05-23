@@ -60,11 +60,9 @@ const AdminUsers = (props) => {
     const { addNotification } = props;
 
     const listAdminUsers = () => {
-        Services.listAdminUsers().then((res) => {
-            if (!res.err) {
+        Services.listAdminUsers((err, res) => {
+            if (!err) {
                 setAdminUsersJson(res);
-            } else {
-                addNotification(res.err);
             }
         });
     };
@@ -84,8 +82,8 @@ const AdminUsers = (props) => {
     };
 
     const getOrszagok = () => {
-        Services.listOrszagok().then((res) => {
-            if (!res.err) {
+        Services.listOrszagok((err, res) => {
+            if (!err) {
                 setOrszagok(res);
                 setDefault(res);
             }
@@ -93,22 +91,20 @@ const AdminUsers = (props) => {
     };
 
     const getTelepulesek = () => {
-        Services.listTelepulesek().then((res) => {
-            if (!res.err) {
+        Services.listTelepulesek((err, res) => {
+            if (!err) {
                 setTelepulesek(res);
             }
         });
     };
 
     const getTelepulesByIrsz = (irsz) => {
-        Services.getTelepulesByIrsz(irsz).then((res) => {
-            if (!res.err) {
+        Services.getTelepulesByIrsz(irsz, (err, res) => {
+            if (!err) {
                 setCim({
                     ...cim,
                     telepules: res[0]
                 });
-            } else {
-                addNotification('error', res.msg);
             }
         });
     };
@@ -122,8 +118,8 @@ const AdminUsers = (props) => {
     };
 
     const getRoles = () => {
-        Services.getRoles().then((res) => {
-            if (!res.err) {
+        Services.getRoles((err, res) => {
+            if (!err) {
                 setRoleOptions(res);
             }
         });
@@ -180,8 +176,8 @@ const AdminUsers = (props) => {
     };
 
     const getAdminUser = (id) => {
-        Services.getAdminUser(id).then((res) => {
-            if (!res.err) {
+        Services.getAdminUser(id, (err, res) => {
+            if (!err) {
                 setNev(res.nev);
                 setCim(res.cim);
                 setTelefon(res.telefon);
@@ -193,8 +189,6 @@ const AdminUsers = (props) => {
                     avatar: res.avatar !== 'undefined' ? res.avatar : [],
                     isErtekesito: res.isErtekesito
                 });
-            } else {
-                addNotification(res.err);
             }
         });
     };
@@ -244,105 +238,26 @@ const AdminUsers = (props) => {
         if (!currentId) {
             datas = makeFormData(user, 'avatar', false);
             datas.delete('newPassword');
-            Services.addAdminUser(datas).then((res) => {
-                if (!res.err) {
+            Services.addAdminUser(datas, (err, res) => {
+                if (!err) {
                     toggleModal();
                     listAdminUsers();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
-            /*  for (var key in user) {
-                if (key === 'avatar' || key === 'telefon' || key === 'cim' || key === 'nev' || key === 'roles' || key === 'password') {
-                    if (key === 'avatar') {
-                        // console.log(user.avatar);
-                        user.avatar.forEach((kep) => {
-                            if (kep.file) {
-                                datas.append('avatar', kep.file);
-                                // console.log(kep);
-                            }
-                        });
-                    } else if (key === 'password') {
-                        if (user[key] !== '') {
-                            datas.append(key, user[key]);
-                        }
-                    } else {
-                        datas.append(key, JSON.stringify(user[key]));
-                    }
-                } else {
-                    datas.append(key, user[key]);
-                }
-            } */
         } else {
             datas = makeFormData(user, 'avatar', true);
             datas.delete('newPassword');
-            Services.editAdminUser(datas, currentId).then((res) => {
-                if (!res.err) {
+            Services.editAdminUser(datas, currentId, (err, res) => {
+                if (!err) {
                     toggleModal();
                     listAdminUsers();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
-            /*   for (var key in user) {
-                if (key === 'avatar' || key === 'telefon' || key === 'cim' || key === 'nev' || key === 'roles' || key === 'password') {
-                    if (key === 'avatar') {
-                        // console.log(user.avatar);
-                        user.avatar.forEach((kep) => {
-                            if (kep.file) {
-                                datas.append('uj_avatar', kep.file);
-                                // console.log(kep);
-                            } else {
-                                datas.append('avatar', JSON.stringify(kep));
-                            }
-                        });
-                    } else if (key === 'password') {
-                        if (user[key] !== '') {
-                            datas.append(key, user[key]);
-                        }
-                    } else {
-                        datas.append(key, JSON.stringify(user[key]));
-                    }
-                } else {
-                    datas.append(key, user[key]);
-                }
-            } */
         }
-
-        /*    if (!currentId) {
-            Services.addAdminUser(datas).then((res) => {
-                if (!res.err) {
-                    toggleModal();
-                    listAdminUsers();
-                    addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
-                }
-            });
-        } else {
-            Services.editAdminUser(datas, currentId).then((res) => {
-                if (!res.err) {
-                    toggleModal();
-                    listAdminUsers();
-                    addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
-                }
-            });
-        } */
     };
 
-    /*     const deleteImage = (src) => {
-        let kepek = adminUser.avatar;
-        let filtered = kepek.filter((kep) => kep.src !== src);
-        setAdminUser({
-            ...adminUser,
-            avatar: filtered
-        });
-    };
- */
     const deleteImage = (filename) => {
         let kepek = adminUser.avatar;
         let filtered = kepek.filter((kep) => kep.filename !== filename);
@@ -350,11 +265,9 @@ const AdminUsers = (props) => {
             ...adminUser,
             avatar: filtered
         });
-        Services.deleteImage(filename, adminUser.id).then((res) => {
-            if (!res.err) {
+        Services.deleteImage(filename, adminUser.id, (err, res) => {
+            if (!err) {
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

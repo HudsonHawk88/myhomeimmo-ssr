@@ -33,11 +33,9 @@ const MyArtGaleriak = (props) => {
     const { addNotification } = props;
 
     const listGaleriak = () => {
-        Services.listGaleriak().then((res) => {
-            if (!res.err) {
+        Services.listGaleriak((err, res) => {
+            if (!err) {
                 setMyArtGaleriakJson(res);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -86,8 +84,8 @@ const MyArtGaleriak = (props) => {
     };
 
     const getGaleria = (id) => {
-        Services.getGaleria(id).then((res) => {
-            if (!res.err) {
+        Services.getGaleria(id, (err, res) => {
+            if (!err) {
                 serializeValue(
                     'de',
                     {
@@ -104,8 +102,6 @@ const MyArtGaleriak = (props) => {
                     setMyArtGaleriakObj,
                     'leiras'
                 );
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -206,37 +202,31 @@ const MyArtGaleriak = (props) => {
         let datas = {};
         if (!currentId) {
             datas = makeFormData(kuldObj, 'kepek', false);
-            Services.addGaleria(datas).then((res) => {
-                if (!res.err) {
+            Services.addGaleria(datas, (err, res) => {
+                if (!err) {
                     listGaleriak();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         } else {
             datas = makeFormData(kuldObj, 'kepek', true);
-            Services.editGaleria(datas, currentId).then((res) => {
-                if (!res.err) {
+            Services.editGaleria(datas, currentId, (err, res) => {
+                if (!err) {
                     listGaleriak();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         }
     };
 
     const onDelete = () => {
-        Services.deleteGaleria(currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteGaleria(currentId, (err, res) => {
+            if (!err) {
                 listGaleriak();
                 toggleDeleteModal();
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

@@ -28,11 +28,9 @@ const Kapcsolatok = (props) => {
     const { addNotification } = props;
 
     const listKapcsolatok = () => {
-        Services.listKapcsolatok().then((res) => {
-            if (!res.err) {
+        Services.listKapcsolatok((err, res) => {
+            if (!err) {
                 setKapcsolatokJson(res);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -42,11 +40,9 @@ const Kapcsolatok = (props) => {
     }, []);
 
     const getKapcsolat = (id) => {
-        Services.getKapcsolat(id).then((res) => {
-            if (!res.err) {
+        Services.getKapcsolat(id, (err, res) => {
+            if (!err) {
                 setKapcsolatObj(res);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -83,11 +79,9 @@ const Kapcsolatok = (props) => {
             ...kapcsolatObj,
             kep: filtered
         });
-        Services.deleteImage(filename, currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteImage(filename, currentId, (err, res) => {
+            if (!err) {
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -239,37 +233,31 @@ const Kapcsolatok = (props) => {
         let datas = {};
         if (!currentId) {
             datas = makeFormData(kapcsolatObj, 'kep', false);
-            Services.addKapcsolat(datas).then((res) => {
-                if (!res.err) {
+            Services.addKapcsolat(datas, (err, res) => {
+                if (!err) {
                     listKapcsolatok();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         } else {
             datas = makeFormData(kapcsolatObj, 'kep', true);
-            Services.editKapcsolat(datas, currentId).then((res) => {
-                if (!res.err) {
+            Services.editKapcsolat(datas, currentId, (err, res) => {
+                if (!err) {
                     listKapcsolatok();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         }
     };
 
     const onDelete = () => {
-        Services.deleteKapcsolat(currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteKapcsolat(currentId, (err, res) => {
+            if (!err) {
                 listKapcsolatok();
                 toggleDeleteModal();
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

@@ -24,8 +24,6 @@ const Ingatlanok = (props) => {
         Services.generateXml((err, res) => {
             if (!err) {
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -364,8 +362,6 @@ const Ingatlanok = (props) => {
                 setCurrentId(null);
                 listIngatlanok();
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

@@ -25,11 +25,9 @@ const Gdpr = (props) => {
     const [deleteModal, setDeleteModal] = useState(false);
 
     const listGdpr = () => {
-        Services.listGdpr().then((res) => {
-            if (!res.err) {
+        Services.listGdpr((err, res) => {
+            if (!err) {
                 setGdprJson(res);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -40,8 +38,8 @@ const Gdpr = (props) => {
     }, []);
 
     const getGdpr = (id) => {
-        Services.getGdpr(id).then((res) => {
-            if (!res.err) {
+        Services.getGdpr(id, (err, res) => {
+            if (!err) {
                 serializeValue(
                     'de',
                     {
@@ -52,8 +50,6 @@ const Gdpr = (props) => {
                     setGdprObj,
                     'leiras'
                 );
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -155,36 +151,30 @@ const Gdpr = (props) => {
 
     const onSave = (kuldObj) => {
         if (!currentId) {
-            Services.addGdpr(kuldObj).then((res) => {
-                if (!res.err) {
+            Services.addGdpr(kuldObj, (err, res) => {
+                if (!err) {
                     listGdpr();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         } else {
-            Services.editGdpr(kuldObj, currentId).then((res) => {
-                if (!res.err) {
+            Services.editGdpr(kuldObj, currentId, (err, res) => {
+                if (!err) {
                     listGdpr();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         }
     };
 
     const onDelete = () => {
-        Services.deleteIGdpr(currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteIGdpr(currentId, (err, res) => {
+            if (!err) {
                 listGdpr();
                 toggleDeleteModal();
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

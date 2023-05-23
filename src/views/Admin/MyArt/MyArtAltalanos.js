@@ -23,11 +23,9 @@ const MyArtAltalanos = (props) => {
     const { addNotification } = props;
 
     const listAltalanos = () => {
-        Services.listAltalanos().then((res) => {
-            if (!res.err) {
+        Services.listAltalanos((err, res) => {
+            if (!err) {
                 setMyArtAltalanosJson(res);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -38,8 +36,8 @@ const MyArtAltalanos = (props) => {
     }, []);
 
     const getAltalanos = (id) => {
-        Services.getAltalanos(id).then((res) => {
-            if (!res.err) {
+        Services.getAltalanos(id, (err, res) => {
+            if (!err) {
                 serializeValue(
                     'de',
                     {
@@ -50,8 +48,6 @@ const MyArtAltalanos = (props) => {
                     setMyArtAltalanosObj,
                     'leiras'
                 );
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -146,36 +142,30 @@ const MyArtAltalanos = (props) => {
 
     const onSave = (kuldObj) => {
         if (!currentId) {
-            Services.addAltalanos(kuldObj).then((res) => {
-                if (!res.err) {
+            Services.addAltalanos(kuldObj, (err, res) => {
+                if (!err) {
                     listAltalanos();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         } else {
-            Services.editAltalanos(kuldObj, currentId).then((res) => {
-                if (!res.err) {
+            Services.editAltalanos(kuldObj, currentId, (err, res) => {
+                if (!err) {
                     listAltalanos();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         }
     };
 
     const onDelete = () => {
-        Services.deleteAltalanos(currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteAltalanos(currentId, (err, res) => {
+            if (!err) {
                 listAltalanos();
                 toggleDeleteModal();
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

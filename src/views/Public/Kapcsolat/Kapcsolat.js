@@ -25,8 +25,8 @@ const Kapcsolat = (props) => {
     const { addNotification, reCaptchaKey } = props;
 
     const getKapcsolat = () => {
-        Services.listKapcsolat().then((res) => {
-            if (!res.err) {
+        Services.listKapcsolat((err, res) => {
+            if (!err) {
                 setKapcsolat(res);
             }
         });
@@ -53,15 +53,13 @@ const Kapcsolat = (props) => {
             response: token
         };
 
-        Services.checkRechaptcha(rechaptchaObj).then((res) => {
+        Services.checkRechaptcha(rechaptchaObj, (error, res) => {
             if (res.success) {
-                Services.sendEmail(kuldObj).then((res) => {
-                    if (!res.err) {
+                Services.sendEmail(kuldObj, (err, res) => {
+                    if (!err) {
                         addNotification('success', res.msg);
                         setEmailObj(defaultEmailObj);
                         setElfogadAdatkezeles(false);
-                    } else {
-                        addNotification('error', res.err);
                     }
                 });
             }

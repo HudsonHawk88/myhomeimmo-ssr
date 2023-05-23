@@ -11,8 +11,8 @@ const Adatkezeles = () => {
     const [adatkezeles, setAdatkezeles] = useState(defaultAdatkezeles);
 
     const getAdatkezeles = () => {
-        Services.listAdatkezeles().then((res) => {
-            if (!res.err) {
+        Services.listAdatkezeles((err, res) => {
+            if (!err) {
                 setAdatkezeles({
                     azonosito: res[0].azonosito,
                     tipus: res[0].tipus,

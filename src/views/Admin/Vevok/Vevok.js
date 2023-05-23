@@ -93,11 +93,9 @@ const Vevok = (props) => {
     const { addNotification } = props;
 
     const listAdminVevo = () => {
-        Services.listAdminVevok().then((res) => {
-            if (!res.err) {
+        Services.listAdminVevok((err, res) => {
+            if (!err) {
                 setAdminVevokJson(res);
-            } else {
-                addNotification(res.err);
             }
         });
     };
@@ -117,8 +115,8 @@ const Vevok = (props) => {
     };
 
     const getOptions = useCallback(() => {
-        Services.getIngatlanOptions().then((res) => {
-            if (!res.err) {
+        Services.getIngatlanOptions((err, res) => {
+            if (!err) {
                 res.forEach((item) => {
                     if (
                         item.nev === 'tipus' ||
@@ -152,16 +150,16 @@ const Vevok = (props) => {
                 });
             }
         });
-        Services.getAltipusOptions().then((res) => {
-            if (!res.err) {
+        Services.getAltipusOptions((err, res) => {
+            if (!err) {
                 setAltipusOptions(res);
             }
         });
     }, []);
 
     const getTelepulesekOpts = useCallback(() => {
-        Services.listTelepulesek().then((res) => {
-            if (!res.err) {
+        Services.listTelepulesek((err, res) => {
+            if (!err) {
                 let telOpts = [];
                 res.forEach((item) => {
                     telOpts.push({
@@ -172,15 +170,13 @@ const Vevok = (props) => {
                 setTelepulesekOpts(telOpts);
                 /*                 setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
                 setKeresoObj({ ...keresoObj, telepules: { telepulesnev: 'Zalaegerszeg', km: '0' } }); */
-            } else {
-                props.notification('error', res.msg);
             }
         });
     }, []);
 
     const getOrszagok = () => {
-        Services.listOrszagok().then((res) => {
-            if (!res.err) {
+        Services.listOrszagok((err, res) => {
+            if (!err) {
                 setOrszagok(res);
                 setDefault(res);
             }
@@ -188,22 +184,20 @@ const Vevok = (props) => {
     };
 
     const getTelepulesek = () => {
-        Services.listTelepulesek().then((res) => {
-            if (!res.err) {
+        Services.listTelepulesek((err, res) => {
+            if (!err) {
                 setTelepulesek(res);
             }
         });
     };
 
     const getTelepulesByIrsz = (irsz) => {
-        Services.getTelepulesByIrsz(irsz).then((res) => {
-            if (!res.err) {
+        Services.getTelepulesByIrsz(irsz, (err, res) => {
+            if (!err) {
                 setCim({
                     ...cim,
                     telepules: res[0]
                 });
-            } else {
-                addNotification('error', res.msg);
             }
         });
     };
@@ -272,8 +266,8 @@ const Vevok = (props) => {
     };
 
     const getAdminVevo = (id) => {
-        Services.getAdminVevo(id).then((res) => {
-            if (!res.err) {
+        Services.getAdminVevo(id, (err, res) => {
+            if (!err) {
                 setNev(res.nev);
                 setCim(res.cim);
                 setSelectedTelepules({ label: res.erdeklodes.telepules.telepulesnev, value: res.erdeklodes.telepules.telepulesnev });
@@ -285,8 +279,6 @@ const Vevok = (props) => {
                     erdeklodesek: res.erdeklodes
                 });
                 setKeresoObj(res.erdeklodes);
-            } else {
-                addNotification(res.err);
             }
         });
     };
@@ -359,25 +351,21 @@ const Vevok = (props) => {
         user.erdeklodesek.telepules = telepulesObj;
 
         if (!currentId) {
-            Services.addAdminVevo(user).then((res) => {
-                if (!res.err) {
+            Services.addAdminVevo(user, (err, res) => {
+                if (!err) {
                     toggleKriteriumModal();
                     toggleModal();
                     listAdminVevo();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.msg);
                 }
             });
         } else {
-            Services.editAdminVevo(user, currentId).then((res) => {
-                if (!res.err) {
+            Services.editAdminVevo(user, currentId, (err, res) => {
+                if (!err) {
                     toggleKriteriumModal();
                     toggleModal();
                     listAdminVevo();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.msg);
                 }
             });
         }
@@ -883,11 +871,9 @@ const Vevok = (props) => {
     };
 
     const handleKiajanlasClick = (id) => {
-        Services.kiajanl(id).then((res) => {
-            if (!res.err) {
+        Services.kiajanl(id, (err, res) => {
+            if (!err) {
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.msg);
             }
         });
     };

@@ -43,10 +43,10 @@ const MyJob = (props) => {
             response: token
         };
 
-        Services.checkRechaptcha(rechaptchaObj).then((res) => {
+        Services.checkRechaptcha(rechaptchaObj, (error, res) => {
             if (res.success) {
-                Services.sendJobApply(kuldObj).then((res) => {
-                    if (!res.err) {
+                Services.sendJobApply(kuldObj, (err, res) => {
+                    if (!err) {
                         addNotification('success', res.msg);
                         setJobObj(defaultJobObj);
                         resetFIleInput('reset');
@@ -56,8 +56,6 @@ const MyJob = (props) => {
                         setTimeout(() => {
                             setElkuldte(false);
                         }, 5000);
-                    } else {
-                        addNotification('error', res.err);
                     }
                 });
             }

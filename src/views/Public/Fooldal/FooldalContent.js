@@ -45,8 +45,8 @@ const FooldalContent = (props) => {
     }; */
 
     const getOptions = () => {
-        Services.getIngatlanOptions().then((res) => {
-            if (!res.err) {
+        Services.getIngatlanOptions((err, res) => {
+            if (!err) {
                 setIngatlanOptions(res);
             }
         });

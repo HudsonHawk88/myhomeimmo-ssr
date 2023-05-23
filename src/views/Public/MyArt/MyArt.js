@@ -8,13 +8,13 @@ const MyArt = (props) => {
     const [galeriak, setGaleriak] = useState([]);
 
     const getGaleriaAdatok = () => {
-        Services.listAltalanos().then((res) => {
-            if (!res.err) {
+        Services.listAltalanos((err, res) => {
+            if (!err) {
                 setAltalanos(res[0]);
             }
         });
-        Services.listGaleriak().then((res) => {
-            if (!res.err) {
+        Services.listGaleriak((err, res) => {
+            if (!err) {
                 setGaleriak(res);
             }
         });

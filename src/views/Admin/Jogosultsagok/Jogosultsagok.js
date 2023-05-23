@@ -21,11 +21,9 @@ const Jogosultsagok = (props) => {
     const { addNotification } = props;
 
     const listRoles = () => {
-        Services.listRoles().then((res) => {
-            if (!res.err) {
+        Services.listRoles((err, res) => {
+            if (!err) {
                 setRolesJson(res);
-            } else {
-                addNotification(res.err);
             }
         });
     };
@@ -47,11 +45,9 @@ const Jogosultsagok = (props) => {
     };
 
     const getRole = (id) => {
-        Services.getRole(id).then((res) => {
-            if (!res.err) {
+        Services.getRole(id, (err, res) => {
+            if (!err) {
                 setRole(res);
-            } else {
-                addNotification(res.err);
             }
         });
     };
@@ -70,23 +66,19 @@ const Jogosultsagok = (props) => {
 
     const onSave = () => {
         if (!currentId) {
-            Services.addRole(role).then((res) => {
-                if (!res.err) {
+            Services.addRole(role, (err, res) => {
+                if (!err) {
                     toggleModal();
                     listRoles();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         } else {
-            Services.editRole(role, currentId).then((res) => {
-                if (!res.err) {
+            Services.editRole(role, currentId, (err, res) => {
+                if (!err) {
                     toggleModal();
                     listRoles();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         }
@@ -132,13 +124,11 @@ const Jogosultsagok = (props) => {
     };
 
     const onDelete = () => {
-        Services.deleteRole(currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteRole(currentId, (err, res) => {
+            if (!err) {
                 listRoles();
                 toggleDeleteModal();
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

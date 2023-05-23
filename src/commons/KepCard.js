@@ -69,11 +69,9 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
             ...list,
             [property]: filtered
         });
-        services.deleteImage(filename, list['id']).then((res) => {
-            if (!res.err) {
+        services.deleteImage(filename, list['id'], (err, res) => {
+            if (!err) {
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

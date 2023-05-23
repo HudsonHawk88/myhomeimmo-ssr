@@ -20,8 +20,8 @@ const Rolunk = (props) => {
     };
 
     const getRolunk = () => {
-        Services.listRolunk().then((res) => {
-            if (!res.err) {
+        Services.listRolunk((err, res) => {
+            if (!err) {
                 setRolunk(res);
                 getDefaultIsHidden(res);
             }

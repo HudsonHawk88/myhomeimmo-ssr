@@ -76,8 +76,8 @@ const Ingatlan = (props) => {
 
     const getIngatlan = (id) => {
         setLoading(true);
-        Services.getIngatlan(id).then((res) => {
-            if (!res.err) {
+        Services.getIngatlan(id, (err, res) => {
+            if (!err) {
                 res[0].tipus = res[0].tipus + '';
                 setIngatlanObj(res[0]);
                 setLoading(false);
@@ -86,13 +86,13 @@ const Ingatlan = (props) => {
     };
 
     const getOptions = () => {
-        Services.getIngatlanOptions().then((res) => {
-            if (!res.err) {
+        Services.getIngatlanOptions((err, res) => {
+            if (!err) {
                 setIngatlanOptions(res);
             }
         });
-        Services.getAltipusOptions().then((res) => {
-            if (!res.err) {
+        Services.getAltipusOptions((err, res) => {
+            if (!err) {
                 setAltipusOptions(res);
             }
         });
@@ -306,13 +306,11 @@ const Ingatlan = (props) => {
 
         Services.checkRechaptcha(token).then((res) => {
             if (res.success) {
-                Services.sendErdeklodes(kuldObj).then((res) => {
-                    if (!res.err) {
+                Services.sendErdeklodes(kuldObj, (err, res) => {
+                    if (!err) {
                         addNotification('success', res.msg);
                         setEmailObj(defaultEmailObj);
                         setElfogadAdatkezeles(false);
-                    } else {
-                        addNotification('error', res.err);
                     }
                 });
             }

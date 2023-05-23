@@ -10,8 +10,8 @@ const IngatlanSzolgaltatasok = () => {
     const [szolgaltatas, setSzolgaltatas] = useState(defaultSzolgaltatas);
 
     const getIngatlanSzolgaltatasok = () => {
-        Services.listIngatlanSzolgaltatasok().then((res) => {
-            if (!res.err) {
+        Services.listIngatlanSzolgaltatasok((err, res) => {
+            if (!err) {
                 setSzolgaltatas({
                     kep: res.kep[0],
                     leiras: res.leiras

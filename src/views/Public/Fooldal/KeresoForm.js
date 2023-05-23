@@ -35,8 +35,8 @@ const KeresoForm = (props) => {
     const [penznemOptions, setPenznemOptions] = useState([]);
 
     const getTelepulesekOpts = useCallback(() => {
-        Services.listTelepulesek().then((res) => {
-            if (!res.err) {
+        Services.listTelepulesek((err, res) => {
+            if (!err) {
                 let telOpts = [];
                 res.forEach((item) => {
                     telOpts.push({
@@ -47,15 +47,13 @@ const KeresoForm = (props) => {
                 setTelepulesekOpts(telOpts);
                 setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
                 setKeresoObj({ ...keresoObj, telepules: { telepulesnev: 'Zalaegerszeg', km: '0' } });
-            } else {
-                props.notification('error', res.msg);
             }
         });
     }, []);
 
     const getOptions = useCallback(() => {
-        Services.getIngatlanOptions().then((res) => {
-            if (!res.err) {
+        Services.getIngatlanOptions((err, res) => {
+            if (!err) {
                 res.forEach((item) => {
                     if (item.nev === 'tipus' || item.nev === 'statusz' || item.nev === 'penznem') {
                         if (item.nev === 'tipus') {
@@ -72,8 +70,8 @@ const KeresoForm = (props) => {
     }, []);
 
     /*     const listTelepulesek = () => {
-        Services.listTelepulesek().then((res) => {
-            if (!res.err) {
+        Services.listTelepulesek((err, res) => {
+            if (!err) {
                 setTelepulesek(res);
                 getTelepulesekOpts(res);
             }

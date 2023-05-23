@@ -513,9 +513,6 @@ const IngatlanForm = (props) => {
                     if (isKuld) {
                         sendMail(res.ingatlanId, kuldObj.isAktiv, false, true, kuldObj);
                     }
-                } else {
-                    setLoading(false);
-                    addNotification('error', res.err);
                 }
             });
         } else {
@@ -529,9 +526,6 @@ const IngatlanForm = (props) => {
                     if (isKuld) {
                         sendMail(currentId, kuldObj.isAktiv, false, false, kuldObj);
                     }
-                } else {
-                    addNotification('error', res.err);
-                    setLoading(false);
                 }
             });
         }

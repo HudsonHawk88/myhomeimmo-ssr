@@ -8,31 +8,39 @@ const rolesUrl = location.origin + '/api/admin/roles';
 export default class Services {
     // ORSZAGOK START
 
-    static listOrszagok = () => {
-        let result = Microservices.fetchApi(orszagokUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+    static listOrszagok = (fnDone) => {
+        let result = Microservices.fetchApi(
+            orszagokUrl,
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+                }
+            },
+            fnDone
+        );
 
         return result;
     };
 
-    static listOrszagokLike = (like) => {
-        let result = Microservices.fetchApi(orszagokUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                like: like
-            }
-        });
+    static listOrszagokLike = (like, fnDone) => {
+        let result = Microservices.fetchApi(
+            orszagokUrl,
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                    like: like
+                }
+            },
+            fnDone
+        );
 
         return result;
     };
@@ -41,61 +49,77 @@ export default class Services {
 
     // TELEPÜLÉSEK START
 
-    static listTelepulesek = () => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+    static listTelepulesek = (fnDone) => {
+        let result = Microservices.fetchApi(
+            telepulesekUrl,
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+                }
+            },
+            fnDone
+        );
 
         return result;
     };
 
-    static getTelepulesById = (id) => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                id: id
-            }
-        });
+    static getTelepulesById = (id, fnDone) => {
+        let result = Microservices.fetchApi(
+            telepulesekUrl,
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                    id: id
+                }
+            },
+            fnDone
+        );
 
         return result;
     };
 
-    static getTelepulesByIrsz = (irsz) => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                irsz: irsz
-            }
-        });
+    static getTelepulesByIrsz = (irsz, fnDone) => {
+        let result = Microservices.fetchApi(
+            telepulesekUrl,
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                    irsz: irsz
+                }
+            },
+            fnDone
+        );
 
         return result;
     };
 
-    static listTelepulesekLike = (like) => {
-        let result = Microservices.fetchApi(telepulesekUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                like: like
-            }
-        });
+    static listTelepulesekLike = (like, fnDone) => {
+        let result = Microservices.fetchApi(
+            telepulesekUrl,
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                    like: like
+                }
+            },
+            fnDone
+        );
 
         return result;
     };
@@ -104,109 +128,137 @@ export default class Services {
 
     // ROLES START
 
-    static getRoles = () => {
-        let result = Microservices.fetchApi(rolesUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+    static getRoles = (fnDone) => {
+        let result = Microservices.fetchApi(
+            rolesUrl,
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+                }
+            },
+            fnDone
+        );
 
         return result;
     };
 
     // ROLES END
 
-    static listAdminUsers = () => {
-        let result = Microservices.fetchApi(adminUsersUrl, {
-            method: 'GET',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-                // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
-            }
-        });
-
-        return result;
-    };
-
-    static getAdminUser = (id) => {
-        let result = Microservices.fetchApi(adminUsersUrl, {
-            method: 'GET',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                id: id
-                // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
-            }
-        });
-
-        return result;
-    };
-
-    static addAdminUser = (adminUser) => {
-        let result = Microservices.fetchApi(adminUsersUrl, {
-            method: 'POST',
-            cache: 'no-cache',
-            headers: {
-                // "Content-Type": "application/json",
-                // "Accept": "application/json",
-                // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+    static listAdminUsers = (fnDone) => {
+        let result = Microservices.fetchApi(
+            adminUsersUrl,
+            {
+                method: 'GET',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                    // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+                }
             },
-            body: adminUser
-        });
+            fnDone
+        );
 
         return result;
     };
 
-    static editAdminUser = (adminUser, id) => {
-        let result = Microservices.fetchApi(adminUsersUrl, {
-            method: 'PUT',
-            cache: 'no-cache',
-            headers: {
-                // "Content-Type": "application/json",
-                // "Accept": "application/json",
-                // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
-                id: id
+    static getAdminUser = (id, fnDone) => {
+        let result = Microservices.fetchApi(
+            adminUsersUrl,
+            {
+                method: 'GET',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    id: id
+                    // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+                }
             },
-            body: adminUser
-        });
+            fnDone
+        );
 
         return result;
     };
 
-    static deleteAdminUser = (id) => {
-        let result = Microservices.fetchApi(adminUsersUrl, {
-            method: 'DELETE',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-                // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
-                id: id
-            }
-        });
-
-        return result;
-    };
-
-    static deleteImage = (filename, adminUserId) => {
-        let result = Microservices.fetchApi(adminUsersUrl + '/deleteimage', {
-            method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                id: adminUserId
+    static addAdminUser = (adminUser, fnDone) => {
+        let result = Microservices.fetchApi(
+            adminUsersUrl,
+            {
+                method: 'POST',
+                cache: 'no-cache',
+                headers: {
+                    // "Content-Type": "application/json",
+                    // "Accept": "application/json",
+                    // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+                },
+                body: adminUser
             },
-            body: JSON.stringify({ filename: filename })
-        });
+            fnDone
+        );
+
+        return result;
+    };
+
+    static editAdminUser = (adminUser, id, fnDone) => {
+        let result = Microservices.fetchApi(
+            adminUsersUrl,
+            {
+                method: 'PUT',
+                cache: 'no-cache',
+                headers: {
+                    // "Content-Type": "application/json",
+                    // "Accept": "application/json",
+                    // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+                    id: id
+                },
+                body: adminUser
+            },
+            fnDone
+        );
+
+        return result;
+    };
+
+    static deleteAdminUser = (id, fnDone) => {
+        let result = Microservices.fetchApi(
+            adminUsersUrl,
+            {
+                method: 'DELETE',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    // "Access-Control-Allow-Origin": "http://192.168.11.64:3000",
+                    id: id
+                }
+            },
+            fnDone
+        );
+
+        return result;
+    };
+
+    static deleteImage = (filename, adminUserId, fnDone) => {
+        let result = Microservices.fetchApi(
+            adminUsersUrl + '/deleteimage',
+            {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                    id: adminUserId
+                },
+                body: JSON.stringify({ filename: filename })
+            },
+            fnDone
+        );
 
         return result;
     };

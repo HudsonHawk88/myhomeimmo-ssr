@@ -28,11 +28,9 @@ const Rolunk = (props) => {
     const [deleteModal, setDeleteModal] = useState(false);
 
     const listRolunk = () => {
-        Services.listRolunk().then((res) => {
-            if (!res.err) {
+        Services.listRolunk((err, res) => {
+            if (!err) {
                 setRolunkJson(res);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -43,8 +41,8 @@ const Rolunk = (props) => {
     }, []);
 
     const getRolunk = (id) => {
-        Services.getRolunk(id).then((res) => {
-            if (!res.err) {
+        Services.getRolunk(id, (err, res) => {
+            if (!err) {
                 serializeValue(
                     'de',
                     {
@@ -68,8 +66,6 @@ const Rolunk = (props) => {
                     telefon: res.telefon,
                     leiras: serializer.deserialize(res.leiras)
                 }); */
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -113,11 +109,9 @@ const Rolunk = (props) => {
             ...rolunkObj,
             kep: filtered
         });
-        Services.deleteImage(filename, currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteImage(filename, currentId, (err, res) => {
+            if (!err) {
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -266,37 +260,31 @@ const Rolunk = (props) => {
         let datas = {};
         if (!currentId) {
             datas = makeFormData(kuldObj, 'kep', false);
-            Services.addRolunk(datas).then((res) => {
-                if (!res.err) {
+            Services.addRolunk(datas, (err, res) => {
+                if (!err) {
                     listRolunk();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         } else {
             datas = makeFormData(kuldObj, 'kep', true);
-            Services.editRolunk(datas, currentId).then((res) => {
-                if (!res.err) {
+            Services.editRolunk(datas, currentId, (err, res) => {
+                if (!err) {
                     listRolunk();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         }
     };
 
     const onDelete = () => {
-        Services.deleteRolunk(currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteRolunk(currentId, (err, res) => {
+            if (!err) {
                 listRolunk();
                 toggleDeleteModal();
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

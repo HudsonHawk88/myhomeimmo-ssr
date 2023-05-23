@@ -5,16 +5,20 @@ const rolunkUrl = location.origin + '/api/rolunk';
 export default class Services {
     // ROLUNK START
 
-    static listRolunk = () => {
-        let result = Microservices.fetchApi(rolunkUrl, {
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
-            }
-        });
+    static listRolunk = (fnDone) => {
+        let result = Microservices.fetchApi(
+            rolunkUrl,
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+                }
+            },
+            fnDone
+        );
 
         return result;
     };

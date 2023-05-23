@@ -24,11 +24,9 @@ const PenzugyiSzolgaltatasok = (props) => {
     const [deleteModal, setDeleteModal] = useState(false);
 
     const listPenzugyiSzolgaltatasok = () => {
-        Services.listPenzugyiSzolgaltatasok().then((res) => {
-            if (!res.err) {
+        Services.listPenzugyiSzolgaltatasok((err, res) => {
+            if (!err) {
                 setPenzugyiSzolgJson(res);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -39,8 +37,8 @@ const PenzugyiSzolgaltatasok = (props) => {
     }, []);
 
     const getPenzugyiSzolgaltatasok = (id) => {
-        Services.getPenzugyiSzolgaltatas(id).then((res) => {
-            if (!res.err) {
+        Services.getPenzugyiSzolgaltatas(id, (err, res) => {
+            if (!err) {
                 serializeValue(
                     'de',
                     {
@@ -51,8 +49,6 @@ const PenzugyiSzolgaltatasok = (props) => {
                     setPenzugyiSzolgObj,
                     'leiras'
                 );
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -96,11 +92,9 @@ const PenzugyiSzolgaltatasok = (props) => {
             ...penzugyiSzolgObj,
             kep: filtered
         });
-        Services.deleteImage(filename, currentId).then((res) => {
-            if (!res.err) {
+        Services.deleteImage(filename, currentId, (err, res) => {
+            if (!err) {
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };
@@ -231,37 +225,31 @@ const PenzugyiSzolgaltatasok = (props) => {
         let datas = {};
         if (!currentId) {
             datas = makeFormData(kuldObj, 'kep', false);
-            Services.addPenzugyiSzolgaltatas(datas).then((res) => {
-                if (!res.err) {
+            Services.addPenzugyiSzolgaltatas(datas, (err, res) => {
+                if (!err) {
                     listPenzugyiSzolgaltatasok();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         } else {
             datas = makeFormData(kuldObj, 'kep', true);
-            Services.editPenzugyiSzolgaltatas(datas, currentId).then((res) => {
-                if (!res.err) {
+            Services.editPenzugyiSzolgaltatas(datas, currentId, (err, res) => {
+                if (!err) {
                     listPenzugyiSzolgaltatasok();
                     toggleModal();
                     addNotification('success', res.msg);
-                } else {
-                    addNotification('error', res.err);
                 }
             });
         }
     };
 
     const onDelete = () => {
-        Services.deletePenzugyiSzolgaltatas(currentId).then((res) => {
-            if (!res.err) {
+        Services.deletePenzugyiSzolgaltatas(currentId, (err, res) => {
+            if (!err) {
                 listPenzugyiSzolgaltatasok();
                 toggleDeleteModal();
                 addNotification('success', res.msg);
-            } else {
-                addNotification('error', res.err);
             }
         });
     };

@@ -18,12 +18,10 @@ const IngatlanForm = () => {
     const [elfogadAdatkezeles, setElfogadAdatkezeles] = useState(false);
 
     const sendMail = () => {
-        Services.sendMail(mailForm).then((res) => {
-            if (!res.err) {
+        Services.sendMail(mailForm, (err, res) => {
+            if (!err) {
                 setMailForm(defaultMailForm);
                 addNotification(res.msg);
-            } else {
-                addNotification(res.err);
             }
         });
 

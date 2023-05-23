@@ -11,8 +11,8 @@ const PenzugyiSzolgaltatasok = () => {
     const [szolgaltatas, setSzolgaltatas] = useState(defaultSzolgaltatas);
 
     const getPenzugyiSzolgaltatasok = () => {
-        Services.listPenzugyiSzolgaltatasok().then((res) => {
-            if (!res.err) {
+        Services.listPenzugyiSzolgaltatasok((err, res) => {
+            if (!err) {
                 setSzolgaltatas({
                     kep: res.kep[0],
                     leiras: res.leiras,
