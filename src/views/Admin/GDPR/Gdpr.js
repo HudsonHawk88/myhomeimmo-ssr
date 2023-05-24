@@ -170,7 +170,7 @@ const Gdpr = (props) => {
     };
 
     const onDelete = () => {
-        Services.deleteIGdpr(currentId, (err, res) => {
+        Services.deleteGdpr(currentId, (err, res) => {
             if (!err) {
                 listGdpr();
                 toggleDeleteModal();

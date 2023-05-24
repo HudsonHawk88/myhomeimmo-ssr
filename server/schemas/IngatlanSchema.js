@@ -206,6 +206,7 @@ const editIngatlan = async (req, res, user) => {
                             if (!mailerr) {
                                 res.status(200).send({ msg: 'Ingatlan sikeresen módosítva és e-mail sikeresen elküldve a hirdetőnek!' });
                             } else {
+                                log('PUT /api/admin/ingatlanok', mailerr);
                                 res.status(409).send({ err: err, msg: 'Hiba történt a levélküldéskor!' });
                             }
                         });

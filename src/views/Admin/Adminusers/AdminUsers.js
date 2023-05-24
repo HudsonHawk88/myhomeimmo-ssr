@@ -507,6 +507,40 @@ const AdminUsers = (props) => {
         return `${telefon.orszaghivo}-${telefon.korzet}/${telefon.telszam}`;
     };
 
+    const handleDeleteClick = (id) => {
+        console.log(id);
+        setCurrentId(id);
+        toggleDeleteModal();
+    };
+
+    const deleteUser = () => {
+        Services.deleteAdminUser(currentId, (err, res) => {
+            if (!err) {
+                toggleDeleteModal();
+                listAdminUsers();
+                setCurrentId(null);
+                addNotification('success', 'Felhasználó sikeresen törölve!');
+            }
+        });
+    };
+
+    const renderDeleteModal = () => {
+        return (
+            <Modal isOpen={deleteModal} toggle={toggleDeleteModal} backdrop="static" size="md">
+                <ModalHeader>Felhasználó törlése</ModalHeader>
+                <ModalBody>Vlaóban törölni kjvánja a kiválasztott felhasználót?</ModalBody>
+                <ModalFooter>
+                    <Button color="danger" onClick={deleteUser}>
+                        Igen
+                    </Button>
+                    <Button color="secondary" onClick={toggleDeleteModal}>
+                        Mégsem
+                    </Button>
+                </ModalFooter>
+            </Modal>
+        );
+    };
+
     const tableIconFormatter = (cell, row) => {
         return (
             <React.Fragment>
@@ -520,11 +554,7 @@ const AdminUsers = (props) => {
                 <Button key={row.id + 1} color="link" onClick={() => handleEditClick(row.id)}>
                     <i className="fas fa-pencil-alt" />
                 </Button>
-                <Button
-                    key={row.id + 2}
-                    color="link"
-                    //   onClick={() => handleDeleteClick(cell)}
-                >
+                <Button key={row.id + 2} color="link" onClick={() => handleDeleteClick(row.id)}>
                     <i className="fas fa-trash" />
                 </Button>
             </React.Fragment>
@@ -590,6 +620,7 @@ const AdminUsers = (props) => {
                 <br />
                 <br />
                 {renderModal()}
+                {renderDeleteModal()}
                 {renderTable()}
             </div>
         </div>
