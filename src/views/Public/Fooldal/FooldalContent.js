@@ -15,7 +15,7 @@ const FooldalContent = (props) => {
         }
     };
 
-    console.log(props);
+    const { data } = props;
 
     useEffect(() => {
         /*     console.log(props) */
