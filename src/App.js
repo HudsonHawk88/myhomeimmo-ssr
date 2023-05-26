@@ -101,6 +101,8 @@ function App(props) {
                 if (__isBrowser__) {
                     if (command && command === 'redirect') {
                         window.location.reload();
+                    } else {
+                        window.location.href = '/';
                     }
                 }
             }
