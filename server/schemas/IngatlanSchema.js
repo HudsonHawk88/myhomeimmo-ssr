@@ -84,13 +84,14 @@ const addIngatlan = async (req, res) => {
 
             const updateImagesSql = `UPDATE ingatlanok SET kepek='${JSON.stringify(kepek)}' WHERE id='${id}';`;
 
-            const images = await UseQuery(updateImagesSql);
+            const images = await UseQuery(updateImagesSql, 'POST /api/admin/ingatlanok');
             if (images) {
                 res.status(200).send({ msg: 'Ingatlan sikeresen hozzáadva!', ingatlanId: id });
             } else {
                 res.status(500).send({ err: 'ingatlan képek feltöltése sikertelen!' });
             }
         } else {
+            log('POST /api/admin/ingatlanok', error);
             res.status(500).send({
                 err: error,
                 msg: 'Hiba történt az adatbázis létrehozásakor! Értesítse a weboldal rendszergazdáját!'
@@ -159,7 +160,7 @@ const editIngatlan = async (req, res, user) => {
                                 writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`, buff);
                                 sharp(buff).resize({ width: 250, height: 200, fit: 'inside' }).toFile(`${dir}/${fname}_icon.jpg`);
                             } else {
-                                console.log(err);
+                                log('PUT /api/admin/ingatlanok', err);
                             }
                         });
                 });
@@ -214,6 +215,7 @@ const editIngatlan = async (req, res, user) => {
                         res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
                     }
                 } else {
+                    log('PUT /api/admin/ingatlanok', err);
                     res.status(500).send({ err: 'Ingatlan módosítása sikertelen!', msg: err });
                 }
             });

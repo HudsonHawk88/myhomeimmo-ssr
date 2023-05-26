@@ -20,6 +20,19 @@ const db_params = {
 };
 const pool = createPool(db_params);
 
+const log = (endPoint, error) => {
+    const time = new Date().toLocaleDateString(hungarian);
+    let filePath = `${process.env.REACT_APP_logDir}/${time}_error.log`;
+    const isDirExist = existsSync(process.env.REACT_APP_logDir);
+    const logger = createWriteStream(filePath, { flags: 'a' });
+
+    if (!isDirExist) {
+        mkdirSync(process.env.REACT_APP_logDir);
+    }
+
+    logger.write(`ERROR: ${endPoint}: ${time} - ${error}\n`);
+};
+
 const quote = (val) => (typeof val === 'string' ? `"${val}"` : val);
 
 const boolValues = [
@@ -219,19 +232,6 @@ const jwtparams = {
     expire: process.env.JWT_EXPIRE
 };
 
-const log = (endPoint, error) => {
-    const time = new Date().toLocaleDateString(hungarian);
-    let filePath = `${process.env.REACT_APP_logDir}/${time}_error.log`;
-    const isDirExist = existsSync(process.env.REACT_APP_logDir);
-    const logger = createWriteStream(filePath, { flags: 'a' });
-
-    if (!isDirExist) {
-        mkdirSync(process.env.REACT_APP_logDir);
-    }
-
-    logger.write(`ERROR: ${endPoint}: ${time} - ${error}\n`);
-};
-
 const getKepekForXml = (kepek, data) => {
     let kepekdata = '';
     kepek.forEach((kep) => {
@@ -374,19 +374,30 @@ const renderValtozatasok = (valtozasok) => {
     });
 };
 
-const UseQuery = async (sql) => {
+const UseQuery = async (sql, logEndPoint) => {
     return new Promise((data) => {
         // console.log(pool)
         pool.query(sql, function (error, result) {
             // change db->connection for your code
             if (error) {
                 // console.log(error);
+                if (logEndPoint) {
+                    log(logEndPoint, error);
+                } else {
+                    log(sql, error);
+                }
+
                 throw error;
             } else {
                 try {
                     data(result);
                 } catch (error) {
                     data([]);
+                    if (logEndPoint) {
+                        log(logEndPoint, error);
+                    } else {
+                        log(sql, error);
+                    }
                     throw error;
                 }
             }
