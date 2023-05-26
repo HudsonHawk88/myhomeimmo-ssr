@@ -1,5 +1,5 @@
 import { Microservices } from './MicroServices';
-
+import fetch from 'isomorphic-fetch';
 import Login from '../src/views/Pages/Login/Login';
 import Fooldal from '../src/views/Public/Fooldal/Fooldal';
 import Ingatlan from '../src/views/Public/Ingatlanok/Ingatlan';
@@ -27,8 +27,8 @@ const getReqUrl = (path) => {
 
 const PublicRoutes = [
     { path: '/login', element: Login },
-    { path: '/', element: Fooldal, fetchInitialData: (path = `/api/ingatlan`) => Microservices.fetchApi(getReqUrl(path)) },
-    { path: '/ingatlan', element: Ingatlan, fetchInitialData: (path = `/api/ingatlan`) => Microservices.fetchApi(getReqUrl(path)) },
+    { path: '/', element: Fooldal },
+    { path: '/ingatlan', element: Ingatlan },
     { path: '/ingatlanok', element: Ingatlanok },
     { path: '/ingatlanszolgaltatasok', element: IngatlanSzolgaltatasok },
     { path: '/penzugyiszolgaltatasok', element: PenzugyiSzolgaltatasok },

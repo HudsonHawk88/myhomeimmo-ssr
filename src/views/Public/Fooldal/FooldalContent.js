@@ -6,9 +6,16 @@ import IngatlanCard from '../../../commons/IngatlanCard.js';
 
 const FooldalContent = (props) => {
     const location = useLocation();
+    const [data, setData] = useState([]);
     const [ingatlanOptions, setIngatlanOptions] = useState([]);
 
-    const { data } = props;
+    const getData = () => {
+        Services.listIngatlanok((err, res) => {
+            if (!err) {
+                setData(res);
+            }
+        });
+    };
 
     const scrollToElement = (id) => {
         var element = document.getElementById(id);
@@ -54,6 +61,7 @@ const FooldalContent = (props) => {
 
     useEffect(() => {
         getOptions();
+        getData();
     }, []);
 
     const renderKiemeltIngatlanok = () => {
