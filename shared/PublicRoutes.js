@@ -28,7 +28,7 @@ const getReqUrl = (path) => {
 const PublicRoutes = [
     { path: '/login', element: Login },
     { path: '/', element: Fooldal },
-    { path: '/ingatlan', element: Ingatlan },
+    { path: '/ingatlan', element: Ingatlan, fetchInitialData: (path = `/api/ingatlan`) => Microservices.fetchApi(getReqUrl(path)) },
     { path: '/ingatlanok', element: Ingatlanok },
     { path: '/ingatlanszolgaltatasok', element: IngatlanSzolgaltatasok },
     { path: '/penzugyiszolgaltatasok', element: PenzugyiSzolgaltatasok },
