@@ -21,7 +21,6 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 
 import { addIngatlan, editIngatlan } from '../../../schemas/IngatlanSchema.js';
-s;
 
 const router = express.Router();
 const ingatlanok = pool;
