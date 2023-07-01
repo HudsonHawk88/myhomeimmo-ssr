@@ -12,7 +12,7 @@ module.exports = {
     ],
     env: {
         NODE_ENV: 'production',
-        PORT: 3000,
+        PORT: 8080,
         HOST: '127.0.0.1' // default
     }
 };
