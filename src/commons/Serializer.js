@@ -1,51 +1,27 @@
+import { initialValue, deserialize, serialize, getElementsFromHtml } from '@inftechsol/react-slate-wysiwyg';
 import PropTypes from 'prop-types';
 
-export const serializeValue = async (type, obj, setObj, name, callback) => {
-    const defaultWysiwygValue = '<p align="left" style="font-size:17px"></p>';
-    if (__isBrowser__) {
-        let imp = new Promise((resolve, reject) => {
-            resolve(import('@organw/wysiwyg-editor').then((ser) => ser.serializer));
-        });
-        imp.then((serial) => {
-            switch (type) {
-                case 'de': {
-                    setObj({
-                        ...obj,
-                        [name]: serial.deserialize(obj[name])
-                    });
-                    return;
-                }
-                case 'se': {
-                    let kuldObj = {
-                        ...obj,
-                        [name]: serial.serialize(obj[name])
-                    };
-                    callback(kuldObj);
-                    return;
-                }
-                case 'def': {
-                    setObj({
-                        ...obj,
-                        [name]: serial.deserialize(defaultWysiwygValue)
-                    });
-                    return;
-                }
-                default: {
-                    setObj({
-                        ...obj,
-                        [name]: serial.deserialize(defaultWysiwygValue)
-                    });
-                    return;
-                }
-            }
-        });
+const serializeValue = (type, value) => {
+    switch (type) {
+        case 'de': {
+            return deserialize(getElementsFromHtml(value));
+        }
+        case 'se': {
+            const v = serialize(value);
+            return v;
+        }
+        case 'def': {
+            return initialValue;
+        }
+        default: {
+            return initialValue;
+        }
     }
 };
 
+export { initialValue, serializeValue };
+
 serializeValue.propTypes = {
     type: PropTypes.string.isRequired,
-    obj: PropTypes.object.isRequired,
-    setObj: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired,
-    callback: PropTypes.func
+    value: PropTypes.any.isRequired
 };

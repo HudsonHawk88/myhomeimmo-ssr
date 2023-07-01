@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import express from 'express';
-import { mailconf } from './mailconfig.json';
-const transporter = nodemailer.createTransport(mailconf);
+import { mailUrl } from '../../../common/QueryHelpers';
+const transporter = nodemailer.createTransport(mailUrl);
 const router = express.Router();
 
 // MAIL START

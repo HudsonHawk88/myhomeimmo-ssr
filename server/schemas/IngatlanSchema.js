@@ -1,10 +1,9 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import sharp from 'sharp';
 import nodemailer from 'nodemailer';
-import mailconf from '../routes/common/MailerService/mailconfig.json';
-import { pool, UseQuery, hasRole, getJSONfromLongtext, getId, log } from '../common/QueryHelpers.js';
+import { pool, mailUrl, UseQuery, hasRole, getJSONfromLongtext, getId, log } from '../common/QueryHelpers.js';
 
-const transporter = nodemailer.createTransport(mailconf);
+const transporter = nodemailer.createTransport(mailUrl);
 
 const addIngatlan = async (req, res) => {
     const felvitelObj = getJSONfromLongtext(req.body, 'toNumber');

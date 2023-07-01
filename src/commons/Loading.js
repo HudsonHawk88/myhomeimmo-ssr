@@ -6,7 +6,7 @@ const Loading = ({ isLoading }) => {
     return isLoading ? (
         <div className="loading">
             <div>
-                <Spinner color="success" size="xl">
+                <Spinner color="success" size="sm">
                     Loading...
                 </Spinner>
             </div>

@@ -177,12 +177,8 @@ router.get('/ingatlanokapi', (req, res, next) => {
                   <ltyp>${ingatlan.telektipus}</ltyp>`
                           : ''
                   }
-                  ${
-                      tipus === '2' || tipus === '6' || tipus === '8' || tipus === '9' || tipus === '10' || tipus === '11' || tipus === '12' || tipus === '13'
-                          ? `<btype>${ingatlan.altipus}</btype>`
-                          : ''
-                  }
-                  ${tipus === '2' || tipus === '3' ? `<rend>${ingatlan.rendeltetes}</rend>` : ''}
+                  <btype>${ingatlan.altipus}</btype>
+                  <rend>${ingatlan.rendeltetes}</rend>
                   ${ingatlan.szobaszam && `<room>${ingatlan.szobaszam}</room>`}
                   ${ingatlan.felszobaszam && `<froom>${ingatlan.felszobaszam}</froom>`}
                   ${ingatlan.viz && `<water>${ingatlan.viz}</water>`}

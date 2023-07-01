@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
-import { Page, Document, pdf, Font, StyleSheet, View } from '@react-pdf/renderer';
+import { Page, Document, pdf, Font, StyleSheet, View, Text, Image } from '@react-pdf/renderer';
 import Html from 'react-pdf-html';
 
 import Services from './Services';
@@ -33,16 +33,16 @@ const Ingatlanok = (props) => {
             if (!err) {
                 setIngatlanOptions(res);
                 const ooo = res;
-                ooo.forEach((option) => {
+                return ooo.map((option) => {
                     if (option.nev === 'tipus') {
                         const tipusOptions = [];
-                        option.options.forEach((opt) => {
+                        option.options.map((opt) => {
                             let newObj = {};
                             newObj.text = opt.nev;
                             newObj.id = opt.id;
                             newObj.value = opt.value;
                             newObj.nev = opt.nev;
-                            tipusOptions.push(newObj);
+                            return newObj;
                         });
                         setTipusFilterOptions(tipusOptions);
                     }
@@ -119,6 +119,79 @@ const Ingatlanok = (props) => {
     };
 
     const printAjanloPDF = (id) => {
+        /* Services.getIngatlan(id, async (err, res) => {
+            if (!err) {
+                const ingatlan = res[0];
+                console.log(ingatlan);
+                Font.register({
+                    family: 'OpenSans-Regular',
+                    src: `${process.env.staticUrl}/fonts/OpenSans-Regular.ttf`
+                });
+                const styles = StyleSheet.create({
+                    pdftartalom: {
+                        display: 'flex',
+                        fontFamily: 'OpenSans-Regular',
+                        maxHeight: '100%',
+                        padding: '2% 4%',
+                        maxWidth: '100%'
+                    },
+                    pagebreak: {
+                        clear: 'both',
+                        breakBefore: 'always'
+                    },
+                    cim: {
+                        fontWeight: 'extrabold',
+                        fontSize: '25px',
+                        textAlign: 'center',
+                        marginBottom: '10px'
+                    },
+                    kepekView: {
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        width: '100%',
+                        flexDirection: 'row',
+                        justifyContent: 'center'
+                    },
+                    kepek: {
+                        width: '31%',
+                        margin: '1%',
+                        height: '200px'
+                    },
+                    heading: {
+                        fontSize: '15px',
+                        fontWeight: 'bold'
+                    },
+                    normalText: {
+                        fontSize: '11px'
+                    }
+                });
+
+                const newPdf = (
+                    <Document language="hu">
+                        <Page style={styles.pdftartalom} size="A4">
+                            <View style={{ margin: '1%', padding: '10px', border: '2px solid blue', minHeight: '98%', maxHeight: '98%' }}>
+                                <View>
+                                    <Text style={styles.cim}>Ingatlan adatlap</Text>
+                                    <Text style={styles.heading}>{ingatlan.cim}</Text>
+                                </View>
+                                <View style={styles.kepekView}>
+                                    <Image style={styles.kepek} src={ingatlan && ingatlan.kepek && ingatlan.kepek[0].src} />
+                                    <Image style={styles.kepek} src={ingatlan && ingatlan.kepek && ingatlan.kepek[1].src} />
+                                    <Image style={styles.kepek} src={ingatlan && ingatlan.kepek && ingatlan.kepek[2].src} />
+                                </View>
+                                <View>
+                                    <Text style={styles.heading}>Leírás:</Text>
+                                    <Text style={styles.normalText}>{ingatlan.leiras}</Text>
+                                </View>
+                            </View>
+                        </Page>
+                    </Document>
+                );
+                const newPdfBuffer = await pdf(newPdf).toBlob();
+                const url = window.URL.createObjectURL(newPdfBuffer, { type: 'application/pdf' });
+                window.open(url, '_blank');
+            }
+        }); */
         Services.printPDF(id, async (err, res) => {
             if (!err) {
                 const html = res.html;
@@ -197,14 +270,14 @@ const Ingatlanok = (props) => {
                 {((hasRole(user.roles, ['INGATLAN_ADMIN']) && user.roles.find((role) => role.value === 'INGATLAN_OSSZ_LEK') === undefined) ||
                     user.email === row.hirdeto.feladoEmail ||
                     hasRole(user.roles, ['SZUPER_ADMIN'])) && (
-                    <>
+                    <React.Fragment>
                         <Button type="button" key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
                             <i className="fas fa-pencil-alt" />
                         </Button>
                         <Button type="button" key={row.id + 3} color="link" onClick={() => handleDeleteClick(row.id)}>
                             <i className="fas fa-trash" />
                         </Button>
-                    </>
+                    </React.Fragment>
                 )}
                 {hasRole(user.roles, ['INGATLAN_ADMIN']) && (
                     <Button type="button" key={row.id + 2} color="link" onClick={() => printAjanloPDF(row.id)}>
@@ -229,7 +302,7 @@ const Ingatlanok = (props) => {
         ingatlanOptions.forEach((option) => {
             if (option.nev === 'tipus') {
                 option.options.forEach((opt) => {
-                    if (opt.value === row.tipus) {
+                    if (opt.value === parseInt(row.tipus, 10)) {
                         tipus = opt.nev;
                     }
                 });
@@ -238,13 +311,13 @@ const Ingatlanok = (props) => {
         return tipus;
     };
 
-    /*     const arFormatter = (cell, row) => {
+    const arFormatter = (cell, row) => {
         let ar = row.ar + '';
         ar = ar + ' ' + row.penznem;
         return ar;
     };
- */
-    const renderTable = () => {
+
+    const renderTable = useCallback(() => {
         const columns = [
             {
                 dataField: 'id',
@@ -285,7 +358,7 @@ const Ingatlanok = (props) => {
                 filterType: 'optionFilter',
                 filterOptions: tipusFilterOptions,
                 filterDefaultValue: 'Keresés...',
-                formatter: tipusFormatter
+                formatter: (cell, row) => tipusFormatter(cell, row)
             },
             {
                 dataField: 'allapot',
@@ -333,7 +406,7 @@ const Ingatlanok = (props) => {
         };
 
         return <DataTable bordered columns={columns} datas={ingatlanokJson} paginationOptions={paginationOptions} />;
-    };
+    }, [ingatlanokJson]);
 
     const renderModal = () => {
         return (

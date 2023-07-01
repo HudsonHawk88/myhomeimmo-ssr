@@ -1,15 +1,14 @@
 {
     "mailconf": {
-        "host": "cl5.mikrovps.hu",
-        "port": 587,
-        "secure": false,
+        "host": "myhomeimmo.hu",
+        "port": 465,
+        "secure": true,
         "auth": {
-            "user": "info@myhomezala.hu",
-            "pass": "LegjobbaK00"
+            "user": "info@myhomeimmo.hu",
+            "pass": "LegjobbaK03"
         },
         "tls": {
-            "rejectUnauthorized": false,
-            "ignoreTLS": true
+            "rejectUnauthorized": false
         },
         "logger": true,
         "transactionLog": true

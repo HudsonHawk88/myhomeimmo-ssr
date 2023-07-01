@@ -1,19 +1,20 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
 import { useDropzone } from 'react-dropzone';
 import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
-import Wysiwyg from '../../../commons/Wysiwyg';
-import { serializeValue } from '../../../commons/Serializer';
+import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
+import { serializeValue, initialValue } from '../../../commons/Serializer';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import { makeFormData } from '../../../commons/Lib';
 import Services from './Services';
+
 const IngatlanSzolgaltatasok = (props) => {
     const { addNotification } = props;
     const defaultSzolgObj = {
         azonosito: '',
         kep: [],
-        leiras: ''
+        leiras: initialValue
     };
 
     const [ingatlanSzolgJson, setIngatlanSzolgJson] = useState([]);
@@ -21,6 +22,14 @@ const IngatlanSzolgaltatasok = (props) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [ingatlanSzolgObj, setIngatlanSzolgObj] = useState(defaultSzolgObj);
+
+    const init = () => {
+        listIngatlanSzolgaltatasok();
+    };
+
+    useEffect(() => {
+        init();
+    }, []);
 
     const listIngatlanSzolgaltatasok = () => {
         Services.listIngatlanSzolgaltatasok((err, res) => {
@@ -30,41 +39,18 @@ const IngatlanSzolgaltatasok = (props) => {
         });
     };
 
-    const setDefaultWysiwygValue = () => {
-        serializeValue('def', defaultSzolgObj, setIngatlanSzolgObj, 'leiras');
-    };
-
-    const init = async () => {
-        setDefaultWysiwygValue();
-        listIngatlanSzolgaltatasok();
-    };
-
-    useEffect(() => {
-        init();
-    }, []);
-
     const getIngatlanSzolgaltatasok = (id) => {
         Services.getIngatlanSzolgaltatas(id, (err, res) => {
-            if (!err) {
-                serializeValue(
-                    'de',
-                    {
-                        azonosito: res.azonosito,
-                        kep: res.kep,
-                        leiras: res.leiras
-                    },
-                    setIngatlanSzolgObj,
-                    'leiras'
-                );
+            if (!err && Editor && Editor.current) {
+                const leiras = serializeValue('de', res.leiras);
+                setEditorValue(leiras, Editor);
+                setIngatlanSzolgObj({ ...ingatlanSzolgObj, azonosito: res.azonosito, kep: res.kep, leiras: leiras });
             }
         });
     };
 
-    const onChangeEditor = ({ value }) => {
-        setIngatlanSzolgObj({
-            ...ingatlanSzolgObj,
-            leiras: value
-        });
+    const onChangeEditor = (value) => {
+        setIngatlanSzolgObj({ ...ingatlanSzolgObj, leiras: value });
     };
 
     const toggleModal = () => {
@@ -77,7 +63,7 @@ const IngatlanSzolgaltatasok = (props) => {
 
     const handleNewClick = () => {
         setCurrentId(null);
-        setDefaultWysiwygValue();
+        setIngatlanSzolgObj(defaultSzolgObj);
         toggleModal();
     };
 
@@ -162,84 +148,6 @@ const IngatlanSzolgaltatasok = (props) => {
         );
     };
 
-    /*     const MyDropzone = () => {
-        const imageStyle = {
-            // maxHeight: '100%',
-            maxWidth: '50%'
-        };
-        let kep = {};
-        const onDrop = useCallback((acceptedFiles) => {
-            acceptedFiles.forEach((file) => {
-                let base64 = '';
-                const reader = new FileReader();
-
-                reader.onabort = () => console.log('file reading was aborted');
-                reader.onerror = () => console.log('file reading has failed');
-                reader.onload = (event) => {
-                    // Do whatever you want with the file contents
-                    base64 = event.target.result;
-                    kep = {
-                        src: base64,
-                        title: file.name,
-                        isCover: false
-                    };
-
-                    setIngatlanSzolgObj({
-                        ...ingatlanSzolgObj,
-                        kep: [...ingatlanSzolgObj.kep, kep]
-                    });
-                };
-                reader.readAsDataURL(file);
-            });
-        }, []);
-        const { getRootProps, getInputProps } = useDropzone({ onDrop });
-        return (
-            <React.Fragment>
-                <div hidden={ingatlanSzolgObj.kep && ingatlanSzolgObj.kep.length > 0} {...getRootProps({ className: 'dropzone' })}>
-                    <input {...getInputProps()} />
-                    <p>Kattintson vagy húzza id a feltöltendő képeket...</p>
-                </div>
-                <div className="row">
-                    {ingatlanSzolgObj.kep &&
-                        ingatlanSzolgObj.kep.map((kep, index) => {
-                            return (
-                                <Card key={index.toString()} className="col-md-12">
-                                    <CardTitle>{kep.nev}</CardTitle>
-                                    <CardBody
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        <img style={imageStyle} src={kep.src} alt={kep.nev} />
-                                    </CardBody>
-                                    <CardFooter
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        <Button onClick={() => deleteImage(kep.src)}>Törlés</Button>
-                                    </CardFooter>
-                                </Card>
-                            );
-                        })}
-                </div>
-            </React.Fragment>
-        );
-    }; */
-    /* 
-    const deleteImage = (src) => {
-        let kepek = ingatlanSzolgObj.kep;
-        let filtered = kepek.filter((kep) => kep.src !== src);
-        setIngatlanSzolgObj({
-            ...ingatlanSzolgObj,
-            kep: filtered
-        });
-    }; */
-
     const tableIconFormatter = (cell, row) => {
         return (
             <React.Fragment>
@@ -299,19 +207,13 @@ const IngatlanSzolgaltatasok = (props) => {
         return <DataTable bordered columns={columns} datas={ingatlanSzolgJson} paginationOptions={paginationOptions} />;
     };
 
-    const setKuldObj = (callback) => {
-        const newObj = {
-            azonosito: ingatlanSzolgObj.azonosito,
-            kep: ingatlanSzolgObj.kep,
-            leiras: ingatlanSzolgObj.leiras
-        };
-        serializeValue('se', newObj, () => {}, 'leiras', callback);
-    };
-
-    const onSave = (kuldObj) => {
+    const onSave = () => {
+        let obj = {};
+        Object.assign(obj, ingatlanSzolgObj);
+        obj.leiras = serializeValue('se', ingatlanSzolgObj.leiras);
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(kuldObj, 'kep', false);
+            datas = makeFormData(obj, 'kep', false);
             Services.addIngatlanSzolgaltatas(datas, (err, res) => {
                 if (!err) {
                     listIngatlanSzolgaltatasok();
@@ -320,7 +222,7 @@ const IngatlanSzolgaltatasok = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(kuldObj, 'kep', true);
+            datas = makeFormData(obj, 'kep', true);
             Services.editIngatlanSzolgaltatas(datas, currentId, (err, res) => {
                 if (!err) {
                     listIngatlanSzolgaltatasok();
@@ -341,10 +243,14 @@ const IngatlanSzolgaltatasok = (props) => {
         });
     };
 
+    const renderWysiwyg = () => {
+        return <Wysiwyg onChange={onChangeEditor} value={ingatlanSzolgObj.leiras} />;
+    };
+
     const renderModal = () => {
         return (
             <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <RVForm onSubmit={() => setKuldObj(onSave)} encType="multipart/form-data" noValidate={true}>
+                <RVForm onSubmit={onSave} encType="multipart/form-data" noValidate={true}>
                     <ModalHeader>{!currentId ? 'Ingatlan szolgáltatás hozzáadása' : 'Ingatlan szolgaltatas módosítása'}</ModalHeader>
                     <ModalBody>
                         <div className="col-md-12">
@@ -359,14 +265,20 @@ const IngatlanSzolgaltatasok = (props) => {
                         <br />
                         <div className="col-md-12">
                             <Label>Leiras:</Label>
-                            <Wysiwyg fontId="ingszolg" onChange={onChangeEditor} value={ingatlanSzolgObj.leiras} />
+                            {renderWysiwyg()}
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="success" type="submit">
                             Mentés
                         </Button>
-                        <Button color="secondary" type="button" onClick={() => toggleModal()}>
+                        <Button
+                            color="secondary"
+                            type="button"
+                            onClick={() => {
+                                toggleModal();
+                            }}
+                        >
                             Mégsem
                         </Button>
                     </ModalFooter>

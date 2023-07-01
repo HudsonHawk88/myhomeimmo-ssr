@@ -3,6 +3,7 @@ import multer from 'multer';
 import {
     jwtparams,
     pool,
+    mailUrl,
     validateToken,
     createIngatlanokSql,
     createIngatlanokTriggerSql,
@@ -20,12 +21,11 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 
 import { addIngatlan, editIngatlan } from '../../../schemas/IngatlanSchema.js';
-import mailconf from '../../common/MailerService/mailconfig.json';
+s;
 
 const router = express.Router();
 const ingatlanok = pool;
-let poolConfig = 'smtps://username:password@smtp.example.com/?pool=true';
-const transporter = nodemailer.createTransport(mailconf);
+const transporter = nodemailer.createTransport(mailUrl);
 
 //TODO: Egyéb (nem publikus) dokumentumok, képek feltöltését megvalósítani!!!
 
@@ -290,35 +290,17 @@ router.post('/jovahagyas', async (req, res) => {
                     Tisztelettel:<br>
                     ${teljesNev}`
                 };
-                const sql = `UPDATE ingatlanok SET isAktiv = '0' WHERE id = '${ingId}';`;
 
-                if (!publikusChange && !isNew) {
-                    ingatlanok.query(sql, (err) => {
-                        if (!err) {
-                            transporter.sendMail(mail, (err) => {
-                                if (!err) {
-                                    res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
-                                } else {
-                                    /* console.log(mailconf);
-                        console.log(err); */
-                                    log('POST /api/admin/ingatlanok', err);
-                                    res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    transporter.sendMail(mail, (err) => {
-                        if (!err) {
-                            res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
-                        } else {
-                            /* console.log(mailconf);
-                        console.log(err); */
-                            log('POST /api/admin/ingatlanok', err);
-                            res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
-                        }
-                    });
-                }
+                transporter.sendMail(mail, (err) => {
+                    if (!err) {
+                        res.status(200).send({ msg: 'E-mail sikeresen elküldve!' });
+                    } else {
+                        /* console.log(mailconf);
+                    console.log(err); */
+                        log('POST /api/admin/ingatlanok', err);
+                        res.status(500).send({ err: err, msg: 'Email küldése sikertelen!' });
+                    }
+                });
             } else {
                 res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
             }

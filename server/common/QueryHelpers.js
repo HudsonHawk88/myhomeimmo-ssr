@@ -8,6 +8,8 @@ dotenv.config({
     path: path.resolve(__dirname, '../.env')
 });
 
+const mailUrl = `smtps://${process.env.mailserverUser}:${process.env.mailserverPassword}@${process.env.mailserverHost}`;
+
 const hungarian = new Intl.Locale('hu', {
     hourCycle: 'h24'
 });
@@ -557,6 +559,7 @@ END IF;
 
 export {
     pool,
+    mailUrl,
     log,
     stringToBool,
     getId,

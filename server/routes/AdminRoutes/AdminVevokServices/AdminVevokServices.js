@@ -1,11 +1,10 @@
-import { jwtparams, UseQuery, pool, validateToken, hasRole, getId, getJSONfromLongtext, getIngatlanokByKm } from '../../../common/QueryHelpers.js';
+import { jwtparams, UseQuery, pool, validateToken, hasRole, getId, getJSONfromLongtext, getIngatlanokByKm, mailUrl } from '../../../common/QueryHelpers.js';
 import express from 'express';
 import nodemailer from 'nodemailer';
-import mailconf from '../../common/MailerService/mailconfig.json';
 
 const router = express.Router();
 const adminvevok = pool;
-const transporter = nodemailer.createTransport(mailconf);
+const transporter = nodemailer.createTransport(mailUrl);
 
 // ADMINVEVOK START
 

@@ -35,6 +35,36 @@ html body::-webkit-scrollbar {
   /*     background-size: cover; */
 }
 
+.react-slate-wysiwyg {
+  min-height: 250px !important;
+}
+
+.wysiwyg-editor-toolbar button {
+  /* background-color: lightblue !important;
+  color: black !important; */
+  /* border-radius: 0px !important; */
+  background-color: lightblue;
+  height: 60px;
+  width: 60px;
+  padding: 10px 5px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  /* & i {
+      padding: 10px;
+      font-size: .5rem;
+  } */
+}
+
+.wysiwyg-editor-toolbar .image_button {
+  padding: 10px 5px;
+}
+
+.wysiwyg-editor-toolbar select {
+  height: 60px;
+  width: 95px;
+}
+
 .public_full {
   width: 100%;
   /*   margin: 0px 15%; */
