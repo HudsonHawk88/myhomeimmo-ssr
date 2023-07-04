@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
 import { Page, Document, pdf, Font, StyleSheet, View, Text, Image } from '@react-pdf/renderer';
-import Html from 'react-pdf-html';
 
 import Services from './Services';
 import IngatlanForm from './IngatlanForm';
@@ -119,10 +118,10 @@ const Ingatlanok = (props) => {
     };
 
     const printAjanloPDF = (id) => {
-        /* Services.getIngatlan(id, async (err, res) => {
+        Services.infoPDF(id, async (err, res) => {
             if (!err) {
-                const ingatlan = res[0];
-                console.log(ingatlan);
+                const ingatlan = res;
+                /*   console.log(ingatlan); */
                 Font.register({
                     family: 'OpenSans-Regular',
                     src: `${process.env.staticUrl}/fonts/OpenSans-Regular.ttf`
@@ -131,9 +130,11 @@ const Ingatlanok = (props) => {
                     pdftartalom: {
                         display: 'flex',
                         fontFamily: 'OpenSans-Regular',
-                        maxHeight: '100%',
+                        /*  minHeight: '100%', */
+                        maxHeight: '96%',
                         padding: '2% 4%',
                         maxWidth: '100%'
+                        /* border: '2px solid blue' */
                     },
                     pagebreak: {
                         clear: 'both',
@@ -145,43 +146,147 @@ const Ingatlanok = (props) => {
                         textAlign: 'center',
                         marginBottom: '10px'
                     },
+                    nevjegy: {
+                        display: 'flex',
+                        minWidth: '100%',
+                        maxWidth: '100%',
+                        fontSize: '12px',
+                        justifyContent: 'flex-end',
+                        alignItems: 'flex-end'
+                    },
+                    nevjegykartya: {
+                        display: 'inline-block',
+                        padding: '10px 30px',
+                        border: '2px solid blue'
+                    },
                     kepekView: {
                         display: 'flex',
                         flexWrap: 'wrap',
                         width: '100%',
                         flexDirection: 'row',
-                        justifyContent: 'center'
+                        justifyContent: 'flex-start',
+                        padding: 0,
+                        margin: 0
                     },
                     kepek: {
-                        width: '31%',
-                        margin: '1%',
-                        height: '200px'
+                        width: '33%',
+                        height: '120px'
+                    },
+                    kepekBal: {
+                        width: '32%',
+                        marginRight: '1%',
+                        height: '120px'
+                    },
+                    kepekJobb: {
+                        width: '33%',
+                        marginLeft: '1%',
+                        height: '120px'
                     },
                     heading: {
                         fontSize: '15px',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        padding: '15px 0px',
+                        borderBottom: '1px solid blue',
+                        marginBottom: '15px'
                     },
                     normalText: {
                         fontSize: '11px'
+                    },
+                    em: {
+                        fontStyle: 'bold'
+                    },
+                    table: {
+                        width: '100%',
+                        /*  borderWidth: 1, */
+                        display: 'flex',
+                        flexDirection: 'column',
+                        marginVertical: 12
+                    },
+                    tableRow: {
+                        display: 'flex',
+                        flexDirection: 'row'
+                    },
+                    cell: {
+                        fontSize: '11px',
+                        /*  borderWidth: 1, */
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignContent: 'center',
+                        textAlign: 'left',
+                        flexWrap: 'wrap'
                     }
                 });
+
+                const Table = ({ children, col, th }) => (
+                    <View style={styles.table} wrap={false}>
+                        {children.map((row, ind) => (
+                            <View key={ind} style={[styles.tableRow, th && ind === 0 ? styles.em : {}, { backgroundColor: ind % 2 === 0 ? '#cccccc' : '#ffffff' }]}>
+                                {row.map((cell, j) => (
+                                    <View key={j} style={[styles.cell, { width: col[j], height: 40, padding: '2px' }]}>
+                                        {typeof cell === 'string' || typeof cell === 'number' ? <Text>{cell}</Text> : cell}
+                                    </View>
+                                ))}
+                            </View>
+                        ))}
+                    </View>
+                );
+
+                /* console.log('INGATLAN: ', <View style={{ margin: '1%', padding: '10px', border: '2px solid blue', maxHeight: '98%' }} wrap={false} />); */
 
                 const newPdf = (
                     <Document language="hu">
                         <Page style={styles.pdftartalom} size="A4">
-                            <View style={{ margin: '1%', padding: '10px', border: '2px solid blue', minHeight: '98%', maxHeight: '98%' }}>
+                            <View style={{ margin: '1%', padding: '10px' }}>
                                 <View>
                                     <Text style={styles.cim}>Ingatlan adatlap</Text>
+                                </View>
+                                <View style={styles.nevjegy}>
+                                    <View style={styles.nevjegykartya}>
+                                        <Text>Név: {ingatlan.loggedUser && ingatlan.loggedUser.nev}</Text>
+                                        <Text>Mobil: {ingatlan.loggedUser && ingatlan.loggedUser.telszam}</Text>
+                                        <Text>E-mail: {ingatlan.loggedUser && ingatlan.loggedUser.email}</Text>
+                                        <Text>{ingatlan.cegadatok && ingatlan.cegadatok.nev}</Text>
+                                        <Text>{ingatlan.cegadatok && ingatlan.cegadatok.cim}</Text>
+                                        <Text>Tel.: {ingatlan.cegadatok && ingatlan.cegadatok.telefon}</Text>
+                                    </View>
+                                </View>
+                                <View>
                                     <Text style={styles.heading}>{ingatlan.cim}</Text>
                                 </View>
-                                <View style={styles.kepekView}>
-                                    <Image style={styles.kepek} src={ingatlan && ingatlan.kepek && ingatlan.kepek[0].src} />
-                                    <Image style={styles.kepek} src={ingatlan && ingatlan.kepek && ingatlan.kepek[1].src} />
-                                    <Image style={styles.kepek} src={ingatlan && ingatlan.kepek && ingatlan.kepek[2].src} />
+                                <View wrap style={styles.kepekView}>
+                                    <Image debug style={styles.kepekBal} src={ingatlan && ingatlan.kepek && ingatlan.kepek[0].src} />
+                                    <Image debug style={styles.kepek} src={ingatlan && ingatlan.kepek && ingatlan.kepek[1].src} />
+                                    <Image debug style={styles.kepekJobb} src={ingatlan && ingatlan.kepek && ingatlan.kepek[2].src} />
                                 </View>
                                 <View>
                                     <Text style={styles.heading}>Leírás:</Text>
                                     <Text style={styles.normalText}>{ingatlan.leiras}</Text>
+                                </View>
+                                <View wrap={false}>
+                                    <Text style={styles.heading}>Paraméterek:</Text>
+                                    <Table
+                                        col={['16.66%', '16.66%', '16.66%', '16.66%', '16.66%', '16.66%']}
+                                        children={[
+                                            ['Státusza', `${ingatlan.statusz}`, 'Építés módja: ', `${ingatlan.epitesmod}`, 'Ingatlan típusa: ', `${ingatlan.tipus}`],
+                                            [
+                                                'Altípusa: ',
+                                                `${ingatlan.altipus}`,
+                                                'Település: ',
+                                                `${ingatlan.telepules}`,
+                                                'Rendeltetés: ',
+                                                `${ingatlan.rendeltetes && ingatlan.rendeltetes !== '' ? ingatlan.rendeltetes : '-'}`
+                                            ],
+                                            [
+                                                'Tetőtéri: ',
+                                                `${ingatlan.isTetoter === true ? 'Igen' : 'Nem'}`,
+                                                'Fűtés típusa: ',
+                                                `${ingatlan.futes}`,
+                                                'Alapterület: ',
+                                                `${ingatlan.alapterulet && ingatlan.alapterulet !== '' ? ingatlan.alapterulet + ' m2' : ''}`
+                                            ],
+                                            ['Telek mérete: ', `${ingatlan.telek !== '' ? ingatlan.telek + ' m2' : '-'}`, '', ``, '', ``]
+                                        ]}
+                                    />
                                 </View>
                             </View>
                         </Page>
@@ -191,8 +296,8 @@ const Ingatlanok = (props) => {
                 const url = window.URL.createObjectURL(newPdfBuffer, { type: 'application/pdf' });
                 window.open(url, '_blank');
             }
-        }); */
-        Services.printPDF(id, async (err, res) => {
+        });
+        /*  Services.printPDF(id, async (err, res) => {
             if (!err) {
                 const html = res.html;
                 Font.register({
@@ -222,7 +327,7 @@ const Ingatlanok = (props) => {
                 const url = window.URL.createObjectURL(newPdfBuffer, { type: 'application/pdf' });
                 window.open(url, '_blank');
             }
-        });
+        }); */
     };
 
     const openFacebookShare = (url, title, w, h) => {

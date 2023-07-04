@@ -129,7 +129,7 @@ export default class Services {
         return result;
     };
 
-    static printPDF = (ingatlanId, fnDone) => {
+    static infoPDF = (ingatlanId, fnDone) => {
         let result = Microservices.fetchApi(
             infoPDFUrl,
             {
@@ -138,7 +138,7 @@ export default class Services {
                 cache: 'no-cache',
                 headers: {
                     'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                    /*   'Content-Type': 'application/pdf', */
+                    'Content-Type': 'application/json',
                     ingatlanId: ingatlanId
                 }
             },

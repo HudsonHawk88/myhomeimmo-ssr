@@ -422,33 +422,25 @@ router.post('/infoPDF', async (req, res) => {
             const ingatlanId = req.headers.ingatlanid;
             const ingatlanSql = `SELECT * FROM ingatlanok WHERE id='${ingatlanId}';`;
             const cegadatSql = `SELECT nev, cim, telefon FROM kapcsolat WHERE id='1';`;
-            const tipusOptionsSql = `SELECT * FROM ingatlan_options;`;
-            const altipusOptionsSql = `SELECT * FROM ingatlan_subtypes;`;
             let ingatlan = await UseQuery(ingatlanSql);
             let cegadatok = await UseQuery(cegadatSql);
-            let tipusOptions = await UseQuery(tipusOptionsSql);
-            let altipusOptions = await UseQuery(altipusOptionsSql);
-            let tipusOpts = tipusOptions[0];
-            let altipusOpts = altipusOptions[0];
-
             // USER ADATOK
             let nev = JSON.parse(user.nev);
             const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
             let telszam = JSON.parse(user.telefon);
             telszam = `${telszam.orszaghivo}-${telszam.korzet}/${telszam.telszam}`;
             const email = user.email;
+            const loggedUser = { nev: teljesNev, telszam: telszam, email: email };
             ingatlan = getJSONfromLongtext(ingatlan[0], 'toBool');
             cegadatok = getJSONfromLongtext(cegadatok[0], 'toBool');
-            /*     tipusOptions = getJSONfromLongtext(tipusOpts, 'toBool');
-                altipusOpts = getJSONfromLongtext(altipusOpts, 'toBool'); */
 
             // INGATLANADATOK
             /*   const elsokepek = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.filter((kep, index) => index < 4); */
             /*   const alaprajz = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.map((kep) => kep.filename.includes('alaprajz')); */
-            const filePath = path.resolve(__dirname, '..', 'build/public', 'InformaciosLap.html');
+            const sendObj = Object.assign({}, ingatlan, { cegadatok }, { loggedUser });
 
-            let html = readFileSync(filePath, { encoding: 'utf-8' });
-            html = html
+            /*  let html = readFileSync(filePath, { encoding: 'utf-8' }); */
+            /*   html = html
                 .replace('${teljesNev}', teljesNev)
                 .replace('${telszam}', telszam)
                 .replace('${cegadatok.nev}', cegadatok.nev)
@@ -460,10 +452,10 @@ router.post('/infoPDF', async (req, res) => {
                 .replace('${ingatlan.refid}', ingatlan.refid)
                 .replace('${renderKepek(ingatlan.kepek)}', renderKepek(ingatlan.kepek))
                 .replace('${ingatlan.leiras}', ingatlan.leiras)
-                .replace('${renderParameterek(ingatlan, tipusOpts, altipusOpts)}', renderParameterek(ingatlan, tipusOpts, altipusOpts));
+                .replace('${renderParameterek(ingatlan, tipusOpts, altipusOpts)}', renderParameterek(ingatlan, tipusOpts, altipusOpts)); */
 
-            if (ingatlan && tipusOpts && altipusOpts && html) {
-                res.status(200).send({ html: html });
+            if (ingatlan && cegadatok && loggedUser) {
+                res.status(200).send(sendObj);
             }
         }
     } else {
