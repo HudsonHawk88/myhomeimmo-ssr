@@ -6,8 +6,6 @@ import { serializeValue, initialValue } from '../../../commons/Serializer';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
 
-/* const { serializer } = typeof window !== 'undefined' && import('@organw/wysiwyg-editor'); */
-
 const Gdpr = (props) => {
     const { addNotification } = props;
 
