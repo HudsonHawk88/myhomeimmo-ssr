@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
-import Wysiwyg from '../../../commons/Wysiwyg.js';
-import { serializeValue } from '../../../commons/Serializer.js';
+import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
+import { serializeValue, initialValue } from '../../../commons/Serializer';
 import { useDropzone } from 'react-dropzone';
 import KepCard from '../../../commons/KepCard.js';
 
@@ -20,7 +20,7 @@ const MyArtGaleriak = (props) => {
         muveszEmail: '',
         muveszUrl: '',
         kepek: [],
-        leiras: '',
+        leiras: initialValue,
         isActive: false
     };
 
@@ -42,7 +42,6 @@ const MyArtGaleriak = (props) => {
 
     useEffect(() => {
         listGaleriak();
-        serializeValue('def', defaultMyArtGaleriakObj, setMyArtGaleriakObj, 'leiras');
     }, []);
 
     const MyDropzone = () => {
@@ -85,23 +84,20 @@ const MyArtGaleriak = (props) => {
 
     const getGaleria = (id) => {
         Services.getGaleria(id, (err, res) => {
-            if (!err) {
-                serializeValue(
-                    'de',
-                    {
-                        azonosito: res.azonosito,
-                        nev: res.nev,
-                        muveszNev: res.muveszNev,
-                        muveszTelefon: res.muveszTelefon,
-                        muveszEmail: res.muveszEmail,
-                        muveszUrl: res.muveszUrl,
-                        kepek: res.kepek,
-                        leiras: res.leiras,
-                        isActive: res.isActive
-                    },
-                    setMyArtGaleriakObj,
-                    'leiras'
-                );
+            if (!err && Editor && Editor.current) {
+                const leiras = serializeValue('de', res.leiras);
+                setEditorValue(leiras, Editor);
+                setMyArtGaleriakObj({
+                    azonosito: res.azonosito,
+                    nev: res.nev,
+                    muveszNev: res.muveszNev,
+                    muveszTelefon: res.muveszTelefon,
+                    muveszEmail: res.muveszEmail,
+                    muveszUrl: res.muveszUrl,
+                    kepek: res.kepek,
+                    leiras: leiras,
+                    isActive: res.isActive
+                });
             }
         });
     };
@@ -116,7 +112,7 @@ const MyArtGaleriak = (props) => {
 
     const handleNewClick = () => {
         setCurrentId(null);
-        serializeValue('def', defaultMyArtGaleriakObj, setMyArtGaleriakObj, 'leiras');
+        setMyArtGaleriakObj(defaultMyArtGaleriakObj);
         toggleModal();
     };
 
@@ -198,10 +194,13 @@ const MyArtGaleriak = (props) => {
         return <DataTable bordered columns={columns} datas={myArtGaleriakJson} paginationOptions={paginationOptions} />;
     };
 
-    const onSave = (kuldObj) => {
+    const onSave = () => {
+        let obj = {};
+        Object.assign(obj, myArtGaleriakObj);
+        obj.leiras = serializeValue('se', myArtGaleriakObj.leiras);
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(kuldObj, 'kepek', false);
+            datas = makeFormData(obj, 'kepek', false);
             Services.addGaleria(datas, (err, res) => {
                 if (!err) {
                     listGaleriak();
@@ -210,7 +209,7 @@ const MyArtGaleriak = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(kuldObj, 'kepek', true);
+            datas = makeFormData(obj, 'kepek', true);
             Services.editGaleria(datas, currentId, (err, res) => {
                 if (!err) {
                     listGaleriak();
@@ -231,17 +230,21 @@ const MyArtGaleriak = (props) => {
         });
     };
 
-    const onChangeEditor = ({ value }) => {
+    const onChangeEditor = (value) => {
         setMyArtGaleriakObj({
             ...myArtGaleriakObj,
             leiras: value
         });
     };
 
+    const renderWysiwyg = () => {
+        return <Wysiwyg onChange={onChangeEditor} value={myArtGaleriakObj.leiras} />;
+    };
+
     const renderModal = () => {
         return (
             <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <RVForm onSubmit={() => serializeValue('se', myArtGaleriakObj, () => {}, 'leiras', onSave)} encType="multipart/form-data" noValidate={true}>
+                <RVForm onSubmit={onSave} encType="multipart/form-data" noValidate={true}>
                     <ModalHeader>{!currentId ? 'MyArt galéria hozzáadása' : 'MyArt galéria módosítása'}</ModalHeader>
                     <ModalBody>
                         <div className="row">
@@ -305,7 +308,7 @@ const MyArtGaleriak = (props) => {
                             <br />
                             <div className="col-md-12">
                                 <Label>Leiras:</Label>
-                                <Wysiwyg fontId="myArtGaleria" onChange={onChangeEditor} value={myArtGaleriakObj.leiras} />
+                                {renderWysiwyg()}
                             </div>
                         </div>
                     </ModalBody>

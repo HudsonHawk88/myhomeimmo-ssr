@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
 import { useDropzone } from 'react-dropzone';
-import Wysiwyg from '../../../commons/Wysiwyg';
-import { serializeValue } from '../../../commons/Serializer';
+import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
+import { serializeValue, initialValue } from '../../../commons/Serializer';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
 import { makeFormData } from '../../../commons/Lib';
@@ -18,7 +18,7 @@ const Rolunk = (props) => {
         beosztas: '',
         email: '',
         telefon: '',
-        leiras: ''
+        leiras: initialValue
     };
 
     const [rolunkJson, setRolunkJson] = useState([]);
@@ -37,40 +37,19 @@ const Rolunk = (props) => {
 
     useEffect(() => {
         listRolunk();
-        serializeValue('def', defaultRolunkObj, setRolunkObj, 'leiras');
     }, []);
 
     const getRolunk = (id) => {
         Services.getRolunk(id, (err, res) => {
-            if (!err) {
-                serializeValue(
-                    'de',
-                    {
-                        azonosito: res.azonosito,
-                        kep: res.kep,
-                        nev: res.nev,
-                        beosztas: res.beosztas,
-                        email: res.email,
-                        telefon: res.telefon,
-                        leiras: res.leiras
-                    },
-                    setRolunkObj,
-                    'leiras'
-                );
-                /* setRolunkObj({
-                    azonosito: res.azonosito,
-                    kep: res.kep,
-                    nev: res.nev,
-                    beosztas: res.beosztas,
-                    email: res.email,
-                    telefon: res.telefon,
-                    leiras: serializer.deserialize(res.leiras)
-                }); */
+            if (!err && Editor && Editor.current) {
+                const leiras = serializeValue('de', res.leiras);
+                setEditorValue(leiras, Editor);
+                setRolunkObj({ azonosito: res.azonosito, kep: res.kep, nev: res.nev, beosztas: res.beosztas, email: res.email, telefon: res.telefon, leiras: leiras });
             }
         });
     };
 
-    const onChangeEditor = ({ value }) => {
+    const onChangeEditor = (value) => {
         setRolunkObj({
             ...rolunkObj,
             leiras: value
@@ -87,7 +66,7 @@ const Rolunk = (props) => {
 
     const handleNewClick = () => {
         setCurrentId(null);
-        serializeValue('de', defaultRolunkObj, setRolunkObj, 'leiras');
+        setRolunkObj(defaultRolunkObj);
         toggleModal();
     };
 
@@ -256,10 +235,13 @@ const Rolunk = (props) => {
         return <DataTable bordered columns={columns} datas={rolunkJson} paginationOptions={paginationOptions} />;
     };
 
-    const onSave = (kuldObj) => {
+    const onSave = () => {
+        let obj = {};
+        Object.assign(obj, rolunkObj);
+        obj.leiras = serializeValue('se', rolunkObj.leiras);
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(kuldObj, 'kep', false);
+            datas = makeFormData(obj, 'kep', false);
             Services.addRolunk(datas, (err, res) => {
                 if (!err) {
                     listRolunk();
@@ -268,7 +250,7 @@ const Rolunk = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(kuldObj, 'kep', true);
+            datas = makeFormData(obj, 'kep', true);
             Services.editRolunk(datas, currentId, (err, res) => {
                 if (!err) {
                     listRolunk();
@@ -289,10 +271,14 @@ const Rolunk = (props) => {
         });
     };
 
+    const renderWysiwyg = () => {
+        return <Wysiwyg onChange={onChangeEditor} value={rolunkObj.leiras} />;
+    };
+
     const renderModal = () => {
         return (
-            <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <RVForm onSubmit={() => serializeValue('se', rolunkObj, () => {}, 'leiras', onSave)} encType="multipart/form-data" noValidate={true}>
+            <Modal isOpen={modalOpen} toggle={toggleModal} size="xl" backdrop="static">
+                <RVForm onSubmit={onSave} encType="multipart/form-data" noValidate={true}>
                     <ModalHeader>{!currentId ? 'Rólunk bejegyzés hozzáadása' : 'Rólunk bejegyzés módosítása'}</ModalHeader>
                     <ModalBody>
                         <div className="col-md-12">
@@ -321,7 +307,7 @@ const Rolunk = (props) => {
                         </div>
                         <div className="col-md-12">
                             <Label>Leiras:</Label>
-                            <Wysiwyg fontId="rolunk" onChange={onChangeEditor} value={rolunkObj.leiras} />
+                            {renderWysiwyg()}
                         </div>
                     </ModalBody>
                     <ModalFooter>

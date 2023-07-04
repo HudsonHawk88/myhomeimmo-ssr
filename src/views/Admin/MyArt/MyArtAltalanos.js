@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
-import Wysiwyg from '../../../commons/Wysiwyg';
-import { serializeValue } from '../../../commons/Serializer';
+import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
+import { serializeValue, initialValue } from '../../../commons/Serializer';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
 import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
@@ -11,7 +11,7 @@ const MyArtAltalanos = (props) => {
     const defaultMyArtAltalanosObj = {
         azonosito: '',
         nev: '',
-        leiras: ''
+        leiras: initialValue
     };
 
     const [myArtAltalanosJson, setMyArtAltalanosJson] = useState([]);
@@ -32,22 +32,14 @@ const MyArtAltalanos = (props) => {
 
     useEffect(() => {
         listAltalanos();
-        serializeValue('def', myArtAltalanosObj, setMyArtAltalanosObj, 'leiras');
     }, []);
 
     const getAltalanos = (id) => {
         Services.getAltalanos(id, (err, res) => {
-            if (!err) {
-                serializeValue(
-                    'de',
-                    {
-                        azonosito: res.azonosito,
-                        nev: res.nev,
-                        leiras: res.leiras
-                    },
-                    setMyArtAltalanosObj,
-                    'leiras'
-                );
+            if (!err && Editor && Editor.current) {
+                const leiras = serializeValue('de', res.leiras);
+                setEditorValue(leiras, Editor);
+                setMyArtAltalanosObj({ ...myArtAltalanosObj, azonosito: res.azonosito, nev: res.nev, leiras: leiras });
             }
         });
     };
@@ -62,7 +54,7 @@ const MyArtAltalanos = (props) => {
 
     const handleNewClick = () => {
         setCurrentId(null);
-        serializeValue('def', defaultMyArtAltalanosObj, setMyArtAltalanosObj, 'leiras');
+        setMyArtAltalanosObj(defaultMyArtAltalanosObj);
         toggleModal();
     };
 
@@ -140,9 +132,12 @@ const MyArtAltalanos = (props) => {
         return <DataTable bordered columns={columns} datas={myArtAltalanosJson} paginationOptions={paginationOptions} />;
     };
 
-    const onSave = (kuldObj) => {
+    const onSave = () => {
+        let obj = {};
+        Object.assign(obj, myArtAltalanosObj);
+        obj.leiras = serializeValue('se', myArtAltalanosObj.leiras);
         if (!currentId) {
-            Services.addAltalanos(kuldObj, (err, res) => {
+            Services.addAltalanos(obj, (err, res) => {
                 if (!err) {
                     listAltalanos();
                     toggleModal();
@@ -150,7 +145,7 @@ const MyArtAltalanos = (props) => {
                 }
             });
         } else {
-            Services.editAltalanos(kuldObj, currentId, (err, res) => {
+            Services.editAltalanos(obj, currentId, (err, res) => {
                 if (!err) {
                     listAltalanos();
                     toggleModal();
@@ -170,17 +165,21 @@ const MyArtAltalanos = (props) => {
         });
     };
 
-    const onChangeEditor = ({ value }) => {
+    const onChangeEditor = (value) => {
         setMyArtAltalanosObj({
             ...myArtAltalanosObj,
             leiras: value
         });
     };
 
+    const renderWysiwyg = () => {
+        return <Wysiwyg onChange={onChangeEditor} value={myArtAltalanosObj.leiras} />;
+    };
+
     const renderModal = () => {
         return (
-            <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <RVForm onSubmit={() => serializeValue('se', myArtAltalanosObj, () => {}, 'leiras', onSave)} noValidate={true}>
+            <Modal isOpen={modalOpen} toggle={toggleModal} size="xl" backdrop="static">
+                <RVForm onSubmit={onSave} noValidate={true}>
                     <ModalHeader>{!currentId ? 'MyArt általános bejegyzés hozzáadása' : 'MyArt általános bejegyzés módosítása'}</ModalHeader>
                     <ModalBody>
                         <div className="col-md-12">
@@ -193,7 +192,7 @@ const MyArtAltalanos = (props) => {
                         </div>
                         <div className="col-md-12">
                             <Label>Leiras:</Label>
-                            <Wysiwyg fontId="myArtAltalanos" onChange={onChangeEditor} value={myArtAltalanosObj.leiras} />
+                            {renderWysiwyg()}
                         </div>
                     </ModalBody>
                     <ModalFooter>

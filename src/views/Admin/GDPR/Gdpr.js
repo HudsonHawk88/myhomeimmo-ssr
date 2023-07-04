@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
-import Wysiwyg from '../../../commons/Wysiwyg';
-import { serializeValue } from '../../../commons/Serializer';
+import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
+import { serializeValue, initialValue } from '../../../commons/Serializer';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
 
@@ -14,7 +14,7 @@ const Gdpr = (props) => {
     const defaultGdprObj = {
         azonosito: '',
         tipus: '',
-        leiras: ''
+        leiras: initialValue
         /*   leiras: serializer.deserialize('<p align="left" style="font-size:17px"></p>') */
     };
 
@@ -34,27 +34,19 @@ const Gdpr = (props) => {
 
     useEffect(() => {
         listGdpr();
-        serializeValue('def', defaultGdprObj, setGdprObj, 'leiras');
     }, []);
 
     const getGdpr = (id) => {
         Services.getGdpr(id, (err, res) => {
-            if (!err) {
-                serializeValue(
-                    'de',
-                    {
-                        azonosito: res.azonosito,
-                        tipus: res.tipus,
-                        leiras: res.leiras
-                    },
-                    setGdprObj,
-                    'leiras'
-                );
+            if (!err && Editor && Editor.current) {
+                const leiras = serializeValue('de', res.leiras);
+                setEditorValue(leiras, Editor);
+                setGdprObj({ ...myArtAltalanosObj, azonosito: res.azonosito, tipus: res.tipus, leiras: leiras });
             }
         });
     };
 
-    const onChangeEditor = ({ value }) => {
+    const onChangeEditor = (value) => {
         setGdprObj({
             ...gdprObj,
             leiras: value
@@ -71,7 +63,7 @@ const Gdpr = (props) => {
 
     const handleNewClick = () => {
         setCurrentId(null);
-        serializeValue('def', defaultGdprObj, setGdprObj, 'leiras');
+        setGdprObj(defaultGdprObj);
         toggleModal();
     };
 
@@ -149,9 +141,12 @@ const Gdpr = (props) => {
         return <DataTable bordered columns={columns} datas={gdprJson} paginationOptions={paginationOptions} />;
     };
 
-    const onSave = (kuldObj) => {
+    const onSave = () => {
+        let obj = {};
+        Object.assign(obj, gdprObj);
+        obj.leiras = serializeValue('se', gdprObj.leiras);
         if (!currentId) {
-            Services.addGdpr(kuldObj, (err, res) => {
+            Services.addGdpr(obj, (err, res) => {
                 if (!err) {
                     listGdpr();
                     toggleModal();
@@ -159,7 +154,7 @@ const Gdpr = (props) => {
                 }
             });
         } else {
-            Services.editGdpr(kuldObj, currentId, (err, res) => {
+            Services.editGdpr(obj, currentId, (err, res) => {
                 if (!err) {
                     listGdpr();
                     toggleModal();
@@ -179,9 +174,13 @@ const Gdpr = (props) => {
         });
     };
 
+    const renderWysiwyg = () => {
+        return <Wysiwyg onChange={onChangeEditor} value={gdprObj.leiras} />;
+    };
+
     const renderModal = () => {
         return (
-            <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
+            <Modal isOpen={modalOpen} toggle={toggleModal} size="xl" backdrop="static">
                 <ModalHeader>{!currentId ? 'GDPR hozzáadása' : 'GDPR módosítása'}</ModalHeader>
                 <ModalBody>
                     <div className="col-md-12">
@@ -203,11 +202,11 @@ const Gdpr = (props) => {
                     <br />
                     <div className="col-md-12">
                         <Label>Leíras:</Label>
-                        <Wysiwyg fontId="gdpr" onChange={onChangeEditor} value={gdprObj.leiras} />
+                        {renderWysiwyg()}
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="success" onClick={() => serializeValue('se', gdprObj, () => {}, 'leiras', onSave)}>
+                    <Button color="success" onClick={onSave}>
                         Mentés
                     </Button>
                     <Button color="secondary" onClick={() => toggleModal()}>

@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
 import { useDropzone } from 'react-dropzone';
-import Wysiwyg from '../../../commons/Wysiwyg';
-import { serializeValue } from '../../../commons/Serializer';
+import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
+import { serializeValue, initialValue } from '../../../commons/Serializer';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
 import { makeFormData } from '../../../commons/Lib';
@@ -14,7 +14,7 @@ const PenzugyiSzolgaltatasok = (props) => {
     const defaultPenzugyiSzolgObj = {
         azonosito: '',
         kep: [],
-        leiras: ''
+        leiras: initialValue
     };
 
     const [penzugyiSzolgJson, setPenzugyiSzolgJson] = useState([]);
@@ -33,27 +33,19 @@ const PenzugyiSzolgaltatasok = (props) => {
 
     useEffect(() => {
         listPenzugyiSzolgaltatasok();
-        serializeValue('def', defaultPenzugyiSzolgObj, setPenzugyiSzolgObj, 'leiras');
     }, []);
 
     const getPenzugyiSzolgaltatasok = (id) => {
         Services.getPenzugyiSzolgaltatas(id, (err, res) => {
-            if (!err) {
-                serializeValue(
-                    'de',
-                    {
-                        azonosito: res.azonosito,
-                        kep: res.kep,
-                        leiras: res.leiras
-                    },
-                    setPenzugyiSzolgObj,
-                    'leiras'
-                );
+            if (!err && Editor && Editor.current) {
+                const leiras = serializeValue('de', res.leiras);
+                setEditorValue(leiras, Editor);
+                setPenzugyiSzolgObj({ ...penzugyiSzolgObj, azonosito: res.azonosito, kep: res.kep, leiras: leiras });
             }
         });
     };
 
-    const onChangeEditor = ({ value }) => {
+    const onChangeEditor = (value) => {
         setPenzugyiSzolgObj({
             ...penzugyiSzolgObj,
             leiras: value
@@ -70,7 +62,7 @@ const PenzugyiSzolgaltatasok = (props) => {
 
     const handleNewClick = () => {
         setCurrentId(null);
-        serializeValue('def', defaultPenzugyiSzolgObj, setPenzugyiSzolgObj, 'leiras');
+        setPenzugyiSzolgObj(defaultPenzugyiSzolgObj);
         toggleModal();
     };
 
@@ -222,9 +214,12 @@ const PenzugyiSzolgaltatasok = (props) => {
     };
 
     const onSave = (kuldObj) => {
+        let obj = {};
+        Object.assign(obj, penzugyiSzolgObj);
+        obj.leiras = serializeValue('se', penzugyiSzolgObj.leiras);
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(kuldObj, 'kep', false);
+            datas = makeFormData(obj, 'kep', false);
             Services.addPenzugyiSzolgaltatas(datas, (err, res) => {
                 if (!err) {
                     listPenzugyiSzolgaltatasok();
@@ -233,7 +228,7 @@ const PenzugyiSzolgaltatasok = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(kuldObj, 'kep', true);
+            datas = makeFormData(obj, 'kep', true);
             Services.editPenzugyiSzolgaltatas(datas, currentId, (err, res) => {
                 if (!err) {
                     listPenzugyiSzolgaltatasok();
@@ -254,10 +249,14 @@ const PenzugyiSzolgaltatasok = (props) => {
         });
     };
 
+    const renderWysiwyg = () => {
+        return <Wysiwyg onChange={onChangeEditor} value={penzugyiSzolgObj.leiras} />;
+    };
+
     const renderModal = () => {
         return (
-            <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
-                <RVForm onSubmit={() => serializeValue('se', penzugyiSzolgObj, () => {}, 'leiras', onSave)} encType="multipart/form-data" noValidate={true}>
+            <Modal isOpen={modalOpen} toggle={toggleModal} size="xl" backdrop="static">
+                <RVForm onSubmit={onSave} encType="multipart/form-data" noValidate={true}>
                     <ModalHeader>{!currentId ? 'Pénzügyi szolgáltatás hozzáadása' : 'Pénzügyi szolgaltatas módosítása'}</ModalHeader>
                     <ModalBody>
                         <div className="col-md-12">
@@ -271,7 +270,7 @@ const PenzugyiSzolgaltatasok = (props) => {
                         <div className="col-md-12">
                             <div className="col-md-12">
                                 <Label>Leiras:</Label>
-                                <Wysiwyg fontId="penzugyszolg" onChange={onChangeEditor} value={penzugyiSzolgObj.leiras} />
+                                {renderWysiwyg()}
                             </div>
                         </div>
                     </ModalBody>

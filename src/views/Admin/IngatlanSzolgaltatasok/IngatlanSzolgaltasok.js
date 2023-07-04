@@ -249,7 +249,7 @@ const IngatlanSzolgaltatasok = (props) => {
 
     const renderModal = () => {
         return (
-            <Modal isOpen={modalOpen} toggle={toggleModal} size="lg" backdrop="static">
+            <Modal isOpen={modalOpen} toggle={toggleModal} size="xl" backdrop="static">
                 <RVForm onSubmit={onSave} encType="multipart/form-data" noValidate={true}>
                     <ModalHeader>{!currentId ? 'Ingatlan szolgáltatás hozzáadása' : 'Ingatlan szolgaltatas módosítása'}</ModalHeader>
                     <ModalBody>
