@@ -9,6 +9,7 @@ import { hasRole } from '../../../commons/Lib';
 
 const Ingatlanok = (props) => {
     const [viewModal, setViewModal] = useState(false);
+    const [viewKepek, setViewKepek] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [currentId, setCurrentId] = useState(null);
@@ -104,6 +105,10 @@ const Ingatlanok = (props) => {
 
         return () => {};
     }, []);
+
+    const toggleViewKepek = () => {
+        setViewKepek(!viewKepek);
+    };
 
     const toggleViewModal = () => {
         setViewModal(!viewModal);
@@ -365,6 +370,31 @@ const Ingatlanok = (props) => {
         }
     };
 
+    const renderViewKepek = () => {
+        return (
+            <Modal isOpen={viewKepek} toggle={toggleViewKepek} size="xl" backdrop="static">
+                <ModalBody>
+                    <div className="row">
+                        {ingView &&
+                            ingView.kepek &&
+                            ingView.kepek.map((kep, index) => {
+                                return (
+                                    <div className={`col-md-3 mb-2`} key={index.toString()}>
+                                        <img width="100%" height="150px" src={kep.src} alt={kep.alt} />
+                                    </div>
+                                );
+                            })}
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <Button type="button" color="secondary" onClick={toggleViewKepek}>
+                        OK
+                    </Button>
+                </ModalFooter>
+            </Modal>
+        );
+    };
+
     const renderViewModal = () => {
         return (
             <Modal isOpen={viewModal} toggle={toggleViewModal} size="xl" backdrop="static">
@@ -430,6 +460,9 @@ const Ingatlanok = (props) => {
                         <div className="col-md-3">{`VIP: ${ingView.isAktiv === true ? 'Igen' : 'Nem'}`}</div>
                         <div className="col-md-3">{`Újépítésű: ${ingView.isAktiv === true ? 'Igen' : 'Nem'}`}</div>
                     </div>
+                    <Button color="success" onClick={toggleViewKepek}>
+                        Képek megjelenitése
+                    </Button>
                 </ModalBody>
                 <ModalFooter>
                     <Button type="button" onClick={toggleViewModal} color="secondary">
@@ -682,6 +715,7 @@ const Ingatlanok = (props) => {
                 <br />
                 <br />
                 {renderViewModal()}
+                {renderViewKepek()}
                 {renderModal()}
                 {renderDeleteModal()}
                 {ingatlanokJson && ingatlanokJson.length !== 0 && renderTable()}

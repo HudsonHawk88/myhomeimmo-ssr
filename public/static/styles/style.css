@@ -118,9 +118,52 @@ html body::-webkit-scrollbar {
 
 #hitelnet {
   display: block;
+  margin: 0 auto;
   width: 250px;
   content: url("../images/hitelnet_logo.png");
   padding: 10px;
+}
+
+#partnerbankok {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 300px;
+  max-width: 300px;
+  min-height: fit-content;
+  margin: 10px;
+  justify-content: center;
+  gap: 5px;
+  /* padding: 10px; */
+}
+#partnerbankok #otp {
+  width: 25%;
+  height: 80px;
+  content: url("../images/otp.jpg");
+}
+#partnerbankok #unicredit {
+  width: 25%;
+  height: 80px;
+  content: url("../images/unicredit.jpg");
+}
+#partnerbankok #erste {
+  width: 25%;
+  height: 80px;
+  content: url("../images/erste.jpg");
+}
+#partnerbankok #kh {
+  width: 25%;
+  height: 80px;
+  content: url("../images/kh.png");
+}
+#partnerbankok #mbh {
+  width: 25%;
+  height: 80px;
+  content: url("../images/mbh.png");
+}
+#partnerbankok #cib {
+  width: 25%;
+  height: 80px;
+  content: url("../images/cib.png");
 }
 
 .plus_nav {

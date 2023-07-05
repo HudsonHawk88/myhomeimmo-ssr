@@ -15,6 +15,16 @@ const PublicSidebar = (props) => {
                 <div className="banner">
                     <span>
                         <div id="hitelnet" />
+                        <div id="partnerbankok">
+                            <div id="otp" />
+                            <div id="unicredit" />
+                            <div id="erste" />
+                        </div>
+                        <div id="partnerbankok">
+                            <div id="kh" />
+                            <div id="mbh" />
+                            <div id="cib" />
+                        </div>
                     </span>
                 </div>
             </div>
