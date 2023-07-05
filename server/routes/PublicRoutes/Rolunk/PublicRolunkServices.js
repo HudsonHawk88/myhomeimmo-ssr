@@ -6,7 +6,7 @@ const rolunk = pool;
 // ROLUNK START
 
 router.get('/', (req, res) => {
-    const sql = `SELECT * FROM rolunk;`;
+    const sql = `SELECT * FROM rolunk ORDER BY nev ASC;`;
     rolunk.query(sql, (err, result) => {
         if (!err) {
             let ress = result.map((item) => {

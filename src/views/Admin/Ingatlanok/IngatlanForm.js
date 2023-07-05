@@ -58,7 +58,9 @@ const IngatlanForm = (props) => {
         orszag: '',
         irszam: '',
         telepules: defaultTelepulesObj,
-        utca: ''
+        utca: '',
+        hazszam: '',
+        hrsz: ''
     };
 
     const defaultFelado = {
@@ -337,7 +339,9 @@ const IngatlanForm = (props) => {
                 ...helyseg,
                 irszam: '',
                 telepules: defaultTelepulesObj,
-                utca: ''
+                utca: '',
+                hazszam: '',
+                hrsz: ''
             });
             getTelepulesekOpts(telepulesek);
         }
@@ -733,7 +737,7 @@ const IngatlanForm = (props) => {
                             <RVFormFeedback />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <RVFormGroup>
                             <Label>{isRequired('Ország:', true)}</Label>
                             <RVInput required type="select" name="orszag" id="orszag" value={helyseg.orszag.id} onChange={(e) => handleInputChange(e, helyseg, setHelyseg)}>
@@ -746,14 +750,14 @@ const IngatlanForm = (props) => {
                             </RVInput>
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <RVFormGroup>
                             <Label>{isRequired('Irányítószám:', true)}</Label>
                             <RVInput required name="irszam" id="irszam" pattern="[0-9]+" value={helyseg.irszam} onChange={(e) => handleInputChange(e, helyseg, setHelyseg)} />
                             <RVFormFeedback />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <RVFormGroup>
                             <Label>{isRequired('Település:', true)}</Label>
                             <Select
@@ -782,7 +786,7 @@ const IngatlanForm = (props) => {
                             />
                         </RVFormGroup>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <RVFormGroup>
                             <Label>
                                 {isRequired(
@@ -813,6 +817,78 @@ const IngatlanForm = (props) => {
                                     ingatlanObj.tipus === '12'
                                 }
                                 value={helyseg.utca}
+                                onChange={(e) => handleInputChange(e, helyseg, setHelyseg)}
+                            />
+                            <RVFormFeedback />
+                        </RVFormGroup>
+                    </div>
+                    <div className="col-md-4">
+                        <RVFormGroup>
+                            <Label>
+                                {isRequired(
+                                    'Házszám:',
+                                    ingatlanObj.tipus === '1' ||
+                                        ingatlanObj.tipus === '2' ||
+                                        ingatlanObj.tipus === '4' ||
+                                        ingatlanObj.tipus === '5' ||
+                                        ingatlanObj.tipus === '7' ||
+                                        ingatlanObj.tipus === '8' ||
+                                        ingatlanObj.tipus === '9' ||
+                                        ingatlanObj.tipus === '11' ||
+                                        ingatlanObj.tipus === '12'
+                                )}
+                            </Label>
+                            <RVInput
+                                name="hazszam"
+                                id="hazszam"
+                                required={
+                                    ingatlanObj.tipus === '1' ||
+                                    ingatlanObj.tipus === '2' ||
+                                    ingatlanObj.tipus === '4' ||
+                                    ingatlanObj.tipus === '5' ||
+                                    ingatlanObj.tipus === '7' ||
+                                    ingatlanObj.tipus === '8' ||
+                                    ingatlanObj.tipus === '9' ||
+                                    ingatlanObj.tipus === '11' ||
+                                    ingatlanObj.tipus === '12'
+                                }
+                                value={helyseg.hazszam}
+                                onChange={(e) => handleInputChange(e, helyseg, setHelyseg)}
+                            />
+                            <RVFormFeedback />
+                        </RVFormGroup>
+                    </div>
+                    <div className="col-md-4">
+                        <RVFormGroup>
+                            <Label>
+                                {isRequired(
+                                    'HRSZ:',
+                                    ingatlanObj.tipus === '1' ||
+                                        ingatlanObj.tipus === '2' ||
+                                        ingatlanObj.tipus === '4' ||
+                                        ingatlanObj.tipus === '5' ||
+                                        ingatlanObj.tipus === '7' ||
+                                        ingatlanObj.tipus === '8' ||
+                                        ingatlanObj.tipus === '9' ||
+                                        ingatlanObj.tipus === '11' ||
+                                        ingatlanObj.tipus === '12'
+                                )}
+                            </Label>
+                            <RVInput
+                                name="hrsz"
+                                id="hrsz"
+                                required={
+                                    ingatlanObj.tipus === '1' ||
+                                    ingatlanObj.tipus === '2' ||
+                                    ingatlanObj.tipus === '4' ||
+                                    ingatlanObj.tipus === '5' ||
+                                    ingatlanObj.tipus === '7' ||
+                                    ingatlanObj.tipus === '8' ||
+                                    ingatlanObj.tipus === '9' ||
+                                    ingatlanObj.tipus === '11' ||
+                                    ingatlanObj.tipus === '12'
+                                }
+                                value={helyseg.hrsz}
                                 onChange={(e) => handleInputChange(e, helyseg, setHelyseg)}
                             />
                             <RVFormFeedback />
@@ -1156,7 +1232,7 @@ const IngatlanForm = (props) => {
                 <Button type="submit" color="primary" disabled={loading}>
                     Mentés
                 </Button>
-                {!hasRole(user.roles, ['SZUPER_ADMIN']) && (
+                {!hasRole(user.roles, ['SZUPER_ADMIN']) && !currentId && (
                     <React.Fragment>
                         <Button type="button" color="primary" onClick={(e) => onSubmit(e, true)} disabled={loading || ingatlanObj.kepek.length === 0}>
                             Mentés és engedélyeztetés

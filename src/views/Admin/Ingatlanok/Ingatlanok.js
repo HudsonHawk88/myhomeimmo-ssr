@@ -8,10 +8,12 @@ import IngatlanForm from './IngatlanForm';
 import { hasRole } from '../../../commons/Lib';
 
 const Ingatlanok = (props) => {
+    const [viewModal, setViewModal] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [currentId, setCurrentId] = useState(null);
     const [ingatlanokJson, setIngatlanokJson] = useState([]);
+    const [ingView, setIngView] = useState({});
     const [ingatlanOptions, setIngatlanOptions] = useState([]);
     const [altipusOptions, setAltipusOptions] = useState([]);
     const [tipusFilterOptions, setTipusFilterOptions] = useState([]);
@@ -61,7 +63,12 @@ const Ingatlanok = (props) => {
     const listIngatlanok = () => {
         Services.listIngatlanok((err, res) => {
             if (!err) {
-                setIngatlanokJson(res);
+                let sortedArray = [];
+                const sajat = res.filter((i) => i.hirdeto.feladoEmail === user.email);
+                const egyeb = res.filter((i) => i.hirdeto.feladoEmail !== user.email);
+                sortedArray = sortedArray.concat(sajat, egyeb);
+
+                setIngatlanokJson(sortedArray);
             }
         });
     };
@@ -78,6 +85,14 @@ const Ingatlanok = (props) => {
         }
     };
 
+    const getIngatlan = (id) => {
+        Services.getIngatlan(id, (err, res) => {
+            if (!err) {
+                setIngView(res[0]);
+            }
+        });
+    };
+
     const init = () => {
         listIngatlanok();
         getIngatlanOptions();
@@ -89,6 +104,10 @@ const Ingatlanok = (props) => {
 
         return () => {};
     }, []);
+
+    const toggleViewModal = () => {
+        setViewModal(!viewModal);
+    };
 
     const toggleModal = () => {
         setModalOpen(!modalOpen);
@@ -102,7 +121,7 @@ const Ingatlanok = (props) => {
 
     const handleViewClick = (id) => {
         setCurrentId(id);
-        toggleModal();
+        toggleViewModal();
     };
 
     const handleEditClick = (id) => {
@@ -346,6 +365,81 @@ const Ingatlanok = (props) => {
         }
     };
 
+    const renderViewModal = () => {
+        return (
+            <Modal isOpen={viewModal} toggle={toggleViewModal} size="xl" backdrop="static">
+                <ModalHeader>Megtekintés</ModalHeader>
+                <ModalBody>
+                    <div className="row">
+                        <div className="col-md-12">{`Hirdető iroda: ${ingView.office_id === 1 ? 'Zalaegerszeg' : 'Zalaegerszeg'}`}</div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-4">{`Hirdető neve: ${ingView.hirdeto && ingView.hirdeto.feladoNev}`}</div>
+                        <div className="col-md-4">{`Hirdető e-mail: ${ingView.hirdeto && ingView.hirdeto.feladoEmail}`}</div>
+                        <div className="col-md-4">{`Hirdető telefon: ${ingView.hirdeto && ingView.hirdeto.feladoTelefon}`}</div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-12">{`Ingatlan címe: ${ingView.cim}`}</div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-4">{`Ingatlan refid: ${ingView.refid}`}</div>
+                        <div className="col-md-4">{`ID: ${ingView.id}`}</div>
+                        <div className="col-md-4">{`Státusz: ${ingView.statusz}`}</div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-4">{`Típus: ${tipusFormatter(null, ingView)}`}</div>
+                        <div className="col-md-4">{`Altípus: ${ingView.altipus}`}</div>
+                        <div className="col-md-4">{`Rendeltetés: ${ingView.rendeltetes && ingView.rendeltetes !== '' ? ingView.rendeltetes : '-'}`}</div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-3">{`Település: ${ingView.telepules}`}</div>
+                        <div className="col-md-3">{`Ár: ${ingView.ar} ${ingView.penznem}`}</div>
+                        <div className="col-md-3" hidden={!ingView.kaucio || ingView.kaucio === ''}>{`Kaucio: ${ingView.kaucio}`}</div>
+                        <div className="col-md-3" hidden={!ingView.emelet || ingView.emelet === ''}>{`Emelet: ${ingView.emelet}`}</div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-12">{`Leírás:`}</div>
+                        <div className="col-md-12">{`${ingView.leiras}`}</div>
+                    </div>
+                    <div className="row" hidden={!ingView.szobaszam || ingView.szobaszam === ''}>
+                        <div className="col-md-3">{`Szobaszám: ${ingView.szobaszam}`}</div>
+                        <div className="col-md-3">{`Félszobaszám: ${ingView.felszobaszam}`}</div>
+                    </div>
+                    <div className="row" hidden={!ingView.telek || ingView.telek === ''}>
+                        <div className="col-md-3">{`Víz: ${ingView.viz}`}</div>
+                        <div className="col-md-3">{`Gáz: ${ingView.gaz}`}</div>
+                        <div className="col-md-3">{`Villany: ${ingView.villany}`}</div>
+                        <div className="col-md-3">{`Szennyvíz: ${ingView.szennyviz}`}</div>
+                    </div>
+                    <div className="row" hidden={!ingView.telek || ingView.telek === ''}>
+                        <div className="col-md-4">{`Telek mérete: ${ingView.telek} m2`}</div>
+                        <div className="col-md-4">{`Telektípus: ${ingView.telektipus}`}</div>
+                        <div className="col-md-4">{`Beépíthetőség: ${ingView.beepithetoseg}%`}</div>
+                    </div>
+                    <div className="row" hidden={!ingView.futes && ingView.futes === '' && !ingView.epitesmod && ingView.epitesmod === ''}>
+                        <div className="col-md-6" hidden={!ingView.epitesmod && ingView.epitesmod === ''}>{`Építés módja: ${ingView.epitesmod}`}</div>
+                        <div className="col-md-6" hidden={!ingView.futes && ingView.futes === ''}>{`Fűtés módja: ${ingView.futes}`}</div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-3">{`Publikus: ${ingView.isAktiv === true ? 'Igen' : 'Nem'}`}</div>
+                        <div className="col-md-3">{`Erkélyes: ${ingView.isErkely === true ? 'Igen' : 'Nem'}`}</div>
+                        <div className="col-md-3">{`Hirdethető: ${ingView.isHirdetheto === true ? 'Igen' : 'Nem'}`}</div>
+                        <div className="col-md-3">{`Kiemelt: ${ingView.isKiemelt === true ? 'Igen' : 'Nem'}`}</div>
+                        <div className="col-md-3">{`Lift: ${ingView.isAktiv === true ? 'Van' : 'Nincs'}`}</div>
+                        <div className="col-md-3">{`Tetőtéri: ${ingView.isAktiv === true ? 'Igen' : 'Nem'}`}</div>
+                        <div className="col-md-3">{`VIP: ${ingView.isAktiv === true ? 'Igen' : 'Nem'}`}</div>
+                        <div className="col-md-3">{`Újépítésű: ${ingView.isAktiv === true ? 'Igen' : 'Nem'}`}</div>
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <Button type="button" onClick={toggleViewModal} color="secondary">
+                        OK
+                    </Button>
+                </ModalFooter>
+            </Modal>
+        );
+    };
+
     const sendMail = (ingatlanId, isAktiv, publikusChange, isNew) => {
         if (!hasRole(user.roles, ['SZUPER_ADMIN'])) {
             Services.jovahagyasraKuldes(ingatlanId, isAktiv, publikusChange, isNew, (err, res) => {
@@ -364,8 +458,31 @@ const Ingatlanok = (props) => {
     const tableIconFormatter = (cell, row) => {
         return (
             <React.Fragment>
+                {(hasRole(user.roles, ['SZUPER_ADMIN']) || (hasRole(user.roles, ['INGATLAN_ADMIN']) && user.email === row.hirdeto.feladoEmail)) && (
+                    <React.Fragment>
+                        <Button
+                            type="button"
+                            key={row.id + 1}
+                            color="link"
+                            onClick={() => {
+                                handleViewClick(row.id);
+                                getIngatlan(row.id);
+                            }}
+                        >
+                            <i className="fas fa-eye" />
+                        </Button>
+                        <Button type="button" key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
+                            <i className="fas fa-pencil" />
+                        </Button>
+                    </React.Fragment>
+                )}
+                {!hasRole(user.roles, ['SZUPER_ADMIN']) && user.email === row.hirdeto.feladoEmail && (
+                    <Button type="button" color="link" key={row.id + 3} onClick={() => sendMail(row.id, row.isAktiv, true, false)}>
+                        <i className="fas fa-user-check" />
+                    </Button>
+                )}
                 <Button
-                    key={row.id + 1}
+                    key={row.id + 4}
                     type="button"
                     color="link"
                     onClick={() => {
@@ -374,26 +491,14 @@ const Ingatlanok = (props) => {
                 >
                     <i className="fa fa-facebook-square" />
                 </Button>
-                {((hasRole(user.roles, ['INGATLAN_ADMIN']) && user.roles.find((role) => role.value === 'INGATLAN_OSSZ_LEK') === undefined) ||
-                    user.email === row.hirdeto.feladoEmail ||
-                    hasRole(user.roles, ['SZUPER_ADMIN'])) && (
-                    <React.Fragment>
-                        <Button type="button" key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
-                            <i className="fas fa-pencil-alt" />
-                        </Button>
-                        <Button type="button" key={row.id + 3} color="link" onClick={() => handleDeleteClick(row.id)}>
-                            <i className="fas fa-trash" />
-                        </Button>
-                    </React.Fragment>
-                )}
-                {hasRole(user.roles, ['INGATLAN_ADMIN']) && (
-                    <Button type="button" key={row.id + 2} color="link" onClick={() => printAjanloPDF(row.id)}>
+                {(hasRole(user.roles, ['INGATLAN_ADMIN']) || user.roles.find((role) => role.value === 'INGATLAN_OSSZ_LEK') === undefined) && (
+                    <Button type="button" key={row.id + 5} color="link" onClick={() => printAjanloPDF(row.id)}>
                         <i className="fas fa-file-pdf" />
                     </Button>
                 )}
-                {!hasRole(user.roles, ['SZUPER_ADMIN']) && user.email === row.hirdeto.feladoEmail && (
-                    <Button type="button" color="link" onClick={() => sendMail(row.id, row.isAktiv, true, false)}>
-                        <i class="fas fa-user-check" />
+                {(hasRole(user.roles, ['SZUPER_ADMIN']) || (hasRole(user.roles, ['INGATLAN_ADMIN']) && user.email === row.hirdeto.feladoEmail)) && (
+                    <Button type="button" key={row.id + 6} color="link" onClick={() => handleDeleteClick(row.id)}>
+                        <i className="fas fa-trash" />
                     </Button>
                 )}
             </React.Fragment>
@@ -576,6 +681,7 @@ const Ingatlanok = (props) => {
                 </Button>
                 <br />
                 <br />
+                {renderViewModal()}
                 {renderModal()}
                 {renderDeleteModal()}
                 {ingatlanokJson && ingatlanokJson.length !== 0 && renderTable()}

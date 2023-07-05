@@ -30,7 +30,11 @@ const Rolunk = (props) => {
     const listRolunk = () => {
         Services.listRolunk((err, res) => {
             if (!err) {
-                setRolunkJson(res);
+                let newArr = [];
+                const fonok = res.filter((r) => r.nev === 'Berki Mónika');
+                const tobbiek = res.filter((r) => r.nev !== 'Berki Mónika');
+                newArr = newArr.concat(fonok, tobbiek);
+                setRolunkJson(newArr);
             }
         });
     };
