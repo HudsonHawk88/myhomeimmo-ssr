@@ -22,7 +22,11 @@ const Rolunk = (props) => {
     const getRolunk = () => {
         Services.listRolunk((err, res) => {
             if (!err) {
-                setRolunk(res);
+                let newArr = [];
+                const fonok = res.filter((r) => r.nev === 'Berki Mónika');
+                const tobbiek = res.filter((r) => r.nev !== 'Berki Mónika');
+                newArr = newArr.concat(fonok, tobbiek);
+                setRolunk(newArr);
                 getDefaultIsHidden(res);
             }
         });
