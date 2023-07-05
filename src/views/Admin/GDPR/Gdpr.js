@@ -39,7 +39,7 @@ const Gdpr = (props) => {
             if (!err && Editor && Editor.current) {
                 const leiras = serializeValue('de', res.leiras);
                 setEditorValue(leiras, Editor);
-                setGdprObj({ ...myArtAltalanosObj, azonosito: res.azonosito, tipus: res.tipus, leiras: leiras });
+                setGdprObj({ ...gdprObj, azonosito: res.azonosito, tipus: res.tipus, leiras: leiras });
             }
         });
     };
