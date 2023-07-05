@@ -253,11 +253,13 @@ const Ingatlanok = (props) => {
                                 <View>
                                     <Text style={styles.heading}>{ingatlan.cim}</Text>
                                 </View>
-                                <View wrap style={styles.kepekView}>
-                                    <Image style={styles.kepekBal} src={ingatlan && ingatlan.kepek && ingatlan.kepek[0].src} />
-                                    <Image style={styles.kepek} src={ingatlan && ingatlan.kepek && ingatlan.kepek[1].src} />
-                                    <Image style={styles.kepekJobb} src={ingatlan && ingatlan.kepek && ingatlan.kepek[2].src} />
-                                </View>
+                                {ingatlan.kepek && ingatlan.kepek[0] && (
+                                    <View wrap style={styles.kepekView}>
+                                        <Image style={styles.kepekBal} src={ingatlan && ingatlan.kepek && ingatlan.kepek[0].src} />
+                                        {ingatlan.kepek[1] && <Image style={styles.kepek} src={ingatlan && ingatlan.kepek && ingatlan.kepek[1].src} />}
+                                        {ingatlan.kepek[2] && <Image style={styles.kepekJobb} src={ingatlan && ingatlan.kepek && ingatlan.kepek[2].src} />}
+                                    </View>
+                                )}
                                 <View>
                                     <Text style={styles.heading}>Leírás:</Text>
                                     <Text style={styles.normalText}>{ingatlan.leiras}</Text>
