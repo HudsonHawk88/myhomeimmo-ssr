@@ -17,7 +17,7 @@ const Ertekesito = (props) => {
     const getErtekesito = (id) => {
         Services.getErtekesito(id, (err, res) => {
             if (!err) {
-                setErtekesito(res[0]);
+                setErtekesito(res);
             }
         });
     };

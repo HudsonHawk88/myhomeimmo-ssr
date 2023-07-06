@@ -11,7 +11,8 @@ router.get('/', (req, res) => {
         const sql = `SELECT * FROM rolunk WHERE id='${id}';`;
         rolunk.query(sql, (err, result) => {
             if (!err) {
-                let ress = getJSONfromLongtext(result, 'toBool');
+                console.log(result);
+                let ress = getJSONfromLongtext(result[0], 'toBool');
                 res.status(200).send(ress);
             } else {
                 res.status(500).send({ err: err });

@@ -5,7 +5,7 @@ import SortableItem from './SortableItem.js';
 
 const KepCard = ({ list, property, setList, services, ...rest }) => {
     const { addNotification } = rest;
-    const lll = list.kepek || [];
+    const lll = list[property] || [];
 
     lll.forEach((l, index) => {
         const newObj = l;

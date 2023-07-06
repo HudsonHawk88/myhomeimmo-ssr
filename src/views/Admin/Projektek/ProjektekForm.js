@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { RVFormGroup, RVInput, RVInputGroup, RVFormFeedback, RVInputGroupText } from '@inftechsol/reactstrap-form-validation';
 import { useDropzone } from 'react-dropzone';
@@ -6,6 +6,7 @@ import Select from 'react-select/creatable';
 import PropTypes from 'prop-types';
 
 import Stepper from '../../../commons/Stepper';
+import KepCard from '../../../commons/KepCard';
 import Services from './Services';
 
 const ProjektekForm = (props) => {
@@ -53,6 +54,80 @@ const ProjektekForm = (props) => {
 
     const toggleKepekModal = () => {
         setKepekModal(!kepekModal);
+    };
+
+    const MyDropzoneBorito = () => {
+        const onDrop = useCallback((acceptedFiles) => {
+            const kepek = acceptedFiles.map((file, index) => {
+                // Do whatever you want with the file contents
+                let obj = {
+                    id: index,
+                    filename: file.name,
+                    title: file.name,
+                    isCover: false,
+                    preview: URL.createObjectURL(file),
+                    src: URL.createObjectURL(file),
+                    file: file
+                };
+
+                return obj;
+            });
+
+            setObject({
+                ...object,
+                borito: [...object.borito, ...kepek]
+            });
+            console.log(kepek);
+        }, []);
+
+        const { getRootProps, getInputProps } = useDropzone({ accept: 'image/*', onDrop });
+
+        return (
+            <React.Fragment>
+                <div {...getRootProps({ className: 'dropzone' })} hidden={object.borito.length === 1}>
+                    <input {...getInputProps()} />
+                    <p>Kattintson vagy húzza id a feltöltendő képeket...</p>
+                </div>
+                <KepCard services={Services} list={object} property="borito" setList={setObject} {...props} />
+            </React.Fragment>
+        );
+    };
+
+    const MyDropzoneProjekt = () => {
+        const onDrop = useCallback((acceptedFiles) => {
+            const kepek = acceptedFiles.map((file, index) => {
+                // Do whatever you want with the file contents
+                let obj = {
+                    id: index,
+                    filename: file.name,
+                    title: file.name,
+                    isCover: false,
+                    preview: URL.createObjectURL(file),
+                    src: URL.createObjectURL(file),
+                    file: file
+                };
+
+                return obj;
+            });
+
+            setObject({
+                ...object,
+                projektlakaskepek: [...object.projektlakaskepek, ...kepek]
+            });
+            console.log(kepek);
+        }, []);
+
+        const { getRootProps, getInputProps } = useDropzone({ accept: 'image/*', onDrop });
+
+        return (
+            <React.Fragment>
+                <div {...getRootProps({ className: 'dropzone' })}>
+                    <input {...getInputProps()} />
+                    <p>Kattintson vagy húzza id a feltöltendő képeket...</p>
+                </div>
+                <KepCard services={Services} list={object} property="projektlakaskepek" setList={setObject} {...props} />
+            </React.Fragment>
+        );
     };
 
     useEffect(() => {
@@ -255,12 +330,12 @@ const ProjektekForm = (props) => {
                 content: 3,
                 leiras: 'Projekt adatok 2'
             },
-            {
+            /*   {
                 content: 4,
                 leiras: 'Projekt adatok 3'
-            },
+            }, */
             {
-                content: 5,
+                content: 4,
                 leiras: 'Projekt képek'
             }
         ];
@@ -635,6 +710,32 @@ const ProjektekForm = (props) => {
                                 </RVInput>
                                 <RVFormFeedback />
                             </RVFormGroup>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div hidden={step !== 4}>
+                        <div className="row">
+                            <div className="col-md-12">
+                                <h5>Projekt borító</h5>
+                            </div>
+                            <hr />
+                            <div className="col-md-12">
+                                <RVFormGroup>
+                                    <MyDropzoneBorito />
+                                </RVFormGroup>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-12">
+                                <h5>Projekt képek</h5>
+                            </div>
+                            <hr />
+                            <div className="col-md-12">
+                                <RVFormGroup>
+                                    <MyDropzoneProjekt multiple />
+                                </RVFormGroup>
+                            </div>
                         </div>
                     </div>
                 </div>
