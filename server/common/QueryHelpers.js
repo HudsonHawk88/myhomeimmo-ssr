@@ -292,9 +292,9 @@ const getNameByFieldName = (fieldName) => {
             return 'Félszobák száma';
         case 'epitesmod':
             return 'Ingatlan építési módja';
-        case 'villanygogyaszt':
+        case 'villanyfogy':
             return 'Ingatlan átlagos éves villanyfogyasztása';
-        case 'gazfogyaszt':
+        case 'gazfogy':
             return 'Ingatlan átlagos éves gázfogyasztása';
         case 'etanusitvany':
             return 'Ingatlan energiatanusítványa';
@@ -334,6 +334,10 @@ const getNameByFieldName = (fieldName) => {
             return 'Ingatlan hirdetője';
         case 'rogzitIdo':
             return 'Rögzítés ideje';
+        case 'modIdo':
+            return 'Módosítás ideje';
+        case 'modUser':
+            return 'Módosító felhasználó';
     }
 };
 
@@ -484,7 +488,7 @@ const getIngatlanokByKm = async (telepules, km) => {
 };
 
 const createIngatlanokSql = `
-    CREATE TABLE IF NOT EXISTS eobgycvo_myhome.ingatlanok (
+    CREATE TABLE IF NOT EXISTS myhome.ingatlanok (
         id INT NOT NULL PRIMARY KEY,
         refid text DEFAULT NULL,
         office_id text DEFAULT NULL,
@@ -515,13 +519,19 @@ const createIngatlanokSql = `
         felszobaszam text DEFAULT NULL,
         epitesmod text DEFAULT NULL,
         futes text DEFAULT NULL,
+        villanyfogy text DEFAULT NULL,
+        gazfogy text DEFULT NULL,
+        etanusitvany TEXT DEFAULT NULL,
         isHirdetheto BOOLEAN,
         isKiemelt BOOLEAN,
         isErkely BOOLEAN,
         isLift BOOLEAN,
         isAktiv BOOLEAN,
         isUjEpitesu BOOLEAN,
+        isVip BOOLEAN,
         rogzitIdo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        modIdo DATE DEFAULT NULL,
+        modUser TEXT DEFAULT NULL,
         hirdeto json DEFAULT NULL
     ) ENGINE=InnoDB;
 `;

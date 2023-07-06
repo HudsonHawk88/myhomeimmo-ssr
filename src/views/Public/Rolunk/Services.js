@@ -22,5 +22,24 @@ export default class Services {
 
         return result;
     };
+
+    static getErtekesito = (id, fnDone) => {
+        let result = Microservices.fetchApi(
+            rolunkUrl,
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                    id: id
+                }
+            },
+            fnDone
+        );
+
+        return result;
+    };
     // ROLUNK END
 }

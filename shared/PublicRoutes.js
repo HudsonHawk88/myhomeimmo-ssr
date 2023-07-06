@@ -11,6 +11,7 @@ import Rolunk from '../src/views/Public/Rolunk/Rolunk';
 import Kapcsolat from '../src/views/Public/Kapcsolat/Kapcsolat';
 import MyJob from '../src/views/Public/MyJob/MyJob';
 import MyArt from '../src/views/Public/MyArt/MyArt';
+import Ertekesito from '../src/views/Public/Rolunk/Ertekesito';
 
 const getReqUrl = (path) => {
     let origin = '';
@@ -19,7 +20,7 @@ const getReqUrl = (path) => {
         origin = window.location.host;
         url = `http://${origin}${path}`;
     } else {
-        url = `http://${process.env.HOST ? process.env.HOST : '127.0.0.1'}:${process.env.PORT ? process.env.PORT : '3000'}${path}`;
+        url = `http://${process.env.HOST ? process.env.HOST : '127.0.0.1'}:${process.env.PORT ? process.env.PORT : '8080'}${path}`;
     }
 
     return url;
@@ -34,6 +35,7 @@ const PublicRoutes = [
     { path: '/penzugyiszolgaltatasok', element: PenzugyiSzolgaltatasok },
     { path: '/adatkezeles', element: Adatkezeles },
     { path: '/rolunk', element: Rolunk },
+    { path: '/rolunk/ertekesito', element: Ertekesito },
     { path: '/kapcsolat', element: Kapcsolat },
     { path: '/myjob', element: MyJob },
     { path: '/myart', element: MyArt }

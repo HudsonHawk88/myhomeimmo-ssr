@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import sharp from 'sharp';
 import nodemailer from 'nodemailer';
+import moment from 'moment';
 import { pool, mailUrl, UseQuery, hasRole, getJSONfromLongtext, getId, log } from '../common/QueryHelpers.js';
 
 const transporter = nodemailer.createTransport(mailUrl);
@@ -17,7 +18,7 @@ const addIngatlan = async (req, res) => {
     /* felvitelObj.hirdeto = JSON.parse(felvitelObj.hirdeto); */
     felvitelObj.telepules = felvitelObj.helyseg.telepules.telepulesnev;
     let id = await getId(req.headers.id, 'ingatlanok');
-    const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, hirdeto) VALUES ('${id}', '${
+    const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, etanusitvany, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, hirdeto, modIdo, modUser) VALUES ('${id}', '${
         felvitelObj.office_id
     }', '${felvitelObj.cim}', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
         felvitelObj.kaucio
@@ -25,9 +26,11 @@ const addIngatlan = async (req, res) => {
         felvitelObj.alapterulet
     }', '${felvitelObj.telek}', '${felvitelObj.telektipus}', '${felvitelObj.beepithetoseg}', '${felvitelObj.viz}', '${felvitelObj.gaz}', '${felvitelObj.villany}', '${felvitelObj.szennyviz}', '${
         felvitelObj.szobaszam
-    }', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.isHirdetheto}', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${
-        felvitelObj.isLift
-    }', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.isTetoter}', '${JSON.stringify(felvitelObj.hirdeto)}');`;
+    }', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.villanyfogy}', '${felvitelObj.gazfogy}', '${felvitelObj.etanusitvany}', '${
+        felvitelObj.isHirdetheto
+    }', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${felvitelObj.isLift}', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.isTetoter}', '${
+        felvitelObj.isVip
+    }',  '${JSON.stringify(felvitelObj.hirdeto)}'}');`;
 
     pool.query(sql, async (error) => {
         if (!error) {
@@ -99,7 +102,7 @@ const addIngatlan = async (req, res) => {
     });
 };
 
-const editIngatlan = async (req, res, user) => {
+const editIngatlan = async (req, res, user, nev) => {
     const id = req.headers.id;
     if (id) {
         const modositoObj = getJSONfromLongtext(req.body, 'toNumber');
@@ -169,6 +172,9 @@ const editIngatlan = async (req, res, user) => {
                 kep.isCover = index.toString() === '0' ? true : false;
             });
 
+            const modIdo = moment().locale('hu').format('YYYY-MM-DD HH:mm:ss.000');
+            console.log(modIdo);
+
             const sql = `UPDATE ingatlanok SET office_id='${modositoObj.office_id}', cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(
                 modositoObj.helyseg
             )}', kepek='${JSON.stringify(kepek)}', irsz='${modositoObj.helyseg.irszam}', telepules='${modositoObj.helyseg.telepules.telepulesnev}', ar='${modositoObj.ar}', kaucio='${
@@ -179,11 +185,13 @@ const editIngatlan = async (req, res, user) => {
                 modositoObj.telektipus
             }', beepithetoseg='${modositoObj.beepithetoseg}', viz='${modositoObj.viz}', gaz='${modositoObj.gaz}', villany='${modositoObj.villany}', szennyviz='${modositoObj.szennyviz}', szobaszam='${
                 modositoObj.szobaszam
-            }', felszobaszam='${modositoObj.felszobaszam}', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${
-                modositoObj.isKiemelt
-            }', isErkely='${modositoObj.isErkely}', isLift='${modositoObj.isLift}', isAktiv='${kepek.length > 0 ? modositoObj.isAktiv : 0}', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${
-                modositoObj.isTetoter
-            }' , hirdeto='${JSON.stringify(modositoObj.hirdeto)}' WHERE id='${id}';`;
+            }', felszobaszam='${modositoObj.felszobaszam}', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', villanyfogy='${modositoObj.villanyfogy}', gazfogy='${
+                modositoObj.gazfogy
+            }', etanusitvany='${modositoObj.etanusitvany}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${modositoObj.isKiemelt}', isErkely='${modositoObj.isErkely}', isLift='${
+                modositoObj.isLift
+            }', isAktiv='${kepek.length > 0 ? modositoObj.isAktiv : 0}', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${modositoObj.isTetoter}', isVip='${
+                modositoObj.isVip
+            }', hirdeto='${JSON.stringify(modositoObj.hirdeto)}', modUser='${nev}' WHERE id='${id}';`;
             pool.query(sql, (err) => {
                 if (!err) {
                     let nev = JSON.parse(user.nev);
@@ -207,7 +215,7 @@ const editIngatlan = async (req, res, user) => {
                                 res.status(200).send({ msg: 'Ingatlan sikeresen módosítva és e-mail sikeresen elküldve a hirdetőnek!' });
                             } else {
                                 log('PUT /api/admin/ingatlanok', mailerr);
-                                res.status(409).send({ err: err, msg: 'Hiba történt a levélküldéskor!' });
+                                res.status(409).send({ err: mailerr, msg: 'Hiba történt a levélküldéskor!' });
                             }
                         });
                     } else {

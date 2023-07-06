@@ -21,6 +21,7 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 
 import { addIngatlan, editIngatlan } from '../../../schemas/IngatlanSchema.js';
+import moment from 'moment';
 
 const router = express.Router();
 const ingatlanok = pool;
@@ -73,6 +74,8 @@ router.get('/', async (req, res) => {
                                 if ((ingg.hirdeto.feladoEmail === user.email && ingg.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                                     resArr.push(ingg);
                                 }
+                                console.log('MODIDO: ', ingg.modIdo);
+                                ing.modIdo = moment(ing.modIdo).locale('hu');
                             });
                             if (resArr) {
                                 res.status(200).send(resArr);
@@ -84,7 +87,7 @@ router.get('/', async (req, res) => {
                         }
                     });
                 } else {
-                    const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, rogzitIdo, hirdeto
+                    const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, etanusitvany, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, rogzitIdo, modIdo, modUser, hirdeto
                 FROM ingatlanok ORDER BY rogzitIdo DESC`;
                     ingatlanok.query(sql, (err, result) => {
                         if (!err) {
@@ -185,11 +188,13 @@ router.put('/', upload.array('uj_kepek'), async (req, res) => {
     const token = req.cookies.JWT_TOKEN;
     if (token) {
         const user = await validateToken(token, jwtparams.secret);
+        let nev = JSON.parse(user.nev);
+        const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
         if (user === null) {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
-                return editIngatlan(req, res, user);
+                return editIngatlan(req, res, user, teljesNev);
             } else {
                 res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
             }
@@ -365,51 +370,6 @@ const altipusFormatter = (altipusOptions, tipus, subtype) => {
     return altipus;
 };
 
-const renderParameterek = (ingatlan, tipusOpts, altipusOpts) => {
-    const newP = `
-    <table class="partabla">
-        <tr>
-            <td ${getNemUresFields(ingatlan.statusz) ? 'hidden' : ''}><strong>Státusza: </strong></td>
-            <td ${getNemUresFields(ingatlan.statusz) ? 'hidden' : ''}>${ingatlan.statusz}</td>
-            <td ${getNemUresFields(ingatlan.epitesmod) ? 'hidden' : ''}><strong>Építés módja: </strong></td>
-            <td ${getNemUresFields(ingatlan.epitesmod) ? 'hidden' : ''}>${ingatlan.epitesmod}</td>
-            <td ${getNemUresFields(ingatlan.tipus) ? 'hidden' : ''}><strong>Ingatlan típusa: </strong></td>
-            <td ${getNemUresFields(ingatlan.tipus) ? 'hidden' : ''}>${tipusFormatter(typeof tipusOpts.options === 'string' ? JSON.parse(tipusOpts.options) : tipusOpts.options, ingatlan.tipus)}</td>
-        </tr>
-        <tr>
-            <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}><strong>Altípusa: </strong></td>
-            <td ${getNemUresFields(ingatlan.altipus) ? 'hidden' : ''}>${altipusFormatter(
-        typeof altipusOpts.options === 'string' ? JSON.parse(altipusOpts.options) : altipusOpts.options,
-        ingatlan.tipus,
-        ingatlan.altipus
-    )}</td>
-            <td ${getNemUresFields(ingatlan.telepules) ? 'hidden' : ''}><strong>Település: </strong></td>
-            <td ${getNemUresFields(ingatlan.telepules) ? 'hidden' : ''}>${ingatlan.telepules}</td>
-            <td ${getNemUresFields(ingatlan.rendeltetes) ? 'hidden' : ''}><strong>Rendeltetés: </strong></td>
-            <td ${getNemUresFields(ingatlan.rendeltetes) ? 'hidden' : ''}>${ingatlan.rendeltetes}</td>
-        </tr>
-        <tr>
-            <td ${!ingatlan.isTetoter ? 'hidden' : ''}><strong>Tetőtéri: </strong></td>
-            <td ${!ingatlan.isTetoter ? 'hidden' : ''}>${ingatlan.isTetoter ? 'Igen' : 'Nem'}</td>
-            <td ${getNemUresFields(ingatlan.futes) ? 'hidden' : ''}><strong>Fűtés típusa: </strong></td>
-            <td ${getNemUresFields(ingatlan.futes) ? 'hidden' : ''}>${ingatlan.futes}</td>
-            <td ${getNemUresFields(ingatlan.alapterulet) ? 'hidden' : ''}><strong>Alapterület: </strong></td>
-            <td ${getNemUresFields(ingatlan.alapterulet) ? 'hidden' : ''}>${ingatlan.alapterulet} m<sup>2</sup></td>
-        </tr>
-        <tr>
-            <td ${isTelekAdatokHidden(ingatlan) ? 'hidden' : ''}><strong>Telek mérete: </strong></td>
-            <td ${isTelekAdatokHidden(ingatlan) ? 'hidden' : ''}>${ingatlan.telek ? ingatlan.telek : '0'} m<sup>2</sup></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
-    `;
-
-    return newP;
-};
-
 // INGATLAN PDF AJANLO GENEÁLÁS
 
 router.post('/infoPDF', async (req, res) => {
@@ -438,21 +398,6 @@ router.post('/infoPDF', async (req, res) => {
             /*   const elsokepek = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.filter((kep, index) => index < 4); */
             /*   const alaprajz = ingatlan && ingatlan[0].kepek && ingatlan[0].kepek.map((kep) => kep.filename.includes('alaprajz')); */
             const sendObj = Object.assign({}, ingatlan, { cegadatok }, { loggedUser });
-
-            /*  let html = readFileSync(filePath, { encoding: 'utf-8' }); */
-            /*   html = html
-                .replace('${teljesNev}', teljesNev)
-                .replace('${telszam}', telszam)
-                .replace('${cegadatok.nev}', cegadatok.nev)
-                .replace('${cegadatok.cim}', cegadatok.cim)
-                .replace('${cegadatok.telefon}', cegadatok.telefon)
-                .replace('${email}', email)
-                .replace('${ingatlan.cim}', ingatlan.cim)
-                .replace('${ingatlan.ar} ${ingatlan.penznem}', `${ingatlan.ar} ${ingatlan.penznem}`)
-                .replace('${ingatlan.refid}', ingatlan.refid)
-                .replace('${renderKepek(ingatlan.kepek)}', renderKepek(ingatlan.kepek))
-                .replace('${ingatlan.leiras}', ingatlan.leiras)
-                .replace('${renderParameterek(ingatlan, tipusOpts, altipusOpts)}', renderParameterek(ingatlan, tipusOpts, altipusOpts)); */
 
             if (ingatlan && cegadatok && loggedUser) {
                 res.status(200).send(sendObj);

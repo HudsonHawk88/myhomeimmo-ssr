@@ -1848,6 +1848,33 @@ html body::-webkit-scrollbar {
   }
 }
 
+.ertkartya .ertkartya_nevjegy {
+  display: flex;
+}
+.ertkartya .ertkartya_nevjegy .ertakartya_alapadatok {
+  /*    display: flex; */
+  width: 100%;
+  position: relative;
+  left: 20px;
+  top: 10px;
+  font-size: 1.1rem;
+  gap: 5px;
+}
+.ertkartya .ertkartya_back {
+  content: url("../images/rolunkback.jpg");
+  width: 100%;
+  height: 250px;
+  border: 1px solid #dddddd;
+}
+.ertkartya .ertkartya_kep {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  position: relative;
+  top: -40px;
+  left: 10px;
+}
+
 .public_kapcsolat {
   height: 100%;
   /* margin: 20px 5%; */
