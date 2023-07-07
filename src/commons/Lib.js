@@ -21,23 +21,29 @@ function isObject(input) {
 function makeFormData(dataObj, kepKey, isMod) {
     let data = new FormData();
     for (var key in dataObj) {
-        if (key === kepKey) {
-            if (isMod) {
-                dataObj[kepKey].forEach((kep) => {
-                    if (kep.file) {
-                        data.append(`uj_${kepKey}`, kep.file);
-                    } else {
-                        data.append(kepKey, JSON.stringify(kep));
-                    }
-                });
-            } else {
-                dataObj[kepKey].forEach((kep) => {
-                    if (kep.file) {
-                        data.append(kepKey, kep.file);
-                    }
-                });
+        kepKey.forEach((k) => {
+            console.log(dataObj.hasOwnProperty(k) === false);
+            if (key === k) {
+                if (isMod) {
+                    dataObj[k].forEach((kep) => {
+                        if (kep.file) {
+                            data.append(`uj_${k}`, kep.file);
+                        }
+                        /*  else {
+                            data.append(k, JSON.stringify(kep));
+                        } */
+                    });
+                } else {
+                    dataObj[k].forEach((kep) => {
+                        if (kep.file) {
+                            data.append(k, kep.file);
+                        }
+                    });
+                }
             }
-        } else if (isObject(dataObj[key])) {
+        });
+
+        if (isObject(dataObj[key])) {
             data.append(key, JSON.stringify(dataObj[key]));
         } else {
             data.append(key, dataObj[key]);

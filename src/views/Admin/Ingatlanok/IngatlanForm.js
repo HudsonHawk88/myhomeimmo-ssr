@@ -507,7 +507,7 @@ const IngatlanForm = (props) => {
         let datas = {};
 
         if (!currentId) {
-            datas = makeFormData(kuldObj, 'kepek', false);
+            datas = makeFormData(kuldObj, ['kepek'], false);
             Services.addIngatlan(datas, (err, res) => {
                 if (!err) {
                     setLoading(false);
@@ -520,7 +520,7 @@ const IngatlanForm = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(kuldObj, 'kepek', true);
+            datas = makeFormData(kuldObj, ['kepek'], true);
             Services.editIngatlan(datas, currentId, (err, res) => {
                 if (!err) {
                     toggleModal();

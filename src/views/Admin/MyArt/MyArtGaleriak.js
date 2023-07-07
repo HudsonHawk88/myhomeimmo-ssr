@@ -200,7 +200,7 @@ const MyArtGaleriak = (props) => {
         obj.leiras = serializeValue('se', myArtGaleriakObj.leiras);
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(obj, 'kepek', false);
+            datas = makeFormData(obj, ['kepek'], false);
             Services.addGaleria(datas, (err, res) => {
                 if (!err) {
                     listGaleriak();
@@ -209,7 +209,7 @@ const MyArtGaleriak = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(obj, 'kepek', true);
+            datas = makeFormData(obj, ['kepek'], true);
             Services.editGaleria(datas, currentId, (err, res) => {
                 if (!err) {
                     listGaleriak();

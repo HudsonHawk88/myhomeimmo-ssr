@@ -219,7 +219,7 @@ const PenzugyiSzolgaltatasok = (props) => {
         obj.leiras = serializeValue('se', penzugyiSzolgObj.leiras);
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(obj, 'kep', false);
+            datas = makeFormData(obj, ['kep'], false);
             Services.addPenzugyiSzolgaltatas(datas, (err, res) => {
                 if (!err) {
                     listPenzugyiSzolgaltatasok();
@@ -228,7 +228,7 @@ const PenzugyiSzolgaltatasok = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(obj, 'kep', true);
+            datas = makeFormData(obj, ['kep'], true);
             Services.editPenzugyiSzolgaltatas(datas, currentId, (err, res) => {
                 if (!err) {
                     listPenzugyiSzolgaltatasok();

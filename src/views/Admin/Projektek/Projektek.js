@@ -7,10 +7,10 @@ import PropTypes from 'prop-types';
 import ProjektForm from './ProjektekForm';
 import Services from './Services';
 import { handleInputChange } from '../../../commons/InputHandlers';
-import { hasRole } from '../../../commons/Lib';
+import { hasRole, makeFormData } from '../../../commons/Lib';
 
 const Projektek = (props) => {
-    const { addNotification } = props;
+    const { addNotification, user } = props;
 
     const defaultTelepulesObj = {
         telepulesnev: '',
@@ -264,11 +264,12 @@ const Projektek = (props) => {
     const getProjekt = (id) => {
         Services.getProjekt(id, (err, res) => {
             if (!err) {
-                res[0].tipus = res[0].tipus + '';
-                setProjektObj(res[0]);
-                setHirdeto(res[0].hirdeto);
-                setHelyseg(res[0].helyseg);
-                setBeruhazoHelyseg(res[0].beruhazo.helyseg);
+                setProjektObj(res);
+                setHelyseg(res.cim);
+                setBeruhazoHelyseg(res.beruhazo.cim);
+                setEpuletSzintekOpts(res.epuletszintek);
+                setEpuletszintek(res.epuletszintek);
+                setBeruhazo(res.beruhazo);
             }
         });
     };
@@ -301,19 +302,16 @@ const Projektek = (props) => {
     };
 
     const handleViewClick = (id) => {
-        console.log(id);
         setCurrentId(id);
         toggleViewModal();
     };
 
     const handleEditClick = (id) => {
-        console.log(id);
         setCurrentId(id);
         toggleProjektModal();
     };
 
     const handleDeleteClick = (id) => {
-        console.log(id);
         setCurrentId(id);
         toggleDeleteModal();
     };
@@ -322,16 +320,16 @@ const Projektek = (props) => {
         return (
             <React.Fragment>
                 {hasRole(user.roles, ['PROJEKT_LEK', 'SZUPER_ADMIN']) && (
-                    <Button type="button" color="link" onClick={() => handleViewClick(cell)}>
-                        <i class="fas fa-user-check" />
+                    <Button type="button" color="link" onClick={() => handleViewClick(row.id)}>
+                        <i class="fas fa-eye" />
                     </Button>
                 )}
                 {hasRole(user.roles, ['SZUPER_ADMIN', 'PROJEKT_ADMIN']) && (
                     <React.Fragment>
-                        <Button type="button" key={row.id + 2} color="link" onClick={() => handleEditClick(cell)}>
+                        <Button type="button" key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
                             <i className="fas fa-pencil-alt" />
                         </Button>
-                        <Button type="button" key={row.id + 3} color="link" onClick={() => handleDeleteClick(cell)}>
+                        <Button type="button" key={row.id + 3} color="link" onClick={() => handleDeleteClick(row.id)}>
                             <i className="fas fa-trash" />
                         </Button>
                     </React.Fragment>
@@ -349,22 +347,22 @@ const Projektek = (props) => {
                 filterType: 'textFilter',
                 filterDefaultValue: 'Keresés...'
             },
-            {
+            /* {
                 dataField: 'cim',
                 text: 'Cím',
                 filter: true,
                 filterType: 'textFilter',
                 filterDefaultValue: 'Keresés...'
-            },
+            }, */
             {
-                dataField: 'atadev',
+                dataField: 'atadasev',
                 text: 'Átadás éve',
                 filter: true,
                 filterType: 'textFilter',
                 filterDefaultValue: 'Keresés...'
             },
             {
-                dataField: 'osszlakszam',
+                dataField: 'osszlakasszam',
                 text: 'Lakásszám'
             },
             {
@@ -428,7 +426,28 @@ const Projektek = (props) => {
         beruhazo.cim = beruhazoHelyseg;
         kuldObj.beruhazo = beruhazo;
         kuldObj.cim = helyseg;
-        console.log('SUBMIT...: ', kuldObj);
+        kuldObj.epuletszintek = epuletszintek;
+
+        let datas = {};
+        if (!currentId) {
+            datas = makeFormData(kuldObj, ['borito', 'projektlakaskepek'], false);
+            Services.addProjekt(datas, (err, res) => {
+                if (!err) {
+                    addNotification('success', res.msg);
+                    listProjektek();
+                    toggleProjektModal();
+                }
+            });
+        } else {
+            datas = makeFormData(kuldObj, ['borito', 'projektlakaskepek'], true);
+            Services.editProjekt(datas, currentId, (err, res) => {
+                if (!err) {
+                    addNotification('success', res.msg);
+                    listProjektek();
+                    toggleProjektModal();
+                }
+            });
+        }
     };
 
     const getErtekesito = () => {
@@ -578,24 +597,19 @@ const Projektek = (props) => {
     };
 
     const handleEpuletszintekChange = (e) => {
-        console.log(e);
         if (e) {
             setEpuletSzintekOpts([e]);
-            setProjektObj({
+            setEpuletszintek(e);
+            /* setProjektObj({
                 ...projektObject,
-                epuletszintek: {
-                    label: e.label,
-                    value: e.value
-                }
-            });
+                epuletszintek: e
+            }); */
         } else {
-            setProjektObj({
+            /* setProjektObj({
                 ...projektObject,
-                epuletszintek: {
-                    label: '',
-                    value: ''
-                }
-            });
+                epuletszintek: []
+            }); */
+            setEpuletszintek([]);
             getEpuletszintekOpts(epuletszintek);
         }
     };
@@ -649,7 +663,7 @@ const Projektek = (props) => {
     const renderProjektModal = () => {
         return (
             <Modal isOpen={projektModal} toggle={toggleProjektModal} backdrop="static" size="xl">
-                <RVForm onSubmit={onSubmit} noValidate>
+                <RVForm onSubmit={onSubmit} encType="multipart/form-data" noValidate>
                     <ModalHeader>{!currentId ? 'Projekt felvitele' : 'Projekt módosítása'}</ModalHeader>
                     <ModalBody>
                         <ProjektForm
@@ -657,6 +671,7 @@ const Projektek = (props) => {
                             renderEgyebOptions={renderEgyebOptions}
                             currentId={currentId}
                             formType={formType}
+                            getProjekt={getProjekt}
                             isRequired={isRequired}
                             handleTelepulesChange={handleTelepulesChange}
                             handleBeruhazoTelepulesChange={handleBeruhazoTelepulesChange}

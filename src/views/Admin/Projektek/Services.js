@@ -136,11 +136,7 @@ export default class Services {
             {
                 method: 'POST',
                 cache: 'no-cache',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json'
-                },
-                body: JSON.stringify(projektObj)
+                body: projektObj
             },
             fnDone
         );
@@ -155,11 +151,9 @@ export default class Services {
                 method: 'PUT',
                 cache: 'no-cache',
                 headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
                     id: id
                 },
-                body: JSON.stringify(projektObj)
+                body: projektObj
             },
             fnDone
         );
@@ -178,6 +172,26 @@ export default class Services {
                     Accept: 'application/json',
                     id: id
                 }
+            },
+            fnDone
+        );
+
+        return result;
+    };
+
+    static deleteImage = (filename, projektId, fnDone) => {
+        let result = Microservices.fetchApi(
+            projektekUrl + '/deleteimage',
+            {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                    id: projektId
+                },
+                body: JSON.stringify({ filename: filename })
             },
             fnDone
         );

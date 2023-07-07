@@ -17,6 +17,7 @@ const ProjektekForm = (props) => {
         init,
         isRequired,
         currentId,
+        getProjekt,
         handleInputChange,
         handleTelepulesChange,
         handleBeruhazoTelepulesChange,
@@ -77,9 +78,7 @@ const ProjektekForm = (props) => {
                 ...object,
                 borito: [...object.borito, ...kepek]
             });
-            console.log(kepek);
         }, []);
-
         const { getRootProps, getInputProps } = useDropzone({ accept: 'image/*', onDrop });
 
         return (
@@ -114,7 +113,6 @@ const ProjektekForm = (props) => {
                 ...object,
                 projektlakaskepek: [...object.projektlakaskepek, ...kepek]
             });
-            console.log(kepek);
         }, []);
 
         const { getRootProps, getInputProps } = useDropzone({ accept: 'image/*', onDrop });

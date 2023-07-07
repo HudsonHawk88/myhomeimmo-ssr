@@ -36,6 +36,7 @@ const addIngatlan = async (req, res) => {
         if (!error) {
             let kepek = [];
             if (req.files) {
+                console.log(req.files, req.files[0]);
                 req.files.forEach((kep, index) => {
                     let extIndex = kep.originalname.lastIndexOf('.');
                     let fname = kep.originalname.substring(0, extIndex);

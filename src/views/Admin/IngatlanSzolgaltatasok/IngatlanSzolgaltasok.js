@@ -213,7 +213,7 @@ const IngatlanSzolgaltatasok = (props) => {
         obj.leiras = serializeValue('se', ingatlanSzolgObj.leiras);
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(obj, 'kep', false);
+            datas = makeFormData(obj, ['kep'], false);
             Services.addIngatlanSzolgaltatas(datas, (err, res) => {
                 if (!err) {
                     listIngatlanSzolgaltatasok();
@@ -222,7 +222,7 @@ const IngatlanSzolgaltatasok = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(obj, 'kep', true);
+            datas = makeFormData(obj, ['kep'], true);
             Services.editIngatlanSzolgaltatas(datas, currentId, (err, res) => {
                 if (!err) {
                     listIngatlanSzolgaltatasok();

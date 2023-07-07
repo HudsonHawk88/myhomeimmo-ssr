@@ -245,7 +245,7 @@ const Rolunk = (props) => {
         obj.leiras = serializeValue('se', rolunkObj.leiras);
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(obj, 'kep', false);
+            datas = makeFormData(obj, ['kep'], false);
             Services.addRolunk(datas, (err, res) => {
                 if (!err) {
                     listRolunk();
@@ -254,7 +254,7 @@ const Rolunk = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(obj, 'kep', true);
+            datas = makeFormData(obj, ['kep'], true);
             Services.editRolunk(datas, currentId, (err, res) => {
                 if (!err) {
                     listRolunk();

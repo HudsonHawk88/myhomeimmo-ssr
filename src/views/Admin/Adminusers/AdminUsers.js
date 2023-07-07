@@ -236,7 +236,7 @@ const AdminUsers = (props) => {
         let datas = new FormData();
 
         if (!currentId) {
-            datas = makeFormData(user, 'avatar', false);
+            datas = makeFormData(user, ['avatar'], false);
             datas.delete('newPassword');
             Services.addAdminUser(datas, (err, res) => {
                 if (!err) {
@@ -246,7 +246,7 @@ const AdminUsers = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(user, 'avatar', true);
+            datas = makeFormData(user, ['avatar'], true);
             datas.delete('newPassword');
             Services.editAdminUser(datas, currentId, (err, res) => {
                 if (!err) {

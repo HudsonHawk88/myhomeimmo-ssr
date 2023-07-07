@@ -232,7 +232,7 @@ const Kapcsolatok = (props) => {
     const onSave = () => {
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(kapcsolatObj, 'kep', false);
+            datas = makeFormData(kapcsolatObj, ['kep'], false);
             Services.addKapcsolat(datas, (err, res) => {
                 if (!err) {
                     listKapcsolatok();
@@ -241,7 +241,7 @@ const Kapcsolatok = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(kapcsolatObj, 'kep', true);
+            datas = makeFormData(kapcsolatObj, ['kep'], true);
             Services.editKapcsolat(datas, currentId, (err, res) => {
                 if (!err) {
                     listKapcsolatok();

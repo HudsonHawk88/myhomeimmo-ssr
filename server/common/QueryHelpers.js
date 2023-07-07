@@ -115,24 +115,24 @@ const isObjectKey = (objectKeys, key) => {
 
 const getInsertSql = (tableName, keys, object, objectKeys) => {
     let c = `INSERT INTO ${tableName} (`;
+    let v = '';
     keys.forEach((key, index) => {
-        let v = '';
         if (isObjectKey(objectKeys, key)) {
             /* if ((key === 'borito' || key === 'projektlakaskepek', key === 'cim', key === 'epuletszintek')) { */
             if (index < keys.length - 1) {
-                c.concat(`${key},`);
-                v.concat(`'${JSON.stringify(object[key])}', `);
+                c = c.concat(`${key},`);
+                v = v.concat(`'${JSON.stringify(object[key])}', `);
             } else {
-                c.concat(`${key}`);
-                v.concat(`'${JSON.stringify(object[key])}'`);
+                c = c.concat(`${key}`);
+                v = v.concat(`'${JSON.stringify(object[key])}'`);
             }
         } else {
             if (index < keys.length - 1) {
-                c.concat(`${key},`);
-                v.concat(`'${object[key]}', `);
+                c = c.concat(`${key},`);
+                v = v.concat(`'${object[key]}', `);
             } else {
-                c.concat(`${key}`);
-                v.concat(`'${object[key]}'`);
+                c = c.concat(`${key}`);
+                v = v.concat(`'${object[key]}'`);
             }
         }
         return v;
@@ -144,11 +144,17 @@ const getInsertSql = (tableName, keys, object, objectKeys) => {
 };
 
 const getUpdateScript = (table, criteria, update) => {
-    return `UPDATE ${table} SET ${Object.entries(update)
-        .map(([field, value]) => `${field}=${quote(value)}`)
+    let sql = `UPDATE ${table} SET ${Object.entries(update)
+        .map(([field, value]) => `${field}=${verifyJson(value) ? JSON.stringify(value) : quote(value)}`)
         .join(', ')} WHERE ${Object.entries(criteria)
         .map(([field, value]) => `${field}=${quote(value)}`)
         .join(' AND ')}`;
+
+    let first = sql.substring(0, sql.indexOf('id'));
+    let second = sql.substring(sql.indexOf(', ') + 2, sql.length);
+    sql = first.concat(second);
+
+    return sql;
 };
 
 const getJSONfromLongtext = (object, direction = 'toBool') => {
