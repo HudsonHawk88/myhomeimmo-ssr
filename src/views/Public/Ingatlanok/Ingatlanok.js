@@ -11,10 +11,13 @@ import Loading from '../../../commons/Loading';
 
 import Services from './Services';
 import { arFormatter } from '../../../commons/Lib.js';
+import { getDefaultKeyBinding } from 'draft-js';
+import { object } from 'prop-types';
 
 const Ingatlanok = (props) => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { addNotification } = props;
 
     const toBool = (value) => {
         let result = true;
@@ -26,7 +29,7 @@ const Ingatlanok = (props) => {
     };
 
     const defaultTelepulesObj = {
-        telepulesnev: 'Zalaegerszeg',
+        telepulesnev: '',
         km: '0'
     };
 
@@ -40,6 +43,7 @@ const Ingatlanok = (props) => {
         statusz: '',
         referenciaSzam: '',
         ar: '',
+        atvaltott: '',
         penznem: 'Ft',
         alapterulet: '',
         szobaszam: '',
@@ -131,12 +135,17 @@ const Ingatlanok = (props) => {
         });
     }, []);
 
-    const listIngatlanok = (kereso) => {
+    const listIngatlanok = (kere) => {
         setLoading(true);
         /* let k = kereso ? kereso : keresoObj; */
-        Services.keresesIngatlanok(kereso, (err, res) => {
+        if (kere['atvaltott']) {
+            kere['atvaltott'] = getIntAr(kere['atvaltott']);
+        }
+        if (kere['ar']) {
+            kere['ar'] = getIntAr(kere['ar']);
+        }
+        Services.keresesIngatlanok(kere, (err, res) => {
             if (!err) {
-                // console.log(res);
                 setIngatlanok(res);
                 setLoading(false);
             }
@@ -164,30 +173,64 @@ const Ingatlanok = (props) => {
                                 newObj.telepules = { telepulesnev: kereso[kkey].telepulesnev, km: kereso[kkey].km };
                             } else {
                                 setSelectedTelepules(null);
-                                setTelepulesObj(defaultTelepulesObj);
+                                setTelepulesObj({
+                                    telepulesnev: '',
+                                    km: '0'
+                                });
                             }
+                        } else if (kkey === 'ar') {
+                            if (kereso['penznem'] === 'Euró') {
+                                convertCurr(kereso['penznem'], kereso['ar'], (atv) => {
+                                    newObj['atvaltott'] = atv;
+                                });
+                            }
+                            if (kereso['penznem'] === 'Ft') {
+                                convertCurr(kereso['penznem'], kereso['ar'], (atv) => {
+                                    newObj['atvaltott'] = atv;
+                                });
+                            }
+                            newObj[kkey] = kereso[kkey];
                         } else {
                             if (kereso[kkey] === 'false' || kereso[kkey] === 'true') {
-                                newObj[kkey] = toBool(kereso[kkey]);
+                                if (kereso[kkey] === 'true') newObj[kkey] = toBool(kereso[kkey]);
                             } else {
                                 newObj[kkey] = kereso[kkey];
                             }
                         }
-                    } else {
+                    }
+                    /* else {
                         if (kereso[kkey] === 'false' || kereso[kkey] === 'true') {
+                            console.log(kkey === 'isUjEpitesu' ? kereso[kkey] : 'HASZNALT');
                             newObj[kkey] = toBool(kereso[kkey]);
                         } else {
                             newObj[key] = kereso[key] ? kereso[key] : '';
                         }
-                    }
+                    } */
                 });
             });
         } else {
             setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
         }
-        setKeresoObj(newObj);
-        listIngatlanok(newObj);
-    }, [location.search]);
+        const kkk = {};
+        const keee = Object.keys(newObj);
+        keee.forEach((k) => {
+            if (newObj[k]) {
+                if (newObj[k] !== '') {
+                    if (k === 'ar') {
+                        Object.assign(kkk, { [k]: getIntAr(newObj[k]) });
+                    } else {
+                        Object.assign(kkk, { [k]: newObj[k] });
+                    }
+                }
+            }
+        });
+        if (!newObj.ar || newObj.ar === '') {
+            Object.assign(kkk, { ar: '' });
+        }
+
+        setKeresoObj(kkk);
+        listIngatlanok(kkk);
+    }, []);
 
     useEffect(() => {
         getOptions();
@@ -243,7 +286,7 @@ const Ingatlanok = (props) => {
         newKereso.telepules = telepulesObj;
         const kereso = {};
         Object.keys(newKereso).map((key) => {
-            if (newKereso[key] !== '') {
+            if (newKereso[key] !== '' || key === 'ar') {
                 if (key === 'telepules') {
                     Object.assign(kereso, { ['telepules']: { telepulesnev: newKereso.telepules.telepulesnev, km: newKereso.telepules.km } });
                 } else {
@@ -259,12 +302,56 @@ const Ingatlanok = (props) => {
         return kereso;
     };
 
-    const keres = () => {
+    const getCurr = (currName) => {
+        switch (currName) {
+            case 'Ft':
+                return 'HUF';
+            case 'Euró':
+                return 'EUR';
+            case 'Dollár':
+                return 'USD';
+        }
+    };
+
+    const getIntAr = (amount) => {
+        let ar;
+        const tipus = typeof amount;
+        if (tipus === 'string') {
+            ar = amount.replace(/ /g, '');
+        } else if (tipus === 'number') {
+            let str = amount + '';
+            ar = str.replace(/ /g, '');
+        }
+
+        ar = parseInt(ar, 10);
+
+        return ar;
+    };
+
+    const convertCurr = (from, amount, callback) => {
+        let ar = getIntAr(amount);
+        const to = from !== 'Ft' ? 'Ft' : 'Euró';
+        if (ar) {
+            Services.convertCurr({ from: getCurr(from), to: getCurr(to), amount: ar }, (err, res) => {
+                if (!err) {
+                    if (callback) {
+                        callback(res.curr.atvaltott);
+                    }
+                }
+            });
+        } else {
+            addNotification('error', 'Ár megadása kötelező devizában való keresésnél!');
+        }
+    };
+
+    const keres = (atvaltott) => {
         let sendObj = keresoObj;
         sendObj.telepules = telepulesObj;
+        sendObj['atvaltott'] = getIntAr(atvaltott);
         let newKereso = keresoObj;
         newKereso.telepules = telepulesObj.telepulesnev;
         const ker = getParams();
+        Object.assign(ker, { ar: '' });
         const queryParams = Object.keys(ker)
             .map((key) => {
                 if (key === 'telepules') {
@@ -479,16 +566,26 @@ const Ingatlanok = (props) => {
                         <div className="col-md-3">
                             <RVFormGroup>
                                 <Label>{'Pénznem:'}</Label>
-                                <RVInput type="select" name="penznem" id="penznem" value={keresoObj.penznem} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}>
+                                <RVInput
+                                    type="select"
+                                    name="penznem"
+                                    id="penznem"
+                                    value={keresoObj.penznem}
+                                    onChange={(e) => {
+                                        handleInputChange(e, keresoObj, setKeresoObj);
+                                    }}
+                                >
                                     {/*  <option key="defaultPénznem" value="">
                                         {'Kérjük válasszon pénznemet...'}
                                     </option> */}
                                     {penznemOptions.map((item) => {
-                                        return (
-                                            <option key={item.id} value={item.value}>
-                                                {item.nev}
-                                            </option>
-                                        );
+                                        if (item.isoValue !== 'USD') {
+                                            return (
+                                                <option key={item.id} value={item.value}>
+                                                    {item.nev}
+                                                </option>
+                                            );
+                                        }
                                     })}
                                 </RVInput>
                             </RVFormGroup>
@@ -619,7 +716,7 @@ const Ingatlanok = (props) => {
                     </div>
                     <div className="row">
                         <div className="col-md-12 p-0">
-                            <Button color="dark" onClick={() => keres()}>
+                            <Button color="dark" onClick={() => convertCurr(keresoObj.penznem, keresoObj.ar, keres)}>
                                 <i className="fas fa-search"></i>&nbsp;&nbsp; Keresés
                             </Button>
                         </div>
@@ -637,7 +734,7 @@ const Ingatlanok = (props) => {
             </Helmet>
             {renderKereso()}
             <div className="nodata">{ingatlanok.length === 0 && 'A keresés nem hozott találatot vagy nem választott egyetlen szűrőfeltételt sem!'}</div>
-            {loading ? <Loading isLoading={loading} /> : <FooldalContent data={ingatlanok} />}
+            {loading ? <Loading isLoading={loading} /> : <FooldalContent data={ingatlanok || []} />}
         </div>
     );
 };
