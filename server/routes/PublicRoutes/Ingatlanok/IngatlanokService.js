@@ -1,6 +1,7 @@
 import express from 'express';
 import { pool, getIngatlanokByKm, getKepekForXml, UseQuery, getJSONfromLongtext, isTableExists } from '../../../common/QueryHelpers.js';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import fetch from 'isomorphic-fetch';
 import path from 'path';
 const router = express.Router();
 const ingatlanok = pool;
@@ -42,6 +43,159 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/reklam', async (req, res) => {
+    const isExist = await isTableExists('ingatlanok');
+    if (isExist) {
+        const sql = `SELECT * FROM ingatlanok WHERE isAktiv='1' AND isKiemelt='1' ORDER BY rogzitIdo DESC;`;
+
+        let result = await UseQuery(sql);
+        let ress = result.map((ing) => {
+            return getJSONfromLongtext(ing, 'toBool');
+        });
+        res.send(ress);
+    } else {
+        res.send([]);
+    }
+});
+
+router.get('/ingatlanids', async (req, res) => {
+    const isExist = await isTableExists('ingatlanok');
+    if (isExist) {
+        const sql = `SELECT id, ar, alapterulet, szobaszam, felszobaszam FROM ingatlanok WHERE isAktiv='1' ORDER BY rogzitIdo DESC;`;
+
+        let result = await UseQuery(sql);
+        let ress = result.map((ing) => {
+            return getJSONfromLongtext(ing, 'toBool');
+        });
+        res.send(ress);
+    } else {
+        res.send([]);
+    }
+});
+
+const getDeviza = async (base, rate) => {
+    try {
+        /* const res = await fetch(`http://api.exchangeratesapi.io/v1/latest?access_key=${process.env.REACT_APP_devvaltoAK}&base=${base}&symbols=${rate}`, {
+            method: 'GET'
+        }); */
+        const res = await fetch(`http://infojegyzet.hu/webszerkesztes/php/valuta/api/v1/arfolyam/`, {
+            method: 'GET'
+        });
+        return res.json();
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+/* const convertDeviza = async (from, to, amount) => {
+    try {
+        const res = await fetch(`http://api.exchangeratesapi.io/v1/convert?access_key=${process.env.REACT_APP_devvaltoAK}&from=${from}&to=${to}&amount=${amount}`, {
+            method: 'GET'
+        });
+        return res.json();
+    } catch (err) {
+        console.error(err);
+    }
+}; */
+
+const convertDeviza = (curr, amount, toEuro) => {
+    return toEuro ? parseInt((amount / curr).toFixed(2), 10) : parseInt((curr * amount).toFixed(0), 10);
+};
+
+/* const changeDeviza = async (from, to, amount, toEuro) => {
+    const curr = await getDeviza(from, to);
+    console.log(curr);
+    if (curr && curr.success) {
+        const result = convertDeviza(curr.rates[to], amount);
+        if (result) {
+            return { curr: { penznem: to, atvaltott: result }, err: null };
+        }
+    } else {
+        return { curr: null, err: 'Nem sikerült a deviza lekérdezése!' };
+    }
+}; */
+
+router.post('/getdeviza', async (req, res) => {
+    const { base, rate } = req.body;
+    const result = await getDeviza(base, rate);
+    if (result) {
+        res.status(200).send({ curr: result, err: null });
+    } else {
+        res.status(409).send({ curr: null, err: 'Nem sikerült a deviza lekérdezése!' });
+    }
+});
+
+router.post('/changedeviza', async (req, res) => {
+    const { from, to, amount } = req.body;
+    const curr = await getDeviza(from, to);
+    let result;
+    if (curr && curr.success) {
+        result = to === 'EUR' ? convertDeviza(curr.rates['HUF'], amount, true) : convertDeviza(curr.rates[to], amount);
+        result ? res.status(200).send({ curr: { penznem: to, atvaltott: result }, err: null }) : res.status(409).send({ curr: null, err: 'Nem sikerült a deviza lekérdezése!' });
+    } else {
+        res.status(409).send({ curr: null, err: 'Nem sikerült a deviza lekérdezése!' });
+    }
+});
+
+router.post('/ingatalnokbyids', async (req, res) => {
+    const isExist = await isTableExists('ingatlanok');
+    const { ids } = req.body;
+    let where = '';
+    if (ids && Array.isArray(ids) && ids.length > 0) {
+        ids.forEach((id, idx) => {
+            if (ids.length - 1 === idx) {
+                where = where.concat(`id = '${id}'`);
+            } else {
+                where = where.concat(`id = '${id}' OR `);
+            }
+        });
+    }
+
+    if (isExist) {
+        const sql = `SELECT * FROM ingatlanok WHERE isAktiv='1' AND ${where} ORDER BY rogzitIdo DESC;`;
+
+        let result = await UseQuery(sql);
+        let ress = result.map((ing) => {
+            console.log(ing);
+            return getJSONfromLongtext(ing, 'toBool');
+        });
+        res.send(ress);
+    } else {
+        res.send([]);
+    }
+});
+
+const getArFilter = (penznem, ar, kereso) => {
+    let newWh = `(REPLACE(ar, ' ', '') <= ${ar} AND penznem='Ft') AND `;
+    const atv = kereso['atvaltott'];
+    if (penznem && penznem !== '') {
+        if (penznem !== 'HUF') {
+            if (penznem === 'EUR') {
+                if (atv) {
+                    newWh = `(((REPLACE(ar, ' ', '')<=${atv} AND penznem='Ft') OR (REPLACE(ar, ' ', '')<=${ar} AND penznem='${kereso['penznem']}'))) AND `;
+                }
+            }
+        } else {
+            if (atv) {
+                newWh = `(((REPLACE(ar, ' ', '')<=${atv} AND penznem='Euró') OR (REPLACE(ar, ' ', '')<=${ar} AND penznem='Ft'))) AND `;
+            }
+        }
+    } else {
+        newWh = `(REPLACE(ar, ' ', '')<=${ar} AND penznem='Ft') AND `;
+    }
+
+    return newWh;
+};
+
+const getNumberFromBool = (bool) => {
+    let result = 0;
+    if (bool === true || bool === 'true') {
+        result = 1;
+    }
+
+    return result;
+};
+
 router.post('/keres', async (req, res) => {
     let kereso = req.body;
     kereso = JSON.parse(JSON.stringify(kereso));
@@ -49,8 +203,9 @@ router.post('/keres', async (req, res) => {
 
     let where = '';
     let newWhere = '';
+    let newWh = '';
     let leftJoin = '';
-    if (kereso['referenciaSzam'] !== '') {
+    if (kereso['referenciaSzam'] && kereso['referenciaSzam'] !== '') {
         where = where.concat(`refid = '${kereso.referenciaSzam}' AND`);
     } else {
         keys.forEach((filter) => {
@@ -79,11 +234,11 @@ router.post('/keres', async (req, res) => {
                         where = where.concat(`${filter}>=${kereso[filter]} AND `);
                     }
                     if (filter === 'ar') {
-                        const ar = kereso[filter].replace(/ /g, '');
-                        where = where.concat(`REPLACE(${filter}, ' ', '') <= ${ar} AND `);
+                        const penznem = getPenznem(kereso['penznem']);
+                        where = where.concat(getArFilter(penznem, kereso['ar'], kereso));
                     }
                     if (filter === 'isHirdetheto' || filter === 'isKiemelt' || filter === 'isLift' || filter === 'isErkely' || filter === 'isUjEpitesu' || filter === 'isTetoter') {
-                        where = where.concat(`${filter}='${Number(kereso[filter])}' AND `);
+                        where = where.concat(`${filter}='${getNumberFromBool(kereso[filter])}' AND `);
                     }
                     if (
                         filter === 'statusz' ||
@@ -94,10 +249,15 @@ router.post('/keres', async (req, res) => {
                         filter === 'emelet' ||
                         filter === 'epitesmod' ||
                         filter === 'futes' ||
-                        filter === 'allapot' ||
-                        filter === 'penznem'
+                        filter === 'allapot'
                     ) {
                         where = where.concat(`${filter}='${kereso[filter]}' AND `);
+                    }
+
+                    if (filter === 'penznem') {
+                        if (kereso['penznem'] === 'Ft' && kereso['ar'] === '') {
+                            where = where.concat(`${filter}='${kereso[filter]}' AND `);
+                        }
                     }
                 }
             }
@@ -105,13 +265,13 @@ router.post('/keres', async (req, res) => {
     }
 
     if (kereso['telepules']) {
-        if (kereso['telepules'].km > 0) {
+        if (parseInt(kereso['telepules'].km, 10) > 0) {
             let km = kereso['telepules'].km;
             let telepnev = kereso['telepules'].telepulesnev;
             leftJoin = await getIngatlanokByKm(telepnev, km);
             newWhere = `distance >= 0 ORDER BY distances.distance`;
         } else {
-            if (kereso['telepules'].telepulesnev !== '' && leftJoin === '') {
+            if (kereso['telepules'].telepulesnev !== '') {
                 newWhere = newWhere.concat(` telepules='${kereso['telepules'].telepulesnev}' AND `);
             }
         }
@@ -127,9 +287,16 @@ router.post('/keres', async (req, res) => {
         newWhere = newWhere.slice(0, resultNew - 1);
     }
 
-    let sql = `SELECT * FROM ingatlanok ${leftJoin !== '' ? leftJoin : ''} WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''}${newWhere !== '' ? ' AND ' + newWhere : ''};`;
+    let resultNewNew = newWh.lastIndexOf('AND');
+    if (resultNewNew !== -1) {
+        newWh = newWh.slice(0, resultNewNew - 1);
+    }
 
-    /*     console.log(sql); */
+    let sql = `SELECT * FROM ingatlanok ${leftJoin !== '' ? leftJoin : ''} WHERE isAktiv='1' ${where !== '' ? 'AND ' + where : ''}${newWhere !== '' ? ' AND ' + newWhere : ''}${
+        newWh !== '' ? ' AND ' + newWh : ''
+    };`;
+
+    /* console.log('SQL: ', sql); */
     ingatlanok.query(sql, (err, result) => {
         if (!err) {
             let ressss = result.map((ing) => {
@@ -152,7 +319,7 @@ router.get('/ingatlanokapi', (req, res, next) => {
             await Promise.all(
                 ingatlanJson.map(async (ingatlan) => {
                     ingatlan = getJSONfromLongtext(ingatlan, 'toBool');
-                    const getLatLongSql = `SELECT geoLat, geoLong FROM telep_1 WHERE irszam='${ingatlan.irsz}';`;
+                    const getLatLongSql = `SELECT geoLat, geoLong FROM telep_1 WHERE irszam='${ingatlan.irsz}' AND telepulesnev='${ingatlan.telepules}';`;
                     const tipus = ingatlan.tipus + '';
                     const hirdeto = ingatlan.hirdeto;
                     const latLong = await UseQuery(getLatLongSql);
@@ -203,7 +370,6 @@ router.get('/ingatlanokapi', (req, res, next) => {
                 })
             );
             data += `</items>`;
-            /*       const dir = `/home/eobgycvo/public_html/xml/ingatlanok/`; */
             const dir = process.env.xmlUrl;
             let exist = existsSync(dir);
             if (!exist) {
