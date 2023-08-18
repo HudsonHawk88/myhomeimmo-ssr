@@ -30,6 +30,25 @@ export default class Services {
         return result;
     };
 
+    static convertCurr = (currObj, fnDone) => {
+        let result = Microservices.fetchApi(
+            ingatlanUrl + '/changedeviza',
+            {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+                },
+                body: JSON.stringify(currObj)
+            },
+            fnDone
+        );
+
+        return result;
+    };
+
     static keresesIngatlanok = (kereso, fnDone) => {
         let result = Microservices.fetchApi(
             keresIngatlanokUrl,
