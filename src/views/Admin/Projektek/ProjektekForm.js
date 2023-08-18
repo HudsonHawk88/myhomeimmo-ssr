@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { RVFormGroup, RVInput, RVInputGroup, RVFormFeedback, RVInputGroupText } from '@inftechsol/reactstrap-form-validation';
 import { useDropzone } from 'react-dropzone';
-import Select from 'react-select/creatable';
+import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import PropTypes from 'prop-types';
 
 import Stepper from '../../../commons/Stepper';
@@ -41,20 +42,44 @@ const ProjektekForm = (props) => {
         beruhazoTelepulesekOpts,
         setBeruhazoTelepulesekOpts,
         epuletszintekOpts,
-        setEpuletSzintekOpts,
         setHirdeto,
         ertekesito,
         nevFormatter,
         telefonFormatter,
-        renderEgyebOptions
+        renderEgyebOptions,
+        projektingatlanokOpts,
+        handleProjektIngatlanokChange,
+        step,
+        setStep,
+        setCurrentId
     } = props;
 
     const [kepekModal, setKepekModal] = useState(false);
-    const [step, setStep] = useState(1);
-    const maxStep = 3;
+    const [ingatlanOptions, setIngatlanOptions] = useState([]);
+
+    const getOptions = () => {
+        Services.getIngatlanOptions((err, res) => {
+            if (!err) {
+                setIngatlanOptions(res);
+            }
+        });
+    };
 
     const toggleKepekModal = () => {
         setKepekModal(!kepekModal);
+    };
+
+    const renderOptions = (type) => {
+        const optionObj = ingatlanOptions.find((opt) => opt.nev === type);
+        const opts = optionObj && optionObj.options ? optionObj.options : [];
+
+        return opts.map((opt) => {
+            return (
+                <option key={opt.id} value={opt.value}>
+                    {opt.nev}
+                </option>
+            );
+        });
     };
 
     const MyDropzoneBorito = () => {
@@ -128,40 +153,6 @@ const ProjektekForm = (props) => {
         );
     };
 
-    useEffect(() => {
-        init();
-        if (formType === 'FEL' && !currentId) {
-            setObject(defaultProjekt);
-            setHelyseg({
-                ...helyseg,
-                irszam: '',
-                telepules: ''
-            });
-            setBeruhazoHelyseg({
-                ...beruhazoHelyseg,
-                irszam: '',
-                telepules: ''
-            });
-            if (user.isErtekesito) {
-                setHirdeto({
-                    feladoNev: nevFormatter(user.nev),
-                    feladoTelefon: telefonFormatter(user.telefon),
-                    feladoEmail: user.email,
-                    feladoAvatar: user.avatar
-                });
-            } else {
-                setHirdeto({
-                    feladoNev: nevFormatter(ertekesito.nev),
-                    feladoTelefon: telefonFormatter(ertekesito.telefon),
-                    feladoEmail: ertekesito.email,
-                    feladoAvatar: ertekesito.avatar
-                });
-            }
-        } else {
-            getProjekt(currentId);
-        }
-    }, [currentId, formType]);
-
     const getTelepulesekOpts = (items) => {
         let telOpts = [];
         items.forEach((item) => {
@@ -227,6 +218,10 @@ const ProjektekForm = (props) => {
             getBeruhazoTelepulesByIrsz(beruhazoHelyseg.irszam);
         }
     }, [isBeruhazoIrszamTyped(), beruhazoHelyseg.irszam]);
+
+    useEffect(() => {
+        getOptions();
+    }, []);
 
     const getTelepulesByIrsz = (irsz) => {
         Services.getTelepulesByIrsz(irsz, (err, res) => {
@@ -422,14 +417,17 @@ const ProjektekForm = (props) => {
                         <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{isRequired('Beruházó telefonszáma:', true)}</Label>
-                                <RVInput
-                                    name="telefon"
-                                    id="telefon"
-                                    pattern="[0-9]+"
-                                    value={beruhazo.telefon}
-                                    onChange={(e) => handleInputChange(e, beruhazo, setBeruhazo)}
-                                    placeholder="+36-30/123-4567"
-                                />
+                                <RVInputGroup>
+                                    <RVInputGroupText>+</RVInputGroupText>
+                                    <RVInput
+                                        name="telefon"
+                                        id="telefon"
+                                        pattern="[0-9 ]+"
+                                        value={beruhazo.telefon}
+                                        onChange={(e) => handleInputChange(e, beruhazo, setBeruhazo)}
+                                        placeholder="36 30 123 4567"
+                                    />
+                                </RVInputGroup>
                             </RVFormGroup>
                         </div>
                         <div className="col-md-4">
@@ -441,7 +439,7 @@ const ProjektekForm = (props) => {
                         <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{isRequired('Beruházó weboldala:', true)}</Label>
-                                <RVInput name="weboldal" id="weboldal" value={beruhazo.weboldal} onChange={(e) => handleInputChange(e, beruhazo, setBeruhazo)} placeholder="www.valami.hu" />
+                                <RVInput name="weboldal" id="weboldal" value={beruhazo.weboldal} onChange={(e) => handleInputChange(e, beruhazo, setBeruhazo)} placeholder="http(s)://www.valami.hu" />
                             </RVFormGroup>
                         </div>
                     </div>
@@ -552,14 +550,13 @@ const ProjektekForm = (props) => {
                         </div>
                         <div className="col-md-4">
                             <RVFormGroup>
-                                <Label>{isRequired('Átadás negyedéve:', true)}</Label>
-                                <RVInput name="atadasnegyedev" id="atadasnegyedev" value={object.atadasnegyedev} onChange={(e) => handleInputChange(e, object, setObject)} required />
-                                <RVFormFeedback />
+                                <Label>{isRequired('Átadás negyedéve:')}</Label>
+                                <RVInput name="atadasnegyedev" id="atadasnegyedev" value={object.atadasnegyedev} onChange={(e) => handleInputChange(e, object, setObject)} />
                             </RVFormGroup>
                         </div>
                         <div className="col-md-4">
                             <RVFormGroup>
-                                <Label>{isRequired('Átadás hónapja:', true)}</Label>
+                                <Label>{isRequired('Átadás hónapja:')}</Label>
                                 <RVInput name="atadashonap" id="atadashonap" value={object.atadashonap} onChange={(e) => handleInputChange(e, object, setObject)} />
                             </RVFormGroup>
                         </div>
@@ -655,7 +652,7 @@ const ProjektekForm = (props) => {
                                 <RVFormFeedback />
                             </RVFormGroup>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-4" hidden={object.parkolohasznalat === 'Benne van az árban'}>
                             <RVFormGroup>
                                 <Label>{isRequired('Parkolóhely ára:', true)}</Label>
                                 <RVInput type="text" pattern="[0-9]+" name="parkoloarmill" id="parkoloarmill" value={object.parkoloarmill} onChange={(e) => handleInputChange(e, object, setObject)} />
@@ -678,12 +675,12 @@ const ProjektekForm = (props) => {
                         <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{isRequired('Épület szintjei:', true)}</Label>
-                                <Select
+                                <CreatableSelect
                                     type="select"
                                     name="epuletszintek"
                                     id="epuletszintek"
                                     options={epuletszintekOpts}
-                                    value={epuletszintekOpts[0]}
+                                    value={object.epuletszintek}
                                     createOptionPosition="last"
                                     isClearable
                                     isSearchable
@@ -709,6 +706,41 @@ const ProjektekForm = (props) => {
                                 <RVFormFeedback />
                             </RVFormGroup>
                         </div>
+                    </div>
+                    <div className="row mb-2">
+                        <div className="col-md-4">
+                            <RVFormGroup>
+                                <Label>{isRequired('Projekt ingatlanok:', false)}</Label>
+                                <Select
+                                    type="select"
+                                    name="projektingatlanok"
+                                    id="projektingatlanok"
+                                    options={projektingatlanokOpts}
+                                    value={object.projektingatlanok}
+                                    isMulti
+                                    isClearable
+                                    isSearchable
+                                    placeholder="Projekt ingatlanok..."
+                                    /* isDisabled={helyseg.irszam === '' || helyseg.irszam.length < 4} */
+                                    onChange={(e) => {
+                                        handleProjektIngatlanokChange(e);
+                                    }}
+                                />
+                            </RVFormGroup>
+                        </div>
+                        <div className="col-md-4">
+                            <RVFormGroup>
+                                <Label>{isRequired('Ingatlanok pénzneme:', true)}</Label>
+                                <RVInput required type="select" name="penznem" id="penznem" value={object.penznem} onChange={(e) => handleInputChange(e, obj, setObject)}>
+                                    <option key="defaultPenznem" value="">
+                                        Kérjük válasszon pénznemet...
+                                    </option>
+                                    {renderOptions('penznem')}
+                                </RVInput>
+                                <RVFormFeedback />
+                            </RVFormGroup>
+                        </div>
+                        <div className="col-md-4" />
                     </div>
                 </div>
                 <div>

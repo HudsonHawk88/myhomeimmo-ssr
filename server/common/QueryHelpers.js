@@ -158,10 +158,11 @@ const getUpdateScript = (table, criteria, update) => {
 };
 
 const getJSONfromLongtext = (object, direction = 'toBool') => {
-    const keys = Object.keys(object);
-    let newObj = {};
-    keys.forEach((key) => {
-        /* if (
+    if (object) {
+        const keys = Object.keys(object);
+        let newObj = {};
+        keys.forEach((key) => {
+            /* if (
             key === 'isHirdetheto' ||
             key === 'isKiemelt' ||
             key === 'isErkely' ||
@@ -173,33 +174,34 @@ const getJSONfromLongtext = (object, direction = 'toBool') => {
             key === 'isTetoter' ||
             key === 'isVip'
         ) { */
-        if (isObjectKey(boolValues, key)) {
-            if (direction) {
-                if (direction === 'toBool') {
-                    if (object[key] === 0 || object[key] === '0') {
-                        newObj[key] = false;
-                    } else {
-                        newObj[key] = true;
-                    }
-                } else if (direction === 'toNumber') {
-                    if (object[key] === false || object[key] === 'false') {
-                        newObj[key] = 0;
-                    } else {
-                        newObj[key] = 1;
+            if (isObjectKey(boolValues, key)) {
+                if (direction) {
+                    if (direction === 'toBool') {
+                        if (object[key] === 0 || object[key] === '0') {
+                            newObj[key] = false;
+                        } else {
+                            newObj[key] = true;
+                        }
+                    } else if (direction === 'toNumber') {
+                        if (object[key] === false || object[key] === 'false') {
+                            newObj[key] = 0;
+                        } else {
+                            newObj[key] = 1;
+                        }
                     }
                 }
-            }
-            return newObj[key];
-        } else {
-            if (verifyJson(object[key])) {
-                newObj[key] = JSON.parse(object[key]);
+                return newObj[key];
             } else {
-                newObj[key] = object[key];
+                if (verifyJson(object[key])) {
+                    newObj[key] = JSON.parse(object[key]);
+                } else {
+                    newObj[key] = object[key];
+                }
+                return newObj[key];
             }
-            return newObj[key];
-        }
-    });
-    return newObj;
+        });
+        return newObj;
+    }
 };
 
 const getDataFromDatabase = async (method, sql, datas) => {
@@ -494,7 +496,7 @@ const getIngatlanokByKm = async (telepules, km) => {
 };
 
 const createIngatlanokSql = `
-    CREATE TABLE IF NOT EXISTS myhome.ingatlanok (
+    CREATE TABLE IF NOT EXISTS myhomeimmo.ingatlanok (
         id INT NOT NULL PRIMARY KEY,
         refid text DEFAULT NULL,
         office_id text DEFAULT NULL,

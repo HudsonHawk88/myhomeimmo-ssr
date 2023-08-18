@@ -38,6 +38,8 @@ const keys = [
     'isTobbEpuletes',
     'komfort',
     'epuletszintek',
+    'projektingatlanok',
+    'penznem',
     'isLift',
     'tarolohasznalat',
     'isAkadalymentes',
@@ -49,7 +51,7 @@ const keys = [
     'szigetelesmeret'
 ];
 
-const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek'];
+const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok'];
 
 // PROJEKTEK START
 
@@ -109,7 +111,7 @@ router.post('/', upload.any(), async (req, res) => {
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                 let felvitelObj = req.body;
-                const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.projektek (
+                const sql = `CREATE TABLE IF NOT EXISTS myhomeimmo.projektek (
                 id int NOT NULL PRIMARY KEY,
                 nev text NOT NULL DEFAULT '',
                 leiras text NOT NULL DEFAULT '',
@@ -136,6 +138,8 @@ router.post('/', upload.any(), async (req, res) => {
                 isTobbEpuletes boolean DEFAULT 0,
                 komfort text DEFAULT '',
                 epuletszintek json NOT NULL,
+                projektingatlanok json DEFAULT NULL,
+                penznem text DEFAULT 'Ft',
                 isLift boolean DEFAULT 0,
                 tarolohasznalat text DEFAULT '',
                 isAkadalymentes boolean DEFAULT 0,
@@ -260,6 +264,7 @@ router.put('/', upload.any(), async (req, res) => {
         } else {
             const id = req.headers.id;
             let modositoObj = req.body;
+
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                 if (id) {
                     let boritokepek = [];
@@ -272,7 +277,7 @@ router.put('/', upload.any(), async (req, res) => {
                                 boritokepek.push(JSON.parse(item));
                             });
                         } else {
-                            boritokepek = modositoObj.borito;
+                            boritokepek = JSON.parse(modositoObj.borito);
                         }
                     }
 
@@ -282,7 +287,7 @@ router.put('/', upload.any(), async (req, res) => {
                                 projektkepek.push(JSON.parse(item));
                             });
                         } else {
-                            projektkepek = modositoObj.projektlakaskepek;
+                            projektkepek = JSON.parse(modositoObj.projektlakaskepek);
                         }
                     }
                     if (req.files) {
@@ -342,11 +347,15 @@ router.put('/', upload.any(), async (req, res) => {
                             }
                         });
                     }
-
-                    modositoObj.projektlakaskepek = projektkepek;
-                    modositoObj.borito = boritokepek;
-
+                    modositoObj = getJSONfromLongtext(modositoObj, 'toNumber');
+                    modositoObj.projektlakaskepek = JSON.stringify(projektkepek);
+                    modositoObj.borito = JSON.stringify(boritokepek);
+                    modositoObj.beruhazo = JSON.stringify(modositoObj.beruhazo);
+                    modositoObj.cim = JSON.stringify(modositoObj.cim);
+                    modositoObj.epuletszintek = JSON.stringify(modositoObj.epuletszintek);
+                    modositoObj.projektingatlanok = JSON.stringify(modositoObj.projektingatlanok);
                     const sql = getUpdateScript('projektek', { id: id }, modositoObj);
+                    console.log(sql);
                     projektek.query(sql, (err) => {
                         if (!err) {
                             res.status(200).send({

@@ -1,6 +1,7 @@
 import { Microservices } from '../../../../shared/MicroServices';
 const location = typeof window !== 'undefined' ? window.location : {};
 
+const ingatlanokUrl = location.origin + '/api/ingatlan';
 const orszagokUrl = location.origin + '/api/orszagok';
 const telepulesekUrl = location.origin + '/api/telepulesek';
 const projektekUrl = location.origin + '/api/admin/projektek';
@@ -90,7 +91,65 @@ export default class Services {
         return result;
     };
 
+    static getProjektIngatlanokOpts = (fnDone) => {
+        let result = Microservices.fetchApi(
+            ingatlanokUrl + '/ingatlanids',
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                }
+            },
+            fnDone
+        );
+
+        return result;
+    };
+
     // OPTS END
+
+    // OPTIONS START
+
+    static getAltipusOptions = (fnDone) => {
+        let result = Microservices.fetchApi(
+            optionsUrl + '/altipusoptions',
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+                }
+            },
+            fnDone
+        );
+
+        return result;
+    };
+
+    static getIngatlanOptions = (fnDone) => {
+        let result = Microservices.fetchApi(
+            optionsUrl + '/ingatlanoptions',
+            {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
+                }
+            },
+            fnDone
+        );
+
+        return result;
+    };
+
+    // OPTIONS END
 
     // PROJEKTEK START
 

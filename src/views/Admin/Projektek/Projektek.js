@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
 import { RVForm } from '@inftechsol/reactstrap-form-validation';
-import PropTypes from 'prop-types';
 
 import ProjektForm from './ProjektekForm';
 import Services from './Services';
@@ -52,6 +51,7 @@ const Projektek = (props) => {
     const defaultProjekt = {
         nev: '',
         leiras: '',
+        penznem: '',
         borito: [],
         projektlakaskepek: [],
         utem: '',
@@ -74,6 +74,8 @@ const Projektek = (props) => {
         isTobbEpuletes: false,
         komfort: '',
         epuletszintek: [],
+        projektingatlanok: [],
+        projektingatlanokOpts: [],
         isLift: false,
         tarolohasznalat: '',
         isAkadalymentes: false,
@@ -106,7 +108,8 @@ const Projektek = (props) => {
 
     const [beruhazoTelepulesekOpts, setBeruhazoTelepulesekOpts] = useState([]);
     const [epuletszintek, setEpuletszintek] = useState([]);
-    const [epuletszintekOpts, setEpuletSzintekOpts] = useState([{ label: '1', value: 1 }]);
+    const [epuletszintekOpts, setEpuletSzintekOpts] = useState([]);
+    const [projektingatlanokOpts, setProjektingatlanokOpts] = useState([]);
     const [beruhazoTelepulesObj, setBeruhazoTelepulesObj] = useState(defaultBeruhazoTelepulesObj);
 
     const [projektIngTipusOptions, setProjektIngTipusOptions] = useState([]);
@@ -130,6 +133,9 @@ const Projektek = (props) => {
     const [viewModal, setViewModal] = useState(false);
     const [projektModal, setProjektModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+
+    const [step, setStep] = useState(1);
+    const maxStep = 4;
 
     const setDefault = (orszagokList) => {
         const lang = navigator.language;
@@ -274,16 +280,68 @@ const Projektek = (props) => {
         });
     };
 
+    const getProjektIngatlanokOpts = () => {
+        Services.getProjektIngatlanokOpts((err, res) => {
+            if (!err) {
+                /* if () */
+                res.forEach((ing) => {
+                    (ing.ar = ing.ar), (ing.alapterulet = ing.alapterulet), (ing.szobaszam = ing.szobaszam), (ing.label = ing.id);
+                    ing.value = ing.id;
+                    ing.key = ing.id;
+                });
+                setProjektingatlanokOpts(res);
+            }
+        });
+    };
+
     const init = () => {
         listOrszagok();
         listTelepulesek();
         listProjektek();
         getOptions();
+        getProjektIngatlanokOpts();
     };
+
+    /*   useEffect(() => {
+        init();
+    }, []); */
 
     useEffect(() => {
         init();
-    }, []);
+        console.log(formType, currentId);
+        if (formType === 'FEL') {
+            setCurrentId(null);
+            setProjektObj(defaultProjekt);
+            setStep(1);
+            setHelyseg({
+                ...helyseg,
+                irszam: '',
+                telepules: ''
+            });
+            setBeruhazoHelyseg({
+                ...beruhazoHelyseg,
+                irszam: '',
+                telepules: ''
+            });
+            if (user.isErtekesito) {
+                setHirdeto({
+                    feladoNev: nevFormatter(user.nev),
+                    feladoTelefon: telefonFormatter(user.telefon),
+                    feladoEmail: user.email,
+                    feladoAvatar: user.avatar
+                });
+            } else {
+                setHirdeto({
+                    feladoNev: nevFormatter(ertekesito.nev),
+                    feladoTelefon: telefonFormatter(ertekesito.telefon),
+                    feladoEmail: ertekesito.email,
+                    feladoAvatar: ertekesito.avatar
+                });
+            }
+        } else if (formType === 'MOD') {
+            getProjekt(currentId);
+        }
+    }, [currentId, formType]);
 
     const toggleViewModal = () => {
         setViewModal(!viewModal);
@@ -298,6 +356,16 @@ const Projektek = (props) => {
     };
 
     const handleNewClick = () => {
+        setCurrentId(null);
+        listOrszagok();
+        setBeruhazo(defaultBeruhazo);
+        setHelyseg(defaultHelseg);
+        setBeruhazoHelyseg(defaultBeruhazoHelseg);
+        setBeruhazoTelepulesObj(defaultBeruhazoTelepulesObj);
+        setTelepulesObj(defaultTelepulesObj);
+        getTelepulesekOpts(telepulesek);
+        getBeruhazoTelepulesekOpts(telepulesek);
+        setFormType('FEL');
         toggleProjektModal();
     };
 
@@ -307,6 +375,8 @@ const Projektek = (props) => {
     };
 
     const handleEditClick = (id) => {
+        setFormType('MOD');
+        setStep(1);
         setCurrentId(id);
         toggleProjektModal();
     };
@@ -321,7 +391,7 @@ const Projektek = (props) => {
             <React.Fragment>
                 {hasRole(user.roles, ['PROJEKT_LEK', 'SZUPER_ADMIN']) && (
                     <Button type="button" color="link" onClick={() => handleViewClick(row.id)}>
-                        <i class="fas fa-eye" />
+                        <i className="fas fa-eye" />
                     </Button>
                 )}
                 {hasRole(user.roles, ['SZUPER_ADMIN', 'PROJEKT_ADMIN']) && (
@@ -425,8 +495,14 @@ const Projektek = (props) => {
         let kuldObj = projektObject;
         beruhazo.cim = beruhazoHelyseg;
         kuldObj.beruhazo = beruhazo;
+        helyseg.telepules = telepulesObj;
+        beruhazoHelyseg.telepules = beruhazoTelepulesObj;
         kuldObj.cim = helyseg;
-        kuldObj.epuletszintek = epuletszintek;
+        kuldObj.epuletszintek = projektObject.epuletszintek.map((esz) => {
+            return { label: esz.label, value: parseInt(esz.value, 10) };
+        });
+        /* kuldObj.epuletszintek = epuletszintek; */
+        kuldObj.isTobbEpuletes = kuldObj.epuletszintek && kuldObj.epuletszintek.length > 1 ? true : false;
 
         let datas = {};
         if (!currentId) {
@@ -592,25 +668,36 @@ const Projektek = (props) => {
                 telepules: defaultBeruhazoHelseg,
                 cimadat: ''
             });
-            getBeruhazoTelepulesekOpts(epuletszintek);
+            getBeruhazoTelepulesekOpts(telepulesek);
         }
     };
 
     const handleEpuletszintekChange = (e) => {
+        console.log(e);
         if (e) {
-            setEpuletSzintekOpts([e]);
-            setEpuletszintek(e);
-            /* setProjektObj({
+            setProjektObj({
                 ...projektObject,
                 epuletszintek: e
-            }); */
+            });
         } else {
-            /* setProjektObj({
+            setProjektObj({
                 ...projektObject,
                 epuletszintek: []
-            }); */
-            setEpuletszintek([]);
-            getEpuletszintekOpts(epuletszintek);
+            });
+        }
+    };
+
+    const handleProjektIngatlanokChange = (e) => {
+        if (e) {
+            setProjektObj({
+                ...projektObject,
+                projektingatlanok: e
+            });
+        } else {
+            setProjektObj({
+                ...projektObject,
+                projektingatlanok: []
+            });
         }
     };
 
@@ -663,13 +750,16 @@ const Projektek = (props) => {
     const renderProjektModal = () => {
         return (
             <Modal isOpen={projektModal} toggle={toggleProjektModal} backdrop="static" size="xl">
-                <RVForm onSubmit={onSubmit} encType="multipart/form-data" noValidate>
-                    <ModalHeader>{!currentId ? 'Projekt felvitele' : 'Projekt módosítása'}</ModalHeader>
+                <RVForm id="form" onSubmit={onSubmit} encType="multipart/form-data" noValidate>
+                    <ModalHeader>{!formType === 'FEL' ? 'Projekt felvitele' : 'Projekt módosítása'}</ModalHeader>
                     <ModalBody>
                         <ProjektForm
                             init={init}
+                            step={step}
+                            setStep={setStep}
                             renderEgyebOptions={renderEgyebOptions}
                             currentId={currentId}
+                            setCurrentId={setCurrentId}
                             formType={formType}
                             getProjekt={getProjekt}
                             isRequired={isRequired}
@@ -694,6 +784,8 @@ const Projektek = (props) => {
                             telepulesekOpts={telepulesekOpts}
                             setTelepulesekOpts={setTelepulesekOpts}
                             epuletszintekOpts={epuletszintekOpts}
+                            projektingatlanokOpts={projektingatlanokOpts}
+                            handleProjektIngatlanokChange={handleProjektIngatlanokChange}
                             setEpuletSzintekOpts={setEpuletSzintekOpts}
                             beruhazoTelepulesekOpts={beruhazoTelepulesekOpts}
                             setBeruhazoTelepulesekOpts={setBeruhazoTelepulesekOpts}
@@ -705,15 +797,25 @@ const Projektek = (props) => {
                             {...props}
                         />
                     </ModalBody>
-                    <ModalFooter>
-                        <Button color="success" type="submit">
-                            Mentés
-                        </Button>
-                        <Button type="button" onClick={toggleProjektModal}>
-                            Mégsem
-                        </Button>
-                    </ModalFooter>
+                    {step === maxStep && (
+                        <ModalFooter>
+                            <Button color={step === maxStep ? 'success' : 'primary'} onClick={step === maxStep ? () => {} : () => setStep(step + 1)} type={step === maxStep ? 'submit' : 'button'}>
+                                {step === maxStep ? 'Mentés' : 'Tovább'}
+                            </Button>
+                            <Button type="button" onClick={toggleProjektModal}>
+                                Mégsem
+                            </Button>
+                        </ModalFooter>
+                    )}
                 </RVForm>
+                <ModalFooter hidden={step === maxStep}>
+                    <Button color={'primary'} onClick={() => setStep(step + 1)} type={'button'}>
+                        {'Tovább'}
+                    </Button>
+                    <Button type="button" onClick={toggleProjektModal}>
+                        Mégsem
+                    </Button>
+                </ModalFooter>
             </Modal>
         );
     };
