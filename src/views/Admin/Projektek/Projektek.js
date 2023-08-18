@@ -348,6 +348,7 @@ const Projektek = (props) => {
     };
 
     const toggleProjektModal = () => {
+        setStep(1);
         setProjektModal(!projektModal);
     };
 
@@ -512,6 +513,7 @@ const Projektek = (props) => {
                     addNotification('success', res.msg);
                     listProjektek();
                     toggleProjektModal();
+                    setStep(1);
                 }
             });
         } else {
@@ -521,6 +523,7 @@ const Projektek = (props) => {
                     addNotification('success', res.msg);
                     listProjektek();
                     toggleProjektModal();
+                    setStep(1);
                 }
             });
         }
