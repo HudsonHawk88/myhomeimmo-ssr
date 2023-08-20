@@ -73,6 +73,11 @@ const Projektek = (props) => {
         parkoloarmill: '',
         isTobbEpuletes: false,
         komfort: '',
+        jutalek: '',
+        megbizaskelte: '',
+        megbizasvege: '',
+        nempubmegjegyzes: '',
+        nempubcsatolmanyok: [],
         epuletszintek: [],
         projektingatlanok: [],
         projektingatlanokOpts: [],
@@ -308,7 +313,6 @@ const Projektek = (props) => {
 
     useEffect(() => {
         init();
-        console.log(formType, currentId);
         if (formType === 'FEL') {
             setCurrentId(null);
             setProjektObj(defaultProjekt);
@@ -447,7 +451,7 @@ const Projektek = (props) => {
                 filterType: 'textFilter',
                 filterDefaultValue: 'Keresés...'
             },
-            {
+            /* {
                 dataField: 'isZoldOtthon',
                 text: 'Zöld Otthon?'
             },
@@ -458,7 +462,7 @@ const Projektek = (props) => {
             {
                 dataField: 'isSzigetelt',
                 text: 'Szigetelt?'
-            },
+            }, */
             {
                 dataField: 'id',
                 formatter: tableIconFormatter,
@@ -676,7 +680,6 @@ const Projektek = (props) => {
     };
 
     const handleEpuletszintekChange = (e) => {
-        console.log(e);
         if (e) {
             setProjektObj({
                 ...projektObject,
@@ -743,7 +746,7 @@ const Projektek = (props) => {
 
         return array.map((item) => {
             return (
-                <option key={item.id} value={item.value}>
+                <option key={item.value + '_' + nev} value={item.value}>
                     {item.label}
                 </option>
             );

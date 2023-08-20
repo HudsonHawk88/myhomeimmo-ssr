@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Label, Modal, ModalHeader, ModalBody, ModalFooter, ListGroup } from 'reactstrap';
 import { RVFormGroup, RVInput, RVInputGroup, RVFormFeedback, RVInputGroupText } from '@inftechsol/reactstrap-form-validation';
 import { useDropzone } from 'react-dropzone';
 import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
+import Moment from 'moment';
 import PropTypes from 'prop-types';
 
 import Stepper from '../../../commons/Stepper';
 import KepCard from '../../../commons/KepCard';
 import Services from './Services';
+import moment from 'moment';
 
 const ProjektekForm = (props) => {
     const {
@@ -65,6 +67,16 @@ const ProjektekForm = (props) => {
         });
     };
 
+    const getDate = (date) => {
+        let result = '';
+
+        if (date && date !== '') {
+            result = moment(date).format('YYYY-MM-DD');
+        }
+
+        return result;
+    };
+
     const toggleKepekModal = () => {
         setKepekModal(!kepekModal);
     };
@@ -80,6 +92,93 @@ const ProjektekForm = (props) => {
                 </option>
             );
         });
+    };
+
+    const getCsatolmanyokIkon = (filename, ext) => {
+        if (ext === 'doc' || ext === 'docx' || ext === 'odt') {
+            return <i key={filename + '_ext'} className="fas fa-file-word" style={{ color: '#0351d8' }} />;
+        } else if (ext === 'pdf') {
+            return <i key={filename + '_ext'} className="fa-solid fa-file-pdf" style={{ color: '#d82e03' }} />;
+        } else if (ext === 'xls' || ext === 'xlsx' || ext === 'odf' || ext === 'ods') {
+            return <i key={filename + '_ext'} className="fa-solid fa-file-excel" style={{ color: '#198104' }} />;
+        } else if (ext === 'zip' || ext === 'rar') {
+            return <i key={filename + '_ext'} className="fa-solid fa-file-zipper" />;
+        } else {
+            return '';
+        }
+    };
+
+    const MyDropzoneCsatolmanyok = () => {
+        const onDrop = useCallback((acceptedFiles) => {
+            const csatolmanyok = acceptedFiles.map((file, index) => {
+                // Do whatever you want with the file contents
+                let obj = {
+                    id: index,
+                    type: file.type,
+                    filename: file.name,
+                    title: file.name,
+                    size: file.size,
+                    src: URL.createObjectURL(file),
+                    file: file
+                };
+
+                return obj;
+            });
+
+            setObject({
+                ...object,
+                nempubcsatolmanyok: [...object.nempubcsatolmanyok, ...csatolmanyok]
+            });
+        }, []);
+        const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+        const csatolmanyokDivStyle = {
+            display: 'grid',
+            gridTemplateColumns: 'repeat(6, minmax(150px, 1fr))'
+        };
+
+        return (
+            <React.Fragment>
+                <div {...getRootProps({ className: 'dropzone' })}>
+                    <input {...getInputProps()} />
+                    <p>Kattintson vagy húzza id a feltöltendő csatolmány(oka)t...</p>
+                </div>
+
+                <div style={csatolmanyokDivStyle}>
+                    {object.nempubcsatolmanyok.map((csatolmany) => {
+                        const filename = csatolmany.filename + '';
+                        const ext = filename !== '' ? filename.slice(filename.lastIndexOf('.') + 1, filename.length) : undefined;
+                        console.log(ext);
+                        return (
+                            ext && (
+                                <div key={csatolmany.filename} style={{ padding: '10px' }}>
+                                    {csatolmany.type.includes('image') ? (
+                                        <div style={{ position: 'relative' }}>
+                                            <img className="upload_preview" src={csatolmany.src} alt={csatolmany.filename} />
+                                            <div className="upload_data">
+                                                <span style={{ overflowWrap: 'break-word', textAlign: 'center' }}>{csatolmany.filename}</span>
+                                                <br />
+                                                <span style={{ textAlign: 'center' }}>{'Méret: ' + (csatolmany.size / 1024 / 1024).toFixed(2) + ' Mb'}</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div style={{ height: '150px', position: 'relative' }}>
+                                            <div className="upload_preview">{getCsatolmanyokIkon(csatolmany.filename, ext)}</div>
+                                            <div className="upload_data">
+                                                <span style={{ overflowWrap: 'break-word', textAlign: 'center' }}>{csatolmany.filename}</span>
+                                                <br />
+                                                <span style={{ textAlign: 'center' }}>{'Méret: ' + (csatolmany.size / 1024 / 1024).toFixed(2) + ' Mb'}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div style={{ display: 'flex', justifyContent: 'center', minWidth: '100%', maxWidth: '100%', minHeight: '20px', maxHeight: '20px' }}>kuka</div>
+                                </div>
+                            )
+                        );
+                    })}
+                </div>
+            </React.Fragment>
+        );
     };
 
     const MyDropzoneBorito = () => {
@@ -287,11 +386,11 @@ const ProjektekForm = (props) => {
         });
     };
 
-    const renderOrszagokOptions = () => {
+    const renderOrszagokOptions = (name) => {
         if (orszagok.length !== 0) {
             return orszagok.map((orszag) => {
                 return (
-                    <option key={orszag.id + 'orszag'} value={orszag.id}>
+                    <option key={orszag.id + name + '_orszag'} value={orszag.id}>
                         {orszag.orszagnev}
                     </option>
                 );
@@ -356,18 +455,27 @@ const ProjektekForm = (props) => {
                                 <Label>{isRequired('Beruházó ország:', true)}</Label>
                                 <RVInput type="select" name="orszag" id="orszag" value={beruhazoHelyseg.orszag.id} onChange={(e) => handleInputChange(e, beruhazoHelyseg, setBeruhazoHelyseg)}>
                                     {!currentId && (
-                                        <option key="defaultOrszag" value="">
+                                        <option key="defaultBeruhazoOrszag" value="">
                                             Kérjük válasszon országot...
                                         </option>
                                     )}
-                                    {renderOrszagokOptions()}
+                                    {renderOrszagokOptions('beruhazo')}
                                 </RVInput>
+                                <RVFormFeedback />
                             </RVFormGroup>
                         </div>
                         <div className="col-md-3">
                             <RVFormGroup>
                                 <Label>{isRequired('Beruházó irányítószám:', true)}</Label>
-                                <RVInput name="irszam" id="irszam" pattern="[0-9]+" value={beruhazoHelyseg.irszam} onChange={(e) => handleInputChange(e, beruhazoHelyseg, setBeruhazoHelyseg)} />
+                                <RVInput
+                                    required
+                                    name="irszam"
+                                    id="irszam"
+                                    pattern="[0-9]+"
+                                    value={beruhazoHelyseg.irszam}
+                                    onChange={(e) => handleInputChange(e, beruhazoHelyseg, setBeruhazoHelyseg)}
+                                />
+                                <RVFormFeedback />
                             </RVFormGroup>
                         </div>
                         <div className="col-md-3">
@@ -403,6 +511,7 @@ const ProjektekForm = (props) => {
                             <RVFormGroup>
                                 <Label>{isRequired('Beruházó címadatai:', true)}</Label>
                                 <RVInput
+                                    required
                                     name="cimadatok"
                                     id="cimadatok"
                                     value={beruhazoHelyseg.cimadatok}
@@ -420,6 +529,7 @@ const ProjektekForm = (props) => {
                                 <RVInputGroup>
                                     <RVInputGroupText>+</RVInputGroupText>
                                     <RVInput
+                                        required
                                         name="telefon"
                                         id="telefon"
                                         pattern="[0-9 ]+"
@@ -428,18 +538,28 @@ const ProjektekForm = (props) => {
                                         placeholder="36 30 123 4567"
                                     />
                                 </RVInputGroup>
+                                <RVFormFeedback />
                             </RVFormGroup>
                         </div>
                         <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{isRequired('Beruházó e-mail címe:', true)}</Label>
-                                <RVInput name="email" id="email" value={beruhazo.email} onChange={(e) => handleInputChange(e, beruhazo, setBeruhazo)} placeholder="valaki@valami.hu" />
+                                <RVInput required name="email" id="email" value={beruhazo.email} onChange={(e) => handleInputChange(e, beruhazo, setBeruhazo)} placeholder="valaki@valami.hu" />
+                                <RVFormFeedback />
                             </RVFormGroup>
                         </div>
                         <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{isRequired('Beruházó weboldala:', true)}</Label>
-                                <RVInput name="weboldal" id="weboldal" value={beruhazo.weboldal} onChange={(e) => handleInputChange(e, beruhazo, setBeruhazo)} placeholder="http(s)://www.valami.hu" />
+                                <RVInput
+                                    required
+                                    name="weboldal"
+                                    id="weboldal"
+                                    value={beruhazo.weboldal}
+                                    onChange={(e) => handleInputChange(e, beruhazo, setBeruhazo)}
+                                    placeholder="http(s)://www.valami.hu"
+                                />
+                                <RVFormFeedback />
                             </RVFormGroup>
                         </div>
                     </div>
@@ -449,14 +569,14 @@ const ProjektekForm = (props) => {
                     <br />
                     <div className="row mb-2">
                         <div className="col-md-12">
-                            <Label>Projekt neve:</Label>
+                            <Label>Projekt neve: *</Label>
                             <RVInput type="text" name="nev" id="nev" onChange={(e) => handleInputChange(e, object, setObject)} value={object.nev} required />
                             <RVFormFeedback />
                         </div>
                     </div>
                     <div className="row mb-2">
                         <div className="col-md-12">
-                            <Label>Projekt leírása:</Label>
+                            <Label>Projekt leírása: *</Label>
                             <RVInput type="textarea" rows="7" name="leiras" id="leiras" onChange={(e) => handleInputChange(e, object, setObject)} value={object.leiras} required />
                             <RVFormFeedback />
                         </div>
@@ -485,20 +605,22 @@ const ProjektekForm = (props) => {
                         <div className="col-md-3">
                             <RVFormGroup>
                                 <Label>{isRequired('Projekt ország:', true)}</Label>
-                                <RVInput type="select" name="orszag" id="orszag" value={helyseg.orszag.id} onChange={(e) => handleInputChange(e, helyseg, setHelyseg)}>
+                                <RVInput required type="select" name="orszag" id="orszag" value={helyseg.orszag.id} onChange={(e) => handleInputChange(e, helyseg, setHelyseg)}>
                                     {!currentId && (
-                                        <option key="defaultOrszag" value="">
+                                        <option key="defaultProjektOrszag" value="">
                                             Kérjük válasszon országot...
                                         </option>
                                     )}
-                                    {renderOrszagokOptions()}
+                                    {renderOrszagokOptions('projekt')}
                                 </RVInput>
+                                <RVFormFeedback />
                             </RVFormGroup>
                         </div>
                         <div className="col-md-3">
                             <RVFormGroup>
                                 <Label>{isRequired('Projekt irányítószám:', true)}</Label>
-                                <RVInput name="irszam" id="irszam" pattern="[0-9]+" value={helyseg.irszam} onChange={(e) => handleInputChange(e, helyseg, setHelyseg)} />
+                                <RVInput required name="irszam" id="irszam" pattern="[0-9]+" value={helyseg.irszam} onChange={(e) => handleInputChange(e, helyseg, setHelyseg)} />
+                                <RVFormFeedback />
                             </RVFormGroup>
                         </div>
                         <div className="col-md-3">
@@ -533,7 +655,14 @@ const ProjektekForm = (props) => {
                         <div className="col-md-3">
                             <RVFormGroup>
                                 <Label>{isRequired('Projekt címadatai:', true)}</Label>
-                                <RVInput name="cimadatok" id="cimadatok" value={helyseg.cimadatok} onChange={(e) => handleInputChange(e, helyseg, setHelyseg)} placeholder="Valamilyen utca 8." />
+                                <RVInput
+                                    required
+                                    name="cimadatok"
+                                    id="cimadatok"
+                                    value={helyseg.cimadatok}
+                                    onChange={(e) => handleInputChange(e, helyseg, setHelyseg)}
+                                    placeholder="Valamilyen utca 8."
+                                />
                                 <RVFormFeedback />
                             </RVFormGroup>
                         </div>
@@ -580,7 +709,7 @@ const ProjektekForm = (props) => {
                             <RVFormGroup>
                                 <Label>{isRequired('Ingatlan típusa:', true)}</Label>
                                 <RVInput type="select" name="ingtipus" id="ingtipus" value={object.ingtipus} onChange={(e) => handleInputChange(e, object, setObject)} required>
-                                    <option key="" value="">
+                                    <option key="defaultPrpjektIngtipus" value="">
                                         Kérjük válasszon típust...
                                     </option>
                                     {renderEgyebOptions('ingtipus')}
@@ -594,7 +723,7 @@ const ProjektekForm = (props) => {
                             <RVFormGroup>
                                 <Label>{isRequired('Elsődleges fűtés típusa:', true)}</Label>
                                 <RVInput type="select" name="elsodlegesfutes" id="elsodlegesfutes" value={object.elsodlegesfutes} onChange={(e) => handleInputChange(e, object, setObject)} required>
-                                    <option key="" value="">
+                                    <option key="defaultElsodlegesFutes" value="">
                                         Kérjük válasszon fűtéstípust...
                                     </option>
                                     {renderEgyebOptions('futestipus')}
@@ -606,7 +735,7 @@ const ProjektekForm = (props) => {
                             <RVFormGroup>
                                 <Label>{isRequired('Másodlagos fűtés típusa:', true)}</Label>
                                 <RVInput type="select" name="masodlagosfutes" id="masodlagosfutes" value={object.masodlagosfutes} onChange={(e) => handleInputChange(e, object, setObject)}>
-                                    <option key="" value="">
+                                    <option key="defaultMasodlagosFutes" value="">
                                         Kérjük válasszon fűtéstípust...
                                     </option>
                                     {renderEgyebOptions('futestipus')}
@@ -618,8 +747,8 @@ const ProjektekForm = (props) => {
                             <RVFormGroup>
                                 <Label>{isRequired('Harmadlagos fűtés típusa:', true)}</Label>
                                 <RVInput type="select" name="harmadlagosfutes" id="harmadlagosfutes" value={object.harmadlagosfutes} onChange={(e) => handleInputChange(e, object, setObject)}>
-                                    <option key="" value="">
-                                        Kérjük válasszon típust...
+                                    <option key="defaultharmadlagosFutes" value="">
+                                        Kérjük válasszon fűtéstípust...
                                     </option>
                                     {renderEgyebOptions('futestipus')}
                                 </RVInput>
@@ -632,8 +761,8 @@ const ProjektekForm = (props) => {
                             <RVFormGroup>
                                 <Label>{isRequired('Parkoló típusa:', true)}</Label>
                                 <RVInput type="select" name="parkolotipus" id="parkolotipus" value={object.parkolotipus} onChange={(e) => handleInputChange(e, object, setObject)} required>
-                                    <option key="" value="">
-                                        Kérjük válasszon fűtéstípust...
+                                    <option key="defaultParkoloTipus" value="">
+                                        Kérjük válasszon parkolótipust...
                                     </option>
                                     {renderEgyebOptions('parkolotipus')}
                                 </RVInput>
@@ -644,8 +773,8 @@ const ProjektekForm = (props) => {
                             <RVFormGroup>
                                 <Label>{isRequired('Parkoló használata:', true)}</Label>
                                 <RVInput type="select" name="parkolohasznalat" id="parkolohasznalat" value={object.parkolohasznalat} onChange={(e) => handleInputChange(e, object, setObject)} required>
-                                    <option key="" value="">
-                                        Kérjük válasszon fűtéstípust...
+                                    <option key="defaultParkoloHasznalat" value="">
+                                        Kérjük válasszon parkolóhasználatot...
                                     </option>
                                     {renderEgyebOptions('parkolohasznalat')}
                                 </RVInput>
@@ -655,7 +784,16 @@ const ProjektekForm = (props) => {
                         <div className="col-md-4" hidden={object.parkolohasznalat === 'Benne van az árban'}>
                             <RVFormGroup>
                                 <Label>{isRequired('Parkolóhely ára:', true)}</Label>
-                                <RVInput type="text" pattern="[0-9]+" name="parkoloarmill" id="parkoloarmill" value={object.parkoloarmill} onChange={(e) => handleInputChange(e, object, setObject)} />
+                                <RVInput
+                                    required
+                                    type="text"
+                                    pattern="[0-9]+"
+                                    name="parkoloarmill"
+                                    id="parkoloarmill"
+                                    value={object.parkoloarmill}
+                                    onChange={(e) => handleInputChange(e, object, setObject)}
+                                />
+                                <RVFormFeedback />
                             </RVFormGroup>
                         </div>
                     </div>
@@ -664,7 +802,7 @@ const ProjektekForm = (props) => {
                             <RVFormGroup>
                                 <Label>{isRequired('Komfort:', true)}</Label>
                                 <RVInput type="select" name="komfort" id="komfort" value={object.komfort} onChange={(e) => handleInputChange(e, object, setObject)} required>
-                                    <option key="" value="">
+                                    <option key="defaultKomfort" value="">
                                         Kérjük válasszon komfortot...
                                     </option>
                                     {renderEgyebOptions('komfort')}
@@ -698,7 +836,7 @@ const ProjektekForm = (props) => {
                             <RVFormGroup>
                                 <Label>{isRequired('Energetikai besorolás:', true)}</Label>
                                 <RVInput type="select" name="energetika" id="energetika" value={object.energetika} onChange={(e) => handleInputChange(e, object, setObject)} required>
-                                    <option key="" value="">
+                                    <option key="defaultEBesorolas" value="">
                                         Kérjük válasszon E besorolást...
                                     </option>
                                     {renderEgyebOptions('ebesorolas')}
@@ -731,7 +869,7 @@ const ProjektekForm = (props) => {
                         <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{isRequired('Ingatlanok pénzneme:', true)}</Label>
-                                <RVInput required type="select" name="penznem" id="penznem" value={object.penznem} onChange={(e) => handleInputChange(e, obj, setObject)}>
+                                <RVInput required type="select" name="penznem" id="penznem" value={object.penznem} onChange={(e) => handleInputChange(e, object, setObject)}>
                                     <option key="defaultPenznem" value="">
                                         Kérjük válasszon pénznemet...
                                     </option>
@@ -741,6 +879,55 @@ const ProjektekForm = (props) => {
                             </RVFormGroup>
                         </div>
                         <div className="col-md-4" />
+                    </div>
+                    <div className="row mb-2" hidden>
+                        <h5>Nem publikus adatok:</h5>
+                        <div className="col-md-4">
+                            <RVFormGroup>
+                                <Label>{isRequired('Jutalék:', false)}</Label>
+                                <RVInputGroup>
+                                    <RVInput type="text" name="jutalek" id="jutalek" value={object.jutalek} onChange={(e) => handleInputChange(e, object, setObject)} />
+                                    <RVInputGroupText>%</RVInputGroupText>
+                                </RVInputGroup>
+                            </RVFormGroup>
+                        </div>
+                        <div className="col-md-4">
+                            <RVFormGroup>
+                                <Label>{isRequired('Megbízás kelte:', false)}</Label>
+                                <RVInput type="date" name="megbizaskelte" id="megbizaskelte" value={getDate(object.megbizaskelte)} onChange={(e) => handleInputChange(e, object, setObject)} />
+                                <RVFormFeedback />
+                            </RVFormGroup>
+                        </div>
+                        <div className="col-md-4">
+                            <RVFormGroup>
+                                <Label>{isRequired('Megbízás vége:', false)}</Label>
+                                <RVInput type="date" name="megbizasvege" id="megbizasvege" value={getDate(object.megbizasvege)} onChange={(e) => handleInputChange(e, object, setObject)} />
+                                <RVFormFeedback />
+                            </RVFormGroup>
+                        </div>
+                    </div>
+                    <div className="row mb-2" hidden>
+                        <div className="col-md-12">
+                            <RVFormGroup>
+                                <Label>{isRequired('Megjegyzés:', false)}</Label>
+                                <RVInput
+                                    type="textarea"
+                                    rows={5}
+                                    name="nempubmegjegyzes"
+                                    id="nempubmegjegyzes"
+                                    value={object.nempubmegjegyzes}
+                                    onChange={(e) => handleInputChange(e, object, setObject)}
+                                />
+                            </RVFormGroup>
+                        </div>
+                    </div>
+                    <div className="row mb-2" hidden>
+                        <div className="col-md-12">
+                            <RVFormGroup>
+                                <Label>{isRequired('Csatolmányok:', false)}</Label>
+                                <MyDropzoneCsatolmanyok multiple />
+                            </RVFormGroup>
+                        </div>
                     </div>
                 </div>
                 <div>
