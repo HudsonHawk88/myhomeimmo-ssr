@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
 import { RVForm } from '@inftechsol/reactstrap-form-validation';
@@ -11,9 +11,13 @@ import { hasRole, makeFormData } from '../../../commons/Lib';
 const Projektek = (props) => {
     const { addNotification, user } = props;
 
-    const defaultTelepulesObj = {
-        telepulesnev: '',
-        irszam: ''
+    const defaultBeruhazo = {
+        nev: '',
+        bemutat: '',
+        cim: defaultBeruhazoCim,
+        telefon: '',
+        email: '',
+        weboldal: ''
     };
 
     const defaultBeruhazoTelepulesObj = {
@@ -22,8 +26,8 @@ const Projektek = (props) => {
     };
 
     const defaultBeruhazoCim = {
-        orszag: {},
-        telepules: {},
+        orszag: '',
+        telepules: defaultBeruhazoTelepulesObj,
         cimadatok: ''
     };
 
@@ -34,20 +38,24 @@ const Projektek = (props) => {
         cimadatok: ''
     };
 
-    const defaultBeruhazo = {
-        nev: '',
-        bemutat: '',
-        cim: defaultBeruhazoCim,
-        telefon: '',
-        email: '',
-        weboldal: ''
+    const defaultTelepulesObj = {
+        telepulesnev: '',
+        irszam: ''
     };
 
     const defaultCim = {
-        orszag: {},
-        telepules: {},
+        orszag: '',
+        telepules: defaultTelepulesObj,
         cimadatok: ''
     };
+
+    const defaultHelseg = {
+        orszag: '',
+        irszam: '',
+        telepules: defaultTelepulesObj,
+        cimadatok: ''
+    };
+
     const defaultProjekt = {
         nev: '',
         leiras: '',
@@ -92,13 +100,6 @@ const Projektek = (props) => {
         szigetelesmeret: ''
     };
 
-    const defaultHelseg = {
-        orszag: '',
-        irszam: '',
-        telepules: defaultTelepulesObj,
-        cimadatok: ''
-    };
-
     const defaultFelado = {
         feladoNev: '',
         feladoTelefon: '',
@@ -126,8 +127,8 @@ const Projektek = (props) => {
     const [ebesorolasOptions, setEbersoloasOptions] = useState([]);
 
     const [helyseg, setHelyseg] = useState(defaultHelseg);
-    const [beruhazoHelyseg, setBeruhazoHelyseg] = useState(defaultHelseg);
-    const [formType, setFormType] = useState('FEL'); // ['FEL', 'MOD', 'DEL']
+    const [beruhazoHelyseg, setBeruhazoHelyseg] = useState(defaultBeruhazoHelseg);
+    const [formType, setFormType] = useState(''); // ['FEL', 'MOD', 'DEL', '']
     const [projektekJson, setProjektekJson] = useState([]);
     const [currentId, setCurrentId] = useState(null);
 
@@ -160,6 +161,34 @@ const Projektek = (props) => {
             });
         }
     };
+
+    const init = () => {
+        listOrszagok();
+        listTelepulesek();
+        listProjektek();
+        getOptions();
+        getProjektIngatlanokOpts();
+    };
+
+    const setDefaultValues = () => {
+        listOrszagok();
+        listTelepulesek();
+        setProjektObj(defaultProjekt);
+        setBeruhazo(defaultBeruhazo);
+        setTelepulesObj(defaultTelepulesObj);
+        setBeruhazoTelepulesObj(defaultBeruhazoTelepulesObj);
+        setHelyseg(defaultHelseg);
+        setBeruhazoHelyseg(defaultBeruhazoHelseg);
+        getTelepulesekOpts(telepulesek);
+        getBeruhazoTelepulesekOpts(telepulesek);
+    };
+
+    useEffect(() => {
+        init();
+        if (formType === 'FEL' && !currentId) {
+            setDefaultValues();
+        }
+    }, [formType, currentId]);
 
     const listOrszagok = () => {
         Services.listOrszagok((err, res) => {
@@ -299,54 +328,6 @@ const Projektek = (props) => {
         });
     };
 
-    const init = () => {
-        listOrszagok();
-        listTelepulesek();
-        listProjektek();
-        getOptions();
-        getProjektIngatlanokOpts();
-    };
-
-    /*   useEffect(() => {
-        init();
-    }, []); */
-
-    useEffect(() => {
-        init();
-        if (formType === 'FEL') {
-            setCurrentId(null);
-            setProjektObj(defaultProjekt);
-            setStep(1);
-            setHelyseg({
-                ...helyseg,
-                irszam: '',
-                telepules: ''
-            });
-            setBeruhazoHelyseg({
-                ...beruhazoHelyseg,
-                irszam: '',
-                telepules: ''
-            });
-            if (user.isErtekesito) {
-                setHirdeto({
-                    feladoNev: nevFormatter(user.nev),
-                    feladoTelefon: telefonFormatter(user.telefon),
-                    feladoEmail: user.email,
-                    feladoAvatar: user.avatar
-                });
-            } else {
-                setHirdeto({
-                    feladoNev: nevFormatter(ertekesito.nev),
-                    feladoTelefon: telefonFormatter(ertekesito.telefon),
-                    feladoEmail: ertekesito.email,
-                    feladoAvatar: ertekesito.avatar
-                });
-            }
-        } else if (formType === 'MOD') {
-            getProjekt(currentId);
-        }
-    }, [currentId, formType]);
-
     const toggleViewModal = () => {
         setViewModal(!viewModal);
     };
@@ -362,20 +343,14 @@ const Projektek = (props) => {
 
     const handleNewClick = () => {
         setCurrentId(null);
-        listOrszagok();
-        setBeruhazo(defaultBeruhazo);
-        setHelyseg(defaultHelseg);
-        setBeruhazoHelyseg(defaultBeruhazoHelseg);
-        setBeruhazoTelepulesObj(defaultBeruhazoTelepulesObj);
-        setTelepulesObj(defaultTelepulesObj);
-        getTelepulesekOpts(telepulesek);
-        getBeruhazoTelepulesekOpts(telepulesek);
+        /* setDefaultValues(); */
         setFormType('FEL');
         toggleProjektModal();
     };
 
     const handleViewClick = (id) => {
         setCurrentId(id);
+        getProjekt(id);
         toggleViewModal();
     };
 
@@ -498,11 +473,12 @@ const Projektek = (props) => {
 
     const onSubmit = () => {
         let kuldObj = projektObject;
-        beruhazo.cim = beruhazoHelyseg;
         kuldObj.beruhazo = beruhazo;
-        helyseg.telepules = telepulesObj;
-        beruhazoHelyseg.telepules = beruhazoTelepulesObj;
+        kuldObj.beruhazo.cim = beruhazoHelyseg;
+        kuldObj.beruhazo.cim.telepules = beruhazoTelepulesObj;
         kuldObj.cim = helyseg;
+        kuldObj.cim.telepules = telepulesObj;
+
         kuldObj.epuletszintek = projektObject.epuletszintek.map((esz) => {
             return { label: esz.label, value: parseInt(esz.value, 10) };
         });
@@ -651,7 +627,6 @@ const Projektek = (props) => {
                 telepules: defaultTelepulesObj,
                 cimadat: ''
             });
-            getTelepulesekOpts(telepulesek);
         }
     };
 
@@ -672,7 +647,7 @@ const Projektek = (props) => {
             setBeruhazoHelyseg({
                 ...beruhazoHelyseg,
                 irszam: '',
-                telepules: defaultBeruhazoHelseg,
+                telepules: defaultBeruhazoTelepulesObj,
                 cimadat: ''
             });
             getBeruhazoTelepulesekOpts(telepulesek);
@@ -761,6 +736,7 @@ const Projektek = (props) => {
                     <ModalBody>
                         <ProjektForm
                             init={init}
+                            setDefaultValues={setDefaultValues}
                             step={step}
                             setStep={setStep}
                             renderEgyebOptions={renderEgyebOptions}
@@ -774,6 +750,7 @@ const Projektek = (props) => {
                             handleEpuletszintekChange={handleEpuletszintekChange}
                             handleInputChange={handleInputChange}
                             orszagok={orszagok}
+                            telepulesek={telepulesek}
                             object={projektObject}
                             defaultProjekt={defaultProjekt}
                             setObject={setProjektObj}
@@ -808,7 +785,14 @@ const Projektek = (props) => {
                             <Button color={step === maxStep ? 'success' : 'primary'} onClick={step === maxStep ? () => {} : () => setStep(step + 1)} type={step === maxStep ? 'submit' : 'button'}>
                                 {step === maxStep ? 'Mentés' : 'Tovább'}
                             </Button>
-                            <Button type="button" onClick={toggleProjektModal}>
+                            <Button
+                                type="button"
+                                onClick={() => {
+                                    toggleProjektModal();
+                                    setFormType('');
+                                    setDefaultValues();
+                                }}
+                            >
                                 Mégsem
                             </Button>
                         </ModalFooter>
@@ -818,7 +802,14 @@ const Projektek = (props) => {
                     <Button color={'primary'} onClick={() => setStep(step + 1)} type={'button'}>
                         {'Tovább'}
                     </Button>
-                    <Button type="button" onClick={toggleProjektModal}>
+                    <Button
+                        type="button"
+                        onClick={() => {
+                            toggleProjektModal();
+                            setFormType('');
+                            setDefaultValues();
+                        }}
+                    >
                         Mégsem
                     </Button>
                 </ModalFooter>

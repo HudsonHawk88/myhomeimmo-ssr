@@ -12,52 +12,57 @@ import KepCard from '../../../commons/KepCard';
 import Services from './Services';
 import moment from 'moment';
 
-const ProjektekForm = (props) => {
-    const {
-        addNotification,
-        user,
-        defaultProjekt,
-        init,
-        isRequired,
-        currentId,
-        getProjekt,
-        handleInputChange,
-        handleTelepulesChange,
-        handleBeruhazoTelepulesChange,
-        handleEpuletszintekChange,
-        object,
-        setObject,
-        helyseg,
-        orszagok,
-        setHelyseg,
-        beruhazo,
-        setBeruhazo,
-        beruhazoHelyseg,
-        setBeruhazoHelyseg,
-        telepulesObj,
-        setTelepulesObj,
-        beruhazoTelepulesObj,
-        setBeruhazoTelepulesObj,
-        formType,
-        telepulesekOpts,
-        setTelepulesekOpts,
-        beruhazoTelepulesekOpts,
-        setBeruhazoTelepulesekOpts,
-        epuletszintekOpts,
-        setHirdeto,
-        ertekesito,
-        nevFormatter,
-        telefonFormatter,
-        renderEgyebOptions,
-        projektingatlanokOpts,
-        handleProjektIngatlanokChange,
-        step,
-        setStep,
-        setCurrentId
-    } = props;
-
+const ProjektekForm = ({
+    addNotification,
+    user,
+    defaultProjekt,
+    init,
+    isRequired,
+    currentId,
+    getProjekt,
+    telepulesek,
+    handleInputChange,
+    handleTelepulesChange,
+    handleBeruhazoTelepulesChange,
+    handleEpuletszintekChange,
+    object,
+    setObject,
+    helyseg,
+    orszagok,
+    setHelyseg,
+    beruhazo,
+    setBeruhazo,
+    beruhazoHelyseg,
+    setBeruhazoHelyseg,
+    telepulesObj,
+    setTelepulesObj,
+    beruhazoTelepulesObj,
+    setBeruhazoTelepulesObj,
+    formType,
+    setDefaultValues,
+    telepulesekOpts,
+    setTelepulesekOpts,
+    beruhazoTelepulesekOpts,
+    setBeruhazoTelepulesekOpts,
+    epuletszintekOpts,
+    setHirdeto,
+    ertekesito,
+    nevFormatter,
+    telefonFormatter,
+    renderEgyebOptions,
+    projektingatlanokOpts,
+    handleProjektIngatlanokChange,
+    step,
+    setStep,
+    setCurrentId,
+    ...props
+}) => {
     const [kepekModal, setKepekModal] = useState(false);
     const [ingatlanOptions, setIngatlanOptions] = useState([]);
+
+    /* useEffect(() => {
+        setDefaultValues();
+    }, []); */
 
     const getOptions = () => {
         Services.getIngatlanOptions((err, res) => {
@@ -273,6 +278,7 @@ const ProjektekForm = (props) => {
 
     const getBeruhazoTelepulesekOpts = (items) => {
         let telOpts = [];
+        console.log('FORMITEMS: ', items);
         items.forEach((item) => {
             telOpts.push({
                 label: item.telepulesnev,
@@ -357,6 +363,7 @@ const ProjektekForm = (props) => {
     const getBeruhazoTelepulesByIrsz = (irsz) => {
         Services.getTelepulesByIrsz(irsz, (err, res) => {
             if (!err) {
+                console.log(res);
                 if (res.length === 1) {
                     setBeruhazoTelepulesObj({
                         ...beruhazoTelepulesObj,
@@ -499,7 +506,7 @@ const ProjektekForm = (props) => {
                                                 ...beruhazoHelyseg,
                                                 telepules: {
                                                     irszam: beruhazoHelyseg.irszam,
-                                                    telepulesnev: e
+                                                    telepulesnev: e.value
                                                 }
                                             });
                                         }
@@ -644,7 +651,7 @@ const ProjektekForm = (props) => {
                                                 ...helyseg,
                                                 telepules: {
                                                     irszam: helyseg.irszam,
-                                                    telepulesnev: e
+                                                    telepulesnev: e.value
                                                 }
                                             });
                                         }
@@ -976,6 +983,7 @@ const ProjektekForm = (props) => {
 
     return (
         <React.Fragment>
+            {console.log(telepulesekOpts, beruhazoTelepulesekOpts)}
             {renderForm()}
             {renderKepekModal()}
         </React.Fragment>
