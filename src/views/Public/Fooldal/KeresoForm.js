@@ -128,7 +128,7 @@ const KeresoForm = (props) => {
                 if (filter === 'ar') {
                     let ar = keresoObj[filter] + '';
                     ar = ar.replace(/ /g, '');
-                    newKereso['ar'] = ar;
+                    newKereso['ar'] = parseInt(ar, 10);
                 } else {
                     newKereso[filter] = keresoObj[filter];
                     /*    newKereso.telepules = telepulesObj; */
@@ -261,11 +261,13 @@ const KeresoForm = (props) => {
                                         {'Kérjük válasszon pénznemet...'}
                                     </option> */}
                             {penznemOptions.map((item) => {
-                                return (
-                                    <option key={item.id} value={item.value}>
-                                        {item.nev}
-                                    </option>
-                                );
+                                if (item.isoValue !== 'USD') {
+                                    return (
+                                        <option key={item.id} value={item.value}>
+                                            {item.nev}
+                                        </option>
+                                    );
+                                }
                             })}
                         </RVInput>
                     </RVFormGroup>

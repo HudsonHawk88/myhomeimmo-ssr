@@ -3,11 +3,11 @@
 
 .public_rolunk {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
     min-width: 100%;
     max-width: 100%;
-    min-height: calc(100vh - 195px);
+    gap: 10px;
     // max-width: inherit;
     /* padding: 20px 2%; */
     align-self: baseline;
@@ -15,8 +15,9 @@
     // background-color: rgb(235, 255, 250);
     margin: 0px;
 
-    & a {
-        color: black;
+    @media screen and (min-width: 720px) and (max-width: 950px) {
+        display: flex;
+        flex-wrap: wrap;
     }
 
     @media screen and (min-width: 950px) {
@@ -25,26 +26,18 @@
         width: 100%;
     }
 
-    & .item {
-        display: block;
-        width: 100%;
-
-        @media screen and (min-width: 720px) {
-            display: flex;
-            flex-wrap: wrap;
-        }
+    & a {
+        color: black;
     }
 
     &__item {
         display: flex;
         flex-wrap: wrap;
         background-color: white;
-        margin: 10px;
-        padding: 10px;
         cursor: pointer;
-        width: calc(100% - 20px);
-        min-height: 300px;
-        max-height: 300px;
+        width: 100%;
+        min-height: 320px;
+        max-height: 320px;
         /*         max-width: 100%; */
         font-size: smaller;
         /*     height: minmax(fit-content, 150px); */
@@ -58,20 +51,20 @@
             // width: calc(50% - 45px);
         } */
 
-        @media screen and (min-width: 720px) and (max-width: 1200px) {
-            min-height: none;
-            max-height: none;
-            font-size: larger;
-            min-width: calc(50% - 20px);
-            max-width: calc(50% - 20px);
-        }
+        /* @media screen and (min-width: 720px) and (max-width: 1200px) {
+            min-height: 250px;
+            max-height: 250px;
+            font-size: 0.8em;
+            min-width: calc(50% - 5px);
+            max-width: calc(50% - 5px);
+        } */
 
         @media screen and (min-width: 1200px) {
-            min-height: none;
-            max-height: none;
-            font-size: larger;
-            min-width: calc(25% - 20px);
-            max-width: calc(25% - 20px);
+            min-height: 320px;
+            max-height: 320px;
+            font-size: 0.95em;
+            min-width: calc(50% - 5px);
+            max-width: calc(50% - 5px);
         }
 
         &:hover {
@@ -83,38 +76,112 @@
         }
     }
 
+    &__baloldal {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        min-width: 100%;
+        max-width: 100%;
+        min-width: 60%;
+        max-width: 60%;
+        padding: 10px;
+        border-right: 10px solid rgba(58, 214, 197, 1);
+
+        @media screen and (min-width: 720px) {
+            border-right: 30px solid rgba(58, 214, 197, 1);
+            min-width: 65%;
+            max-width: 65%;
+        }
+    }
+
+    &__fejlec {
+        min-height: 40%;
+        max-height: 40%;
+        min-width: 100%;
+        max-width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+
+        & .public_rolunk__fejlec__logo {
+            display: none;
+            align-self: center;
+            content: var(themes-public-navbarlogo);
+            height: 80px;
+            width: 80px;
+            margin-right: 10px;
+
+            @media screen and (min-width: 720px) {
+                display: flex;
+            }
+        }
+
+        & .public_rolunk__fejlec__adatok {
+            margin: auto 0;
+            width: calc(100% - 90px);
+        }
+
+        & .public_rolunk__beosztas,
+        .public_rolunk__cegnev2 {
+            color: rgba(58, 214, 197, 1);
+        }
+
+        & .public_rolunk__cegnev1 {
+            color: #006266;
+        }
+    }
+
     &__alapadatok {
         text-align: left;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        max-height: 100%;
+        /*  display: flex; */
+        /* height: 50%; */
+        width: 100%;
+        /*         min-height: 50%;
+        max-height: 50%;
         min-width: 100%;
+        max-width: 100%; */
         word-wrap: break-word;
         overflow-wrap: break-word;
+        padding: 10px 0;
+
+        & .ikon {
+            width: 25px;
+            height: 25px;
+            margin: 0px 5px 0px 0px;
+        }
     }
 
     &__kep {
         text-align: right;
-        padding: 10px;
         align-items: center;
         display: flex;
+        min-height: 320px;
+        max-height: 320px;
+        min-width: 40%;
+        max-width: 40%;
+        border-left: 6px solid #006266;
 
         img {
-            border-radius: 50%;
-            height: 100px;
-            width: 100px;
+            /* border-radius: 50%; */
+            height: 100%;
+            width: 100%;
             object-fit: cover;
             object-position: top;
 
-            // @media screen and (min-width: 500px) {
-            //     width: calc(50% - 25px);
-            // }
+            /* @media screen and (min-width: 950px) {
+                height: 85px;
+                width: 85px;
+            } */
+        }
+
+        @media screen and (min-width: 720px) {
+            min-width: 35%;
+            max-width: 35%;
+            border-left: 20px solid #006266;
         }
     }
 
     &__leiras {
-        padding: 20px 10px;
+        padding: 5px;
         min-height: 100%;
 
         @media screen and (min-width: 950px) {

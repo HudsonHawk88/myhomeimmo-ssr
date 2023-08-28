@@ -1,6 +1,6 @@
 import { Microservices } from '../../../../shared/MicroServices';
 const location = typeof window !== 'undefined' ? window.location : {};
-const ingatlanokUrl = location.origin + '/api/ingatlanok/aktiv';
+const ingatlanokUrl = location.origin + '/api/ingatlan/reklam';
 const telepulesekUrl = location.origin + '/api/telepulesek';
 
 export default class Services {

@@ -56,7 +56,7 @@ const keys = [
     'szigetelesmeret'
 ];
 
-const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok'];
+const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok', 'nempubcsatolmasnyok'];
 
 // PROJEKTEK START
 

@@ -48,6 +48,13 @@ const PublicHeader = (props) => {
                             </a>
                         </NavItem>
                         <NavItem className="nav-item public-navbar__nav-item">
+                            <Link className="nav-link public-navbar__nav-link" to="/ujepites">
+                                {/* <i className="fas fa-home" /> */}
+                                <i className="fas fa-project-diagram"></i>
+                                &nbsp; Újépítés
+                            </Link>
+                        </NavItem>
+                        <NavItem className="nav-item public-navbar__nav-item">
                             <Link className="nav-link public-navbar__nav-link" to="/ingatlanok">
                                 {/* <i className="fas fa-home" /> */}
                                 <i aria-hidden className="fas fa-house-user"></i>

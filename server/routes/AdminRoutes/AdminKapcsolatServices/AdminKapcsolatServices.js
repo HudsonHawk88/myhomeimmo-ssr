@@ -91,7 +91,7 @@ router.post('/', upload.array('kep'), async (req, res) => {
                 if (felvitelObj) {
                     felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
                     //store user, password and role
-                    const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.kapcsolat (
+                    const sql = `CREATE TABLE IF NOT EXISTS myhomeimmo.kapcsolat (
                     id INT NOT NULL PRIMARY KEY,
                     azonosito text DEFAULT NULL,
                     kep json DEFAULT NULL,
@@ -208,7 +208,7 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
                                     kepek.push(JSON.parse(item));
                                 });
                             } else {
-                                kepek.push(JSON.parse(modositoObj.kep));
+                                kepek = JSON.parse(modositoObj.kep);
                             }
                         }
 
@@ -216,11 +216,19 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
                             req.files.map((kep) => {
                                 let extIndex = kep.originalname.lastIndexOf('.');
                                 let fname = kep.originalname.substring(0, extIndex);
-                                kepek.push({
+                                /* kepek.push({
                                     src: `${process.env.kapcsolatUrl}/${id}/${fname}.jpg`,
                                     title: `${fname}.jpg`,
                                     filename: `${fname}.jpg`
-                                });
+                                }); */
+
+                                if (kepek.find((k) => k.originalname === kep.originalname)) {
+                                    kepek.push({
+                                        filename: `${fname}.jpg`,
+                                        src: `${process.env.kapcsolatUrl}/${id}/${fname}.jpg`,
+                                        title: `${fname}.jpg`
+                                    });
+                                }
 
                                 sharp(kep.buffer)
                                     .jpeg({ quality: 80 })

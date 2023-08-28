@@ -312,7 +312,7 @@ const AdminUsers = (props) => {
                         adminUser.avatar.map((kep, index) => {
                             return (
                                 <Card key={index.toString()} className="col-md-3">
-                                    <CardTitle>{kep.nev}</CardTitle>
+                                    <CardTitle>{kep.filename}</CardTitle>
                                     <CardBody>
                                         <img style={imageStyle} src={kep.src || kep.preview} alt={kep.nev} />
                                     </CardBody>

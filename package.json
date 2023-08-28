@@ -9,7 +9,7 @@
         "@dnd-kit/utilities": "^3.2.0",
         "@inftechsol/react-data-table": "^1.0.4",
         "@inftechsol/react-slate-wysiwyg": "^1.7.6",
-        "@inftechsol/reactstrap-form-validation": "^0.3.0",
+        "@inftechsol/reactstrap-form-validation": "^0.3.2",
         "@loadable/component": "5.15.2",
         "@loadable/server": "5.15.2",
         "@next-tools/dynamic": "0.0.11",

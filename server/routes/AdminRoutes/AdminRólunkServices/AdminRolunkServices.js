@@ -88,7 +88,7 @@ router.post('/', upload.array('kep'), async (req, res) => {
                 if (felvitelObj) {
                     felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
                     //store user, password and role
-                    const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.rolunk (
+                    const sql = `CREATE TABLE IF NOT EXISTS myhomeimmo.rolunk (
                     id INT NOT NULL PRIMARY KEY,
                     azonosito text DEFAULT NULL,
                     kep json DEFAULT NULL,
@@ -204,7 +204,7 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
                                     kepek.push(JSON.parse(item));
                                 });
                             } else {
-                                kepek.push(JSON.parse(modositoObj.kep));
+                                kepek = JSON.parse(modositoObj.kep);
                             }
                         }
 
@@ -212,13 +212,20 @@ router.put('/', upload.array('uj_kep'), async (req, res) => {
                             req.files.map((kep) => {
                                 let extIndex = kep.originalname.lastIndexOf('.');
                                 let fname = kep.originalname.substring(0, extIndex);
-                                kepek.push({
+                                if (kepek.find((k) => k.originalname === kep.originalname)) {
+                                    kepek.push({
+                                        filename: `${fname}.jpg`,
+                                        src: `${process.env.rolunkUrl}/${id}/${fname}.jpg`,
+                                        title: `${fname}.jpg`
+                                    });
+                                }
+                                /*  kepek.push({
                                     src: `${process.env.rolunkUrl}/${id}/${fname}.jpg`,
                                     title: `${fname}.jpg`,
                                     filename: `${fname}.jpg`
-                                });
-                                
-                                 sharp(kep.buffer)
+                                }); */
+
+                                sharp(kep.buffer)
                                     .jpeg({ quality: 80 })
                                     .resize({ width: 1500, fit: 'inside' })
                                     .withMetadata()

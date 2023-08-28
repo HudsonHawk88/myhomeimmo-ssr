@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
 import Services from './Services';
+import { Button } from 'reactstrap';
 
 const Reklam = () => {
     const [ingatlanok, setIngatlanok] = useState([]);
     const [startIndex, setStartIndex] = useState(0);
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
     let ind = 0;
     let delay = 15000; // Millisecond 15 másodpercs
-    const element = document.getElementById('reklam_cont');
+    /* const element = document.getElementById('reklam_cont'); */
+    const element = document.documentElement;
 
     const getFullscreenAndPortrait = () => {
         /*   let current_mode = screen.orientation; */
@@ -41,71 +44,96 @@ const Reklam = () => {
 
     const addTwo = (ingek) => {
         const index = ind;
-        let isBiggerThanMax = index + 4 >= ingek.length;
+        let isBiggerThanMax = index + 1 >= ingek.length;
         if (isBiggerThanMax) {
             ind = 0;
         } else {
-            ind += 4;
+            ind += 1;
         }
         setStartIndex(ind);
     };
 
+    function fullscreen() {
+        var isInFullScreen =
+            (document.fullscreenElement && document.fullscreenElement !== null) ||
+            (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+            (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+            (document.msFullscreenElement && document.msFullscreenElement !== null);
+
+        var docElm = document.documentElement;
+        if (!isInFullScreen) {
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            } else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            } else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            } else if (docElm.msRequestFullscreen) {
+                docElm.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+    }
+
+    const showFullScreen = () => {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+            /* Safari */
+            element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+            /* IE11 */
+            element.msRequestFullscreen();
+        }
+    };
+
+    const exitFullScreen = () => {
+        if (isFullScreen && document && document.documentElement) {
+            document.exitFullscreen();
+        }
+    };
+
+    const toggleFullScreen = () => {
+        setIsFullScreen(!isFullScreen);
+    };
+
+    useEffect(() => {
+        if (isFullScreen) {
+            exitFullScreen();
+        } else {
+            showFullScreen;
+        }
+    }, [isFullScreen]);
+
     const renderIngatlanok = () => {
         let start = ingatlanok[startIndex];
-        let second = ingatlanok[startIndex + 1];
-        let third = ingatlanok[startIndex + 2];
-        let end = ingatlanok[startIndex + 3];
         return (
             <React.Fragment>
-                <div className="reklamdiv">
+                <div className="reklamdiv" id="reklamdiv">
                     {start && (
                         <React.Fragment>
+                            <Button style={{ backgroundColor: 'transparent', color: 'red', position: 'absolute', zIndex: 999 }} onClick={fullscreen}>
+                                FS
+                            </Button>
                             <div className="reklamdiv__kep">
                                 <img src={start.kepek[0].src} alt={start.kepek[0].title} />
+                                <img src={start.kepek[1] && start.kepek[1].src} alt={start.kepek[1] && start.kepek[1].title} />
+                                <img src={start.kepek[2] && start.kepek[2].src} alt={start.kepek[2] && start.kepek[2].title} />
+                                <img src={start.kepek[3] && start.kepek[3].src} alt={start.kepek[3] && start.kepek[3].title} />
                             </div>
                             <div className="reklamdiv__cim">{start && start.cim}</div>
                             <div className="reklamdiv__refid">{start && start.refid}</div>
                             <div className="reklamdiv__leiras">{start && start.leiras}</div>
                             <div className="reklamdiv__ar">{start && 'Ár: ' + start.ar}</div>
-                        </React.Fragment>
-                    )}
-                </div>
-                <div className="reklamdiv">
-                    {second && (
-                        <React.Fragment>
-                            <div className="reklamdiv__kep">
-                                <img src={second.kepek[0].src} alt={second.kepek[0].title} />
-                            </div>
-                            <div className="reklamdiv__cim">{second && second.cim}</div>
-                            <div className="reklamdiv__refid">{second && second.refid}</div>
-                            <div className="reklamdiv__leiras">{second && second.leiras}</div>
-                            <div className="reklamdiv__ar">{second && 'Ár: ' + second.ar}</div>
-                        </React.Fragment>
-                    )}
-                </div>
-                <div className="reklamdiv">
-                    {third && (
-                        <React.Fragment>
-                            <div className="reklamdiv__kep">
-                                <img src={third.kepek[0].src} alt={third.kepek[0].title} />
-                            </div>
-                            <div className="reklamdiv__cim">{third && third.cim}</div>
-                            <div className="reklamdiv__refid">{third && third.refid}</div>
-                            <div className="reklamdiv__leiras">{third && third.leiras}</div>
-                            <div className="reklamdiv__ar">{third && 'Ár: ' + third.ar}</div>
-                        </React.Fragment>
-                    )}
-                </div>
-                <div className="reklamdiv">
-                    {end && (
-                        <React.Fragment>
-                            <div className="reklamdiv__kep">
-                                <img src={end.kepek[0].src} alt={end.kepek[0].title} />
-                            </div>
-                            <div className="reklamdiv__cim">{end && end.cim}</div>
-                            <div className="reklamdiv__refid">{end && end.refid}</div>
-                            <div className="reklamdiv__leiras">{end && end.leiras}</div>
-                            <div className="reklamdiv__ar">{end && 'Ár: ' + end.ar}</div>
                         </React.Fragment>
                     )}
                 </div>
@@ -121,9 +149,9 @@ const Reklam = () => {
         init();
     }, []);
 
-    useEffect(() => {
+    /* useEffect(() => {
         getFullscreenAndPortrait();
-    }, [element]);
+    }, [element]); */
 
     return (
         <div className="reklam_container" id="reklam_cont">

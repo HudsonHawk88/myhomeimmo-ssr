@@ -54,22 +54,20 @@ const Ertekesito = (props) => {
                         <div className="ertakartya_alapadatok">
                             <div className="row">
                                 <div className="col-md-12">
-                                    <span>{`Név: `}</span>
                                     <span>{`${ertekesito.nev}`}</span>
                                 </div>
                                 <div className="col-md-12">
-                                    <span>{`Beosztás: `}</span>
                                     <span>{`${ertekesito.beosztas}`}</span>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-md-12">
-                                    <span>{`E-mail: `}</span>
-                                    <span>{`${ertekesito.email}`}</span>
+                                    <span id="emailikon" />
+                                    <span className="spanadat">{`${ertekesito.email}`}</span>
                                 </div>
                                 <div className="col-md-12">
-                                    <span>{`Telefon: `}</span>
-                                    <span>{`${ertekesito.telefon}`}</span>
+                                    <span id="telikon" />
+                                    <span className="spanadat">{`${ertekesito.telefon}`}</span>
                                 </div>
                             </div>
                         </div>
