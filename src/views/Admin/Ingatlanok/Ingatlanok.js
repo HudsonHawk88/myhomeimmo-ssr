@@ -19,6 +19,8 @@ const Ingatlanok = (props) => {
     const [altipusOptions, setAltipusOptions] = useState([]);
     const [tipusFilterOptions, setTipusFilterOptions] = useState([]);
     const [formType, setFormType] = useState('FEL'); // ['FEL', 'MOD', 'DEL']
+    const [step, setStep] = useState(1);
+    const maxStep = 3;
 
     const { addNotification, user } = props;
 
@@ -119,12 +121,14 @@ const Ingatlanok = (props) => {
     };
 
     const handleNewClick = () => {
+        setStep(1);
         setFormType('FEL');
         setCurrentId(null);
         toggleModal();
     };
 
     const handleViewClick = (id) => {
+        setStep(1);
         setCurrentId(id);
         toggleViewModal();
     };
@@ -155,7 +159,7 @@ const Ingatlanok = (props) => {
                         display: 'flex',
                         fontFamily: 'OpenSans-Regular',
                         /*  minHeight: '100%', */
-                        maxHeight: '96%',
+                        /* maxHeight: '96%', */
                         padding: '2% 4%',
                         maxWidth: '100%'
                         /* border: '2px solid blue' */
@@ -164,24 +168,69 @@ const Ingatlanok = (props) => {
                         clear: 'both',
                         breakBefore: 'always'
                     },
+                    fejlec: {
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        minWidth: '100%',
+                        maxWidth: '100%',
+                        minHeight: '70px',
+                        maxHeight: '70px',
+                        margin: '10px 0px'
+                    },
+                    fejleckep: {
+                        width: '15%',
+                        height: '100%'
+                    },
+                    fejlecadatok: {
+                        opacity: 0.65,
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        justifyContent: 'center',
+                        width: '35%',
+                        fontSize: '9px',
+                        height: '100%'
+                    },
+                    kozepso: {
+                        display: 'block',
+                        alignSelf: 'flex-end',
+                        /* flexWrap: 'wrap',
+                        minWidth: '20%',
+                        maxWidth: '20%' */
+                        width: '50%'
+                    },
                     cim: {
                         fontWeight: 'extrabold',
-                        fontSize: '25px',
-                        textAlign: 'center',
-                        marginBottom: '10px'
+                        fontSize: '20px',
+                        textAlign: 'right',
+                        marginBottom: '5px'
                     },
                     nevjegy: {
                         display: 'flex',
-                        minWidth: '100%',
-                        maxWidth: '100%',
-                        fontSize: '12px',
+                        /* width: '100%', */
+                        fontSize: '10px',
+                        textAlign: 'right',
+                        alignSelf: 'flex-end',
                         justifyContent: 'flex-end',
-                        alignItems: 'flex-end'
+                        position: 'relative',
+                        right: '20px'
                     },
                     nevjegykartya: {
-                        display: 'inline-block',
-                        padding: '10px 30px',
-                        border: '2px solid blue'
+                        display: 'inline-block'
+                        /* padding: '10px 30px', */
+                        /* border: '2px solid #3AD6C5' */
+                    },
+                    ikonosadat: {
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        alignItems: 'right',
+                        flexWrap: 'wrap',
+                        width: '85%',
+                        height: '15px'
+                    },
+                    ikonkep: {
+                        width: '15px',
+                        height: '15px',
+                        margin: '0 5px 0 0'
                     },
                     kepekView: {
                         display: 'flex',
@@ -189,8 +238,10 @@ const Ingatlanok = (props) => {
                         width: '100%',
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
-                        padding: 0,
-                        margin: 0
+                        padding: '15px 0px',
+                        margin: 0,
+                        borderTop: '1px solid #3AD6C5',
+                        borderBottom: '1px solid #3AD6C5'
                     },
                     kepek: {
                         width: '33%',
@@ -207,11 +258,11 @@ const Ingatlanok = (props) => {
                         height: '120px'
                     },
                     heading: {
-                        fontSize: '15px',
+                        fontSize: '13px',
                         fontWeight: 'bold',
-                        padding: '15px 0px',
-                        borderBottom: '1px solid blue',
-                        marginBottom: '15px'
+                        padding: '10px 0px'
+                        /*     borderBottom: '1px solid blue', */
+                        /* marginBottom: '5px' */
                     },
                     normalText: {
                         fontSize: '11px'
@@ -244,7 +295,7 @@ const Ingatlanok = (props) => {
                 const Table = ({ children, col, th }) => (
                     <View style={styles.table} wrap={false}>
                         {children.map((row, ind) => (
-                            <View key={ind} style={[styles.tableRow, th && ind === 0 ? styles.em : {}, { backgroundColor: ind % 2 === 0 ? '#cccccc' : '#ffffff' }]}>
+                            <View key={ind} style={[styles.tableRow, th && ind === 0 ? styles.em : {}, { backgroundColor: ind % 2 === 0 ? 'rgba(58, 214, 197, 1)' : '#ffffff' }]}>
                                 {row.map((cell, j) => (
                                     <View key={j} style={[styles.cell, { width: col[j], height: 40, padding: '2px' }]}>
                                         {typeof cell === 'string' || typeof cell === 'number' ? <Text>{cell}</Text> : cell}
@@ -256,24 +307,64 @@ const Ingatlanok = (props) => {
                 );
 
                 /* console.log('INGATLAN: ', <View style={{ margin: '1%', padding: '10px', border: '2px solid blue', maxHeight: '98%' }} wrap={false} />); */
-
+                console.log(ingatlan.loggedUser);
                 const newPdf = (
                     <Document language="hu">
                         <Page style={styles.pdftartalom} size="A4">
                             <View style={{ margin: '1%', padding: '10px' }}>
-                                <View>
+                                <View style={styles.fejlec} fixed>
+                                    <Image src={'/static/images/logo_uj.png'} style={styles.fejleckep} />
+                                    <View style={styles.kozepso}>
+                                        <View style={{ width: '100%' }}>
+                                            <Text style={styles.cim}>Ingatlan adatlap</Text>
+                                        </View>
+                                        <View style={styles.nevjegy}>
+                                            <Text>{ingatlan.loggedUser && ingatlan.loggedUser.nev}</Text>
+                                            <View style={styles.ikonosadat}>
+                                                <Image src={'/static/images/telikon.png'} style={styles.ikonkep} />
+                                                <Text>{ingatlan.loggedUser && ingatlan.loggedUser.telszam}</Text>
+                                            </View>
+                                            <View style={styles.ikonosadat}>
+                                                <Image src={'/static/images/emailikon.png'} style={styles.ikonkep} />
+                                                <Text>{ingatlan.loggedUser && ingatlan.loggedUser.email}</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.fejlecadatok}>
+                                        <View>
+                                            <Text>{ingatlan.cegadatok && ingatlan.cegadatok.nev}</Text>
+                                            <View style={styles.ikonosadat}>
+                                                <Image src={'/static/images/telikon.png'} style={styles.ikonkep} />
+                                                <Text>{ingatlan.cegadatok && ingatlan.cegadatok.telefon}</Text>
+                                            </View>
+                                            <View style={styles.ikonosadat}>
+                                                <Image src={'/static/images/emailikon.png'} style={styles.ikonkep} />
+                                                <Text>{ingatlan.cegadatok && ingatlan.cegadatok.email}</Text>
+                                            </View>
+                                            <View style={styles.ikonosadat}>
+                                                <Image src={'/static/images/cimikon.png'} style={styles.ikonkep} />
+                                                <Text>{ingatlan.cegadatok && ingatlan.cegadatok.cim}</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                                {/*<View>
                                     <Text style={styles.cim}>Ingatlan adatlap</Text>
                                 </View>
                                 <View style={styles.nevjegy}>
                                     <View style={styles.nevjegykartya}>
-                                        <Text>Név: {ingatlan.loggedUser && ingatlan.loggedUser.nev}</Text>
-                                        <Text>Mobil: {ingatlan.loggedUser && ingatlan.loggedUser.telszam}</Text>
-                                        <Text>E-mail: {ingatlan.loggedUser && ingatlan.loggedUser.email}</Text>
-                                        <Text>{ingatlan.cegadatok && ingatlan.cegadatok.nev}</Text>
-                                        <Text>{ingatlan.cegadatok && ingatlan.cegadatok.cim}</Text>
-                                        <Text>Tel.: {ingatlan.cegadatok && ingatlan.cegadatok.telefon}</Text>
+                                        <Text>{ingatlan.loggedUser && ingatlan.loggedUser.nev}</Text>
+                                        <View style={styles.ikonosadat}>
+                                            <Image src={'/static/images/telikon.png'} style={styles.ikonkep} />
+                                            <Text>{ingatlan.loggedUser && ingatlan.loggedUser.telszam}</Text>
+                                        </View>
+                                        <View style={styles.ikonosadat}>
+                                            <Image src={'/static/images/emailikon.png'} style={styles.ikonkep} />
+                                            <Text>{ingatlan.loggedUser && ingatlan.loggedUser.email}</Text>
+                                        </View>
                                     </View>
-                                </View>
+                                </View>*/}
                                 <View>
                                     <Text style={styles.heading}>{ingatlan.cim}</Text>
                                 </View>
@@ -289,7 +380,6 @@ const Ingatlanok = (props) => {
                                     <Text style={styles.normalText}>{ingatlan.leiras}</Text>
                                 </View>
                                 <View wrap={false}>
-                                    <Text style={styles.heading}>Paraméterek:</Text>
                                     <Table
                                         col={['16.66%', '16.66%', '16.66%', '16.66%', '16.66%', '16.66%']}
                                         children={[
@@ -658,6 +748,9 @@ const Ingatlanok = (props) => {
             <Modal isOpen={modalOpen} toggle={toggleModal} backdrop="static" size="xl">
                 <IngatlanForm
                     currentId={currentId}
+                    setStep={setStep}
+                    step={step}
+                    maxStep={maxStep}
                     formType={formType}
                     listIngatlanok={listIngatlanok}
                     toggleModal={toggleModal}

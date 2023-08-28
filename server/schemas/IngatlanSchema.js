@@ -18,7 +18,20 @@ const addIngatlan = async (req, res) => {
     /* felvitelObj.hirdeto = JSON.parse(felvitelObj.hirdeto); */
     felvitelObj.telepules = felvitelObj.helyseg.telepules.telepulesnev;
     let id = await getId(req.headers.id, 'ingatlanok');
-    const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, etanusitvany, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, hirdeto, modIdo, modUser) VALUES ('${id}', '${
+
+    const getAdminAvatarSql = `SELECT id, email, avatar FROM adminusers WHERE email = '${felvitelObj.hirdeto.feladoEmail}'`;
+
+    /*     console.log('SQL: ', getAdminAvatarSql); */
+
+    const admin = await UseQuery(getAdminAvatarSql, 'POST /api/admin/ingatlanok');
+
+    if (admin && admin[0].avatar) {
+        felvitelObj.hirdeto.feladoAvatar = JSON.parse(admin[0].avatar);
+    } else {
+        felvitelObj.hirdeto.feladoAvatar = [{ src: '`${process.env.mainUrl}/stattic/images/noavatar.png`', filename: 'noavatar.png', title: 'noavatar.png' }];
+    }
+
+    const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, etanusitvany, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, hirdeto) VALUES ('${id}', '${
         felvitelObj.office_id
     }', '${felvitelObj.cim}', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
         felvitelObj.kaucio
@@ -30,13 +43,12 @@ const addIngatlan = async (req, res) => {
         felvitelObj.isHirdetheto
     }', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${felvitelObj.isLift}', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.isTetoter}', '${
         felvitelObj.isVip
-    }',  '${JSON.stringify(felvitelObj.hirdeto)}'}');`;
+    }',  '${JSON.stringify(felvitelObj.hirdeto)}');`;
 
     pool.query(sql, async (error) => {
         if (!error) {
             let kepek = [];
             if (req.files) {
-                console.log(req.files, req.files[0]);
                 req.files.forEach((kep, index) => {
                     let extIndex = kep.originalname.lastIndexOf('.');
                     let fname = kep.originalname.substring(0, extIndex);
@@ -111,44 +123,30 @@ const editIngatlan = async (req, res, user, nev) => {
             modositoObj.telepules = modositoObj.helyseg.telepules.telepulesnev;
             let kepek = [];
             if (modositoObj.kepek) {
-                modositoObj.kepek = modositoObj.kepek;
-                if (Array.isArray(modositoObj.kepek)) {
+                kepek = modositoObj.kepek;
+                /* if (Array.isArray(modositoObj.kepek)) {
                     modositoObj.kepek.forEach((item) => {
-                        kepek.push(JSON.parse(item));
+                        kepek.push(item);
                     });
                 } else {
-                    kepek.push(modositoObj.kepek);
-                }
+                    kepek = modositoObj.kepek;
+                } */
             }
-            if (req.files) {
-                req.files.map((kep, index) => {
+            console.log(req.files);
+            if (req.files && req.files.length > 0) {
+                console.log(req.files.length);
+                req.files.map((kep) => {
                     let extIndex = kep.originalname.lastIndexOf('.');
                     let fname = kep.originalname.substring(0, extIndex);
                     const dir = `${process.env.ingatlankepekdir}/${id}`;
-                    kepek.push({
-                        filename: `${fname}.jpg`,
-                        isCover: false,
-                        src: `${process.env.ingatlankepekUrl}/${id}/${fname}.jpg`,
-                        title: `${fname}.jpg`
-                    });
-
-                    /*  let extIndex = kep.filename.lastIndexOf('.');
-                    let fname = kep.filename.substring(0, extIndex);
-                    sharp(kep.path)
-                        .jpeg({ quality: 80 })
-                        .resize({ width: 2500, height: 1500, fit: 'inside' })
-                        .toBuffer((err, buff) => {
-                            if (!err) {
-                                fs.writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`, buff);
-                                // TODO: megnézni, hogy jó-e a javítás...
-                                sharp(buff)
-                                    .resize({ width: 250, height: 200, fit: 'inside' })
-                                    .toFile(`${process.env.ingatlankepekdir}/${id}/${fname}_icon.jpg`)
-                                    .catch((err) => console.log(err));
-                            } else {
-                                console.log(err);
-                            }
-                        }); */
+                    if (kepek.find((k) => k.originalname === kep.originalname)) {
+                        kepek.push({
+                            filename: `${fname}.jpg`,
+                            isCover: false,
+                            src: `${process.env.ingatlankepekUrl}/${id}/${fname}.jpg`,
+                            title: `${fname}.jpg`
+                        });
+                    }
 
                     sharp(kep.buffer)
                         .jpeg({ quality: 80 })
@@ -174,7 +172,6 @@ const editIngatlan = async (req, res, user, nev) => {
             });
 
             const modIdo = moment().locale('hu').format('YYYY-MM-DD HH:mm:ss.000');
-            console.log(modIdo);
 
             const sql = `UPDATE ingatlanok SET office_id='${modositoObj.office_id}', cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(
                 modositoObj.helyseg

@@ -381,7 +381,7 @@ router.post('/infoPDF', async (req, res) => {
         } else {
             const ingatlanId = req.headers.ingatlanid;
             const ingatlanSql = `SELECT * FROM ingatlanok WHERE id='${ingatlanId}';`;
-            const cegadatSql = `SELECT nev, cim, telefon FROM kapcsolat WHERE id='1';`;
+            const cegadatSql = `SELECT nev, cim, email, telefon FROM kapcsolat WHERE id='1';`;
             let ingatlan = await UseQuery(ingatlanSql);
             let cegadatok = await UseQuery(cegadatSql);
             // USER ADATOK
