@@ -71,11 +71,11 @@ router.get('/', async (req, res) => {
                         if (!err) {
                             result.find((ing) => {
                                 const ingg = getJSONfromLongtext(ing, 'toBool');
-                                if ((ingg.hirdeto.feladoEmail === user.email && ingg.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+                                if ((ingg.hirdeto.feladoEmail === user.email && ingg.id === parseInt(id, 10)) || hasRole(user.roles, ['SZUPER_ADMIN'])) {
                                     resArr.push(ingg);
                                 }
-                                console.log('MODIDO: ', ingg.modIdo);
-                                ing.modIdo = moment(ing.modIdo).locale('hu');
+                                /* console.log('MODIDO: ', ingg.modIdo);
+                                ing.modIdo = moment(ing.modIdo).locale('hu'); */
                             });
                             if (resArr) {
                                 res.status(200).send(resArr);

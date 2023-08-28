@@ -122,15 +122,13 @@ const editIngatlan = async (req, res, user, nev) => {
         if ((modositoObj.hirdeto.feladoEmail === user.email && modositoObj.id === parseInt(id, 10)) || hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
             modositoObj.telepules = modositoObj.helyseg.telepules.telepulesnev;
             let kepek = [];
-            if (modositoObj.kepek) {
+            modositoObj.kepek = modositoObj.kepek;
+            if (Array.isArray(modositoObj.kepek)) {
+                modositoObj.kepek.forEach((item) => {
+                    kepek.push(item);
+                });
+            } else {
                 kepek = modositoObj.kepek;
-                /* if (Array.isArray(modositoObj.kepek)) {
-                    modositoObj.kepek.forEach((item) => {
-                        kepek.push(item);
-                    });
-                } else {
-                    kepek = modositoObj.kepek;
-                } */
             }
             console.log(req.files);
             if (req.files && req.files.length > 0) {
@@ -171,7 +169,8 @@ const editIngatlan = async (req, res, user, nev) => {
                 kep.isCover = index.toString() === '0' ? true : false;
             });
 
-            const modIdo = moment().locale('hu').format('YYYY-MM-DD HH:mm:ss.000');
+            let nev = JSON.parse(user.nev);
+            /* const modIdo = moment().locale('hu').format('YYYY-MM-DD HH:mm:ss.000'); */
 
             const sql = `UPDATE ingatlanok SET office_id='${modositoObj.office_id}', cim='${modositoObj.cim}', leiras='${modositoObj.leiras}', helyseg='${JSON.stringify(
                 modositoObj.helyseg
@@ -189,10 +188,10 @@ const editIngatlan = async (req, res, user, nev) => {
                 modositoObj.isLift
             }', isAktiv='${kepek.length > 0 ? modositoObj.isAktiv : 0}', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${modositoObj.isTetoter}', isVip='${
                 modositoObj.isVip
-            }', hirdeto='${JSON.stringify(modositoObj.hirdeto)}', modUser='${nev}' WHERE id='${id}';`;
+            }', hirdeto='${JSON.stringify(modositoObj.hirdeto)}', WHERE id='${id}';`;
+            console.log(sql);
             pool.query(sql, (err) => {
                 if (!err) {
-                    let nev = JSON.parse(user.nev);
                     if (hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                         const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                         const ingId = modositoObj.id;
