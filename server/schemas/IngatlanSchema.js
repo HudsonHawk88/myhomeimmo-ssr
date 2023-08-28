@@ -31,7 +31,7 @@ const addIngatlan = async (req, res) => {
         felvitelObj.hirdeto.feladoAvatar = [{ src: '`${process.env.mainUrl}/stattic/images/noavatar.png`', filename: 'noavatar.png', title: 'noavatar.png' }];
     }
 
-    const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, etanusitvany, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, hirdeto) VALUES ('${id}', '${
+    const sql = `INSERT INTO ingatlanok(id, office_id, cim, leiras, helyseg, irsz, telepules, ar, kaucio, penznem, statusz, tipus, altipus, rendeltetes, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, hirdeto) VALUES ('${id}', '${
         felvitelObj.office_id
     }', '${felvitelObj.cim}', '${felvitelObj.leiras}', '${JSON.stringify(felvitelObj.helyseg)}', '${felvitelObj.helyseg.irszam}', '${felvitelObj.telepules}', '${felvitelObj.ar}', '${
         felvitelObj.kaucio
@@ -39,11 +39,11 @@ const addIngatlan = async (req, res) => {
         felvitelObj.alapterulet
     }', '${felvitelObj.telek}', '${felvitelObj.telektipus}', '${felvitelObj.beepithetoseg}', '${felvitelObj.viz}', '${felvitelObj.gaz}', '${felvitelObj.villany}', '${felvitelObj.szennyviz}', '${
         felvitelObj.szobaszam
-    }', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.villanyfogy}', '${felvitelObj.gazfogy}', '${felvitelObj.etanusitvany}', '${
-        felvitelObj.isHirdetheto
-    }', '${felvitelObj.isKiemelt}', '${felvitelObj.isErkely}', '${felvitelObj.isLift}', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.isTetoter}', '${
-        felvitelObj.isVip
-    }',  '${JSON.stringify(felvitelObj.hirdeto)}');`;
+    }', '${felvitelObj.felszobaszam}', '${felvitelObj.epitesmod}', '${felvitelObj.futes}', '${felvitelObj.villanyfogy}', '${felvitelObj.gazfogy}', '${felvitelObj.isHirdetheto}', '${
+        felvitelObj.isKiemelt
+    }', '${felvitelObj.isErkely}', '${felvitelObj.isLift}', '${felvitelObj.isAktiv}', '${felvitelObj.isUjEpitesu}', '${felvitelObj.isTetoter}', '${felvitelObj.isVip}',  '${JSON.stringify(
+        felvitelObj.hirdeto
+    )}');`;
 
     pool.query(sql, async (error) => {
         if (!error) {
@@ -184,14 +184,13 @@ const editIngatlan = async (req, res, user, nev) => {
                 modositoObj.szobaszam
             }', felszobaszam='${modositoObj.felszobaszam}', epitesmod='${modositoObj.epitesmod}', futes='${modositoObj.futes}', villanyfogy='${modositoObj.villanyfogy}', gazfogy='${
                 modositoObj.gazfogy
-            }', etanusitvany='${modositoObj.etanusitvany}', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${modositoObj.isKiemelt}', isErkely='${modositoObj.isErkely}', isLift='${
-                modositoObj.isLift
-            }', isAktiv='${kepek.length > 0 ? modositoObj.isAktiv : 0}', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${modositoObj.isTetoter}', isVip='${
-                modositoObj.isVip
-            }', hirdeto='${JSON.stringify(modositoObj.hirdeto)}', WHERE id='${id}';`;
+            }', isHirdetheto='${modositoObj.isHirdetheto}', isKiemelt='${modositoObj.isKiemelt}', isErkely='${modositoObj.isErkely}', isLift='${modositoObj.isLift}', isAktiv='${
+                kepek.length > 0 ? modositoObj.isAktiv : 0
+            }', isUjEpitesu='${modositoObj.isUjEpitesu}', isTetoter='${modositoObj.isTetoter}', isVip='${modositoObj.isVip}' WHERE id='${id}';`;
             console.log(sql);
             pool.query(sql, (err) => {
                 if (!err) {
+                    console.log(JSON.parse(user.roles), hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']));
                     if (hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                         const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                         const ingId = modositoObj.id;
@@ -227,7 +226,7 @@ const editIngatlan = async (req, res, user, nev) => {
             res.status(403).send({ err: 'Nincs jogosultsága az adott művelethez!' });
         }
 
-        modositoObj.feladoAvatar = modositoObj.feladoAvatar ? modositoObj.feladoAvatar : '[]';
+        /* modositoObj.feladoAvatar = modositoObj.feladoAvatar ? modositoObj.feladoAvatar : '[]'; */
     } else {
         res.status(400).send({ err: 'Id megadása kötelező' });
     }

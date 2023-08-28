@@ -362,12 +362,13 @@ const IngatlanForm = (props) => {
 
     const renderOptions = (type) => {
         const optionObj = ingatlanOptions.find((opt) => opt.nev === type);
-        const opts = optionObj && optionObj.options ? optionObj.options : [];
 
+        const opts = optionObj && optionObj.options ? optionObj.options : [];
+        console.log(optionObj, opts);
         return opts.map((opt) => {
             return (
                 <option key={opt.id} value={opt.value}>
-                    {opt.nev || opt.label}
+                    {opt.nev ? opt.nev : opt.label}
                 </option>
             );
         });
@@ -1134,15 +1135,6 @@ const IngatlanForm = (props) => {
                                     </RVInputGroup>
                                     <RVFormFeedback />
                                 </RVFormGroup>
-                            </div>
-                            <div className="col-md-4 mt-2">
-                                <Label>{'Energiatanusítvány:'}</Label>
-                                <RVInput type="select" name="etanusitvany" id="etanusitvany" value={ingatlanObj.etanusitvany} onChange={(e) => handleInputChange(e, ingatlanObj, setIngatlanObj)}>
-                                    <option key="defaultEtanusitvany" value="">
-                                        Kérjük válasszon e-besorolást...
-                                    </option>
-                                    {renderOptions('ebesorolas')}
-                                </RVInput>
                             </div>
                         </div>
                         <div className="row" hidden={isTelekAdatokHidden()}>
