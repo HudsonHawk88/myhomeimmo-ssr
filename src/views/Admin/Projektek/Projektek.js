@@ -81,11 +81,11 @@ const Projektek = (props) => {
         parkoloarmill: '',
         isTobbEpuletes: false,
         komfort: '',
-        jutalek: '',
+        /* jutalek: '',
         megbizaskelte: '',
-        megbizasvege: '',
-        nempubmegjegyzes: '',
-        nempubcsatolmanyok: [],
+        megbizasvege: '', */
+        /*  nempubmegjegyzes: '',
+        nempubcsatolmanyok: [], */
         epuletszintek: [],
         projektingatlanok: [],
         projektingatlanokOpts: [],
