@@ -792,7 +792,7 @@ const ProjektekForm = ({
                             <RVFormGroup>
                                 <Label>{isRequired('Parkolóhely ára:', true)}</Label>
                                 <RVInput
-                                    required
+                                    required={object.parkolohasznalat !== 'Benne van az árban'}
                                     type="text"
                                     pattern="[0-9]+"
                                     name="parkoloarmill"

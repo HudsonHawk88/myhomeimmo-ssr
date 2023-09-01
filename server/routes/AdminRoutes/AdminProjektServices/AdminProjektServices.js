@@ -37,11 +37,11 @@ const keys = [
     'parkoloarmill',
     'isTobbEpuletes',
     'komfort',
-    'jutalek',
-    'megbizaskelte',
+    /* 'jutalek', */
+    /* 'megbizaskelte',
     'megbizasvege',
     'nempubmegjegyzes',
-    'nempubcsatolmasnyok',
+    'nempubcsatolmasnyok', */
     'epuletszintek',
     'projektingatlanok',
     'penznem',
@@ -56,7 +56,8 @@ const keys = [
     'szigetelesmeret'
 ];
 
-const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok', 'nempubcsatolmasnyok'];
+const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok'];
+/* const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok', 'nempubcsatolmasnyok']; */
 
 // PROJEKTEK START
 
