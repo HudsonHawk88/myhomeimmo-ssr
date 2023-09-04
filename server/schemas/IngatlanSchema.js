@@ -165,6 +165,8 @@ const addIngatlan = async (req, res) => {
                         });
                     }
                 });
+            } else {
+                res.status(409).send({ err: error, msg: 'Nincs értékesítő kiválasztva levélküldéshez!' });
             }
         } else {
             log('POST /api/admin/ingatlanok', error);
@@ -332,14 +334,18 @@ const editIngatlan = async (req, res, user, nev) => {
                             Tisztelettel:<br>
                             ${teljesNev}`
                         };
-                        transporter.sendMail(mail, (mailerr) => {
-                            if (!mailerr) {
-                                res.status(200).send({ msg: 'Ingatlan sikeresen módosítva és e-mail sikeresen elküldve a hirdetőnek!' });
-                            } else {
-                                log('PUT /api/admin/ingatlanok', mailerr);
-                                res.status(409).send({ err: mailerr, msg: 'Hiba történt a levélküldéskor!' });
-                            }
-                        });
+                        if ((modositoObj.isAktiv == 1 || modositoObj.isAktiv == true) && modositoObj.hirdeto.feladoEmail !== user.email) {
+                            transporter.sendMail(mail, (mailerr) => {
+                                if (!mailerr) {
+                                    res.status(200).send({ msg: 'Ingatlan sikeresen módosítva és e-mail sikeresen elküldve a hirdetőnek!' });
+                                } else {
+                                    log('PUT /api/admin/ingatlanok', mailerr);
+                                    res.status(409).send({ err: mailerr, msg: 'Hiba történt a levélküldéskor!' });
+                                }
+                            });
+                        } else {
+                            res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
+                        }
                     } else {
                         res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
                     }
