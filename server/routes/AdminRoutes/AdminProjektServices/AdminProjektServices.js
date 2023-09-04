@@ -133,7 +133,7 @@ router.post('/', upload.any(), async (req, res) => {
                 megbizaskelte datetime DEFAULT NULL,
                 megbizasvege datetime DEFAULT NULL,
                 nempubmegjegyzes text DEFAULT NULL,
-                nempubcsatolmasnyok json DEFAULT NULL,
+                nempubcsatolmanyok json DEFAULT NULL,
                 atadasev YEAR(4) NOT NULL,
                 atadasnegyedev int NOT NULL DEFAULT 1,
                 atadashonap int NOT NULL DEFAULT 1,
@@ -230,6 +230,7 @@ router.post('/', upload.any(), async (req, res) => {
                                     console.log('file, file:TYPE: ', file, file.tpye);
                                     if (file.mimetype.includes('image')) {
                                         nempubcsatolmanyok.push({
+                                            type: file.mimetype,
                                             filename: `${fname}.jpg`,
                                             src: `${process.env.projektkepekUrl}/${id}/nempubcsatolmanyok/${fname}.jpg`,
                                             title: `${fname}.jpg`
@@ -253,6 +254,7 @@ router.post('/', upload.any(), async (req, res) => {
                                             });
                                     } else {
                                         nempubcsatolmanyok.push({
+                                            type: file.mimetype,
                                             filename: `${fname}.${ext}`,
                                             src: `${process.env.projektkepekUrl}/${id}/nempubcsatolmanyok/${fname}.${ext}`,
                                             title: `${fname}.${ext}`
