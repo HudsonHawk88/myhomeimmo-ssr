@@ -50,9 +50,9 @@ $colors: (
         ),
         admin: (
             bgimage: url('../static/images/blackback.png'),
-            navbarlogo: url('../images/logo2.png'),
+            navbarlogo: url('../images/logo_uj.png'),
             fbcolor: #4267b2,
-            navbarbgcolor: #ffc107,
+            navbarbgcolor: rgba(58, 214, 197, 1),
             navbarlinkcolor: black,
             navbarlinkbgactivehover: whitesmoke,
             navlinkhoveractivebg: whitesmoke,
@@ -62,8 +62,8 @@ $colors: (
             sidebarnavlinkcolor: blanchedalmond,
             sidebaractivehoverbg: whitesmoke,
             sidebarnavlinkactivehoverfontcolor: #222222,
-            tartalombgcolor: #d7c599,
-            footerbgcolor: #ffc107,
+            tartalombgcolor: white,
+            footerbgcolor: rgba(58, 214, 197, 1),
             footerfontcolor: black,
             mainColor: rgba(58, 214, 197, 1)
         )

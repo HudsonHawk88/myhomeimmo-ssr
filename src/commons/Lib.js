@@ -22,23 +22,26 @@ function makeFormData(dataObj, kepKey, isMod) {
     let data = new FormData();
     for (var key in dataObj) {
         kepKey.forEach((k) => {
-            console.log(dataObj.hasOwnProperty(k) === false);
             if (key === k) {
                 if (isMod) {
-                    dataObj[k].forEach((kep) => {
-                        if (kep.file) {
-                            data.append(`uj_${k}`, kep.file);
-                        }
-                        /*  else {
+                    if (dataObj[k]) {
+                        dataObj[k].forEach((kep) => {
+                            if (kep.file) {
+                                data.append(`uj_${k}`, kep.file);
+                            }
+                            /*  else {
                             data.append(k, JSON.stringify(kep));
                         } */
-                    });
+                        });
+                    }
                 } else {
-                    dataObj[k].forEach((kep) => {
-                        if (kep.file) {
-                            data.append(k, kep.file);
-                        }
-                    });
+                    if (dataObj[k]) {
+                        dataObj[k].forEach((kep) => {
+                            if (kep.file) {
+                                data.append(k, kep.file);
+                            }
+                        });
+                    }
                 }
             }
         });

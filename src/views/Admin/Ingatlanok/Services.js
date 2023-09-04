@@ -106,7 +106,7 @@ export default class Services {
         return result;
     };
 
-    static jovahagyasraKuldes = (ingatlanId, isAktiv, publikusChange, isNew, modositoObj, fnDone) => {
+    static jovahagyasraKuldes = (ingatlanId, isAktiv, publikusChange, isNew, regiIngatlan, modositoObj, fnDone) => {
         let result = Microservices.fetchApi(
             ingatlanJovahagyasAdminUrl,
             {
@@ -122,7 +122,7 @@ export default class Services {
                     publikusChange: publikusChange,
                     isNew: isNew
                 },
-                body: JSON.stringify(modositoObj)
+                body: JSON.stringify({ adatok: { modositoObj, regiIngatlan } })
             },
             fnDone
         );
@@ -278,6 +278,27 @@ export default class Services {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': 'http://192.168.11.64:3000'
                 }
+            },
+            fnDone
+        );
+
+        return result;
+    };
+
+    static deleteFile = (filename, dir, ingatlanId, fnDone) => {
+        let result = Microservices.fetchApi(
+            ingatlanokAdminUrl + '/deletefile',
+            {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
+                    id: ingatlanId,
+                    dir: dir
+                },
+                body: JSON.stringify({ filename: filename })
             },
             fnDone
         );

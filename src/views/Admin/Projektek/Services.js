@@ -238,9 +238,9 @@ export default class Services {
         return result;
     };
 
-    static deleteImage = (filename, projektId, fnDone) => {
+    static deleteFile = (filename, dir, projektId, fnDone) => {
         let result = Microservices.fetchApi(
-            projektekUrl + '/deleteimage',
+            projektekUrl + '/deletefile',
             {
                 method: 'POST',
                 mode: 'cors',
@@ -248,7 +248,8 @@ export default class Services {
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': 'http://192.168.11.64:3000',
-                    id: projektId
+                    id: projektId,
+                    dir: dir
                 },
                 body: JSON.stringify({ filename: filename })
             },

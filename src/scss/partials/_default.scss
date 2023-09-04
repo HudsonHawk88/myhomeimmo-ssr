@@ -85,7 +85,7 @@ html body::-webkit-scrollbar {
 }
 
 .modal-body {
-    display: grid;
+    /* display: grid; */
     row-gap: 10px;
 }
 
@@ -710,8 +710,65 @@ html body::-webkit-scrollbar {
     max-width: inherit;
     min-height: 100%;
     max-height: inherit;
-    background-color: var(themes-public-tartalombgcolor);
+    background-color: var(themes-admin-tartalombgcolor);
     padding: 10px;
+
+    .react-data-table-pagination-buttons {
+        .btn.btn-outline-primary {
+            border-color: #333;
+            color: #000;
+
+            &:hover,
+            &:active,
+            &:focus {
+                border-color: rgba(58, 214, 197, 1);
+                background-color: rgba(58, 214, 197, 1);
+            }
+        }
+
+        .btn.btn-primary {
+            border-color: #333;
+            color: #000;
+            background-color: rgba(58, 214, 197, 1);
+
+            &:hover,
+            &:active,
+            &:focus {
+                border-color: rgba(58, 214, 197, 1);
+                background-color: rgba(58, 214, 197, 1);
+            }
+        }
+    }
+
+    .btn.btn-link {
+        color: rgba(0, 0, 0, 1);
+        font-size: 1.2rem;
+    }
+
+    .fas.fa-eye {
+        color: green;
+    }
+
+    .fas.fa-external-link-alt {
+        color: crimson;
+    }
+
+    .fas.fa-pencil,
+    .fas.fa-pencil-alt {
+        color: orange;
+    }
+
+    .fas.fa-trash {
+        color: rgb(111, 114, 114);
+    }
+
+    .fa.fa-facebook-square {
+        color: #4267b2;
+    }
+
+    .fas.fa-file-pdf {
+        color: red;
+    }
 
     table {
         border: 1px black solid;
@@ -1192,6 +1249,41 @@ html body::-webkit-scrollbar {
     margin: unset !important;
 }
 
+.ingatlan_stepper {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: fit-content;
+    max-height: fit-content;
+    margin: 10px 0 20px 0 !important;
+
+    .btn {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+        width: 50px;
+        text-align: center;
+    }
+
+    .btn.page {
+        border-radius: 50%;
+    }
+
+    .pagebutton_container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .pagebutton_leiras {
+            text-align: center;
+        }
+    }
+}
+
 .projekt_stepper {
     display: flex;
     justify-content: space-evenly;
@@ -1225,6 +1317,28 @@ html body::-webkit-scrollbar {
             text-align: center;
         }
     }
+}
+
+.react-slate-wysiwyg-editor {
+    display: block;
+}
+
+.font_button {
+    left: unset !important;
+    top: unset !important;
+    padding: 0 !important;
+}
+
+#fontsize {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: max-content;
+    padding: 5px;
+    border: none;
+    overflow-y: hidden;
+    scrollbar-base-color: #fff;
 }
 
 // Teljes képernyős modal

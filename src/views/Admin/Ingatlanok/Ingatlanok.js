@@ -40,13 +40,13 @@ const Ingatlanok = (props) => {
                 return ooo.map((option) => {
                     if (option.nev === 'tipus') {
                         const tipusOptions = [];
-                        option.options.map((opt) => {
+                        option.options.forEach((opt) => {
                             let newObj = {};
                             newObj.text = opt.nev;
                             newObj.id = opt.id;
                             newObj.value = opt.value;
                             newObj.nev = opt.nev;
-                            return newObj;
+                            tipusOptions.push(newObj);
                         });
                         setTipusFilterOptions(tipusOptions);
                     }
@@ -134,6 +134,7 @@ const Ingatlanok = (props) => {
     };
 
     const handleEditClick = (id) => {
+        setStep(1);
         setCurrentId(id);
         setFormType('MOD');
         toggleModal();
@@ -637,7 +638,7 @@ const Ingatlanok = (props) => {
         ingatlanOptions.forEach((option) => {
             if (option.nev === 'tipus') {
                 option.options.forEach((opt) => {
-                    if (opt.value === parseInt(row.tipus, 10)) {
+                    if (opt.value == row.tipus) {
                         tipus = opt.nev;
                     }
                 });
@@ -652,7 +653,7 @@ const Ingatlanok = (props) => {
         return ar;
     };
 
-    const renderTable = useCallback(() => {
+    const renderTable = () => {
         const columns = [
             {
                 dataField: 'id',
@@ -741,7 +742,7 @@ const Ingatlanok = (props) => {
         };
 
         return <DataTable bordered columns={columns} datas={ingatlanokJson} paginationOptions={paginationOptions} />;
-    }, [ingatlanokJson]);
+    };
 
     const renderModal = () => {
         return (
@@ -756,6 +757,7 @@ const Ingatlanok = (props) => {
                     toggleModal={toggleModal}
                     nevFormatter={nevFormatter}
                     telefonFormatter={telefonFormatter}
+                    ingatlanok={ingatlanokJson}
                     {...props}
                 />
             </Modal>

@@ -37,11 +37,11 @@ const keys = [
     'parkoloarmill',
     'isTobbEpuletes',
     'komfort',
-    /* 'jutalek', */
-    /* 'megbizaskelte',
+    'jutalek',
+    'megbizaskelte',
     'megbizasvege',
     'nempubmegjegyzes',
-    'nempubcsatolmasnyok', */
+    'nempubcsatolmanyok',
     'epuletszintek',
     'projektingatlanok',
     'penznem',
@@ -56,8 +56,8 @@ const keys = [
     'szigetelesmeret'
 ];
 
-const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok'];
-/* const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok', 'nempubcsatolmasnyok']; */
+/* const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok']; */
+const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok', 'nempubcsatolmanyok'];
 
 // PROJEKTEK START
 
@@ -129,6 +129,11 @@ router.post('/', upload.any(), async (req, res) => {
                 felirat text DEFAULT NULL,
                 bemutatvideo text DEFAULT NULL,
                 cim json NOT NULL,
+                jutalek text DEFAULT NULL,
+                megbizaskelte datetime DEFAULT NULL,
+                megbizasvege datetime DEFAULT NULL,
+                nempubmegjegyzes text DEFAULT NULL,
+                nempubcsatolmasnyok json DEFAULT NULL,
                 atadasev YEAR(4) NOT NULL,
                 atadasnegyedev int NOT NULL DEFAULT 1,
                 atadashonap int NOT NULL DEFAULT 1,
@@ -145,7 +150,7 @@ router.post('/', upload.any(), async (req, res) => {
                 komfort text DEFAULT '',
                 epuletszintek json NOT NULL,
                 projektingatlanok json DEFAULT NULL,
-                penznem text DEFAULT 'Ft',
+                penznem text DEFAULT NULL,
                 isLift boolean DEFAULT 0,
                 tarolohasznalat text DEFAULT '',
                 isAkadalymentes boolean DEFAULT 0,
@@ -164,19 +169,21 @@ router.post('/', upload.any(), async (req, res) => {
 
                         let boritokepek = [];
                         let projektkepek = [];
+                        let nempubcsatolmanyok = [];
                         if (req.files) {
-                            req.files.forEach((kep, index) => {
-                                let extIndex = kep.originalname.lastIndexOf('.');
-                                let fname = kep.originalname.substring(0, extIndex);
+                            req.files.forEach((file, index) => {
+                                let extIndex = file.originalname.lastIndexOf('.');
+                                let fname = file.originalname.substring(0, extIndex);
+                                let ext = file.originalname.substring(extIndex + 1, file.originalname.length);
 
-                                if (kep.fieldname === 'projektlakaskepek') {
+                                if (file.fieldname === 'projektlakaskepek') {
                                     projektkepek.push({
                                         filename: `${fname}.jpg`,
                                         isCover: index.toString() === '0' ? true : false,
                                         src: `${process.env.projektkepekUrl}/${id}/projektkepek/${fname}.jpg`,
                                         title: `${fname}.jpg`
                                     });
-                                    sharp(kep.buffer)
+                                    sharp(file.buffer)
                                         .jpeg({ quality: 80 })
                                         .resize({ width: 1500, fit: 'inside' })
                                         .withMetadata()
@@ -194,14 +201,14 @@ router.post('/', upload.any(), async (req, res) => {
                                             }
                                         });
                                 }
-                                if (kep.fieldname === 'borito') {
+                                if (file.fieldname === 'borito') {
                                     boritokepek.push({
                                         filename: `${fname}.jpg`,
                                         isCover: index.toString() === '0' ? true : false,
                                         src: `${process.env.projektkepekUrl}/${id}/borito/${fname}.jpg`,
                                         title: `${fname}.jpg`
                                     });
-                                    sharp(kep.buffer)
+                                    sharp(file.buffer)
                                         .jpeg({ quality: 80 })
                                         .resize({ width: 1500, fit: 'inside' })
                                         .withMetadata()
@@ -219,15 +226,56 @@ router.post('/', upload.any(), async (req, res) => {
                                             }
                                         });
                                 }
+                                if (file.fieldname === 'nempubcsatolmanyok') {
+                                    console.log('file, file:TYPE: ', file, file.tpye);
+                                    if (file.mimetype.includes('image')) {
+                                        nempubcsatolmanyok.push({
+                                            filename: `${fname}.jpg`,
+                                            src: `${process.env.projektkepekUrl}/${id}/nempubcsatolmanyok/${fname}.jpg`,
+                                            title: `${fname}.jpg`
+                                        });
+                                        sharp(file.buffer)
+                                            .jpeg({ quality: 80 })
+                                            .resize({ width: 1500, fit: 'inside' })
+                                            .withMetadata()
+                                            .toBuffer((err, buff) => {
+                                                if (!err) {
+                                                    const dir = `${process.env.projektDir}/${id}/nempubcsatolmanyok`;
+                                                    const isDirExist = existsSync(dir);
+                                                    if (!isDirExist) {
+                                                        mkdirSync(dir, { recursive: true });
+                                                    }
+                                                    writeFileSync(`${dir}/${fname}.jpg`, buff);
+                                                    log('POST /api/admin/projektek', `Kép hozzáadva: ${dir}/${fname}_icon.jpg\n`);
+                                                } else {
+                                                    log('POST /api/admin/projektek', err);
+                                                }
+                                            });
+                                    } else {
+                                        nempubcsatolmanyok.push({
+                                            filename: `${fname}.${ext}`,
+                                            src: `${process.env.projektkepekUrl}/${id}/nempubcsatolmanyok/${fname}.${ext}`,
+                                            title: `${fname}.${ext}`
+                                        });
+                                        const dir = `${process.env.projektDir}/${id}/nempubcsatolmanyok`;
+                                        const isDirExist = existsSync(dir);
+                                        if (!isDirExist) {
+                                            mkdirSync(dir, { recursive: true });
+                                        }
+                                        writeFileSync(`${dir}/${fname}.${ext}`, file.buffer);
+                                    }
+                                }
                             });
                         }
 
                         felvitelObj.projektlakaskepek = projektkepek;
                         felvitelObj.borito = boritokepek;
+                        felvitelObj.nempubcsatolmanyok = nempubcsatolmanyok;
 
                         /* const keys = Object.keys(felvitelObj); */
 
                         const sql = getInsertSql('projektek', keys, felvitelObj, objectKeys);
+
                         projektek.query(sql, (err) => {
                             if (!err) {
                                 res.status(200).send({
@@ -269,46 +317,63 @@ router.put('/', upload.any(), async (req, res) => {
             });
         } else {
             const id = req.headers.id;
-            let modositoObj = req.body;
-
+            const modositoObj = getJSONfromLongtext(req.body, 'toNumber');
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                 if (id) {
                     let boritokepek = [];
                     let projektkepek = [];
-                    let kepek = [];
+                    let nempubcsatolmanyok = [];
                     if (modositoObj.borito) {
                         modositoObj.borito = modositoObj.borito;
                         if (Array.isArray(modositoObj.borito)) {
                             modositoObj.borito.forEach((item) => {
-                                boritokepek.push(JSON.parse(item));
+                                if (!item.file) {
+                                    boritokepek.push(item);
+                                }
                             });
                         } else {
-                            boritokepek = JSON.parse(modositoObj.borito);
+                            boritokepek = modositoObj.borito;
                         }
                     }
 
                     if (modositoObj.projektlakaskepek) {
                         if (Array.isArray(modositoObj.projektlakaskepek)) {
                             modositoObj.projektlakaskepek.forEach((item) => {
-                                projektkepek.push(JSON.parse(item));
+                                if (!item.file) {
+                                    projektkepek.push(item);
+                                }
                             });
                         } else {
-                            projektkepek = JSON.parse(modositoObj.projektlakaskepek);
+                            projektkepek = modositoObj.projektlakaskepek;
+                        }
+                    }
+
+                    if (modositoObj.nempubcsatolmanyok) {
+                        if (Array.isArray(modositoObj.nempubcsatolmanyok)) {
+                            modositoObj.nempubcsatolmanyok.forEach((item) => {
+                                if (!item.file) {
+                                    nempubcsatolmanyok.push(item);
+                                }
+                            });
+                        } else {
+                            nempubcsatolmanyok = modositoObj.nempubcsatolmanyok;
                         }
                     }
                     if (req.files) {
-                        req.files.forEach((kep, index) => {
-                            let extIndex = kep.originalname.lastIndexOf('.');
-                            let fname = kep.originalname.substring(0, extIndex);
+                        req.files.forEach((file, index) => {
+                            let extIndex = file.originalname.lastIndexOf('.');
+                            let fname = file.originalname.substring(0, extIndex);
+                            let ext = file.originalname.substring(extIndex + 1, file.originalname.length);
 
-                            if (kep.fieldname === 'uj_projektlakaskepek') {
+                            if (file.fieldname === 'uj_projektlakaskepek') {
                                 projektkepek.push({
                                     filename: `${fname}.jpg`,
                                     isCover: index.toString() === '0' ? true : false,
                                     src: `${process.env.projektkepekUrl}/${id}/projektkepek/${fname}.jpg`,
                                     title: `${fname}.jpg`
                                 });
-                                sharp(kep.buffer)
+
+                                sharp(file.buffer)
                                     .jpeg({ quality: 80 })
                                     .resize({ width: 1500, fit: 'inside' })
                                     .withMetadata()
@@ -326,14 +391,18 @@ router.put('/', upload.any(), async (req, res) => {
                                         }
                                     });
                             }
-                            if (kep.fieldname === 'uj_borito') {
+                            if (file.fieldname === 'uj_borito') {
+                                console.log(file);
+                                /* console.log(boritokepek.find((k) => k.filename === file.originalname)); */
+
                                 boritokepek.push({
                                     filename: `${fname}.jpg`,
                                     isCover: index.toString() === '0' ? true : false,
                                     src: `${process.env.projektkepekUrl}/${id}/borito/${fname}.jpg`,
                                     title: `${fname}.jpg`
                                 });
-                                sharp(kep.buffer)
+
+                                sharp(file.buffer)
                                     .jpeg({ quality: 80 })
                                     .resize({ width: 1500, fit: 'inside' })
                                     .withMetadata()
@@ -351,11 +420,63 @@ router.put('/', upload.any(), async (req, res) => {
                                         }
                                     });
                             }
+                            if (file.fieldname === 'uj_nempubcsatolmanyok') {
+                                console.log('file, file:TYPE: ', file, file.tpye);
+                                if (file.mimetype.includes('image')) {
+                                    nempubcsatolmanyok.push({
+                                        filename: `${fname}.jpg`,
+                                        src: `${process.env.projektkepekUrl}/${id}/nempubcsatolmanyok/${fname}.jpg`,
+                                        title: `${fname}.jpg`,
+                                        type: file.mimetype
+                                    });
+
+                                    sharp(file.buffer)
+                                        .jpeg({ quality: 80 })
+                                        .resize({ width: 1500, fit: 'inside' })
+                                        .withMetadata()
+                                        .toBuffer((err, buff) => {
+                                            if (!err) {
+                                                const dir = `${process.env.projektDir}/${id}/nempubcsatolmanyok`;
+                                                const isDirExist = existsSync(dir);
+                                                if (!isDirExist) {
+                                                    mkdirSync(dir, { recursive: true });
+                                                }
+                                                writeFileSync(`${dir}/${fname}.jpg`, buff);
+                                                log('POST /api/admin/projektek', `Kép hozzáadva: ${dir}/${fname}_icon.jpg\n`);
+                                            } else {
+                                                log('POST /api/admin/projektek', err);
+                                            }
+                                        });
+                                } else {
+                                    nempubcsatolmanyok.push({
+                                        filename: `${fname}.${ext}`,
+                                        src: `${process.env.projektkepekUrl}/${id}/nempubcsatolmanyok/${fname}.${ext}`,
+                                        title: `${fname}.${ext}`,
+                                        type: file.mimetype
+                                    });
+
+                                    const dir = `${process.env.projektDir}/${id}/nempubcsatolmanyok`;
+                                    const isDirExist = existsSync(dir);
+                                    if (!isDirExist) {
+                                        mkdirSync(dir, { recursive: true });
+                                    }
+                                    writeFileSync(`${dir}/${fname}.${ext}`, file.buffer);
+                                }
+                            }
                         });
                     }
-                    modositoObj = getJSONfromLongtext(modositoObj, 'toNumber');
+                    if (modositoObj.uj_projektlakaskepek) {
+                        delete modositoObj.uj_projektlakaskepek;
+                    }
+                    if (modositoObj.uj_borito) {
+                        delete modositoObj.uj_borito;
+                    }
+                    if (modositoObj.uj_nempubcsatolmanyok) {
+                        delete modositoObj.uj_nempubcsatolmanyok;
+                    }
                     modositoObj.projektlakaskepek = JSON.stringify(projektkepek);
                     modositoObj.borito = JSON.stringify(boritokepek);
+                    modositoObj.nempubcsatolmanyok = JSON.stringify(nempubcsatolmanyok);
                     modositoObj.beruhazo = JSON.stringify(modositoObj.beruhazo);
                     modositoObj.cim = JSON.stringify(modositoObj.cim);
                     modositoObj.epuletszintek = JSON.stringify(modositoObj.epuletszintek);
@@ -436,22 +557,24 @@ router.delete('/', async (req, res) => {
     }
 });
 
-router.post('/deleteimage', async (req, res) => {
+router.post('/deletefile', async (req, res) => {
     const token = req.cookies.JWT_TOKEN;
     if (token) {
         const user = await validateToken(token, jwtparams.secret);
         const projektId = req.headers.id;
+        const dir = req.headers.dir;
         const { filename } = req.body;
 
         if (user === null) {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
-                const image = `${process.env.projektDir}/${projektId}/${filename}`;
+                const image = `${process.env.projektDir}/${projektId}/${dir}/${filename}`;
                 rmSync(image, {
                     force: true
                 });
-                res.status(200).send({ err: null, msg: 'Kép sikeresen törölve!' });
+
+                res.status(200).send({ err: null, msg: 'File sikeresen törölve!' });
             } else {
                 res.status(401).send({ err: 'Nincs jogosultsága az adott művelethez!' });
             }

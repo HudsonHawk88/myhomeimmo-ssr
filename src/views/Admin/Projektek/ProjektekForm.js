@@ -6,6 +6,7 @@ import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
+import { saveAs } from 'file-saver';
 
 import Stepper from '../../../commons/Stepper';
 import KepCard from '../../../commons/KepCard';
@@ -27,6 +28,7 @@ const ProjektekForm = ({
     handleEpuletszintekChange,
     object,
     setObject,
+    listTelepulesek,
     helyseg,
     orszagok,
     setHelyseg,
@@ -60,9 +62,11 @@ const ProjektekForm = ({
     const [kepekModal, setKepekModal] = useState(false);
     const [ingatlanOptions, setIngatlanOptions] = useState([]);
 
-    /* useEffect(() => {
-        setDefaultValues();
-    }, []); */
+    useEffect(() => {
+        if (formType === 'FEL' && !currentId) {
+            setDefaultValues();
+        }
+    }, []);
 
     const getOptions = () => {
         Services.getIngatlanOptions((err, res) => {
@@ -113,6 +117,19 @@ const ProjektekForm = ({
         }
     };
 
+    const deleteFile = (filename, dir, id) => {
+        Services.deleteFile(filename, dir, id, (err, res) => {
+            if (!err) {
+                addNotification('success', res.msg);
+                const filtered = object.nempubcsatolmanyok.filter((n) => n.filename !== filename);
+                setObject({
+                    ...object,
+                    nempubcsatolmanyok: filtered
+                });
+            }
+        });
+    };
+
     const MyDropzoneCsatolmanyok = () => {
         const onDrop = useCallback((acceptedFiles) => {
             const csatolmanyok = acceptedFiles.map((file, index) => {
@@ -139,7 +156,8 @@ const ProjektekForm = ({
 
         const csatolmanyokDivStyle = {
             display: 'grid',
-            gridTemplateColumns: 'repeat(6, minmax(150px, 1fr))'
+            gridTemplateColumns: 'repeat(6, minmax(170px, 1fr))',
+            rowGap: '30px'
         };
 
         return (
@@ -150,37 +168,75 @@ const ProjektekForm = ({
                 </div>
 
                 <div style={csatolmanyokDivStyle}>
-                    {object.nempubcsatolmanyok.map((csatolmany) => {
-                        const filename = csatolmany.filename + '';
-                        const ext = filename !== '' ? filename.slice(filename.lastIndexOf('.') + 1, filename.length) : undefined;
-                        console.log(ext);
-                        return (
-                            ext && (
-                                <div key={csatolmany.filename} style={{ padding: '10px' }}>
-                                    {csatolmany.type.includes('image') ? (
-                                        <div style={{ position: 'relative' }}>
-                                            <img className="upload_preview" src={csatolmany.src} alt={csatolmany.filename} />
-                                            <div className="upload_data">
-                                                <span style={{ overflowWrap: 'break-word', textAlign: 'center' }}>{csatolmany.filename}</span>
-                                                <br />
-                                                <span style={{ textAlign: 'center' }}>{'Méret: ' + (csatolmany.size / 1024 / 1024).toFixed(2) + ' Mb'}</span>
+                    {object &&
+                        object.nempubcsatolmanyok &&
+                        object.nempubcsatolmanyok.length > 0 &&
+                        object.nempubcsatolmanyok.map((csatolmany) => {
+                            const filename = csatolmany.filename + '';
+                            const ext = filename !== '' ? filename.slice(filename.lastIndexOf('.') + 1, filename.length) : undefined;
+                            return (
+                                ext && (
+                                    <div key={csatolmany.filename} style={{ height: '170px', padding: '10px' }}>
+                                        {csatolmany.type.includes('image') ? (
+                                            <div style={{ height: '150px', position: 'relative' }}>
+                                                <img className="upload_preview" src={csatolmany.src} alt={csatolmany.filename} />
+                                                <div className="upload_data">
+                                                    <span style={{ overflowWrap: 'break-word', textAlign: 'center' }}>{csatolmany.filename}</span>
+                                                    <br />
+                                                    <span style={{ textAlign: 'center' }}>{'Méret: ' + (csatolmany.size / 1024 / 1024).toFixed(2) + ' Mb'}</span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div style={{ height: '150px', position: 'relative' }}>
+                                                <div className="upload_preview">{getCsatolmanyokIkon(csatolmany.filename, ext)}</div>
+                                                <div className="upload_data">
+                                                    <span style={{ overflowWrap: 'break-word', textAlign: 'center' }}>{csatolmany.filename}</span>
+                                                    <br />
+                                                    <span style={{ textAlign: 'center' }}>{'Méret: ' + (csatolmany.size / 1024 / 1024).toFixed(2) + ' Mb'}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                            <div
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    backgroundColor: '#22dd22',
+                                                    color: 'white',
+                                                    padding: '10px 0',
+                                                    justifyContent: 'center',
+                                                    minWidth: '50%',
+                                                    maxWidth: '50%'
+                                                    /* minHeight: '20px',
+                                                maxHeight: '20px' */
+                                                }}
+                                                hidden={csatolmany.file}
+                                                onClick={() => saveAs(csatolmany.src, csatolmany.filename)}
+                                            >
+                                                <i className="fa-solid fa-floppy-disk" />
+                                            </div>
+                                            <div
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    backgroundColor: '#dd2222',
+                                                    color: 'white',
+                                                    padding: '10px 0',
+                                                    justifyContent: 'center',
+                                                    minWidth: csatolmany.file ? '100%' : '50%',
+                                                    minWidth: csatolmany.file ? '100%' : '50%'
+                                                    /* minHeight: '20px',
+                                                maxHeight: '20px' */
+                                                }}
+                                                onClick={() => deleteFile(csatolmany.filename, 'nempubcsatolmanyok', currentId)}
+                                            >
+                                                <i className="fa-solid fa-trash-can" />
                                             </div>
                                         </div>
-                                    ) : (
-                                        <div style={{ height: '150px', position: 'relative' }}>
-                                            <div className="upload_preview">{getCsatolmanyokIkon(csatolmany.filename, ext)}</div>
-                                            <div className="upload_data">
-                                                <span style={{ overflowWrap: 'break-word', textAlign: 'center' }}>{csatolmany.filename}</span>
-                                                <br />
-                                                <span style={{ textAlign: 'center' }}>{'Méret: ' + (csatolmany.size / 1024 / 1024).toFixed(2) + ' Mb'}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <div style={{ display: 'flex', justifyContent: 'center', minWidth: '100%', maxWidth: '100%', minHeight: '20px', maxHeight: '20px' }}>kuka</div>
-                                </div>
-                            )
-                        );
-                    })}
+                                    </div>
+                                )
+                            );
+                        })}
                 </div>
             </React.Fragment>
         );
@@ -278,7 +334,6 @@ const ProjektekForm = ({
 
     const getBeruhazoTelepulesekOpts = (items) => {
         let telOpts = [];
-        console.log('FORMITEMS: ', items);
         items.forEach((item) => {
             telOpts.push({
                 label: item.telepulesnev,
@@ -315,6 +370,8 @@ const ProjektekForm = ({
     useEffect(() => {
         if (isIrszamTyped()) {
             getTelepulesByIrsz(helyseg.irszam);
+        } else {
+            listTelepulesek();
         }
     }, [isIrszamTyped(), helyseg.irszam]);
 
@@ -363,7 +420,6 @@ const ProjektekForm = ({
     const getBeruhazoTelepulesByIrsz = (irsz) => {
         Services.getTelepulesByIrsz(irsz, (err, res) => {
             if (!err) {
-                console.log(res);
                 if (res.length === 1) {
                     setBeruhazoTelepulesObj({
                         ...beruhazoTelepulesObj,
@@ -440,7 +496,7 @@ const ProjektekForm = ({
         ];
         return (
             <div className="row">
-                <Stepper step={step} setStep={setStep} stepsArray={stepsArray} />
+                <Stepper className={'projekt_stepper'} step={step} setStep={setStep} stepsArray={stepsArray} />
                 <div hidden={step !== 1}>
                     <h4>Beruházó adatok:</h4>
                     <br />
@@ -887,7 +943,7 @@ const ProjektekForm = ({
                         </div>
                         <div className="col-md-4" />
                     </div>
-                    <div className="row mb-2" hidden>
+                    <div className="row mb-2">
                         <h5>Nem publikus adatok:</h5>
                         <div className="col-md-4">
                             <RVFormGroup>
@@ -913,7 +969,7 @@ const ProjektekForm = ({
                             </RVFormGroup>
                         </div>
                     </div>
-                    <div className="row mb-2" hidden>
+                    <div className="row mb-2">
                         <div className="col-md-12">
                             <RVFormGroup>
                                 <Label>{isRequired('Megjegyzés:', false)}</Label>
@@ -928,7 +984,7 @@ const ProjektekForm = ({
                             </RVFormGroup>
                         </div>
                     </div>
-                    <div className="row mb-2" hidden>
+                    <div className="row mb-2">
                         <div className="col-md-12">
                             <RVFormGroup>
                                 <Label>{isRequired('Csatolmányok:', false)}</Label>
@@ -983,7 +1039,6 @@ const ProjektekForm = ({
 
     return (
         <React.Fragment>
-            {console.log(telepulesekOpts, beruhazoTelepulesekOpts)}
             {renderForm()}
             {renderKepekModal()}
         </React.Fragment>

@@ -316,7 +316,7 @@ const getNameByFieldName = (fieldName) => {
             return 'Villany';
         case 'szennyviz':
             return 'Szennyvíz';
-        case 'isHirdethető':
+        case 'isHirdetheto':
             return 'Hirdethetőség';
         case 'isKiemelt':
             return 'Kiemeltség';
@@ -352,6 +352,7 @@ const getNameByFieldName = (fieldName) => {
 const getChangedField = (newObject, oldObject) => {
     const newObjKeys = Object.keys(newObject);
     const oldObjKeys = Object.keys(oldObject);
+    console.log(oldObject, newObject);
     let fieldNames = [];
 
     /* if (oldObjKeys.length !== newObjKeys.length) return false; */
@@ -360,13 +361,17 @@ const getChangedField = (newObject, oldObject) => {
         let newValue = newObject[key];
         let oldValue = oldObject[key];
 
-        if (key === 'isHirdethető' || key === 'isKiemelt' || key === 'isErkely' || key === 'isTetoter' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu' || key === 'isVip') {
-            oldValue = oldObject[key] === '1' || oldObject[key] === 1 ? true : false;
-            newValue = oldObject[key] === '1' || oldObject[key] === 1 ? true : false;
+        if (key === 'isHirdetheto' || key === 'isKiemelt' || key === 'isErkely' || key === 'isTetoter' || key === 'isLift' || key === 'isAktiv' || key === 'isUjEpitesu' || key === 'isVip') {
+            oldValue = oldObject[key] == '1' || oldObject[key] === true ? true : false;
+            newValue = newObject[key] == '1' || newObject[key] === true ? true : false;
         }
         if (key === 'ar' || key === 'kaucio') {
             oldValue = oldObject[key].replace(/\s/g, '');
             newValue = newObject[key].replace(/\s/g, '');
+        }
+        if (key === 'tipus') {
+            oldValue = parseInt(oldObject[key], 10);
+            newValue = parseInt(oldObject[key], 10);
         }
 
         console.log('OLD VALUE: ', oldValue);
@@ -374,7 +379,7 @@ const getChangedField = (newObject, oldObject) => {
         console.log(typeof newObject, Array.isArray(newObject));
         const isObjects = isObject(newValue) && isObject(oldValue);
 
-        if ((isObjects && !getChangedField(newValue, oldValue)) || (!isObjects && newValue !== oldValue)) {
+        if (!isObjects && newValue !== oldValue) {
             fieldNames.push({ fieldName: getNameByFieldName(key), regiErtek: oldValue, ujErtek: newValue });
         }
     }
@@ -384,6 +389,7 @@ const getChangedField = (newObject, oldObject) => {
 
 const renderValtozatasok = (valtozasok) => {
     return valtozasok.map((item) => {
+        console.log('ITEM: ', item);
         return `<li>${item.fieldName}: Régi érték: ${item.regiErtek} Új érték: ${item.ujErtek}</li>`;
     });
 };
@@ -540,7 +546,12 @@ const createIngatlanokSql = `
         rogzitIdo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         modIdo DATE DEFAULT NULL,
         modUser TEXT DEFAULT NULL,
-        hirdeto json DEFAULT NULL
+        hirdeto json DEFAULT NULL,
+        jutalek TEXT DEFAULT NULL,
+        megbizaskelte DATETIME DEFAULT NULL,
+        megbizasvege DATETIME DEFAULT NULL,
+        nempubmegjegyzes TEXT DEFAULT NULL,
+        nempubcsatolmanyok json DEFAULT NULL
     ) ENGINE=InnoDB;
 `;
 

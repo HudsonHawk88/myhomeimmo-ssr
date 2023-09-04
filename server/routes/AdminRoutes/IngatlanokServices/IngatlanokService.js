@@ -87,8 +87,8 @@ router.get('/', async (req, res) => {
                         }
                     });
                 } else {
-                    const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, etanusitvany, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, rogzitIdo, modIdo, modUser, hirdeto
-                FROM ingatlanok ORDER BY rogzitIdo DESC`;
+                    const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, etanusitvany, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, rogzitIdo, modIdo, modUser, hirdeto, jutalek, megbizaskelte, megbizasvege, nempubmegjegyzes, nempubcsatolmanyok
+                    FROM ingatlanok ORDER BY rogzitIdo DESC`;
                     ingatlanok.query(sql, (err, result) => {
                         if (!err) {
                             let ressss = result.filter((ing) => {
@@ -114,6 +114,31 @@ router.get('/', async (req, res) => {
         }
     } else {
         res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
+    }
+});
+
+router.post('/deletefile', async (req, res) => {
+    const token = req.cookies.JWT_TOKEN;
+    if (token) {
+        const user = await validateToken(token, jwtparams.secret);
+        const ingId = req.headers.id;
+        const dir = req.headers.dir;
+        const { filename } = req.body;
+
+        if (user === null) {
+            res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
+        } else {
+            if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
+                const file = `${process.env.ingatlankepekdir}/${ingId}/${dir}/${filename}`;
+                rmSync(file, {
+                    force: true
+                });
+
+                res.status(200).send({ err: null, msg: 'File sikeresen törölve!' });
+            } else {
+                res.status(401).send({ err: 'Nincs jogosultsága az adott művelethez!' });
+            }
+        }
     }
 });
 
@@ -146,7 +171,7 @@ router.post('/deleteimage', async (req, res) => {
     }
 });
 
-router.post('/', upload.array('kepek'), async (req, res) => {
+router.post('/', upload.any(), async (req, res) => {
     const token = req.cookies.JWT_TOKEN;
 
     if (token) {
@@ -184,7 +209,7 @@ router.post('/', upload.array('kepek'), async (req, res) => {
     }
 });
 
-router.put('/', upload.array('uj_kepek'), async (req, res) => {
+router.put('/', upload.any(), async (req, res) => {
     const token = req.cookies.JWT_TOKEN;
     if (token) {
         const user = await validateToken(token, jwtparams.secret);
@@ -254,7 +279,10 @@ router.post('/jovahagyas', async (req, res) => {
     const token = req.cookies.JWT_TOKEN;
     if (token) {
         const user = await validateToken(token, jwtparams.secret);
-        const modositoObj = getJSONfromLongtext(req.body, 'toNumber');
+        const adatok = req.body.adatok;
+        console.log(req.body.adatok);
+        const modositoObj = getJSONfromLongtext(adatok.modositoObj, 'toNumber');
+        const regiIng = getJSONfromLongtext(adatok.regiIngatlan, 'toNumber');
         if (user === null) {
             res.status(401).send({ err: 'Nincs belépve! Kérem jelentkezzen be!' });
         } else {
@@ -266,9 +294,9 @@ router.post('/jovahagyas', async (req, res) => {
                 const isNew = stringToBool(req.headers.isnew);
                 let nev = JSON.parse(user.nev);
                 const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
-                let oldIng = await UseQuery(`SELECT * FROM ingatlanok WHERE id = '${ingId}';`);
-                oldIng = getJSONfromLongtext(oldIng[0], 'toNumber');
-                const changedFields = getChangedField(modositoObj, oldIng);
+                /*                 let oldIng = await UseQuery(`SELECT * FROM ingatlanok WHERE id = '${ingId}';`);
+                oldIng = getJSONfromLongtext(oldIng[0], 'toNumber'); */
+                const changedFields = getChangedField(modositoObj, regiIng);
                 const mail = {
                     from: `${teljesNev} <${user.email}>`, // sender address
                     to: `${process.env.foEmail}`, // list of receivers
@@ -283,7 +311,7 @@ router.post('/jovahagyas', async (req, res) => {
                         : `<b>Kedves ${process.env.foNev}!</b><br><br>
                     ${teljesNev} ingatlanértékesítő ${isNew ? 'felvitt egy új ingatlant' : 'módosította az ingatlanját'} Az ingatlan id-je: ${ingId ? ingId : 'Nincs id, valami hiba van...'}<br><br>
                     ${
-                        !isNew && modositoObj
+                        !isNew && modositoObj && publikusChange === false
                             ? `Az alábbi dolgok módosultak: <br>
                     <ul>
                     ${renderValtozatasok(changedFields)}

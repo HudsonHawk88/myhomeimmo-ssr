@@ -2,8 +2,9 @@
 @use '../functions/var' as *;
 
 .admin-navbar {
-    min-height: 80px;
+    min-height: 100px;
     padding: 0px !important;
+    background-color: var(themes-admin-navbarbgcolor);
 
     &__collapse {
         display: flex !important;
@@ -12,14 +13,16 @@
 
     #logo {
         position: absolute;
-        left: 0px;
+        left: 85px;
         top: 0px;
         display: none;
         content: var(themes-admin-navbarlogo);
-        height: 80px;
-        width: 300px;
+        background-size: 100px;
+        background-position: center;
+        height: 100px;
+        /* width: 300px; */
         padding: 5px;
-        background-color: var(themes-admin-sidebarbg);
+        /* background-color: var(themes-admin-sidebarbg); */
 
         @media screen and (min-width: 992px) {
             display: flex;
@@ -31,7 +34,15 @@
         right: 15px;
     }
 
+    .show .btn-secondary.dropdown-toggle {
+        background-color: var(themes-admin-navbarbgcolor);
+        color: black;
+    }
+
     .dropdown-toggle {
+        background-color: var(themes-admin-navbarbgcolor);
+        border: none;
+        color: black;
         & img {
             height: 50px;
             width: 50px;
@@ -46,11 +57,28 @@
         box-shadow: none !important;
         border: none !important;
         background-color: var(themes-admin-navbarbgcolor);
+        color: black;
     }
 
     .dropdown-menu {
         background-color: var(themes-admin-navbarbgcolor);
         border: none !important;
         transform: translate(15px, 71px) !important;
+
+        a {
+            padding: 0px;
+        }
+
+        a,
+        .nav-link {
+            color: black;
+            text-decoration: none;
+        }
+
+        .dropdown-item {
+            div {
+                padding: 10px 0px;
+            }
+        }
     }
 }

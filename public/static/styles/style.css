@@ -76,7 +76,7 @@ html body::-webkit-scrollbar {
 }
 
 .modal-body {
-  display: grid;
+  /* display: grid; */
   row-gap: 10px;
 }
 
@@ -621,8 +621,48 @@ html body::-webkit-scrollbar {
   max-width: inherit;
   min-height: 100%;
   max-height: inherit;
-  background-color: rgba(215, 197, 153, 0.5);
+  background-color: white;
   padding: 10px;
+}
+.tartalom-admin .react-data-table-pagination-buttons .btn.btn-outline-primary {
+  border-color: #333;
+  color: #000;
+}
+.tartalom-admin .react-data-table-pagination-buttons .btn.btn-outline-primary:hover, .tartalom-admin .react-data-table-pagination-buttons .btn.btn-outline-primary:active, .tartalom-admin .react-data-table-pagination-buttons .btn.btn-outline-primary:focus {
+  border-color: rgb(58, 214, 197);
+  background-color: rgb(58, 214, 197);
+}
+.tartalom-admin .react-data-table-pagination-buttons .btn.btn-primary {
+  border-color: #333;
+  color: #000;
+  background-color: rgb(58, 214, 197);
+}
+.tartalom-admin .react-data-table-pagination-buttons .btn.btn-primary:hover, .tartalom-admin .react-data-table-pagination-buttons .btn.btn-primary:active, .tartalom-admin .react-data-table-pagination-buttons .btn.btn-primary:focus {
+  border-color: rgb(58, 214, 197);
+  background-color: rgb(58, 214, 197);
+}
+.tartalom-admin .btn.btn-link {
+  color: rgb(0, 0, 0);
+  font-size: 1.2rem;
+}
+.tartalom-admin .fas.fa-eye {
+  color: green;
+}
+.tartalom-admin .fas.fa-external-link-alt {
+  color: crimson;
+}
+.tartalom-admin .fas.fa-pencil,
+.tartalom-admin .fas.fa-pencil-alt {
+  color: orange;
+}
+.tartalom-admin .fas.fa-trash {
+  color: rgb(111, 114, 114);
+}
+.tartalom-admin .fa.fa-facebook-square {
+  color: #4267b2;
+}
+.tartalom-admin .fas.fa-file-pdf {
+  color: red;
 }
 .tartalom-admin table {
   border: 1px black solid;
@@ -1067,6 +1107,37 @@ html body::-webkit-scrollbar {
   margin: unset !important;
 }
 
+.ingatlan_stepper {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: fit-content;
+  max-height: fit-content;
+  margin: 10px 0 20px 0 !important;
+}
+.ingatlan_stepper .btn {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  width: 50px;
+  text-align: center;
+}
+.ingatlan_stepper .btn.page {
+  border-radius: 50%;
+}
+.ingatlan_stepper .pagebutton_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.ingatlan_stepper .pagebutton_container .pagebutton_leiras {
+  text-align: center;
+}
+
 .projekt_stepper {
   display: flex;
   justify-content: space-evenly;
@@ -1096,6 +1167,28 @@ html body::-webkit-scrollbar {
 }
 .projekt_stepper .pagebutton_container .pagebutton_leiras {
   text-align: center;
+}
+
+.react-slate-wysiwyg-editor {
+  display: block;
+}
+
+.font_button {
+  left: unset !important;
+  top: unset !important;
+  padding: 0 !important;
+}
+
+#fontsize {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: max-content;
+  padding: 5px;
+  border: none;
+  overflow-y: hidden;
+  scrollbar-base-color: #fff;
 }
 
 /* #kepekmodal {
@@ -2376,8 +2469,9 @@ html body::-webkit-scrollbar {
 }
 
 .admin-navbar {
-  min-height: 80px;
+  min-height: 100px;
   padding: 0px !important;
+  background-color: rgb(58, 214, 197);
 }
 .admin-navbar__collapse {
   display: flex !important;
@@ -2385,14 +2479,16 @@ html body::-webkit-scrollbar {
 }
 .admin-navbar #logo {
   position: absolute;
-  left: 0px;
+  left: 85px;
   top: 0px;
   display: none;
-  content: url("../images/logo2.png");
-  height: 80px;
-  width: 300px;
+  content: url("../images/logo_uj.png");
+  background-size: 100px;
+  background-position: center;
+  height: 100px;
+  /* width: 300px; */
   padding: 5px;
-  background-color: #222222;
+  /* background-color: var(themes-admin-sidebarbg); */
 }
 @media screen and (min-width: 992px) {
   .admin-navbar #logo {
@@ -2402,6 +2498,15 @@ html body::-webkit-scrollbar {
 .admin-navbar .navbar-nav {
   position: absolute;
   right: 15px;
+}
+.admin-navbar .show .btn-secondary.dropdown-toggle {
+  background-color: rgb(58, 214, 197);
+  color: black;
+}
+.admin-navbar .dropdown-toggle {
+  background-color: rgb(58, 214, 197);
+  border: none;
+  color: black;
 }
 .admin-navbar .dropdown-toggle img {
   height: 50px;
@@ -2414,12 +2519,24 @@ html body::-webkit-scrollbar {
 .admin-navbar .dropdown-toggle:hover {
   box-shadow: none !important;
   border: none !important;
-  background-color: #ffc107;
+  background-color: rgb(58, 214, 197);
+  color: black;
 }
 .admin-navbar .dropdown-menu {
-  background-color: #ffc107;
+  background-color: rgb(58, 214, 197);
   border: none !important;
   transform: translate(15px, 71px) !important;
+}
+.admin-navbar .dropdown-menu a {
+  padding: 0px;
+}
+.admin-navbar .dropdown-menu a,
+.admin-navbar .dropdown-menu .nav-link {
+  color: black;
+  text-decoration: none;
+}
+.admin-navbar .dropdown-menu .dropdown-item div {
+  padding: 10px 0px;
 }
 
 .admin-sidebar {
@@ -2441,6 +2558,8 @@ html body::-webkit-scrollbar {
   position: absolute;
   left: 20px;
   top: 20px;
+  line-height: 1.7 !important;
+  font-size: 1.8rem !important;
   cursor: pointer;
   padding: 10px;
   border: 1px black solid;
@@ -2466,7 +2585,7 @@ html body::-webkit-scrollbar {
   width: 300px;
 }
 .admin-sidebar__navitem {
-  line-height: 3;
+  line-height: 2;
 }
 .admin-sidebar__navlink {
   color: blanchedalmond;
@@ -2554,7 +2673,7 @@ html body::-webkit-scrollbar {
   text-align: center;
   justify-content: center;
   align-items: center;
-  background-color: #ffc107;
+  background-color: rgb(58, 214, 197);
   color: black;
 }
 
