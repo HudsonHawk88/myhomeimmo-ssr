@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
-import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
-import { serializeValue, initialValue } from '../../../commons/Serializer';
+import { Editor, setEditorValue, initialValue } from '@inftechsol/react-slate-wysiwyg';
+import { WysiwygEditor, serializeValue } from '../../../commons/WysiwygEditor';
 import { useDropzone } from 'react-dropzone';
 import KepCard from '../../../commons/KepCard.js';
 
@@ -238,7 +238,7 @@ const MyArtGaleriak = (props) => {
     };
 
     const renderWysiwyg = () => {
-        return <Wysiwyg onChange={onChangeEditor} value={myArtGaleriakObj.leiras} />;
+        return <WysiwygEditor onChange={onChangeEditor} value={myArtGaleriakObj.leiras} />;
     };
 
     const renderModal = () => {

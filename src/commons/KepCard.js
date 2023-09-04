@@ -37,7 +37,6 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
         result.splice(endIndex, 0, removed);
 
         result.forEach((kep, index) => {
-            console.log(startIndex, endIndex, kep.id);
             if (index === 0) {
                 kep.isCover = true;
                 kep.id = endIndex;
@@ -85,7 +84,7 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
             width: '100%'
         }; */
 
-        console.log('NEWLLL: ', lll);
+        /* console.log('NEWLLL: ', lll); */
 
         const divStyle = {
             display: 'flex',
@@ -100,13 +99,12 @@ const KepCard = ({ list, property, setList, services, ...rest }) => {
                 measuring={MeasuringStrategy}
                 autoScroll={{ enabled: true, acceleration: 1, interval: 1, layoutShiftCompensation: true }}
                 collisionDetection={closestCenter}
-                onDragMove={(id, overId) => console.log(id, overId)}
+                /* onDragMove={(id, overId) => console.log(id, overId)} */
                 onDragEnd={handleDragEnd}
             >
                 <div style={divStyle}>
                     <SortableContext useDragOverlay={true} items={lll} strategy={rectSortingStrategy}>
                         {lll.map((item) => {
-                            console.log(item);
                             return <SortableItem deleteImage={deleteImage} key={item.filename} item={item} id={item.id} />;
                         })}
                     </SortableContext>

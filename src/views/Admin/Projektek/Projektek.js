@@ -128,7 +128,7 @@ const Projektek = (props) => {
 
     const [helyseg, setHelyseg] = useState(defaultHelseg);
     const [beruhazoHelyseg, setBeruhazoHelyseg] = useState(defaultBeruhazoHelseg);
-    const [formType, setFormType] = useState(''); // ['FEL', 'MOD', 'DEL', '']
+    const [formType, setFormType] = useState('FEL'); // ['FEL', 'MOD', 'DEL', '']
     const [projektekJson, setProjektekJson] = useState([]);
     const [currentId, setCurrentId] = useState(null);
 
@@ -150,12 +150,16 @@ const Projektek = (props) => {
             orszagokList.forEach((orsz) => {
                 if (orsz.orszagkod === 'hun') {
                     setHelyseg({
-                        ...helyseg,
-                        orszag: orsz
+                        orszag: orsz,
+                        irszam: '',
+                        telepules: defaultTelepulesObj,
+                        cimadatok: ''
                     });
                     setBeruhazoHelyseg({
-                        ...beruhazoHelyseg,
-                        orszag: orsz
+                        orszag: orsz,
+                        irszam: '',
+                        telepules: defaultBeruhazoTelepulesObj,
+                        cimadatok: ''
                     });
                 }
             });
@@ -172,23 +176,14 @@ const Projektek = (props) => {
 
     const setDefaultValues = () => {
         listOrszagok();
-        listTelepulesek();
+        /* listTelepulesek(); */
         setProjektObj(defaultProjekt);
         setBeruhazo(defaultBeruhazo);
-        setTelepulesObj(defaultTelepulesObj);
-        setBeruhazoTelepulesObj(defaultBeruhazoTelepulesObj);
-        setHelyseg(defaultHelseg);
-        setBeruhazoHelyseg(defaultBeruhazoHelseg);
-        getTelepulesekOpts(telepulesek);
-        getBeruhazoTelepulesekOpts(telepulesek);
     };
 
     useEffect(() => {
         init();
-        if (formType === 'FEL' && !currentId) {
-            setDefaultValues();
-        }
-    }, [formType, currentId]);
+    }, []);
 
     const listOrszagok = () => {
         Services.listOrszagok((err, res) => {
@@ -203,6 +198,8 @@ const Projektek = (props) => {
         Services.listTelepulesek((err, res) => {
             if (!err) {
                 setTelepulesek(res);
+                getTelepulesekOpts(res);
+                getBeruhazoTelepulesekOpts(res);
             }
         });
     };
@@ -342,8 +339,8 @@ const Projektek = (props) => {
     };
 
     const handleNewClick = () => {
-        setCurrentId(null);
         /* setDefaultValues(); */
+        setCurrentId(null);
         setFormType('FEL');
         toggleProjektModal();
     };
@@ -358,6 +355,7 @@ const Projektek = (props) => {
         setFormType('MOD');
         setStep(1);
         setCurrentId(id);
+        getProjekt(id);
         toggleProjektModal();
     };
 
@@ -369,11 +367,11 @@ const Projektek = (props) => {
     const tableIconFormatter = (cell, row) => {
         return (
             <React.Fragment>
-                {hasRole(user.roles, ['PROJEKT_LEK', 'SZUPER_ADMIN']) && (
+                {/* {hasRole(user.roles, ['PROJEKT_LEK', 'SZUPER_ADMIN']) && (
                     <Button type="button" color="link" onClick={() => handleViewClick(row.id)}>
                         <i className="fas fa-eye" />
                     </Button>
-                )}
+                )} */}
                 {hasRole(user.roles, ['SZUPER_ADMIN', 'PROJEKT_ADMIN']) && (
                     <React.Fragment>
                         <Button type="button" key={row.id + 2} color="link" onClick={() => handleEditClick(row.id)}>
@@ -484,10 +482,16 @@ const Projektek = (props) => {
         });
         /* kuldObj.epuletszintek = epuletszintek; */
         kuldObj.isTobbEpuletes = kuldObj.epuletszintek && kuldObj.epuletszintek.length > 1 ? true : false;
+        /* kuldObj.borito = kuldObj.borito.filter((f) => {
+            console.log(f.src && f.src.includes('blob'));
+            return f.file === null || f.file === undefined;
+        }); */
+        /* kuldObj.projektlakaskepek = kuldObj.projektlakaskepek.filter((f) => f.file !== null || f.file !== undefined);
+        kuldObj.nempubcsatolmanyok = kuldObj.nempubcsatolmanyok.filter((f) => f.file); */
 
         let datas = {};
         if (!currentId) {
-            datas = makeFormData(kuldObj, ['borito', 'projektlakaskepek'], false);
+            datas = makeFormData(kuldObj, ['borito', 'projektlakaskepek', 'nempubcsatolmanyok'], false);
             Services.addProjekt(datas, (err, res) => {
                 if (!err) {
                     addNotification('success', res.msg);
@@ -497,7 +501,7 @@ const Projektek = (props) => {
                 }
             });
         } else {
-            datas = makeFormData(kuldObj, ['borito', 'projektlakaskepek'], true);
+            datas = makeFormData(kuldObj, ['borito', 'projektlakaskepek', 'nempubcsatolmanyok'], true);
             Services.editProjekt(datas, currentId, (err, res) => {
                 if (!err) {
                     addNotification('success', res.msg);
@@ -749,6 +753,7 @@ const Projektek = (props) => {
                             handleBeruhazoTelepulesChange={handleBeruhazoTelepulesChange}
                             handleEpuletszintekChange={handleEpuletszintekChange}
                             handleInputChange={handleInputChange}
+                            listTelepulesek={listTelepulesek}
                             orszagok={orszagok}
                             telepulesek={telepulesek}
                             object={projektObject}
@@ -789,8 +794,6 @@ const Projektek = (props) => {
                                 type="button"
                                 onClick={() => {
                                     toggleProjektModal();
-                                    setFormType('');
-                                    setDefaultValues();
                                 }}
                             >
                                 Mégsem
@@ -806,12 +809,35 @@ const Projektek = (props) => {
                         type="button"
                         onClick={() => {
                             toggleProjektModal();
-                            setFormType('');
-                            setDefaultValues();
                         }}
                     >
                         Mégsem
                     </Button>
+                </ModalFooter>
+            </Modal>
+        );
+    };
+
+    const deleteProjekt = () => {
+        Services.deleteProjekt(currentId, (err, res) => {
+            if (!err) {
+                addNotification('success', res.msg);
+                listProjektek();
+                toggleDeleteModal();
+            }
+        });
+    };
+
+    const renderDeleteModal = () => {
+        return (
+            <Modal isOpen={deleteModal} toggle={toggleDeleteModal} size="md" backdrop="static">
+                <ModalHeader>Projekt törlése</ModalHeader>
+                <ModalBody>Valóban törölni kívánja az adott projektet?</ModalBody>
+                <ModalFooter>
+                    <Button color="danger" onClick={deleteProjekt}>
+                        Igen
+                    </Button>
+                    <Button onClick={toggleDeleteModal}>Mégsem</Button>
                 </ModalFooter>
             </Modal>
         );
@@ -828,6 +854,7 @@ const Projektek = (props) => {
                 <br />
                 {projektekJson.length > 0 && renderTable()}
                 {renderProjektModal()}
+                {renderDeleteModal()}
             </div>
         </div>
     );

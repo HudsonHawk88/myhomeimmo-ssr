@@ -34,7 +34,7 @@ const Stepper = ({ children, className, buttonContainerClassName, leirasClassNam
 
     return (
         <React.Fragment>
-            <div className={`projekt_stepper stepper ${className ? className : ''}`}>{renderStepperButton()}</div>
+            <div className={`stepper ${className ? className : ''}`}>{renderStepperButton()}</div>
         </React.Fragment>
     );
 };

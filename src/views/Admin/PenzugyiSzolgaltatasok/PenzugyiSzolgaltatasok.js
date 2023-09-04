@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label, Card, CardTitle, CardBody, CardFooter } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
 import { useDropzone } from 'react-dropzone';
-import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
-import { serializeValue, initialValue } from '../../../commons/Serializer';
+import { Editor, setEditorValue, initialValue } from '@inftechsol/react-slate-wysiwyg';
+import { WysiwygEditor, serializeValue } from '../../../commons/WysiwygEditor';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
 import { makeFormData } from '../../../commons/Lib';
@@ -250,7 +250,7 @@ const PenzugyiSzolgaltatasok = (props) => {
     };
 
     const renderWysiwyg = () => {
-        return <Wysiwyg onChange={onChangeEditor} value={penzugyiSzolgObj.leiras} />;
+        return <WysiwygEditor onChange={onChangeEditor} value={penzugyiSzolgObj.leiras} />;
     };
 
     const renderModal = () => {

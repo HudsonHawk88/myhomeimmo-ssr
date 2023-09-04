@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label } from 'reactstrap';
 import { DataTable } from '@inftechsol/react-data-table';
-import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
-import { serializeValue, initialValue } from '../../../commons/Serializer';
+import { Editor, setEditorValue, initialValue } from '@inftechsol/react-slate-wysiwyg';
+import { WysiwygEditor, serializeValue } from '../../../commons/WysiwygEditor';
 import { handleInputChange } from '../../../commons/InputHandlers';
 import Services from './Services';
 
@@ -173,7 +173,7 @@ const Gdpr = (props) => {
     };
 
     const renderWysiwyg = () => {
-        return <Wysiwyg onChange={onChangeEditor} value={gdprObj.leiras} />;
+        return <WysiwygEditor onChange={onChangeEditor} value={gdprObj.leiras} />;
     };
 
     const renderModal = () => {

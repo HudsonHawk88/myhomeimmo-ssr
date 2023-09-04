@@ -63,7 +63,7 @@ router.post('/', async (req, res) => {
                 if (felvitelObj) {
                     felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
                     //store user, password and role
-                    const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.roles (
+                    const sql = `CREATE TABLE IF NOT EXISTS myhomeimmo.roles (
                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     label text DEFAULT NULL,
                     leiras text DEFAULT NULL,

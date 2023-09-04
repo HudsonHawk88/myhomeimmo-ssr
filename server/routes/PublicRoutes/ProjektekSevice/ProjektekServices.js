@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
             }
         });
     } else {
-        const sql = `SELECT id, nev, leiras, borito, utem, szlogen, felirat, bemutatvideo, cim, atadasev, atadasnegyedev, atadashonap,osszlakasszam, szabadlakasszam, ingtipus, elsodlegesfutes, masodlagosfutes, harmadlagosfutes, parkolotipus, parkolohasznalat, parkoloarmill,isTobbEpuletes, komfort, epuletszintek, isLift, tarolohasznalat, isAkadalymentes, isLegkondicionalt, isZoldOtthon, energetika, isNapelemes, isSzigetelt, szigetelesmeret FROM projektek;`;
+        const sql = `SELECT id, nev, leiras, penznem, borito, utem, szlogen, felirat, bemutatvideo, cim, atadasev, atadasnegyedev, atadashonap, osszlakasszam, szabadlakasszam, projektingatlanok, ingtipus, elsodlegesfutes, masodlagosfutes, harmadlagosfutes, parkolotipus, parkolohasznalat, parkoloarmill,isTobbEpuletes, komfort, epuletszintek, isLift, tarolohasznalat, isAkadalymentes, isLegkondicionalt, isZoldOtthon, energetika, isNapelemes, isSzigetelt, szigetelesmeret FROM projektek;`;
         projektek.query(sql, (error, ress) => {
             if (error) {
                 res.status(500).send({ err: 'Hiba történt a projektek lekérdezésekor!' });

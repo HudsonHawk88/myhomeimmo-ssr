@@ -8,12 +8,12 @@ const AdminHeader = (props) => {
 
     return (
         <header>
-            <Navbar color="warning" light className="admin-navbar">
+            <Navbar className="admin-navbar">
                 <div id="logo" />
                 <Nav className="me-auto" navbar>
                     <NavItem>
                         <UncontrolledButtonDropdown>
-                            <DropdownToggle color="warning" caret>
+                            <DropdownToggle caret>
                                 <img src={avatar} />
                                 &nbsp;
                                 {user.username}

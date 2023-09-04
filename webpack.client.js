@@ -52,7 +52,8 @@ module.exports = {
             reachaptchaSecretKey: process.env.REACT_APP_recaptchasecret,
             shareUrl: process.env.REACT_APP_url,
             staticUrl: process.env.REACT_APP_staticUrl,
-            mainUrl: process.env.REACT_APP_mainUrl
+            mainUrl: process.env.REACT_APP_mainUrl,
+            devvaltoKey: process.env.REACT_APP_devvaltoAK
         }),
         new HtmlWebpackPlugin({
             template: './public/index.html',

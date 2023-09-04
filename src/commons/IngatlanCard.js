@@ -109,10 +109,10 @@ const IngatlanCard = (props) => {
                     );
                 } else if (ingatlan.szobaszam) {
                     return (
-                        <>
+                        <React.Fragment>
                             Szoba: {ingatlan.szobaszam}
                             <br />
-                        </>
+                        </React.Fragment>
                     );
                 }
             }
@@ -202,10 +202,10 @@ const IngatlanCard = (props) => {
                 <br />
                 <strong>Ár: {arFormatter(ingat.ar) + ' ' + ingat.penznem}</strong>
                 {kaucio && kaucio !== '' && (
-                    <>
+                    <React.Fragment>
                         <br />
                         <strong>Kaució: {arFormatter(ingat.kaucio) + ' ' + ingat.penznem}</strong>
-                    </>
+                    </React.Fragment>
                 )}
                 <br />
                 {`Település: ${ingat && ingat.helyseg && ingat.helyseg.telepules && ingat.helyseg.telepules.telepulesnev}`}
@@ -220,18 +220,11 @@ const IngatlanCard = (props) => {
     };
 
     return (
-        /*  <div className="ingat_card" onClick={() => viewIngatlan(ingat.id)}> */
         <div className="ingat_card__card" onClick={() => viewIngatlan(ingat.id)}>
             <div className="ingat_card__badges">{ingat && renderBadges()}</div>
             <div className="ingat_card__card__image">{ingat && renderKep()}</div>
             <div className="ingat_card__card__adatok">{ingat && renderAdatok()}</div>
-            {/*                 <div className='ingat_card__card__megtekgomb'>
-                    <Button onClick={} className="viewgomb">
-                        <i class="fas fa-eye"></i>
-                    </Button>
-                </div> */}
         </div>
-        /* </div> */
     );
 };
 

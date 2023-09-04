@@ -3,11 +3,12 @@ import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Label, Card,
 import { DataTable } from '@inftechsol/react-data-table';
 import { useDropzone } from 'react-dropzone';
 import { RVForm, RVInput } from '@inftechsol/reactstrap-form-validation';
-import { Wysiwyg, Editor, setEditorValue } from '@inftechsol/react-slate-wysiwyg';
-import { serializeValue, initialValue } from '../../../commons/Serializer';
+import { Editor, setEditorValue, initialValue } from '@inftechsol/react-slate-wysiwyg';
+/* import { serializeValue, initialValue } from '../../../commons/Serializer'; */
 import { handleInputChange } from '../../../commons/InputHandlers';
 import { makeFormData } from '../../../commons/Lib';
 import Services from './Services';
+import { WysiwygEditor, serializeValue } from '../../../commons/WysiwygEditor';
 
 const IngatlanSzolgaltatasok = (props) => {
     const { addNotification } = props;
@@ -244,7 +245,7 @@ const IngatlanSzolgaltatasok = (props) => {
     };
 
     const renderWysiwyg = () => {
-        return <Wysiwyg onChange={onChangeEditor} value={ingatlanSzolgObj.leiras} />;
+        return <WysiwygEditor onChange={onChangeEditor} value={ingatlanSzolgObj.leiras} />;
     };
 
     const renderModal = () => {

@@ -1,4 +1,7 @@
+import moment from 'moment';
+
 const handleInputChange = (e, obj, setObj) => {
+    /* if (!inputName) { */
     const { target } = e;
     const { type, checked, name } = target;
     const { pattern } = target;

@@ -95,7 +95,7 @@ router.post('/', upload.array('avatar'), async (req, res) => {
                     felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
                     const hash = await bcrypt.hash(felvitelObj.password, 10);
                     //store user, password and role
-                    const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.adminusers (
+                    const sql = `CREATE TABLE IF NOT EXISTS myhomeimmo.adminusers (
                     id INT NOT NULL PRIMARY KEY,
                     nev json DEFAULT NULL,
                     cim json DEFAULT NULL,
@@ -217,13 +217,14 @@ router.put('/', upload.array('uj_avatar'), async (req, res) => {
 
                         let kepek = [];
                         if (modositoObj.avatar) {
-                            modositoObj.avatar = JSON.parse(JSON.stringify(modositoObj.avatar));
+                            console.log('AVATAR: ', modositoObj.avatar);
                             if (Array.isArray(modositoObj.avatar)) {
                                 modositoObj.avatar.forEach((item) => {
                                     kepek.push(JSON.parse(item));
                                 });
                             } else {
-                                kepek.push(JSON.parse(modositoObj.avatar));
+                                kepek = JSON.parse(modositoObj.avatar) || [];
+                                console.log(kepek);
                             }
                         }
 
@@ -231,11 +232,18 @@ router.put('/', upload.array('uj_avatar'), async (req, res) => {
                             req.files.map((kep) => {
                                 let extIndex = kep.originalname.lastIndexOf('.');
                                 let fname = kep.originalname.substring(0, extIndex);
-                                kepek.push({
+                                if (kepek.find((k) => k.originalname === kep.originalname)) {
+                                    kepek.push({
+                                        filename: `${fname}.jpg`,
+                                        src: `${process.env.avatarUrl}/${id}/${fname}.jpg`,
+                                        title: `${fname}.jpg`
+                                    });
+                                }
+                                /*  kepek.push({
                                     src: `${process.env.avatarUrl}/${id}/${fname}.jpg`,
                                     title: `${fname}.jpg`,
                                     filename: `${fname}.jpg`
-                                });
+                                }); */
 
                                 sharp(kep.buffer)
                                     .jpeg({ quality: 80 })

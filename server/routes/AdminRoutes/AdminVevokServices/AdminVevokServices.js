@@ -72,7 +72,7 @@ router.post('/', async (req, res) => {
                 let felvitelObj = req.body;
                 if (felvitelObj) {
                     //store user, password and role
-                    const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.adminvevok (
+                    const sql = `CREATE TABLE IF NOT EXISTS myhomeimmo.adminvevok (
                     id INT NOT NULL PRIMARY KEY,
                     nev json DEFAULT NULL,
                     cim json DEFAULT NULL,
@@ -149,7 +149,7 @@ router.put('/', async (req, res) => {
                     if (id) {
                         const sql = `UPDATE adminvevok SET nev = '${JSON.stringify(modositoObj.nev)}', cim = '${JSON.stringify(modositoObj.cim)}', telefon = '${JSON.stringify(
                             modositoObj.telefon
-                        )}', email = '${modositoObj.email}', erdeklodes = '${JSON.stringify(modositoObj.erdeklodesek)}';`;
+                        )}', email = '${modositoObj.email}', erdeklodes = '${JSON.stringify(modositoObj.erdeklodesek)}' WHERE id = '${id}';`;
                         adminvevok.query(sql, (err) => {
                             if (!err) {
                                 res.status(200).send({
@@ -205,11 +205,11 @@ router.delete('/', async (req, res) => {
                     adminvevok.query(sql, (err) => {
                         if (!err) {
                             res.status(200).send({
-                                msg: 'Felhasználó sikeresen törölve!'
+                                msg: 'Vevő sikeresen törölve!'
                             });
                         } else {
                             res.status(500).send({
-                                err: 'Felhasználó törlése sikertelen!'
+                                err: 'Vevő törlése sikertelen!'
                             });
                         }
                     });
@@ -350,14 +350,17 @@ router.post('/kiajanl', async (req, res) => {
                     Tisztelettel:<br>
                     MyhomeImmo Kft.<br>` // html body
                 };
-
-                transporter.sendMail(mail, (err) => {
-                    if (!err) {
-                        res.status(200).send({ msg: 'Az ajánló email sikeresen elküldve!' });
-                    } else {
-                        res.status(500).send({ err: err, msg: 'Az ajánló email küldése sikertelen volt!' });
-                    }
-                });
+                if (!ingatlanUrl || ingatlanUrl.length < 1) {
+                    res.status(409).send({ err: 'Nincs a kritériumoknak megfelelő ingatlan az adatbázisban!', msg: 'Nincs a kritériumoknak megfelelő ingatlan az adatbázisban!' });
+                } else {
+                    transporter.sendMail(mail, (err) => {
+                        if (!err) {
+                            res.status(200).send({ msg: 'Az ajánló email sikeresen elküldve!' });
+                        } else {
+                            res.status(500).send({ err: err, msg: 'Az ajánló email küldése sikertelen volt!' });
+                        }
+                    });
+                }
             } else {
                 res.status(403).send({
                     err: 'Nincs jogosultsága az adott művelethez!'

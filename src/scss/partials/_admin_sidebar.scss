@@ -21,6 +21,8 @@
         position: absolute;
         left: 20px;
         top: 20px;
+        line-height: 1.7 !important;
+        font-size: 1.8rem !important;
         cursor: pointer;
         padding: 10px;
         border: 1px var(themes-admin-sidebartogglerbordercolor) solid;
@@ -50,7 +52,7 @@
     }
 
     &__navitem {
-        line-height: 3;
+        line-height: 2;
     }
 
     &__navlink {

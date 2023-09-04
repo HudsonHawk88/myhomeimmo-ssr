@@ -13,14 +13,36 @@
             top: 10px;
             font-size: 1.1rem;
             gap: 5px;
+
+            #emailikon {
+                margin: 5px 0 0 0;
+                content: var(themes-public-emailikon);
+                height: 25px;
+            }
+
+            #telikon {
+                content: var(themes-public-telikon);
+                height: 25px;
+            }
+
+            .spanadat {
+                display: inline-flex;
+                position: relative;
+                top: -7px;
+                left: 10px;
+            }
         }
     }
 
     & .ertkartya_back {
         content: var(themes-public-rolunkback);
         width: 100%;
-        height: 250px;
+        height: 300px;
         border: 1px solid #dddddd;
+
+        @media screen and (min-width: 950px) {
+            height: 500px;
+        }
     }
 
     & .ertkartya_kep {

@@ -371,6 +371,16 @@ const Vevok = (props) => {
         }
     };
 
+    const deleteAdminVevo = () => {
+        Services.deleteAdminVevo(currentId, (err, res) => {
+            if (!err) {
+                addNotification('success', res.msg);
+                listAdminVevo();
+                toggleDeleteModal();
+            }
+        });
+    };
+
     const renderAltipusOptions = () => {
         const altipus = altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus);
         return (
@@ -850,8 +860,10 @@ const Vevok = (props) => {
                 <ModalHeader>Vevő törlése</ModalHeader>
                 <ModalBody>Valóban törölni kívánja a kiválasztott vevőt az adatbázisból?</ModalBody>
                 <ModalFooter>
-                    <Button color="danger">Igen</Button>
-                    <Button color="secondary" onClick={toggleDeleteModal}>
+                    <Button type="button" color="danger" onClick={deleteAdminVevo}>
+                        Igen
+                    </Button>
+                    <Button type="button" color="secondary" onClick={toggleDeleteModal}>
                         Nem
                     </Button>
                 </ModalFooter>
@@ -878,6 +890,11 @@ const Vevok = (props) => {
         });
     };
 
+    const handleDeleteClick = (id) => {
+        setCurrentId(id);
+        toggleDeleteModal();
+    };
+
     const tableIconFormatter = (cell, row) => {
         return (
             <React.Fragment>
@@ -891,11 +908,7 @@ const Vevok = (props) => {
                 <Button key={row.id + 1} color="link" onClick={() => handleEditClick(row.id)}>
                     <i className="fas fa-pencil-alt" />
                 </Button>
-                <Button
-                    key={row.id + 2}
-                    color="link"
-                    //   onClick={() => handleDeleteClick(cell)}
-                >
+                <Button key={row.id + 2} color="link" onClick={() => handleDeleteClick(row.id)}>
                     <i className="fas fa-trash" />
                 </Button>
                 <Button key={row.id + 3} color="link" onClick={() => handleKiajanlasClick(row.id)}>

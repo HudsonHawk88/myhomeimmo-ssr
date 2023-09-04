@@ -85,7 +85,7 @@ router.post('/altalanos', async (req, res) => {
                 if (felvitelObj) {
                     felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
                     //store user, password and role
-                    const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.myart_altalanos (
+                    const sql = `CREATE TABLE IF NOT EXISTS myhomeimmo.myart_altalanos (
                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     azonosito text DEFAULT NULL,
                     nev text DEFAULT NULL,
@@ -301,7 +301,7 @@ router.post('/galeriak', upload.array('kepek'), async (req, res) => {
                     felvitelObj = JSON.parse(JSON.stringify(felvitelObj));
                     felvitelObj.isActive = getNumberFromBoolean(felvitelObj.isActive);
                     //store user, password and role
-                    const sql = `CREATE TABLE IF NOT EXISTS eobgycvo_myhome.myart_galeriak (
+                    const sql = `CREATE TABLE IF NOT EXISTS myhomeimmo.myart_galeriak (
                       id INT NOT NULL PRIMARY KEY,
                       azonosito text DEFAULT NULL,
                       nev text DEFAULT NULL,
@@ -418,7 +418,7 @@ router.put('/galeriak', upload.array('uj_kepek'), async (req, res) => {
                                     kepek.push(JSON.parse(item));
                                 });
                             } else {
-                                kepek.push(modositoObj.kepek);
+                                kepek = JSON.parse(modositoObj.kep);
                             }
                         }
 
@@ -426,11 +426,19 @@ router.put('/galeriak', upload.array('uj_kepek'), async (req, res) => {
                             req.files.map((kep) => {
                                 let extIndex = kep.originalname.lastIndexOf('.');
                                 let fname = kep.originalname.substring(0, extIndex);
-                                kepek.push({
+                                /* kepek.push({
                                     src: `${process.env.myartGaleriakUrl}/${id}/${fname}.jpg`,
                                     title: `${fname}.jpg`,
                                     filename: `${fname}.jpg`
-                                });
+                                }); */
+
+                                if (kepek.find((k) => k.originalname === kep.originalname)) {
+                                    kepek.push({
+                                        filename: `${fname}.jpg`,
+                                        src: `${process.env.myartGaleriakUrl}/${id}/${fname}.jpg`,
+                                        title: `${fname}.jpg`
+                                    });
+                                }
 
                                 sharp(kep.buffer)
                                     .jpeg({ quality: 80 })
@@ -451,7 +459,6 @@ router.put('/galeriak', upload.array('uj_kepek'), async (req, res) => {
                             });
                         }
 
-                
                         const sql = `UPDATE myart_galeriak SET azonosito='${modositoObj.azonosito}', nev='${modositoObj.nev}', muveszNev='${modositoObj.muveszNev}', muveszTelefon='${
                             modositoObj.muveszTelefon
                         }', muveszEmail='${modositoObj.muveszEmail}', muveszUrl='${modositoObj.muveszUrl}', kepek='${JSON.stringify(kepek)}', leiras='${modositoObj.leiras}', isActive='${

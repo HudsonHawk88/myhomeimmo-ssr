@@ -40,32 +40,37 @@ const Rolunk = (props) => {
             aboutUs.map((item, index) => {
                 let kep = item.kep[0];
                 return (
-                    <div className={`public_rolunk__item ${item.id === currentId ? 'active' : ''}`} key={item.id + '_item'}>
-                        <div className="public_rolunk__kep">
-                            <div>
-                                <img src={kep.src} alt={item.nev} />
+                    <div className={`public_rolunk__item ${item.id === currentId ? 'active' : ''}`} key={item.id + '_item'} onClick={() => viewRolunk(item.id)}>
+                        <div className="public_rolunk__baloldal">
+                            <div className="public_rolunk__fejlec">
+                                <div className="public_rolunk__fejlec__logo" />
+                                <div className="public_rolunk__fejlec__adatok">
+                                    <strong>{item.nev}</strong>
+                                    <br />
+                                    <span className="public_rolunk__beosztas">{item.beosztas}</span>
+                                    <br />
+                                    <span className="public_rolunk__cegnev1">MYHOME IMMO KFT.</span>
+                                    <br />
+                                    <span className="public_rolunk__cegnev2">Ingatlaniroda</span>
+                                </div>
+                            </div>
+                            <div className="public_rolunk__alapadatok">
+                                <div>
+                                    <img src={'/static/images/telikon.png'} className="ikon" />
+                                    <span>{item.telefon}</span>
+                                </div>
+                                <div>
+                                    <img src={'/static/images/emailikon.png'} className="ikon" />
+                                    <span>{item.email}</span>
+                                </div>
+                                <div>
+                                    <img src={'/static/images/cimikon.png'} className="ikon" />
+                                    <span>{'8900 Zalaegerszeg, Eötvös utca 4.'}</span>
+                                </div>
                             </div>
                         </div>
-                        <div className="public_rolunk__alapadatok">
-                            <div>
-                                <strong>{item.nev}</strong>
-                                <br />
-                                {item.beosztas}
-                                <br />
-                                <hr />
-                                {item.email}
-                                <br />
-                                {item.telefon}
-                                <br />
-                                <button
-                                    hidden={item.id === currentId}
-                                    onClick={(e) => {
-                                        viewRolunk(item.id);
-                                    }}
-                                >
-                                    Részletek...
-                                </button>
-                            </div>
+                        <div className="public_rolunk__kep">
+                            <img src={kep.src} alt={item.nev} />
                         </div>
                     </div>
                 );
@@ -90,7 +95,7 @@ const Rolunk = (props) => {
 
     return (
         <div className="public_rolunk">
-            <div className="item">{renderRolunk()}</div>
+            {renderRolunk()}
             {/* <div className="leiras" id="leiras" /> */}
         </div>
     );
