@@ -2102,7 +2102,7 @@ html body::-webkit-scrollbar {
 @media screen and (min-width: 765px) {
   .projekt .projekt_ingatlanok {
     position: relative;
-    top: -55px;
+    /* top: -55px; */
   }
 }
 .projekt .projekt_beruhazo {
