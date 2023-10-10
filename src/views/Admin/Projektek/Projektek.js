@@ -17,7 +17,8 @@ const Projektek = (props) => {
         cim: defaultBeruhazoCim,
         telefon: '',
         email: '',
-        weboldal: ''
+        weboldal: '',
+        beruhazoLathato: false
     };
 
     const defaultBeruhazoTelepulesObj = {

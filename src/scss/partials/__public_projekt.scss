@@ -101,7 +101,7 @@
 
         @media screen and (min-width: 765px) {
             position: relative;
-            top: -75px;
+            /* top: -75px; */
         }
     }
     & .projekt_adatok {
@@ -115,9 +115,13 @@
             text-align: center;
         }
 
+        & .projekt_leiras {
+            white-space: pre-line;
+        }
+
         @media screen and (min-width: 765px) {
             position: relative;
-            top: -75px;
+            /* top: -75px; */
         }
     }
 

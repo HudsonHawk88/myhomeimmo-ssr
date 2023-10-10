@@ -2069,7 +2069,7 @@ html body::-webkit-scrollbar {
 @media screen and (min-width: 765px) {
   .projekt .projekt_alapadatok {
     position: relative;
-    top: -75px;
+    /* top: -75px; */
   }
 }
 .projekt .projekt_adatok {
@@ -2082,10 +2082,13 @@ html body::-webkit-scrollbar {
   width: 100%;
   text-align: center;
 }
+.projekt .projekt_adatok .projekt_leiras {
+  white-space: pre-line;
+}
 @media screen and (min-width: 765px) {
   .projekt .projekt_adatok {
     position: relative;
-    top: -75px;
+    /* top: -75px; */
   }
 }
 .projekt .projekt_ingatlanok {

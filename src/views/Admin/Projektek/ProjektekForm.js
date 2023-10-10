@@ -626,6 +626,14 @@ const ProjektekForm = ({
                             </RVFormGroup>
                         </div>
                     </div>
+                    <div className="row mb-2">
+                        <div className="col-md-4">
+                            <RVFormGroup>
+                                <Label style={{ marginRight: '10px' }}>{isRequired('Beruházó látható?:', true)}</Label>
+                                <RVInput type="checkbox" name="beruhazoLathato" id="beruhazoLathato" checked={beruhazo.beruhazoLathato} onChange={(e) => handleInputChange(e, beruhazo, setBeruhazo)} />
+                            </RVFormGroup>
+                        </div>
+                    </div>
                 </div>
                 <div hidden={step !== 2}>
                     <h4>Projekt adatok:</h4>

@@ -243,7 +243,7 @@ const Projekt = () => {
                 <div className="projekt_leiras">{projekt && projekt.leiras}</div>
             </div>
             <div className="projekt_ingatlanok">{renderIngatlanok()}</div>
-            <div className="projekt_beruhazo" hidden={!projekt.beruhazo}>
+            <div className="projekt_beruhazo" hidden={!projekt.beruhazo || (projekt.beruhazo && !projekt.beruhazo.beruhazoLathato)}>
                 <h1>{'A beruházó'}</h1>
                 <h3>{projekt.beruhazo && projekt.beruhazo.nev ? projekt.beruhazo.nev : ''}</h3>
                 <div>{projekt.beruhazo && projekt.beruhazo.bemutat ? projekt.beruhazo.bemutat : ''}</div>
