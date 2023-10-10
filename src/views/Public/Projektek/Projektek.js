@@ -147,7 +147,7 @@ const Projektek = () => {
     return (
         <div className="projektek">
             <div className="projektek_borito">
-                <img src="/static/images/mh_projekt_borito2.jpg" alt="projektek_borito" />
+                <img src="/static/images/mh_projekt_borito.jpg" alt="projektek_borito" />
             </div>
             <div className="projektek_cim">
                 <h1>{'Új építéseink'}</h1>
