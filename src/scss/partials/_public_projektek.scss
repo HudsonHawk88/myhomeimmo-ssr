@@ -39,7 +39,7 @@
 
         @media screen and (min-width: 950px) {
             grid-gap: 10px;
-            grid-template-columns: repeat(auto-fit, minmax(calc(33% - 20px), 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(calc(50% - 20px), 1fr));
         }
 
         & .projekt_card {

@@ -87,7 +87,7 @@ router.get('/', async (req, res) => {
                         }
                     });
                 } else {
-                    const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, etanusitvany, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, rogzitIdo, modIdo, modUser, hirdeto, jutalek, megbizaskelte, megbizasvege, nempubmegjegyzes, nempubcsatolmanyok
+                    const sql = `SELECT id, refid, office_id, cim, leiras, helyseg, irsz, telepules, altipus, rendeltetes, hirdeto, ar, kepek, kaucio, penznem, statusz, tipus, allapot, emelet, alapterulet, telek, telektipus, beepithetoseg, viz, gaz, villany, szennyviz, szobaszam, felszobaszam, epitesmod, futes, villanyfogy, gazfogy, etanusitvany, isHirdetheto, isKiemelt, isErkely, isLift, isAktiv, isUjEpitesu, isTetoter, isVip, rogzitIdo, modIdo, modUser, hirdeto, jutalek, megbizaskelte, megbizasvege, nempubmegjegyzes, nempubcsatolmanyok, projektid
                     FROM ingatlanok ORDER BY rogzitIdo DESC`;
                     ingatlanok.query(sql, (err, result) => {
                         if (!err) {
@@ -240,7 +240,7 @@ router.delete('/', async (req, res) => {
             const id = req.headers.id;
             if (id) {
                 if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])) {
-                    const getIngatlanSql = `SELECT id, hirdeto FROM ingatlanok WHERE id='${id}';`;
+                    const getIngatlanSql = `SELECT id, hirdeto, projektid FROM ingatlanok WHERE id='${id}';`;
                     let ingatlan = await UseQuery(getIngatlanSql);
                     ingatlan = getJSONfromLongtext(ingatlan, 'toBool');
                     const sql = `DELETE FROM ingatlanok WHERE id='${id}';`;
@@ -248,11 +248,28 @@ router.delete('/', async (req, res) => {
                         (ingatlan && ingatlan[0].hirdeto && ingatlan[0].hirdeto.feladoEmail === user.email && ingatlan[0].id === parseInt(id, 10)) ||
                         hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN', 'INGATLAN_ADMIN'])
                     ) {
-                        ingatlanok.query(sql, (err) => {
+                        ingatlanok.query(sql, async (err) => {
                             if (!err) {
                                 const dir = `${process.env.ingatlankepekdir}/${id}/`;
                                 rmSync(dir, { recursive: true, force: true });
-                                res.status(200).send({ msg: 'Ingatlan sikeresen törölve!' });
+                                if (ingatlan[0].projektid) {
+                                    const projekt = await UseQuery(`SELECT id, projektingatlanok FROM projektek WHERE id = '${ingatlan[0].projektid}'`, '/admin/ingatlanok DELETE');
+                                    console.log(projekt, projekt && projekt.projektingatlanok);
+                                    if (projekt && projekt.length > 0 && projekt[0] && projekt[0].projektingatlanok && JSON.parse(projekt[0].projektingatlanok).length > 0) {
+                                        const newProjektIngatlanok = JSON.parse(projekt[0].projektingatlanok).filter((pi) => pi.id + '' !== id + '');
+                                        const deleteFromProjektSql = `UPDATE projektek SET projektingatlanok = '${JSON.stringify(newProjektIngatlanok)}' WHERE id = '${ingatlan[0].projektid}'`;
+                                        ingatlanok.query(deleteFromProjektSql, (err) => {
+                                            if (!err) {
+                                                res.status(200).send({ msg: 'Ingatlan sikeresen törölve!' });
+                                            } else {
+                                                log('/admin/ingatlanok DELETE', 'Ingatlan projektek közül törlése sikertelen!');
+                                                res.status(500).send({ err: 'Ingatlan törlése sikertelen!' });
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    res.status(200).send({ msg: 'Ingatlan sikeresen törölve!' });
+                                }
                             } else {
                                 res.status(500).send({ err: 'Ingatlan törlése sikertelen!' });
                             }

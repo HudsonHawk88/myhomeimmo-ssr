@@ -551,7 +551,8 @@ const createIngatlanokSql = `
         megbizaskelte DATETIME DEFAULT NULL,
         megbizasvege DATETIME DEFAULT NULL,
         nempubmegjegyzes TEXT DEFAULT NULL,
-        nempubcsatolmanyok json DEFAULT NULL
+        nempubcsatolmanyok json DEFAULT NULL,
+        projektid INT DEFAULT NULL
     ) ENGINE=InnoDB;
 `;
 

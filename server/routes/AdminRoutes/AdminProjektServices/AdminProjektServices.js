@@ -277,12 +277,30 @@ router.post('/', upload.any(), async (req, res) => {
                         /* const keys = Object.keys(felvitelObj); */
 
                         const sql = getInsertSql('projektek', keys, felvitelObj, objectKeys);
+                        const addProjektIdtoIngatlanokSql = `UPDATE ingatlanok SET projektid = '${id}' WHERE ${
+                            felvitelObj.projektingatlanok &&
+                            felvitelObj.projektingatlanok.length > 0 &&
+                            felvitelObj.projektingatlanok.map((pi, index) => (index + 1 === felvitelObj.projektingatlanok.length ? `id = '${pi.id}' OR ` : `id = '${pi.id}'`))
+                        }`;
+                        log('/api/admin/projektek POST', `addProjektIdtoIngatlanokSql: ${addProjektIdtoIngatlanokSql}`);
 
                         projektek.query(sql, (err) => {
                             if (!err) {
-                                res.status(200).send({
-                                    msg: 'Projekt sikeresen hozzáadva!'
-                                });
+                                if (felvitelObj.projektingatlanok && felvitelObj.projektingatlanok.length > 0) {
+                                    projektek.query(addProjektIdtoIngatlanokSql, (error) => {
+                                        if (!error) {
+                                            res.status(200).send({
+                                                msg: 'Projekt sikeresen hozzáadva!'
+                                            });
+                                        } else {
+                                            res.status(500).send({ err: 'Hiba az ingatlanokhoz projektid adásnál!' });
+                                        }
+                                    });
+                                } else {
+                                    res.status(200).send({
+                                        msg: 'Projekt sikeresen hozzáadva!'
+                                    });
+                                }
                             } else {
                                 res.status(500).send({
                                     err: err
@@ -482,14 +500,42 @@ router.put('/', upload.any(), async (req, res) => {
                     modositoObj.beruhazo = JSON.stringify(modositoObj.beruhazo);
                     modositoObj.cim = JSON.stringify(modositoObj.cim);
                     modositoObj.epuletszintek = JSON.stringify(modositoObj.epuletszintek);
+
+                    let addProjektIdtoIngatlanokSql = `UPDATE ingatlanok SET projektid = '${id}' WHERE `;
+                    if (modositoObj.projektingatlanok && modositoObj.projektingatlanok.length > 0) {
+                        modositoObj.projektingatlanok.forEach((pi, index) => {
+                            if (index + 1 === modositoObj.projektingatlanok.length) {
+                                addProjektIdtoIngatlanokSql = addProjektIdtoIngatlanokSql.concat(`id = '${pi.id}';`);
+                            } else {
+                                addProjektIdtoIngatlanokSql = addProjektIdtoIngatlanokSql.concat(`id = '${pi.id}' OR `);
+                            }
+                        });
+                    }
                     modositoObj.projektingatlanok = JSON.stringify(modositoObj.projektingatlanok);
+                    log('/api/admin/projektek PUT', `addProjektIdtoIngatlanokSql: ${addProjektIdtoIngatlanokSql}`);
                     const sql = getUpdateScript('projektek', { id: id }, modositoObj);
                     console.log(sql);
                     projektek.query(sql, (err) => {
                         if (!err) {
-                            res.status(200).send({
-                                msg: 'Projekt sikeresen módosítva!'
-                            });
+                            if (modositoObj.projektingatlanok && modositoObj.projektingatlanok.length > 0) {
+                                projektek.query(addProjektIdtoIngatlanokSql, (error) => {
+                                    if (!error) {
+                                        res.status(200).send({
+                                            msg: 'Projekt sikeresen módosítva!'
+                                        });
+                                    } else {
+                                        log('/api/admin/projektek PUT', `addProjektIdtoIngatlanokSql: ${addProjektIdtoIngatlanokSql}, error: ${error}`);
+                                        res.status(400).send({
+                                            err: 'Projekt módosítása sikertelen!',
+                                            msg: error
+                                        });
+                                    }
+                                });
+                            } else {
+                                res.status(200).send({
+                                    msg: 'Projekt sikeresen módosítva!'
+                                });
+                            }
                         } else {
                             res.status(500).send({
                                 err: 'Projekt módosítása sikertelen!',
@@ -527,17 +573,31 @@ router.delete('/', async (req, res) => {
         } else {
             if (user.roles && hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
                 if (id) {
-                    const sql = `DELETE FROM projektek WHERE id='${id}';`;
-                    projektek.query(sql, (err) => {
-                        if (!err) {
-                            const dir = `${process.env.projektDir}/${id}/`;
-                            rmSync(dir, { recursive: true, force: true });
-                            res.status(200).send({
-                                msg: 'Projekt sikeresen törölve!'
+                    // INGATLAN TÖRLÉS NÉLKÜL
+                    const deleteProejktidfromingatalnokSql = `UPDATE ingatlanok SET projektid = NULL WHERE projektid = '${id}';`;
+                    // INGATLAN TÖRLÉSSEL
+                    // const deleteProejktingatalnokSql = `DELETE FROM ingatlanok WHERE projektid = '${id}';`;
+                    projektek.query(deleteProejktidfromingatalnokSql, (error) => {
+                        if (!error) {
+                            const sql = `DELETE FROM projektek WHERE id='${id}';`;
+                            projektek.query(sql, (err) => {
+                                if (!err) {
+                                    const dir = `${process.env.projektDir}/${id}/`;
+                                    rmSync(dir, { recursive: true, force: true });
+                                    res.status(200).send({
+                                        msg: 'Projekt sikeresen törölve!'
+                                    });
+                                } else {
+                                    res.status(500).send({
+                                        err: 'Projekt törlése sikertelen!'
+                                    });
+                                }
                             });
                         } else {
-                            res.status(500).send({
-                                err: 'Projekt törlése sikertelen!'
+                            log('/api/admin/projektek DELETE', `deleteProejktidfromingatalnokSql: ${deleteProejktidfromingatalnokSql}, error: ${error}`);
+                            res.status(400).send({
+                                err: 'Projekt törlése sikertelen!',
+                                msg: error
                             });
                         }
                     });

@@ -769,13 +769,13 @@ const ProjektekForm = ({
                                 <RVFormFeedback />
                             </RVFormGroup>
                         </div>
-                        <div className="col-md-4">
+                        {/* <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{isRequired('Szabad lakások száma:', true)}</Label>
                                 <RVInput name="szabadlakasszam" id="szabadlakasszam" value={object.szabadlakasszam} onChange={(e) => handleInputChange(e, object, setObject)} required />
                                 <RVFormFeedback />
                             </RVFormGroup>
-                        </div>
+                        </div> */}
                         <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{isRequired('Ingatlan típusa:', true)}</Label>

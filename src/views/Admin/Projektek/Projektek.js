@@ -483,13 +483,14 @@ const Projektek = (props) => {
         });
         /* kuldObj.epuletszintek = epuletszintek; */
         kuldObj.isTobbEpuletes = kuldObj.epuletszintek && kuldObj.epuletszintek.length > 1 ? true : false;
+        kuldObj.osszlakasszam = projektObject.osszlakasszam;
         /* kuldObj.borito = kuldObj.borito.filter((f) => {
             console.log(f.src && f.src.includes('blob'));
             return f.file === null || f.file === undefined;
         }); */
         /* kuldObj.projektlakaskepek = kuldObj.projektlakaskepek.filter((f) => f.file !== null || f.file !== undefined);
         kuldObj.nempubcsatolmanyok = kuldObj.nempubcsatolmanyok.filter((f) => f.file); */
-
+        console.log(kuldObj);
         let datas = {};
         if (!currentId) {
             datas = makeFormData(kuldObj, ['borito', 'projektlakaskepek', 'nempubcsatolmanyok'], false);

@@ -93,6 +93,7 @@ const Projektek = () => {
                     r.maxter = teruletek.maxter;
                     r.minszoba = szobak.minszoba;
                     r.maxszoba = szobak.maxszoba;
+                    r.szabadlakasszam = r.projektingatlanok.length;
                 });
                 setProjektek(res);
             }
