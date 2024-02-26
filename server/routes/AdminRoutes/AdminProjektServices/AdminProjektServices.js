@@ -53,7 +53,8 @@ const keys = [
     'energetika',
     'isNapelemes',
     'isSzigetelt',
-    'szigetelesmeret'
+    'szigetelesmeret',
+    'isPublikus'
 ];
 
 /* const objectKeys = ['borito', 'beruhazo', 'projektlakaskepek', 'cim', 'epuletszintek', 'projektingatlanok']; */
@@ -86,7 +87,7 @@ router.get('/', async (req, res) => {
                     }
                 });
             } else {
-                const sql = `SELECT id, nev, cim, atadasev, osszlakasszam, szabadlakasszam, ingtipus, isZoldOtthon, energetika, isNapelemes, isSzigetelt FROM projektek;`;
+                const sql = `SELECT id, nev, cim, atadasev, osszlakasszam, szabadlakasszam, ingtipus, isZoldOtthon, energetika, isNapelemes, isSzigetelt, isPublikus FROM projektek;`;
                 projektek.query(sql, (error, ress) => {
                     if (error) {
                         res.status(500).send({ err: error, msg: 'Hiba történt a projektek lekérdezésekor!' });
@@ -159,7 +160,8 @@ router.post('/', upload.any(), async (req, res) => {
                 energetika text(2) DEFAULT '',
                 isNapelemes boolean DEFAULT 0,
                 isSzigetelt boolean DEFAULT 0,
-                szigetelesmeret int DEFAULT NULL
+                szigetelesmeret int DEFAULT NULL,
+                isPublikus boolean DEFAULT 0
                 ) ENGINE=InnoDB;`;
                 projektek.query(sql, async (error) => {
                     if (!error) {

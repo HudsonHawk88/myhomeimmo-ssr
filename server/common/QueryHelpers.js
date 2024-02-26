@@ -53,7 +53,8 @@ const boolValues = [
     'isLegkondicionalt',
     'isZoldOtthon',
     'isNapelemes',
-    'isSzigetelt'
+    'isSzigetelt',
+    'isPublikus'
 ];
 
 const stringToBool = (value) => {

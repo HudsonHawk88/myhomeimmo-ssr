@@ -953,6 +953,12 @@ const ProjektekForm = ({
                     </div>
                     <div className="row mb-2">
                         <h5>Nem publikus adatok:</h5>
+                        <div className="col-md-12" style={{ margin: '10px 0px' }}>
+                            <RVFormGroup>
+                                <Label>{isRequired('Publikus:', false)}</Label>&nbsp;
+                                <RVInput type="checkbox" name="isPublikus" id="isPublikus" checked={object.isPublikus} onChange={(e) => handleInputChange(e, object, setObject)} />
+                            </RVFormGroup>
+                        </div>
                         <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{isRequired('Jutalék:', false)}</Label>

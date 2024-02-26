@@ -113,7 +113,7 @@ const Projektek = () => {
             <div className="projektek_lista">
                 {projektek.length > 0 &&
                     projektek.map((projekt) => {
-                        if (projekt) {
+                        if (projekt && projekt.isPublikus) {
                             console.log(projekt);
                             const { borito, id, minar, maxar, minter, maxter, minszoba, maxszoba, energetika, penznem } = projekt;
                             const adatok = Object.assign(
