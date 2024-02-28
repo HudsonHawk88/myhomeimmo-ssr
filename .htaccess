@@ -1,0 +1,24 @@
+LimitRequestBody 21474836480
+Options -MultiViews
+#########################
+#
+# NODE.JS app running in Apache 
+# sample .htaccess  - partialy based on vielhuber/.htaccess
+# Also rules to enforce www. prefix and https: SSL access
+#
+# This file must be on the dir where Apache expects to find the website
+# The Node App can be anywhere else but must be accessible as explained below.
+#
+# ModRewrite must be active on Apache
+RewriteEngine On
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^/?$ http://127.0.0.1:8080/api/?$
+
+DirectoryIndex disabled
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond %{REQUEST_URI} -d
+RewriteRule ^.*$ http://127.0.0.1:8080/$1 [P,L]
+
+RewriteCond %{HTTP_HOST} ^myhomezala\.hu$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.myhomezala\.hu$
+RewriteRule ^/?$ "https\:\/\/myhomeimmo\.hu\/" [R=301,L]
