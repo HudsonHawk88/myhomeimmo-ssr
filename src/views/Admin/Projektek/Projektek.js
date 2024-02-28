@@ -11,16 +11,6 @@ import { hasRole, makeFormData } from '../../../commons/Lib';
 const Projektek = (props) => {
     const { addNotification, user } = props;
 
-    const defaultBeruhazo = {
-        nev: '',
-        bemutat: '',
-        cim: defaultBeruhazoCim,
-        telefon: '',
-        email: '',
-        weboldal: '',
-        beruhazoLathato: false
-    };
-
     const defaultBeruhazoTelepulesObj = {
         telepulesnev: '',
         irszam: ''
@@ -55,6 +45,16 @@ const Projektek = (props) => {
         irszam: '',
         telepules: defaultTelepulesObj,
         cimadatok: ''
+    };
+
+    const defaultBeruhazo = {
+        nev: '',
+        bemutat: '',
+        cim: defaultBeruhazoCim,
+        telefon: '',
+        email: '',
+        weboldal: '',
+        beruhazoLathato: false
     };
 
     const defaultProjekt = {
@@ -98,7 +98,8 @@ const Projektek = (props) => {
         energetika: '',
         isNapelemes: false,
         isSzigetelt: false,
-        szigetelesmeret: ''
+        szigetelesmeret: '',
+        isPublikus: false
     };
 
     const defaultFelado = {
