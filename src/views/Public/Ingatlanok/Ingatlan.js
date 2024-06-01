@@ -368,8 +368,6 @@ const Ingatlan = (props) => {
         let kep = ingatlanObj.hirdeto && getAvatar(ingatlanObj.hirdeto.feladoAvatar);
         return (
             <div className="ingatlan_card">
-                {/* <meta property="og:title" content={ingatlanObj.cim} /> */}
-                {/* <meta property="og:image" content={ingatlanObj.kepek[0].src} /> */}
                 <div className="ingatlan_adatok">
                     <div className="ingatlan_cim">{ingatlanObj.cim}</div>
                     <div className="galeria">
@@ -378,10 +376,10 @@ const Ingatlan = (props) => {
                     <div className="alapadatok">
                         <strong>Ár: {arFormatter(ingatlanObj.ar) + ' ' + ingatlanObj.penznem}</strong>&nbsp;&nbsp;
                         {ingatlanObj.kaucio && ingatlanObj.kaucio !== '' && (
-                            <>
+                            <React.Fragment>
                                 {' '}
                                 <strong>Kaució: {arFormatter(ingatlanObj.kaucio) + ' ' + ingatlanObj.penznem}</strong>
-                            </>
+                            </React.Fragment>
                         )}
                         {`${ingatlanObj.kaucio && ' '}Település: ${ingatlanObj.helyseg.telepules && ingatlanObj.helyseg.telepules.telepulesnev}`}
                         &nbsp;&nbsp;
@@ -630,25 +628,7 @@ const Ingatlan = (props) => {
         );
     };
 
-    return loading ? (
-        <Loading isLoading={loading} />
-    ) : (
-        <React.Fragment>
-            <Helmet>
-                <meta name="description" content={ingatlanObj.leiras} />
-                <meta name="og:title" content={ingatlanObj.cim} />
-                <meta name="og:description" content={ingatlanObj.leiras} />
-                <meta name="og:image" content={ingatlanObj.kepek && ingatlanObj.kepek.length !== 0 && ingatlanObj.kepek[0].src} />
-                <title>{ingatlanObj.cim}</title>
-            </Helmet>
-            {renderIngatlan()}
-        </React.Fragment>
-    );
-    // <div className='row'>
-    //     <div className='col-md-12'>
-
-    //     </div>
-    // </div>
+    return loading ? <Loading isLoading={loading} /> : <React.Fragment>{renderIngatlan()}</React.Fragment>;
 };
 
 export default Ingatlan;
