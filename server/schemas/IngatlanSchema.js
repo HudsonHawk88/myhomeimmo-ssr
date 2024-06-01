@@ -317,73 +317,75 @@ const editIngatlan = async (req, res, user, nev) => {
             console.log(sql);
 
             const projektId = modositoObj.projektid || null;
-            const getProjektingatalnokSql = `SELECT projektingatlanok FROM projektek WHERE id = ${projektId};`;
-            let projektIngatlanok = await UseQuery(getProjektingatalnokSql, '/api/ingatalan PUT');
-            console.log(projektIngatlanok && projektIngatlanok.length);
-            projektIngatlanok = projektIngatlanok && projektIngatlanok.length > 0 ? JSON.parse(projektIngatlanok[0].projektingatlanok) : null;
-            let newProjIng = [];
-            /* console.log(typeof projektIngatlanok, Array.isArray(projektIngatlanok)); */
-            console.log(projektIngatlanok);
-            /* projektIngatlanok = null; */
-            if (projektId && projektIngatlanok && projektIngatlanok.length > 0) {
-                projektIngatlanok.forEach((pi) => {
-                    let projIng = pi;
-                    console.log(pi.id);
-                    if (pi.id.toString() === id.toString()) {
-                        projIng.ar = modositoObj.ar;
-                        projIng.alapterulet = modositoObj.alapterulet;
-                        projIng.szobaszam = modositoObj.szobaszam;
-                        projIng.felszobaszam = modositoObj.felszobaszam;
-                    }
+            if (projektId) {
+                const getProjektingatalnokSql = `SELECT projektingatlanok FROM projektek WHERE id = ${projektId};`;
+                let projektIngatlanok = await UseQuery(getProjektingatalnokSql, '/api/ingatalan PUT');
+                console.log(projektIngatlanok && projektIngatlanok.length);
+                projektIngatlanok = projektIngatlanok && projektIngatlanok.length > 0 ? JSON.parse(projektIngatlanok[0].projektingatlanok) : null;
+                let newProjIng = [];
+                /* console.log(typeof projektIngatlanok, Array.isArray(projektIngatlanok)); */
+                console.log(projektIngatlanok);
+                /* projektIngatlanok = null; */
+                if (projektId && projektIngatlanok && projektIngatlanok.length > 0) {
+                    projektIngatlanok.forEach((pi) => {
+                        let projIng = pi;
+                        console.log(pi.id);
+                        if (pi.id.toString() === id.toString()) {
+                            projIng.ar = modositoObj.ar;
+                            projIng.alapterulet = modositoObj.alapterulet;
+                            projIng.szobaszam = modositoObj.szobaszam;
+                            projIng.felszobaszam = modositoObj.felszobaszam;
+                        }
 
-                    newProjIng.push(projIng);
-                });
-                const updateProjektingatlanokSql = `UPDATE projektek SET projektingatlanok = '${JSON.stringify(newProjIng)}' WHERE id = '${projektId}';`;
+                        newProjIng.push(projIng);
+                    });
+                    const updateProjektingatlanokSql = `UPDATE projektek SET projektingatlanok = '${JSON.stringify(newProjIng)}' WHERE id = '${projektId}';`;
 
-                pool.query(updateProjektingatlanokSql, (error) => {
-                    if (!error) {
-                        pool.query(sql, (err) => {
-                            if (!err) {
-                                console.log(JSON.parse(user.roles), hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']));
-                                if (hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
-                                    const ingId = modositoObj.id;
+                    pool.query(updateProjektingatlanokSql, (error) => {
+                        if (!error) {
+                            pool.query(sql, (err) => {
+                                if (!err) {
+                                    console.log(JSON.parse(user.roles), hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']));
+                                    if (hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
+                                        const ingId = modositoObj.id;
 
-                                    const mail = {
-                                        from: `${nev} <${user.email}>`, // sender address
-                                        to: `${modositoObj.hirdeto.feladoEmail}`, // list of receivers
-                                        subject: `${teljesNev} ${modositoObj.isAktiv ? 'publikussá' : 'inkatívvá'} tette a hirdetésed!`, // Subject line
-                                        html: `<b>Kedves ${modositoObj.hirdeto.feladoNev}!</b><br><br>
+                                        const mail = {
+                                            from: `${nev} <${user.email}>`, // sender address
+                                            to: `${modositoObj.hirdeto.feladoEmail}`, // list of receivers
+                                            subject: `${teljesNev} ${modositoObj.isAktiv ? 'publikussá' : 'inkatívvá'} tette a hirdetésed!`, // Subject line
+                                            html: `<b>Kedves ${modositoObj.hirdeto.feladoNev}!</b><br><br>
                                             ${nev} admin ${modositoObj.isAktiv ? 'publikussá tette a hirdetésed!' : 'levette a hirdetésed láthatóságát!'} Az ingatlanod id-je: ${
-                                            ingId ? ingId : 'Nincs id, valami hiba van...'
-                                        }<br><br>
+                                                ingId ? ingId : 'Nincs id, valami hiba van...'
+                                            }<br><br>
                                             Tisztelettel:<br>
                                             ${nev}`
-                                    };
-                                    if ((modositoObj.isAktiv == 1 || modositoObj.isAktiv == true) && modositoObj.hirdeto.feladoEmail !== user.email) {
-                                        transporter.sendMail(mail, (mailerr) => {
-                                            if (!mailerr) {
-                                                res.status(200).send({ msg: 'Ingatlan sikeresen módosítva és e-mail sikeresen elküldve a hirdetőnek!' });
-                                            } else {
-                                                log('PUT /api/admin/ingatlanok', mailerr);
-                                                res.status(409).send({ err: mailerr, msg: 'Hiba történt a levélküldéskor!' });
-                                            }
-                                        });
+                                        };
+                                        if ((modositoObj.isAktiv == 1 || modositoObj.isAktiv == true) && modositoObj.hirdeto.feladoEmail !== user.email) {
+                                            transporter.sendMail(mail, (mailerr) => {
+                                                if (!mailerr) {
+                                                    res.status(200).send({ msg: 'Ingatlan sikeresen módosítva és e-mail sikeresen elküldve a hirdetőnek!' });
+                                                } else {
+                                                    log('PUT /api/admin/ingatlanok', mailerr);
+                                                    res.status(409).send({ err: mailerr, msg: 'Hiba történt a levélküldéskor!' });
+                                                }
+                                            });
+                                        } else {
+                                            res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
+                                        }
                                     } else {
                                         res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
                                     }
                                 } else {
-                                    res.status(200).send({ msg: 'Ingatlan sikeresen módosítva!' });
+                                    log('PUT /api/admin/ingatlanok', err);
+                                    res.status(500).send({ err: 'Ingatlan módosítása sikertelen!', msg: err });
                                 }
-                            } else {
-                                log('PUT /api/admin/ingatlanok', err);
-                                res.status(500).send({ err: 'Ingatlan módosítása sikertelen!', msg: err });
-                            }
-                        });
-                    } else {
-                        log('/api/ingatlan PUT', `updateProjektingatlanokSql: ${updateProjektingatlanokSql}, error: ${error}`);
-                        res.status(400).send({ err: error, msg: error });
-                    }
-                });
+                            });
+                        } else {
+                            log('/api/ingatlan PUT', `updateProjektingatlanokSql: ${updateProjektingatlanokSql}, error: ${error}`);
+                            res.status(400).send({ err: error, msg: error });
+                        }
+                    });
+                }
             } else {
                 pool.query(sql, (err) => {
                     if (!err) {
