@@ -11,13 +11,10 @@ import Loading from '../../../commons/Loading';
 
 import Services from './Services';
 import { arFormatter } from '../../../commons/Lib.js';
-import { getDefaultKeyBinding } from 'draft-js';
-import { object } from 'prop-types';
 
-const Ingatlanok = (props) => {
+const Ingatlanok = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { addNotification } = props;
 
     const toBool = (value) => {
         let result = true;
@@ -29,12 +26,11 @@ const Ingatlanok = (props) => {
     };
 
     const defaultTelepulesObj = {
-        telepulesnev: '',
+        telepulesnev: 'Zalaegerszeg',
         km: '0'
     };
 
     const [telepulesObj, setTelepulesObj] = useState(defaultTelepulesObj);
-    const [ingatlanOptions, setIngatlanOptions] = useState([]);
 
     const defaultKeresoObj = {
         tipus: '',
@@ -42,8 +38,10 @@ const Ingatlanok = (props) => {
         rendeltetes: '',
         statusz: '',
         referenciaSzam: '',
-        ar: '',
-        atvaltott: '',
+        minar: '',
+        maxar: '',
+        minatvaltott: '',
+        maxatvaltott: '',
         penznem: 'Ft',
         alapterulet: '',
         szobaszam: '',
@@ -78,37 +76,38 @@ const Ingatlanok = (props) => {
     const getOptions = useCallback(() => {
         Services.getIngatlanOptions((err, res) => {
             if (!err) {
-                res.forEach((item) => {
-                    if (
-                        item.nev === 'tipus' ||
-                        item.nev === 'altipus' ||
-                        item.nev === 'rendeltetes' ||
-                        item.nev === 'statusz' ||
-                        item.nev === 'futesmod' ||
-                        item.nev === 'epitesmod' ||
-                        item.nev === 'allapot' ||
-                        item.nev === 'penznem' ||
-                        item.nev === 'emelet'
-                    ) {
-                        if (item.nev === 'tipus') {
-                            setTipusOptions(item.options);
-                        } else if (item.nev === 'statusz') {
-                            setStatuszOptions(item.options);
-                        } else if (item.nev === 'futesmod') {
-                            setFutesOptions(item.options);
-                        } else if (item.nev === 'epitesmod') {
-                            setEpitesmodOptions(item.options);
-                        } else if (item.nev === 'allapot') {
-                            setAllapotOptions(item.options);
-                        } else if (item.nev === 'rendeltetes') {
-                            setRendeltetesOptions(item.options);
-                        } else if (item.nev === 'penznem') {
-                            setPenznemOptions(item.options);
-                        } else if (item.nev === 'emelet') {
-                            setEmeletOptions(item.options);
+                res &&
+                    res.forEach((item) => {
+                        if (
+                            item.nev === 'tipus' ||
+                            item.nev === 'altipus' ||
+                            item.nev === 'rendeltetes' ||
+                            item.nev === 'statusz' ||
+                            item.nev === 'futesmod' ||
+                            item.nev === 'epitesmod' ||
+                            item.nev === 'allapot' ||
+                            item.nev === 'penznem' ||
+                            item.nev === 'emelet'
+                        ) {
+                            if (item.nev === 'tipus') {
+                                setTipusOptions(item.options);
+                            } else if (item.nev === 'statusz') {
+                                setStatuszOptions(item.options);
+                            } else if (item.nev === 'futesmod') {
+                                setFutesOptions(item.options);
+                            } else if (item.nev === 'epitesmod') {
+                                setEpitesmodOptions(item.options);
+                            } else if (item.nev === 'allapot') {
+                                setAllapotOptions(item.options);
+                            } else if (item.nev === 'rendeltetes') {
+                                setRendeltetesOptions(item.options);
+                            } else if (item.nev === 'penznem') {
+                                setPenznemOptions(item.options);
+                            } else if (item.nev === 'emelet') {
+                                setEmeletOptions(item.options);
+                            }
                         }
-                    }
-                });
+                    });
             }
         });
         Services.getAltipusOptions((err, res) => {
@@ -122,28 +121,27 @@ const Ingatlanok = (props) => {
         Services.listTelepulesek((err, res) => {
             if (!err) {
                 let telOpts = [];
-                res.forEach((item) => {
-                    telOpts.push({
-                        label: item.telepulesnev,
-                        value: item.telepulesnev
+                res &&
+                    res.forEach((item) => {
+                        telOpts.push({
+                            label: item.telepulesnev,
+                            value: item.telepulesnev
+                        });
                     });
-                });
                 setTelepulesekOpts(telOpts);
-                /*                 setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
-                setKeresoObj({ ...keresoObj, telepules: { telepulesnev: 'Zalaegerszeg', km: '0' } }); */
             }
         });
     }, []);
 
     const listIngatlanok = (kere) => {
         setLoading(true);
-        /* let k = kereso ? kereso : keresoObj; */
-        if (kere['atvaltott']) {
-            kere['atvaltott'] = getIntAr(kere['atvaltott']);
+        if (kere['minatvaltott']) {
+            kere['minatvaltott'] = getIntAr(kere['minatvaltott']);
         }
-        if (kere['ar']) {
-            kere['ar'] = getIntAr(kere['ar']);
+        if (kere['maxatvaltott']) {
+            kere['maxatvaltott'] = getIntAr(kere['maxatvaltott']);
         }
+
         Services.keresesIngatlanok(kere, (err, res) => {
             if (!err) {
                 setIngatlanok(res);
@@ -164,7 +162,7 @@ const Ingatlanok = (props) => {
             const keresoObjKeys = Object.keys(keresoObj);
             const keresoKey = Object.keys(kereso);
             keresoObjKeys.forEach((key) => {
-                keresoKey.forEach((kkey) => {
+                keresoKey.forEach(async (kkey) => {
                     if (key === kkey) {
                         if (kkey === 'telepules') {
                             if (kereso[kkey].telepulesnev !== '') {
@@ -178,45 +176,26 @@ const Ingatlanok = (props) => {
                                     km: '0'
                                 });
                             }
-                        } else if (kkey === 'ar') {
-                            if (kereso['penznem'] === 'Euró') {
-                                convertCurr(kereso['penznem'], kereso['ar'], (atv) => {
-                                    newObj['atvaltott'] = atv;
-                                });
-                            }
-                            if (kereso['penznem'] === 'Ft') {
-                                convertCurr(kereso['penznem'], kereso['ar'], (atv) => {
-                                    newObj['atvaltott'] = atv;
-                                });
-                            }
+                        } else if (kkey === 'minar' || kkey === 'maxar') {
                             newObj[kkey] = kereso[kkey];
                         } else {
                             if (kereso[kkey] === 'false' || kereso[kkey] === 'true') {
                                 if (kereso[kkey] === 'true') newObj[kkey] = toBool(kereso[kkey]);
-                            } else {
-                                newObj[kkey] = kereso[kkey];
                             }
                         }
                     }
-                    /* else {
-                        if (kereso[kkey] === 'false' || kereso[kkey] === 'true') {
-                            console.log(kkey === 'isUjEpitesu' ? kereso[kkey] : 'HASZNALT');
-                            newObj[kkey] = toBool(kereso[kkey]);
-                        } else {
-                            newObj[key] = kereso[key] ? kereso[key] : '';
-                        }
-                    } */
                 });
             });
         } else {
             setSelectedTelepules({ label: 'Zalaegerszeg', value: 'Zalaegerszeg' });
         }
+
         const kkk = {};
         const keee = Object.keys(newObj);
         keee.forEach((k) => {
-            if (newObj[k]) {
-                if (newObj[k] !== '') {
-                    if (k === 'ar') {
+            if (newObj[k] || k === 'minatvaltott' || k === 'maxatvaltott') {
+                if (newObj[k] !== '' || k === 'minatvaltott' || k === 'maxatvaltott') {
+                    if (k === 'minar' || k === 'maxar' || k === 'minatvaltott' || k === 'maxatvaltott') {
                         Object.assign(kkk, { [k]: getIntAr(newObj[k]) });
                     } else {
                         Object.assign(kkk, { [k]: newObj[k] });
@@ -224,12 +203,16 @@ const Ingatlanok = (props) => {
                 }
             }
         });
-        if (!newObj.ar || newObj.ar === '') {
-            Object.assign(kkk, { ar: '' });
+        if (!newObj.minar || newObj.minar === '') {
+            Object.assign(kkk, { minar: '' });
+        }
+        if (!newObj.maxar || newObj.maxar === '') {
+            Object.assign(kkk, { maxar: '' });
         }
 
-        setKeresoObj(kkk);
-        listIngatlanok(kkk);
+        convertCurr(kkk.minar, kkk.maxar, keres);
+        // setKeresoObj(kkk);
+        // listIngatlanok(kkk);
     }, []);
 
     useEffect(() => {
@@ -310,6 +293,8 @@ const Ingatlanok = (props) => {
                 return 'EUR';
             case 'Dollár':
                 return 'USD';
+            default:
+                return 'HUF';
         }
     };
 
@@ -320,6 +305,7 @@ const Ingatlanok = (props) => {
             ar = amount.replace(/ /g, '');
         } else if (tipus === 'number') {
             let str = amount + '';
+
             ar = str.replace(/ /g, '');
         }
 
@@ -328,30 +314,68 @@ const Ingatlanok = (props) => {
         return ar;
     };
 
-    const convertCurr = (from, amount, callback) => {
-        let ar = getIntAr(amount);
-        const to = from !== 'Ft' ? 'Ft' : 'Euró';
-        if (ar) {
-            Services.convertCurr({ from: getCurr(from), to: getCurr(to), amount: ar }, (err, res) => {
+    const convertCurr = (minar, maxar, callback) => {
+        let minAr = minar && minar !== '' ? getIntAr(minar.toString()) : null;
+        let maxAr = maxar && maxar !== '' ? getIntAr(maxar.toString()) : null;
+        const to = 'Euró';
+        if (minAr) {
+            Services.convertCurr({ from: getCurr(), to: getCurr(to), amount: minAr }, (err, res) => {
                 if (!err) {
+                    if (maxAr) {
+                        Services.convertCurr({ from: getCurr(), to: getCurr(to), amount: maxAr }, (error, result) => {
+                            if (!error) {
+                                if (callback) {
+                                    if (res && res.curr && result && result.curr) callback(res.curr.atvaltott, result.curr.atvaltott);
+                                }
+                            }
+                        });
+                    } else {
+                        if (callback && res && res.curr) {
+                            callback(res.curr.atvaltott, null);
+                        }
+                    }
+                } else {
+                    if (maxAr) {
+                        if (callback) {
+                            callback(parseInt(minAr.toString().concat('000000'), 10) / 400, parseInt(maxAr.toString().concat('000000'), 10) / 400);
+                        }
+                    } else {
+                        if (callback) {
+                            callback(parseInt(minAr.toString().concat('000000'), 10) / 400, null);
+                        }
+                    }
+                }
+            });
+        } else if (maxAr) {
+            Services.convertCurr({ from: getCurr(), to: getCurr(to), amount: maxAr }, (error, result) => {
+                if (!error) {
+                    if (callback && result && result.curr) {
+                        callback(null, result.curr.atvaltott);
+                    }
+                } else {
                     if (callback) {
-                        callback(res.curr.atvaltott);
+                        if (minAr) {
+                            callback(parseInt(minAr.toString().concat('000000'), 10) / 400, parseInt(maxAr.toString().concat('000000'), 10) / 400);
+                        }
                     }
                 }
             });
         } else {
-            addNotification('error', 'Ár megadása kötelező devizában való keresésnél!');
+            if (callback) {
+                callback(null, null);
+            }
         }
     };
 
-    const keres = (atvaltott) => {
+    const keres = (minatvaltott, maxatvaltott) => {
         let sendObj = keresoObj;
         sendObj.telepules = telepulesObj;
-        sendObj['atvaltott'] = getIntAr(atvaltott);
+        sendObj['minatvaltott'] = minatvaltott ? getIntAr(minatvaltott) : 0;
+        sendObj['maxatvaltott'] = maxatvaltott ? getIntAr(maxatvaltott) : null;
         let newKereso = keresoObj;
         newKereso.telepules = telepulesObj.telepulesnev;
         const ker = getParams();
-        Object.assign(ker, { ar: '' });
+        Object.assign(ker, { minar: '', maxar: '' });
         const queryParams = Object.keys(ker)
             .map((key) => {
                 if (key === 'telepules') {
@@ -406,7 +430,7 @@ const Ingatlanok = (props) => {
     };
 
     const renderAltipusOptions = () => {
-        const altipus = altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus);
+        const altipus = altipusOptions && altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus);
         return (
             altipus &&
             altipus.options &&
@@ -421,7 +445,7 @@ const Ingatlanok = (props) => {
     };
 
     useEffect(() => {
-        const altipus = altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus);
+        const altipus = altipusOptions && altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus);
         if (!altipus) {
             setKeresoObj({
                 ...keresoObj,
@@ -473,12 +497,15 @@ const Ingatlanok = (props) => {
                                     type="select"
                                     name="altipus"
                                     id="altipus"
-                                    disabled={keresoObj.tipus === '' || !altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus)}
+                                    disabled={
+                                        keresoObj.tipus === '' ||
+                                        (altipusOptions && !altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus))
+                                    }
                                     value={keresoObj.altipus}
                                     onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)}
                                 >
                                     <option key="defaultRendeltetes" value="">
-                                        {altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus)
+                                        {altipusOptions && altipusOptions.find((altyp) => altyp.tipus_id === parseInt(keresoObj.tipus, 10) || altyp.tipus_id === keresoObj.tipus)
                                             ? 'Kérjük válasszon altipust...'
                                             : 'Ehhez a típushoz nem tartozik altípus...'}
                                     </option>
@@ -488,15 +515,6 @@ const Ingatlanok = (props) => {
                         </div>
                     </div>
                     <div className="row g-3">
-                        {/*   <div className="col-md-3">
-                            <Label>Altipus:</Label>
-                            <Input type="text" name="altipus" id="altipus" value={keresoObj.altipus} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                        </div>
-                        <div className="col-md-3">
-                            <Label>Rendeltetés:</Label>
-                            <Input type="text" name="rendeltetes" id="rendeltetes" value={keresoObj.rendeltetes} onChange={(e) => handleInputChange(e, keresoObj, setKeresoObj)} />
-                        </div> */}
-
                         <div className="col-md-4">
                             <RVFormGroup>
                                 <Label>{'Rendeltetés:'}</Label>
@@ -549,46 +567,34 @@ const Ingatlanok = (props) => {
                     </div>
                     <div className="row g-3">
                         <div className="col-md-3">
-                            <Label>Max. ár: (Ft)</Label>
+                            <Label>Min. ár: (millió Ft)</Label>
                             <Input
                                 type="text"
-                                id="ar"
-                                name="ar"
-                                value={arFormatter(keresoObj.ar)}
+                                id="minar"
+                                name="minar"
+                                value={arFormatter(keresoObj.minar)}
                                 onChange={(e) => {
                                     setKeresoObj({
                                         ...keresoObj,
-                                        ar: arFormatter(e.target.value)
+                                        minar: arFormatter(e.target.value)
                                     });
                                 }}
                             />
                         </div>
                         <div className="col-md-3">
-                            <RVFormGroup>
-                                <Label>{'Pénznem:'}</Label>
-                                <RVInput
-                                    type="select"
-                                    name="penznem"
-                                    id="penznem"
-                                    value={keresoObj.penznem}
-                                    onChange={(e) => {
-                                        handleInputChange(e, keresoObj, setKeresoObj);
-                                    }}
-                                >
-                                    {/*  <option key="defaultPénznem" value="">
-                                        {'Kérjük válasszon pénznemet...'}
-                                    </option> */}
-                                    {penznemOptions.map((item) => {
-                                        if (item.isoValue !== 'USD') {
-                                            return (
-                                                <option key={item.id} value={item.value}>
-                                                    {item.nev}
-                                                </option>
-                                            );
-                                        }
-                                    })}
-                                </RVInput>
-                            </RVFormGroup>
+                            <Label>Max. ár: (millió Ft)</Label>
+                            <Input
+                                type="text"
+                                id="maxar"
+                                name="maxar"
+                                value={arFormatter(keresoObj.maxar)}
+                                onChange={(e) => {
+                                    setKeresoObj({
+                                        ...keresoObj,
+                                        maxar: arFormatter(e.target.value)
+                                    });
+                                }}
+                            />
                         </div>
                         <div className="col-md-3">
                             <RVFormGroup>
@@ -716,7 +722,7 @@ const Ingatlanok = (props) => {
                     </div>
                     <div className="row">
                         <div className="col-md-12 p-0">
-                            <Button color="dark" onClick={() => convertCurr(keresoObj.penznem, keresoObj.ar, keres)}>
+                            <Button color="dark" onClick={() => convertCurr(keresoObj.minar, keresoObj.maxar, keres)}>
                                 <i className="fas fa-search"></i>&nbsp;&nbsp; Keresés
                             </Button>
                         </div>
@@ -727,14 +733,18 @@ const Ingatlanok = (props) => {
     };
 
     return (
-        /*  <div className="public-inner-content"> */
         <div className="ingatlanok_osszkereso">
             <Helmet>
                 <title>Ingatlanok</title>
             </Helmet>
             {renderKereso()}
-            <div className="nodata">{ingatlanok.length === 0 && 'A keresés nem hozott találatot vagy nem választott egyetlen szűrőfeltételt sem!'}</div>
-            {loading ? <Loading isLoading={loading} /> : <FooldalContent data={ingatlanok || []} />}
+            {loading ? (
+                <Loading isLoading={loading} />
+            ) : (
+                <div className="nodata">{ingatlanok && ingatlanok.length === 0 && 'A keresés nem hozott találatot vagy nem választott egyetlen szűrőfeltételt sem!'}</div>
+            )}
+
+            <FooldalContent data={ingatlanok || []} />
         </div>
     );
 };

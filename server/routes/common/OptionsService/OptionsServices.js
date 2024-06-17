@@ -12,7 +12,7 @@ router.get('/ingatlanoptions', (req, res, next) => {
                 return getJSONfromLongtext(item, 'toBool');
             });
             /*  ress.options = JSON.parse(res.options); */
-            res.status(200).send(ress);
+            res.status(200).send({ err: null, data: ress });
         } else {
             res.status(500).send({ err: error, msg: 'Hiba történt a lekérdezéskor, kérjük frissítse az oldalt! Ha ez után sem jó, kérjük értesítse a webmestert!' });
         }
@@ -27,7 +27,7 @@ router.get('/altipusoptions', (req, res, next) => {
                 return getJSONfromLongtext(item, 'toBool');
             });
             /*  ress.options = JSON.parse(res.options); */
-            res.status(200).send(ress);
+            res.status(200).send({ err: null, data: ress });
         } else {
             res.status(500).send({ err: error, msg: 'Hiba történt a lekérdezéskor, kérjük frissítse az oldalt! Ha ez után sem jó, kérjük értesítse a webmestert!' });
         }

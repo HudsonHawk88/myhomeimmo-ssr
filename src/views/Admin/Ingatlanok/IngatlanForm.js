@@ -654,7 +654,6 @@ const IngatlanForm = (props) => {
                         ingatlanObj.nempubcsatolmanyok.map((csatolmany) => {
                             const filename = csatolmany.filename + '';
                             const ext = filename !== '' ? filename.slice(filename.lastIndexOf('.') + 1, filename.length) : undefined;
-                            console.log(ext);
                             return (
                                 ext && (
                                     <div key={csatolmany.filename} style={{ height: '170px', padding: '10px' }}>

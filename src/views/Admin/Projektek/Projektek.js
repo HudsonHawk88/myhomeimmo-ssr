@@ -491,7 +491,6 @@ const Projektek = (props) => {
         }); */
         /* kuldObj.projektlakaskepek = kuldObj.projektlakaskepek.filter((f) => f.file !== null || f.file !== undefined);
         kuldObj.nempubcsatolmanyok = kuldObj.nempubcsatolmanyok.filter((f) => f.file); */
-        console.log(kuldObj);
         let datas = {};
         if (!currentId) {
             datas = makeFormData(kuldObj, ['borito', 'projektlakaskepek', 'nempubcsatolmanyok'], false);

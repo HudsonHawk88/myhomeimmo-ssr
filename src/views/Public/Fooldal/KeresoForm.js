@@ -20,7 +20,8 @@ const KeresoForm = (props) => {
         tipus: '',
         statusz: '',
         referenciaSzam: '',
-        ar: '',
+        minar: '',
+        maxar: '',
         penznem: 'Ft',
         alapterulet: '',
         szobaszam: '',
@@ -125,16 +126,19 @@ const KeresoForm = (props) => {
 
         keys.forEach((filter) => {
             if (keresoObj[filter] !== '') {
-                if (filter === 'ar') {
+                if (filter === 'minar' || filter === 'maxar') {
                     let ar = keresoObj[filter] + '';
                     ar = ar.replace(/ /g, '');
-                    newKereso['ar'] = parseInt(ar, 10);
+                    newKereso[filter] = parseInt(ar, 10);
                 } else {
                     newKereso[filter] = keresoObj[filter];
                     /*    newKereso.telepules = telepulesObj; */
                 }
             }
         });
+
+        newKereso.minatvaltott = '';
+        newKereso.maxatvaltott = '';
 
         return newKereso;
     };
@@ -230,14 +234,14 @@ const KeresoForm = (props) => {
                     <RVInput
                         pattern="[0-9 ]+"
                         invalid={false}
-                        name="ar"
-                        id="ar"
-                        placeholder="Ár"
-                        value={keresoObj.ar}
+                        name="minar"
+                        id="minar"
+                        placeholder="Min. ár (Millió Ft)"
+                        value={keresoObj.minar}
                         onChange={(e) => {
                             setKeresoObj({
                                 ...keresoObj,
-                                ar: arFormatter(e.target.value)
+                                minar: arFormatter(e.target.value)
                             });
                             /* handleInputChange(e, keresoObj, setKeresoObj);
                             arFormatter(e.target.value); */
@@ -245,32 +249,23 @@ const KeresoForm = (props) => {
                     />
                 </div>
                 <div className="col-lg-2 col-md-6">
-                    <RVFormGroup>
-                        {/* <Label>{'Pénznem:'}</Label> */}
-                        <RVInput
-                            type="select"
-                            name="penznem"
-                            id="penznem"
-                            placeholder="Pénznem"
-                            value={keresoObj.penznem}
-                            onChange={(e) => {
-                                handleInputChange(e, keresoObj, setKeresoObj);
-                            }}
-                        >
-                            {/*  <option key="defaultPénznem" value="">
-                                        {'Kérjük válasszon pénznemet...'}
-                                    </option> */}
-                            {penznemOptions.map((item) => {
-                                if (item.isoValue !== 'USD') {
-                                    return (
-                                        <option key={item.id} value={item.value}>
-                                            {item.nev}
-                                        </option>
-                                    );
-                                }
-                            })}
-                        </RVInput>
-                    </RVFormGroup>
+                    {/* <Label>Ár:</Label> */}
+                    <RVInput
+                        pattern="[0-9 ]+"
+                        invalid={false}
+                        name="maxar"
+                        id="maxar"
+                        placeholder="Max. ár (Millió Ft)"
+                        value={keresoObj.maxar}
+                        onChange={(e) => {
+                            setKeresoObj({
+                                ...keresoObj,
+                                maxar: arFormatter(e.target.value)
+                            });
+                            /* handleInputChange(e, keresoObj, setKeresoObj);
+                            arFormatter(e.target.value); */
+                        }}
+                    />
                 </div>
                 <div className="col-lg-1 col-md-12">
                     <Button color="dark" onClick={() => keres()}>

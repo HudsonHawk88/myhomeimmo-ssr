@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import { createNotification } from '../src/App';
 let data;
-let ok;
+let ok = false;
 function handleResponse(response, isFnDone) {
     if (isFnDone) {
         if (!ok && response.msg) {
@@ -38,13 +38,22 @@ class Microservices {
                     return u.json();
                 })
                 .then((resp) => {
-                    handleResponse(resp, true);
+                    // handleResponse(resp, true);
                     if (fnDone) {
-                        fnDone(ok ? null : data, ok ? data : null);
+                        if (ok) {
+                            if (resp.data) {
+                                fnDone(null, resp.data);
+                            } else {
+                                fnDone(null, resp);
+                            }
+                        } else {
+                            fnDone(resp.err, null);
+                        }
                     } else {
                         handleResponse(resp, false);
                     }
-                });
+                })
+                .catch((error) => fnDone(error, null));
         } else {
             return await fetch(url, requestOptions).then(handleResponse);
         }

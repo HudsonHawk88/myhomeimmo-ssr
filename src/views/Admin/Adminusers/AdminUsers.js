@@ -508,7 +508,6 @@ const AdminUsers = (props) => {
     };
 
     const handleDeleteClick = (id) => {
-        console.log(id);
         setCurrentId(id);
         toggleDeleteModal();
     };

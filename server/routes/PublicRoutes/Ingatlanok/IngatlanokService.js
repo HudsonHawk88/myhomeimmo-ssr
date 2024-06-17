@@ -83,6 +83,7 @@ const getDeviza = async (base, rate) => {
         });
         return res.json();
     } catch (err) {
+        console.log(err);
         console.error(err);
     }
 };
@@ -99,6 +100,7 @@ const getDeviza = async (base, rate) => {
 }; */
 
 const convertDeviza = (curr, amount, toEuro) => {
+    console.log(parseInt((amount / curr).toFixed(2), 10));
     return toEuro ? parseInt((amount / curr).toFixed(2), 10) : parseInt((curr * amount).toFixed(0), 10);
 };
 
@@ -130,8 +132,9 @@ router.post('/changedeviza', async (req, res) => {
     const curr = await getDeviza(from, to);
     let result;
     if (curr && curr.success) {
-        result = to === 'EUR' ? convertDeviza(curr.rates['HUF'], amount, true) : convertDeviza(curr.rates[to], amount);
-        result ? res.status(200).send({ curr: { penznem: to, atvaltott: result }, err: null }) : res.status(409).send({ curr: null, err: 'Nem sikerült a deviza lekérdezése!' });
+        result =
+            to === 'EUR' ? convertDeviza(curr.rates['HUF'], parseInt(amount.toString().concat('000000'), 10), true) : convertDeviza(curr.rates[to], parseInt(amount.toString().concat('000000'), 10));
+        result ? res.status(200).send({ curr: { penznem: to, atvaltott: result }, err: null }) : res.status(409).send({ curr: null, msg: 'Nem sikerült a deviza lekérdezése!', err: curr });
     } else {
         res.status(409).send({ curr: null, err: 'Nem sikerült a deviza lekérdezése!' });
     }
@@ -165,23 +168,15 @@ router.post('/ingatalnokbyids', async (req, res) => {
     }
 });
 
-const getArFilter = (penznem, ar, kereso) => {
-    let newWh = `(REPLACE(ar, ' ', '') <= ${ar} AND penznem='Ft') AND `;
-    const atv = kereso['atvaltott'];
-    if (penznem && penznem !== '') {
-        if (penznem !== 'HUF') {
-            if (penznem === 'EUR') {
-                if (atv) {
-                    newWh = `(((REPLACE(ar, ' ', '')<=${atv} AND penznem='Ft') OR (REPLACE(ar, ' ', '')<=${ar} AND penznem='${kereso['penznem']}'))) AND `;
-                }
-            }
-        } else {
-            if (atv) {
-                newWh = `(((REPLACE(ar, ' ', '')<=${atv} AND penznem='Euró') OR (REPLACE(ar, ' ', '')<=${ar} AND penznem='Ft'))) AND `;
-            }
-        }
-    } else {
-        newWh = `(REPLACE(ar, ' ', '')<=${ar} AND penznem='Ft') AND `;
+const getArFilter = (kereso) => {
+    const minar = kereso['minar'] && kereso['minar'] !== '' ? parseInt(kereso['minar'].toString().replaceAll(' ', '').concat('000000'), 10) : 0;
+    const maxar = kereso['maxar'] && kereso['maxar'] !== '' ? parseInt(kereso['maxar'].toString().replaceAll(' ', '').concat('000000'), 10) : null;
+    const minatv = kereso['minatvaltott'] && kereso['minatvaltott'] !== '' ? parseInt(kereso['minatvaltott'].toString().concat('000000'), 10) : 0;
+    const maxatv = kereso['maxatvaltott'] && kereso['maxatvaltott'] !== '' ? parseInt(kereso['maxatvaltott'].toString().concat('000000'), 10) : null;
+    let newWh = `(((REPLACE(ar, ' ', '')>=${minar} AND penznem='Ft') OR (REPLACE(ar, ' ', '') >= ${minatv} AND penznem='Euró'))) AND `;
+
+    if (maxatv && maxar) {
+        newWh = `(((REPLACE(ar, ' ', '') BETWEEN ${minar} AND ${maxar} AND penznem='Ft') OR (REPLACE(ar, ' ', '') BETWEEN ${minatv} AND ${maxatv} AND penznem='Euró'))) AND `;
     }
 
     return newWh;
@@ -213,7 +208,8 @@ router.post('/keres', async (req, res) => {
                 if (
                     filter === 'telek' ||
                     filter === 'alapterulet' ||
-                    filter === 'ar' ||
+                    filter === 'minar' ||
+                    filter === 'maxar' ||
                     filter === 'isHirdetheto' ||
                     filter === 'isKiemelt' ||
                     filter === 'isLift' ||
@@ -233,9 +229,8 @@ router.post('/keres', async (req, res) => {
                     if (filter === 'telek' || filter === 'alapterulet') {
                         where = where.concat(`${filter}>=${kereso[filter]} AND `);
                     }
-                    if (filter === 'ar') {
-                        const penznem = getPenznem(kereso['penznem']);
-                        where = where.concat(getArFilter(penznem, kereso['ar'], kereso));
+                    if (filter === 'minar' || filter === 'maxar') {
+                        where = where.concat(getArFilter(kereso));
                     }
                     if (filter === 'isHirdetheto' || filter === 'isKiemelt' || filter === 'isLift' || filter === 'isErkely' || filter === 'isUjEpitesu' || filter === 'isTetoter') {
                         where = where.concat(`${filter}='${getNumberFromBool(kereso[filter])}' AND `);
@@ -302,7 +297,7 @@ router.post('/keres', async (req, res) => {
             let ressss = result.map((ing) => {
                 return getJSONfromLongtext(ing, 'toBool');
             });
-            res.status(200).send(ressss);
+            res.status(200).send({ err: null, data: ressss });
         } else {
             res.status(500).send({ err: err });
         }
@@ -377,9 +372,9 @@ router.get('/ingatlanokapi', (req, res, next) => {
             }
             writeFileSync(path.join(dir, 'ingatlanapi.xml'), data);
             writeFileSync(path.join(dir, 'ingatlanapi.txt'), data);
-            res.status(200).send({ msg: 'XML file generálása sikeres!' });
+            res.status(200).send({ err: null, msg: 'XML file generálása sikeres!' });
         } else {
-            res.status(500).send({ err: 'XML file generálása sikertelen!' });
+            res.status(500).send({ msg: 'XML file generálása sikertelen!', err: 'XML file generálása sikertelen!' });
         }
     });
 });

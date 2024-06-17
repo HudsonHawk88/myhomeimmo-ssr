@@ -16,7 +16,6 @@ const Projekt = () => {
             let str = amount + '';
             ar = str.replace(/ /g, '');
         } */
-        console.log('Ar: ', ar);
         ar = tipus === 'number' ? ar : parseInt(ar, 10);
 
         return ar;
@@ -162,7 +161,6 @@ const Projekt = () => {
 
     return (
         <div className="projekt">
-            {console.log(projekt)}
             <div className="projekt_borito">
                 <img src={projekt && projekt.borito && projekt.borito[0].src} alt={projekt && projekt.borito && projekt.borito[0].filename} />
             </div>

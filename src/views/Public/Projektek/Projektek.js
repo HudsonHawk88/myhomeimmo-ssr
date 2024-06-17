@@ -21,7 +21,6 @@ const Projektek = () => {
             let str = amount + '';
             ar = str.replace(/ /g, '');
         } */
-        console.log('Ar: ', ar);
         ar = tipus === 'number' ? ar : parseInt(ar, 10);
 
         return ar;
@@ -47,7 +46,6 @@ const Projektek = () => {
         let newProjekt = Object.assign({}, projekt);
         const ingatlanok = projektingatlanok || [];
         if (ingatlanok && ingatlanok.length > 0) {
-            console.log(ingatlanok);
             const minar = Math.min(...ingatlanok.map((item) => getInt(item.ar)));
             const maxar = Math.max(...ingatlanok.map((item) => getInt(item.ar)));
 
@@ -57,7 +55,6 @@ const Projektek = () => {
             /*        setProjektek(newProjektek); */
             /*  const { minTer, maxTer } = getMinMaxTer(alapteruletek); */
             let newArak = { minar, maxar };
-            console.log(newArak);
             Object.assign(newProjekt, newArak);
         } else {
             Object.assign(newProjekt, { minar: null, maxar: null });
@@ -114,7 +111,6 @@ const Projektek = () => {
                 {projektek.length > 0 &&
                     projektek.map((projekt) => {
                         if (projekt && projekt.isPublikus) {
-                            console.log(projekt);
                             const { borito, id, minar, maxar, minter, maxter, minszoba, maxszoba, energetika, penznem } = projekt;
                             const adatok = Object.assign(
                                 {},

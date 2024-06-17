@@ -308,7 +308,6 @@ const Ingatlanok = (props) => {
                 );
 
                 /* console.log('INGATLAN: ', <View style={{ margin: '1%', padding: '10px', border: '2px solid blue', maxHeight: '98%' }} wrap={false} />); */
-                console.log(ingatlan.loggedUser);
                 const newPdf = (
                     <Document language="hu">
                         <Page style={styles.pdftartalom} size="A4">
