@@ -159,4 +159,4 @@ app.get('*', actionIndex);
 
 server.listen(port, host);
 
-console.log(`Server running at https://${host}:${port}/`);
+console.log(`Server running at http://${host}:${port}/`);

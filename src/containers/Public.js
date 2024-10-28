@@ -39,10 +39,51 @@ const Public = (props) => {
                 ) : (
                     <React.Fragment>
                         {__isBrowser__ && location.pathname === '/' && location.pathname !== '/login' && <PublicHeaderCarousel ingatlanok={data} />}
-                        <div className="tartalom">
-                            {/*   <Outlet /> */}
-                            {children}
-                        </div>
+                        <div className="tartalom">{children}</div>
+                        {/* 
+                            <Table bordered striped style={{ width: '100%' }}>
+                            <thead>
+                                <tr>
+                                    <td>Hello</td>
+                                    <td>Hi</td>
+                                    <td>Hola</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    
+                        */}
                     </React.Fragment>
                 )}
                 <PublicFooter mainUrl={props.mainUrl} />

@@ -80,7 +80,7 @@ function App(props) {
             Services.refreshToken(token, isAdmin, (err, res) => {
                 if (!err) {
                     setUser(res.user);
-                    if (res.ertekesito && res.ertekesito !== {}) {
+                    if (res.ertekesito) {
                         setErtekesito(res.ertekesito);
                     }
                 } else {

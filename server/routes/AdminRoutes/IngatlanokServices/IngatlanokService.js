@@ -213,6 +213,7 @@ router.put('/', upload.any(), async (req, res) => {
     const token = req.cookies.JWT_TOKEN;
     if (token) {
         const user = await validateToken(token, jwtparams.secret);
+        console.log('USER: ', user, typeof user);
         let nev = JSON.parse(user.nev);
         const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
         if (user === null) {

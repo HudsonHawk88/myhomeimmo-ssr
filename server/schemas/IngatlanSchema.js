@@ -352,7 +352,7 @@ const editIngatlan = async (req, res, user, nev) => {
                                         const mail = {
                                             from: `${nev} <${user.email}>`, // sender address
                                             to: `${modositoObj.hirdeto.feladoEmail}`, // list of receivers
-                                            subject: `${teljesNev} ${modositoObj.isAktiv ? 'publikussá' : 'inkatívvá'} tette a hirdetésed!`, // Subject line
+                                            subject: `${nev} ${modositoObj.isAktiv ? 'publikussá' : 'inkatívvá'} tette a hirdetésed!`, // Subject line
                                             html: `<b>Kedves ${modositoObj.hirdeto.feladoNev}!</b><br><br>
                                             ${nev} admin ${modositoObj.isAktiv ? 'publikussá tette a hirdetésed!' : 'levette a hirdetésed láthatóságát!'} Az ingatlanod id-je: ${
                                                 ingId ? ingId : 'Nincs id, valami hiba van...'
@@ -391,19 +391,19 @@ const editIngatlan = async (req, res, user, nev) => {
                     if (!err) {
                         console.log(JSON.parse(user.roles), hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN']));
                         if (hasRole(JSON.parse(user.roles), ['SZUPER_ADMIN'])) {
-                            const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
+                            // const teljesNev = `${nev.titulus && nev.titulus + ' '} ${nev.vezeteknev} ${nev.keresztnev}`;
                             const ingId = modositoObj.id;
 
                             const mail = {
-                                from: `${teljesNev} <${user.email}>`, // sender address
+                                from: `${nev} <${user.email}>`, // sender address
                                 to: `${modositoObj.hirdeto.feladoEmail}`, // list of receivers
-                                subject: `${teljesNev} ${modositoObj.isAktiv ? 'publikussá' : 'inkatívvá'} tette a hirdetésed!`, // Subject line
+                                subject: `${nev} ${modositoObj.isAktiv ? 'publikussá' : 'inkatívvá'} tette a hirdetésed!`, // Subject line
                                 html: `<b>Kedves ${modositoObj.hirdeto.feladoNev}!</b><br><br>
-                                            ${teljesNev} admin ${modositoObj.isAktiv ? 'publikussá tette a hirdetésed!' : 'levette a hirdetésed láthatóságát!'} Az ingatlanod id-je: ${
+                                            ${nev} admin ${modositoObj.isAktiv ? 'publikussá tette a hirdetésed!' : 'levette a hirdetésed láthatóságát!'} Az ingatlanod id-je: ${
                                     ingId ? ingId : 'Nincs id, valami hiba van...'
                                 }<br><br>
                                             Tisztelettel:<br>
-                                            ${teljesNev}`
+                                            ${nev}`
                             };
                             if ((modositoObj.isAktiv == 1 || modositoObj.isAktiv == true) && modositoObj.hirdeto.feladoEmail !== user.email) {
                                 transporter.sendMail(mail, (mailerr) => {
