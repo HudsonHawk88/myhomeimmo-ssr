@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import sharp from 'sharp';
+import Sharp from 'sharp';
 import nodemailer from 'nodemailer';
 import moment from 'moment';
 import { pool, mailUrl, UseQuery, hasRole, getJSONfromLongtext, getId, log, validateToken, jwtparams } from '../common/QueryHelpers.js';
@@ -30,7 +30,7 @@ const addIngatlan = async (req, res) => {
     if (admin && admin[0].avatar) {
         felvitelObj.hirdeto.feladoAvatar = JSON.parse(admin[0].avatar);
     } else {
-        felvitelObj.hirdeto.feladoAvatar = [{ src: '`${process.env.mainUrl}/stattic/images/noavatar.png`', filename: 'noavatar.png', title: 'noavatar.png' }];
+        felvitelObj.hirdeto.feladoAvatar = [{ src: `${process.env.mainUrl}/static/images/noavatar.png`, filename: 'noavatar.png', title: 'noavatar.png' }];
     }
     let kepek = [];
     let nempubcsatolmanyok = [];
@@ -53,7 +53,7 @@ const addIngatlan = async (req, res) => {
                     title: `${fname}.jpg`
                 });
 
-                sharp(file.buffer)
+                Sharp(file.buffer)
                     .jpeg({ quality: 80 })
                     .resize({ width: 1500, fit: 'inside' })
                     .withMetadata()
@@ -65,7 +65,7 @@ const addIngatlan = async (req, res) => {
                                 mkdirSync(dir);
                             }
                             writeFileSync(`${dir}/${fname}.jpg`, buff);
-                            sharp(buff).resize({ width: 250, height: 200, fit: 'inside' }).toFile(`${dir}/${fname}_icon.jpg`);
+                            Sharp(buff).resize({ width: 250, height: 200, fit: 'inside' }).toFile(`${dir}/${fname}_icon.jpg`);
                             log('POST /api/admin/ingatlanok', `Kép hozzáadva: ${dir}/${fname}_icon.jpg\n`);
                         } else {
                             log('POST /api/admin/ingatlanok', err);
@@ -82,7 +82,7 @@ const addIngatlan = async (req, res) => {
                         type: file.mimetype
                     });
 
-                    sharp(file.buffer)
+                    Sharp(file.buffer)
                         .jpeg({ quality: 80 })
                         .resize({ width: 1500, fit: 'inside' })
                         .withMetadata()
@@ -223,7 +223,7 @@ const editIngatlan = async (req, res, user, nev) => {
                             title: `${fname}.jpg`
                         });
 
-                        sharp(file.buffer)
+                        Sharp(file.buffer)
                             .jpeg({ quality: 80 })
                             .resize({ width: 1500, fit: 'inside' })
                             .withMetadata()
@@ -234,7 +234,7 @@ const editIngatlan = async (req, res, user, nev) => {
                                         mkdirSync(dir);
                                     }
                                     writeFileSync(`${process.env.ingatlankepekdir}/${id}/${fname}.jpg`, buff);
-                                    sharp(buff).resize({ width: 250, height: 200, fit: 'inside' }).toFile(`${dir}/${fname}_icon.jpg`);
+                                    Sharp(buff).resize({ width: 250, height: 200, fit: 'inside' }).toFile(`${dir}/${fname}_icon.jpg`);
                                 } else {
                                     log('PUT /api/admin/ingatlanok', err);
                                 }
@@ -251,7 +251,7 @@ const editIngatlan = async (req, res, user, nev) => {
                                 type: file.mimetype
                             });
 
-                            sharp(file.buffer)
+                            Sharp(file.buffer)
                                 .jpeg({ quality: 80 })
                                 .resize({ width: 1500, fit: 'inside' })
                                 .withMetadata()

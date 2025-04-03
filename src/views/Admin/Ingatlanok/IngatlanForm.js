@@ -195,39 +195,46 @@ const IngatlanForm = (props) => {
         });
     };
 
-    const init = () => {
+    const init = (callback) => {
         listOrszagok();
         listTelepulesek();
         getOptions();
+
+        if (callback) {
+            setTimeout(() => {
+                callback();
+            }, 1);
+        }
     };
 
     useEffect(() => {
-        init();
-        if (formType === 'FEL' && !currentId) {
-            setIngatlanObj(defaultObj);
-            setHelyseg({
-                ...helyseg,
-                irszam: '',
-                telepules: ''
-            });
-            if (user.isErtekesito) {
-                setHirdeto({
-                    feladoNev: nevFormatter(user.nev),
-                    feladoTelefon: telefonFormatter(user.telefon),
-                    feladoEmail: user.email,
-                    feladoAvatar: user.avatar
+        init(() => {
+            if (formType === 'FEL' && !currentId) {
+                setIngatlanObj(defaultObj);
+                setHelyseg({
+                    ...helyseg,
+                    irszam: '',
+                    telepules: ''
                 });
+                if (user.isErtekesito) {
+                    setHirdeto({
+                        feladoNev: nevFormatter(user.nev),
+                        feladoTelefon: telefonFormatter(user.telefon),
+                        feladoEmail: user.email,
+                        feladoAvatar: user.avatar
+                    });
+                } else {
+                    setHirdeto({
+                        feladoNev: nevFormatter(ertekesito.nev),
+                        feladoTelefon: telefonFormatter(ertekesito.telefon),
+                        feladoEmail: ertekesito.email,
+                        feladoAvatar: ertekesito.avatar
+                    });
+                }
             } else {
-                setHirdeto({
-                    feladoNev: nevFormatter(ertekesito.nev),
-                    feladoTelefon: telefonFormatter(ertekesito.telefon),
-                    feladoEmail: ertekesito.email,
-                    feladoAvatar: ertekesito.avatar
-                });
+                getIngatlan(currentId);
             }
-        } else {
-            getIngatlan(currentId);
-        }
+        });
     }, [currentId, formType]);
 
     useEffect(() => {

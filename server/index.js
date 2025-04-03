@@ -106,7 +106,7 @@ app.use(function (req, res, next) {
         next();
     }
 });
-app.get('/public/static', (req, res, next) => {});
+// app.get('/public/static', (req, res, next) => {});
 app.get('/admin', actionIndex);
 app.get('/', actionIndex);
 /* app.get('/static', actionIndex); */
