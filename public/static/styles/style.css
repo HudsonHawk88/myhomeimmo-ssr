@@ -1242,6 +1242,10 @@ font {
     min-height: calc(100vh - 60px);
     max-height: calc(100vh - 60px);
 } */
+.react-data-table input[name=hirdeto] {
+  pointer-events: none;
+}
+
 .public_full header {
   display: flex;
   height: 112px;

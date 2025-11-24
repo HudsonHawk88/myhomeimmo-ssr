@@ -652,6 +652,12 @@ const Ingatlanok = (props) => {
         return ar;
     };
 
+    const hirdetoFormatter = (cell, row) => {
+        if (cell && row && row.hirdeto) {
+            return row.hirdeto.feladoNev || '';
+        }
+    }
+
     const renderTable = () => {
         const columns = [
             {
@@ -660,6 +666,15 @@ const Ingatlanok = (props) => {
                 filter: true,
                 filterType: 'textFilter',
                 filterDefaultValue: 'Keresés...'
+            },
+            {
+                dataField: 'hirdeto',
+                text: 'Értékesítő',
+                filter: true,
+                filterType: 'textFilter',
+                filterDefaultValue: 'Keresés...',
+                formatter: hirdetoFormatter,
+                // hidden: !hasRole(user.roles, ['SZUPER_ADMIN'])
             },
             {
                 dataField: 'refid',
