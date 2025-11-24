@@ -9,6 +9,7 @@ html body {
   overflow: overlay;
   scrollbar-width: none;
   background-color: #f2f2f2;
+  top: 0px !important;
   /*  scrollbar-width: thin; */
 }
 
@@ -33,6 +34,15 @@ html body::-webkit-scrollbar {
   /*   overflow-x: hidden !important; */
   /*     background-image: var(themes-public-bgcolor); */
   /*     background-size: cover; */
+}
+
+font {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.skiptranslate {
+  display: none !important;
 }
 
 .react-slate-wysiwyg {
@@ -262,6 +272,30 @@ html body::-webkit-scrollbar {
     /* padding: 15px; */
   }
 }
+.plus_content .flags {
+  position: relative;
+  top: 10px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+}
+.plus_content .flags .flag {
+  display: inline-block;
+  width: 35px;
+  height: 25px;
+  background-size: cover;
+  cursor: pointer;
+  margin: 0px 2px;
+}
+.plus_content .flags #us {
+  background-image: url("/static/images/us-flag.gif");
+}
+.plus_content .flags #de {
+  background-image: url("/static/images/gm-flag.gif");
+}
+.plus_content .flags #hu {
+  background-image: url("/static/images/hu-flag.gif");
+}
 
 .fb-share-button {
   height: 30px;
@@ -308,7 +342,7 @@ html body::-webkit-scrollbar {
 }
 
 .kozossegi .fa-facebook-square:hover {
-  color: rgb(8, 122, 234);
+  color: #087aea;
 }
 
 .kozossegi .fa-tiktok {
@@ -318,8 +352,8 @@ html body::-webkit-scrollbar {
 }
 
 .kozossegi .fa-tiktok:hover {
-  color: rgb(0, 0, 0);
-  text-shadow: 2px 2px rgb(247, 0, 78);
+  color: black;
+  text-shadow: 2px 2px #f7004e;
 }
 
 .kozossegi .fa-instagram {
@@ -327,7 +361,7 @@ html body::-webkit-scrollbar {
 }
 
 .kozossegi .fa-instagram:hover {
-  background: -webkit-linear-gradient(69deg, rgb(221, 242, 6) 39%, rgb(240, 3, 3) 72%, rgb(255, 0, 215) 100%);
+  background: -webkit-linear-gradient(69deg, #ddf206 39%, #f00303 72%, #ff00d7 100%);
   background-clip: "text";
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -342,7 +376,7 @@ html body::-webkit-scrollbar {
 }
 
 .kozossegi .fa-whatsapp:hover {
-  color: rgb(0, 163, 86);
+  color: #00a356;
 }
 
 .admin_full {
@@ -511,7 +545,7 @@ html body::-webkit-scrollbar {
   height: 100%;
   margin: 20px 5%;
   padding: 20px 0px;
-  background-color: rgb(237, 224, 122);
+  background-color: #ede07a;
   /* margin: 0px; */
 }
 @media screen and (min-width: 950px) {
@@ -594,7 +628,7 @@ html body::-webkit-scrollbar {
   padding: 0px !important;
 }
 .tartalom .reszletes_kereso {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   display: flex;
   flex-wrap: wrap;
   padding: 20px;
@@ -629,20 +663,20 @@ html body::-webkit-scrollbar {
   color: #000;
 }
 .tartalom-admin .react-data-table-pagination-buttons .btn.btn-outline-primary:hover, .tartalom-admin .react-data-table-pagination-buttons .btn.btn-outline-primary:active, .tartalom-admin .react-data-table-pagination-buttons .btn.btn-outline-primary:focus {
-  border-color: rgb(58, 214, 197);
-  background-color: rgb(58, 214, 197);
+  border-color: #3ad6c5;
+  background-color: #3ad6c5;
 }
 .tartalom-admin .react-data-table-pagination-buttons .btn.btn-primary {
   border-color: #333;
   color: #000;
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
 }
 .tartalom-admin .react-data-table-pagination-buttons .btn.btn-primary:hover, .tartalom-admin .react-data-table-pagination-buttons .btn.btn-primary:active, .tartalom-admin .react-data-table-pagination-buttons .btn.btn-primary:focus {
-  border-color: rgb(58, 214, 197);
-  background-color: rgb(58, 214, 197);
+  border-color: #3ad6c5;
+  background-color: #3ad6c5;
 }
 .tartalom-admin .btn.btn-link {
-  color: rgb(0, 0, 0);
+  color: black;
   font-size: 1.2rem;
 }
 .tartalom-admin .fas.fa-eye {
@@ -656,7 +690,7 @@ html body::-webkit-scrollbar {
   color: orange;
 }
 .tartalom-admin .fas.fa-trash {
-  color: rgb(111, 114, 114);
+  color: #6f7272;
 }
 .tartalom-admin .fa.fa-facebook-square {
   color: #4267b2;
@@ -730,7 +764,7 @@ html body::-webkit-scrollbar {
 
 .public-sidebar {
   margin-top: 10px;
-  background-color: rgb(120, 212, 223);
+  background-color: #78d4df;
   min-width: 100%;
   border-radius: 0px;
 }
@@ -747,11 +781,11 @@ html body::-webkit-scrollbar {
 }
 .public-sidebar .accordion-button {
   background-color: rgba(174, 255, 237, 0.514);
-  color: rgb(0, 0, 0);
+  color: black;
   z-index: 1 !important;
 }
 .public-sidebar .accordion-button::after {
-  color: rgb(0, 0, 0) !important;
+  color: black !important;
   border: none;
   z-index: 1 !important;
 }
@@ -940,7 +974,8 @@ html body::-webkit-scrollbar {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+  flex: 0 1 calc(33.3% - 12px);
+  /*  No stretching: */
   max-height: 300px;
   margin: 6px !important;
   text-align: center;
@@ -950,19 +985,22 @@ html body::-webkit-scrollbar {
 }
 @media screen and (min-width: 768px) {
   .public-inner-content .card {
-    flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+    flex: 0 1 calc(33.3% - 12px);
+    /*  No stretching: */
     max-height: 300px;
   }
 }
 @media screen and (min-width: 768px) and (max-width: 1200px) {
   .public-inner-content .card {
-    flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+    flex: 0 1 calc(33.3% - 12px);
+    /*  No stretching: */
     max-height: 300px;
   }
 }
 @media screen and (min-width: 1201px) {
   .public-inner-content .card {
-    flex: 0 1 calc(33.3% - 12px); /*  No stretching: */
+    flex: 0 1 calc(33.3% - 12px);
+    /*  No stretching: */
     max-height: 300px;
   }
 }
@@ -983,7 +1021,7 @@ html body::-webkit-scrollbar {
   }
 }
 .public-inner-content .card .btn.btn-info {
-  background-color: rgb(147, 245, 98);
+  background-color: #93f562;
   color: black;
 }
 .public-inner-content .card:hover {
@@ -1018,7 +1056,8 @@ html body::-webkit-scrollbar {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 1 1 300px; /*  Stretching: */
+  flex: 1 1 300px;
+  /*  Stretching: */
   max-height: 480px;
   margin: 6px !important;
   text-align: center;
@@ -1216,7 +1255,7 @@ html body::-webkit-scrollbar {
 
 .public-navbar {
   font-size: 0.8em;
-  background-color: rgb(255, 255, 255);
+  background-color: white;
   /*  background-color: transparent; */
   /* background-image: var(themes-public-navbarbgimage);
   background-size: contain; */
@@ -1319,7 +1358,7 @@ html body::-webkit-scrollbar {
   }
 }
 .public-navbar__nav-item #myart {
-  color: rgb(58, 214, 197) !important;
+  color: #3ad6c5 !important;
 }
 @media screen and (min-width: 992px) {
   .public-navbar__nav-item {
@@ -1336,13 +1375,13 @@ html body::-webkit-scrollbar {
   transition-timing-function: ease-in;
   transition-duration: 0.2s;
   border-radius: 15px;
-  color: rgb(0, 0, 0) !important;
+  color: black !important;
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 .public-navbar .nav-link:hover {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   /*             border: unset;
   text-shadow: 1px 1px var(themes-public-navlinktextshadow); */
   /*           @media screen and (min-width: 992px) {
@@ -1351,12 +1390,12 @@ html body::-webkit-scrollbar {
   } */
 }
 .public-navbar .nav-link.active {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   border: unset;
 }
 @media screen and (min-width: 992px) {
   .public-navbar .nav-link.active {
-    border-bottom: 5px solid rgb(58, 214, 197);
+    border-bottom: 5px solid #3ad6c5;
     background-color: unset;
   }
 }
@@ -1376,7 +1415,7 @@ html body::-webkit-scrollbar {
 }
 @media screen and (min-width: 992px) {
   .public-navbar .dropdown-item {
-    background-color: rgb(255, 255, 255) !important;
+    background-color: white !important;
     padding: 5px !important;
   }
 }
@@ -1416,7 +1455,7 @@ html body::-webkit-scrollbar {
   padding: 0px !important;
   margin: 0px !important;
   border-radius: 15px;
-  background-color: rgb(57, 214, 197);
+  background-color: #39d6c5;
 }
 @media screen and (min-width: 992px) {
   .undernav__carousel {
@@ -1429,7 +1468,7 @@ html body::-webkit-scrollbar {
   align-items: center;
   /* margin: 0px; */
   margin: 3% 0px;
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   padding: 0px !important;
   border-radius: 15px;
 }
@@ -1461,7 +1500,7 @@ html body::-webkit-scrollbar {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   padding: 0px;
   width: 100%;
   border-radius: none;
@@ -1472,16 +1511,16 @@ html body::-webkit-scrollbar {
   }
 }
 .undernav .accordion-body .btn.btn-success {
-  background-color: rgb(147, 245, 98);
+  background-color: #93f562;
   color: black;
 }
 .undernav .accordion-button {
   background-color: rgba(174, 255, 237, 0.514);
-  color: rgb(0, 0, 0);
+  color: black;
   z-index: 1 !important;
 }
 .undernav .accordion-button::after {
-  color: rgb(0, 0, 0) !important;
+  color: black !important;
   border: none;
   z-index: 1 !important;
 }
@@ -1726,18 +1765,18 @@ html body::-webkit-scrollbar {
 }
 .ingat_card__card__megtekgomb button {
   color: black;
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   width: 100%;
   height: 170px;
   border: none;
   box-shadow: none;
 }
 .ingat_card__card__megtekgomb button:hover {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   color: black;
 }
 .ingat_card__card__megtekgomb button:active {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   color: black;
 }
 
@@ -1758,7 +1797,7 @@ html body::-webkit-scrollbar {
   }
 }
 .ingatlan_card .ingatlan_adatok .ingatlan_cim {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   color: black;
   padding: 10px 5px;
   font-size: 1em;
@@ -1779,10 +1818,10 @@ html body::-webkit-scrollbar {
   }
 }
 .ingatlan_card .ingatlan_adatok .galeria .image-gallery-slides {
-  background-color: rgb(0, 0, 0);
+  background-color: black;
 }
 .ingatlan_card .ingatlan_adatok .galeria .image-gallery-thumbnails {
-  background-color: rgb(0, 0, 0);
+  background-color: black;
 }
 .ingatlan_card .ingatlan_adatok .galeria .image-gallery-thumbnail-image {
   height: 65px;
@@ -1810,7 +1849,7 @@ html body::-webkit-scrollbar {
 }
 .ingatlan_card .ingatlan_adatok .alapadatok {
   font-size: 25px;
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   color: black;
   padding: 15px;
 }
@@ -1822,7 +1861,7 @@ html body::-webkit-scrollbar {
   white-space: pre-line;
 }
 .ingatlan_card .ertekesito_adatok {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   display: flex;
   text-align: center;
   flex-direction: column;
@@ -2200,11 +2239,11 @@ html body::-webkit-scrollbar {
   min-width: 60%;
   max-width: 60%;
   padding: 10px;
-  border-right: 10px solid rgb(58, 214, 197);
+  border-right: 10px solid #3ad6c5;
 }
 @media screen and (min-width: 720px) {
   .public_rolunk__baloldal {
-    border-right: 30px solid rgb(58, 214, 197);
+    border-right: 30px solid #3ad6c5;
     min-width: 65%;
     max-width: 65%;
   }
@@ -2236,7 +2275,7 @@ html body::-webkit-scrollbar {
 }
 .public_rolunk__fejlec .public_rolunk__beosztas,
 .public_rolunk__fejlec .public_rolunk__cegnev2 {
-  color: rgb(58, 214, 197);
+  color: #3ad6c5;
 }
 .public_rolunk__fejlec .public_rolunk__cegnev1 {
   color: #006266;
@@ -2368,7 +2407,7 @@ html body::-webkit-scrollbar {
   min-width: 100%;
   min-height: 60px;
   font-size: 1.2em;
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   color: white;
 }
 .public_kapcsolat .kapcsolat_alapadatok {
@@ -2474,7 +2513,7 @@ html body::-webkit-scrollbar {
 .admin-navbar {
   min-height: 100px;
   padding: 0px !important;
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
 }
 .admin-navbar__collapse {
   display: flex !important;
@@ -2503,11 +2542,11 @@ html body::-webkit-scrollbar {
   right: 15px;
 }
 .admin-navbar .show .btn-secondary.dropdown-toggle {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   color: black;
 }
 .admin-navbar .dropdown-toggle {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   border: none;
   color: black;
 }
@@ -2522,11 +2561,11 @@ html body::-webkit-scrollbar {
 .admin-navbar .dropdown-toggle:hover {
   box-shadow: none !important;
   border: none !important;
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   color: black;
 }
 .admin-navbar .dropdown-menu {
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   border: none !important;
   transform: translate(15px, 71px) !important;
 }
@@ -2645,7 +2684,7 @@ html body::-webkit-scrollbar {
   /* min-height: 60px; */
   min-width: 100%;
   border-radius: 0px;
-  color: rgb(255, 255, 255);
+  color: white;
   font-size: 1em;
   display: flex;
   justify-content: center;
@@ -2676,7 +2715,7 @@ html body::-webkit-scrollbar {
   text-align: center;
   justify-content: center;
   align-items: center;
-  background-color: rgb(58, 214, 197);
+  background-color: #3ad6c5;
   color: black;
 }
 

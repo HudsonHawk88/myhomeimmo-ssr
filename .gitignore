@@ -4,7 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-package-lock.json
 
 
 # testing
@@ -25,7 +24,6 @@ package-lock.json
 .env.test.local
 .env.production.local
 env
-package-lock.json
 
 /public/static/images/ingatlanok
 log
@@ -33,3 +31,8 @@ log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+.idea
+.vscode
+package-lock.json
+

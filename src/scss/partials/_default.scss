@@ -12,6 +12,7 @@ html body {
     overflow: overlay;
     scrollbar-width: none;
     background-color: #f2f2f2;
+    top: 0px !important;
 
     /*  scrollbar-width: thin; */
 }
@@ -39,6 +40,15 @@ html body::-webkit-scrollbar {
 
     /*     background-image: var(themes-public-bgcolor); */
     /*     background-size: cover; */
+}
+
+font {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.skiptranslate {
+    display: none !important;
 }
 
 .react-slate-wysiwyg {
@@ -275,6 +285,35 @@ html body::-webkit-scrollbar {
         justify-content: right;
         top: 40px;
         /* padding: 15px; */
+    }
+
+    .flags {
+        position: relative;
+        top: 10px;
+        display: flex;
+        align-items: end;
+        justify-content: center;
+
+        .flag {
+            display: inline-block;
+            width: 35px;
+            height: 25px;
+            background-size: cover;
+            cursor: pointer;
+            margin: 0px 2px;
+        }
+
+        #us {
+            background-image: url('/static/images/us-flag.gif');
+        }
+
+        #de {
+            background-image: url('/static/images/gm-flag.gif');
+        }
+
+        #hu {
+            background-image: url('/static/images/hu-flag.gif');
+        }
     }
 }
 

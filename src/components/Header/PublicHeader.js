@@ -1,6 +1,7 @@
 import React from 'react';
-import { Navbar, Collapse, Nav, NavItem, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Navbar, Collapse, Nav, NavItem, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { setCookie } from '../../commons/Lib';
 
 const PublicHeader = (props) => {
     let { history } = props;
@@ -32,6 +33,11 @@ const PublicHeader = (props) => {
                             <i aria-hidden className="fab fa-whatsapp"></i>
                         </a>
                     </div>
+                    <div className={'flags'}>
+                        <span className={'flag'} id={'us'} onClick={() => setCookie('googtrans', '/en')} />
+                        <span className={'flag'} id={'de'} onClick={() => setCookie('googtrans', '/de')} />
+                        <span className={'flag'} id={'hu'} onClick={() => setCookie('googtrans', '/hu')} />
+                    </div>
                 </div>
             </div>
             <Navbar expand="lg" light className="public-navbar" dark>
@@ -41,11 +47,11 @@ const PublicHeader = (props) => {
                 <Collapse navbar id="public_navbar_collapse">
                     <Nav navbar className="me-auto public-navbar__nav">
                         <NavItem className="nav-item public-navbar__nav-item">
-                            <a className="nav-link public-navbar__nav-link" href="/">
+                            <Link className="nav-link public-navbar__nav-link" to="/">
                                 {/* <i className="far fa-bookmark"></i> */}
                                 <i aria-hidden className="fas fa-home" />
                                 &nbsp; Főoldal
-                            </a>
+                            </Link>
                         </NavItem>
                         <NavItem className="nav-item public-navbar__nav-item">
                             <Link className="nav-link public-navbar__nav-link" to="/ujepites">
